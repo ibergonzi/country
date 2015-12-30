@@ -1,0 +1,18 @@
+total 101
+drwxr-xr-x  9 country country  4096 ago  5 19:28 backend
+drwxr-xr-x  6 country country  4096 ago  5 19:28 common
+-rw-r--r--  1 country country  1160 ago  5 19:28 composer.json
+-rw-r--r--  1 country country 32056 dic 29 16:03 composer.lock
+drwxr-xr-x  7 country country  4096 ago  5 19:28 console
+drwxr-xr-x  4 country country  4096 ago  5 19:28 environments
+drwxr-xr-x  9 country country  4096 ago  5 19:28 frontend
+-rwxr-xr-x  1 country country  6402 ago  5 19:28 init
+-rw-r--r--  1 country country   511 ago  5 19:28 init.bat
+-rw-r--r--  1 country country  1622 ago  5 19:28 LICENSE.md
+-rw-rw-r--  1 country country     0 dic 30 16:28 prueba.txt
+-rw-r--r--  1 country country  2820 ago  5 19:28 README.md
+-rw-r--r--  1 country country  5051 ago  5 19:28 requirements.php
+drwxr-xr-x  3 country country  4096 ago  5 19:28 tests
+drwxr-xr-x 11 country country  4096 dic 29 16:03 vendor
+-rwxr-xr-x  1 country country   865 dic 29 16:07 yii
+-rw-r--r--  1 country country   515 ago  5 19:28 yii.bat

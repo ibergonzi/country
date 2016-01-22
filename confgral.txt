@@ -93,7 +93,31 @@ Linux
         }
     Lo mas recomendable seria agregar un archivo css personalizado y no modificar el web/css
 23) para hacer los botones mas chicos hay que modificar la vista:
-     'btn btn-success btn-sm' en vez de 'btn btn-success'        
+     'btn btn-success btn-sm' en vez de 'btn btn-success'     
+     
+24) Se creo una cuenta de correo para enviar los mails desde el sistema:
+   usuario: miraflores.adm.notif@gmail.com
+   pwd: petu1999
+
+   en common/main-local.php:
+       'mailer' => [
+            'class' => 'yii\swiftmailer\Mailer',
+            'viewPath' => '@common/mail',
+            // send all mails to a file by default. You have to set
+            // 'useFileTransport' to false and configure a transport
+            // for the mailer to send real emails.
+            'useFileTransport' => false,
+            
+            'transport' => [
+	            'class' => 'Swift_SmtpTransport',
+	            'host' => 'smtp.gmail.com',
+	            'username' => 'miraflores.adm.notif@gmail.com',
+	            'password' => 'petu1999',
+	            'port' => '587',
+	            'encryption' => 'tls',
+	        ],
+            
+        ],        
  
    
    

@@ -1,0 +1,186 @@
+Linux
+1) instalar LAMP server (ojo el caret al final)
+   sudo apt-get install lamp-server^
+2) instalar desde el gestor de paquetes synaptic: phpmyadmin, mysql-workbench, geany, git, curl
+3) instalar composer (chequear en https://getcomposer.org/ que no hay cambiado nada):
+   curl -sS https://getcomposer.org/installer | php
+   sudo mv composer.phar /usr/local/bin/composer
+4) preparar composer para YII2 (chequear antes en http://www.yiiframework.com/download/):
+       composer global require "fxp/composer-asset-plugin:~1.1.1"
+5) ya existe el usuario ibergonzi@gmail (pwd petu1999) en github, pero hay que configurar el git globalmente (para los commit):
+    git config --global user.name "Ivan Bergonzi"
+    git config --global user.email "ibergonzi@gmail.com"
+5)      sudo chown country:country html
+6) bajar y descomprimir el yii2 (el archivo, no a traves de composer) desde http://www.yiiframework.com/download/
+7) cambiar el nombre (basic o advanced por el nombre del sitio)
+8) dentro de la carpeta country, actualizar Yii2 con composer:
+    composer update
+9) solo en el caso de usar la plantilla advanced, ejecutar:
+     php init
+10) sudo chgrp www-data country
+11) sudo chgrp www-data models (dentro de country) y hacer lo mismo con controllers y views
+12) cambiar el grupo de las carpetas models, controllers y views a www-data (ojo: no recursivamente)
+13) solo en caso de usar la plantilla basic, en config/web.php poner cualquier cosa en cookieValidationKey
+14) completar datos base de datos, con basic->config/db.php, con advanced->common/config/main-local.php
+15) en config/web.php habilitar URLs amigables (dentro de seccion components)
+        'urlManager' => [
+                            
+          'showScriptName' => false, 
+                            
+          'enablePrettyUrl' => true
+                            
+                  ],
+
+16) como root, habilitar el modo rewrite:
+    a2enmod rewrite
+17) como root, crear configuracion para el sitio yii2, en /etc/apache2/sites-available/, crear el archivo country.conf con el siguiente contenido :
+   <VirtualHost *:80>
+                            
+ ServerName country.com
+                          
+DocumentRoot "/var/www/html/country/web"
+                            
+<Directory "/var/www/html/country/web">
+                            
+    # usamos mod_rewrite para las urls amigables
+                            
+    RewriteEngine on
+                            
+    # Si un directorio o fichero existe, lo usamos
+                            
+    RewriteCond %{REQUEST_FILENAME} !-f
+                            
+    RewriteCond %{REQUEST_FILENAME} !-d
+                            
+    # Si no, enviamos la petición a index.php
+                            
+    RewriteRule . index.php
+                            
+</Directory>
+                            
+</VirtualHost>
+
+18) como root, habilitar el nuevo virtual host:
+  a2ensite country.conf
+19) opcionalmente deshabilitar el virtual host por defecto:
+    a2dissite 000-default.conf
+20) reiniciar apache:
+   service apache2 reload
+21) ya se puede ingresar a localhost/gii o localhost/site (o localhost/vista hecha con GII)  
+22) la forma de modificar los tamaños de letra y controles en general (de bootstrap) es sobreescribir propiedades css de bootstrap,
+    esto se hace en web/css, por ejemplo:
+    input[type="text"] {
+           height: 20px;
+           font-size: 12px;
+           line-height: 20px;
+        }
+    Lo mas recomendable seria agregar un archivo css personalizado y no modificar el web/css
+23) para hacer los botones mas chicos hay que modificar la vista:
+     'btn btn-success btn-sm' en vez de 'btn btn-success'        
+ 
+   
+   
+   
+GIT
+Se creo un repositorio en github (usuario ibergonzi, pwd petu1999) de nombre "country" OJO: publico y sin inicializar
+Una vez que se instalo el yii se debe inicializar el repositorio local, dentro de la carpeta country
+   git init
+luego se agrega el repositorio remoto
+   git remote add origin https://github.com/ibergonzi/country.git
+despues se agregan todos los archivos al repositorio local
+   git add .
+se hace el primer commit
+   git commit -m "Primer commit"
+y se actualiza el repositorio remoto            
+   git push -u origin master
+   
+Agregar un archivo (ejemplo con prueba.txt en la carpeta country)
+Para agregar un archivo al repositorio local
+   git add prueba.txt
+Se comprueba que prueba.txt está bajo seguimiento y preparado
+   git status
+git add tambien se usa cuando se modifica el contenido de un archivo que ya estaba bajo seguimiento, esto se llama "prepararlo"
+Se hace el commit
+   git commit -m "agregado prueba.txt"
+Luego se actualiza nuevamente el repositorio remoto
+   git push -u origin master
+   
+   
+Borrar un archivo (ejemplo con prueba.txt en la carpeta country) 
+   rm prueba.txt
+   git rm prueba.txt
+Pero luego hay que hacer commit y actualizar el repositorio remoto    
+   
+
+Con 2 instalaciones de YII
+1) hay que usar el mismo archivo de yii y descomprimirlo en la maquina deploy
+2) despues de setear git hay que ejecutar composer update 
+3) git init
+4) git remote add origin https://github.com/ibergonzi/country.git
+5) ver si hacer o no php init
+6) 
+
+
+
+Anotaciones generales
+1) Para ocultar un grid (para después mostrarlo mediante un boton):
+            echo GridView::widget([
+				'id'=>'gridrrd',
+				'options'=> ['style'=>'display:none'
+				],
+   El id es importante para después tomarlo con jQuery
+   Luego hay que tener un button o html::a que lo visualice, la forma mas fácil es asignarle un class que no 
+   se repita (por ejemplo "mostrargridrrd") y registrar el evento click para mostrar el grid:
+   
+   <?= Html::a('<span class="glyphicon glyphicon-eye-open"></span>&nbsp;Mostrar grid', 
+				['#'], ['class' => 'btn btn-success mostrargridrrd']) ?>
+				
+   $this->registerJs('$(".mostrargridrrd").on("click", function(event){
+			event.preventDefault();
+			$("#gridrrd").css("display", "block"); 
+		});',
+		yii\web\View::POS_READY);
+	
+	Tambien se puede usar id en vez de un class:
+
+   <?= Html::a('<span class="glyphicon glyphicon-eye-open"></span>&nbsp;Mostrar grid', 
+				['#'], ['class' => 'btn btn-success','id' => 'mostrargridrrd']) ?>
+				
+   $this->registerJs('$("#mostrargridrrd").on("click", function(event){
+			event.preventDefault();
+			$("#gridrrd").css("display", "block"); 
+		});',
+		yii\web\View::POS_READY);
+	
+		
+2) Cualquier código javascript o jQuery hay que registrarlo SI o SI, sino no funciona, ver punto 1
+
+3) Hasta el momento voy a usar datetime para datos con horas, no los voy a separar en fecha y hora en la BD
+4) Pruebas con behaviors, los campos created_at y updated_at DEBEN ser datetime y los campos created_by 
+   y updated_by deben ser INT
+
+   en el modelo:
+   use yii\behaviors\TimestampBehavior;
+   use yii\behaviors\BlameableBehavior;
+   use yii\db\Expression;
+   
+         public function behaviors()
+          {
+              return [
+                  [
+                      'class' => BlameableBehavior::className(),
+                      'createdByAttribute' => 'created_by',
+                      'updatedByAttribute' => 'updated_by',
+                  ],
+                  [
+                      'class' => TimestampBehavior::className(),
+					  'createdAtAttribute' => 'created_at',
+					  'updatedAtAttribute' => 'updated_at',                 
+                      //'value' => new Expression('NOW()')
+                      'value' => new Expression('CURRENT_TIMESTAMP')
+
+                  ],
+
+              ];
+          }
+

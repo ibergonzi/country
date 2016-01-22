@@ -10,19 +10,23 @@ Linux
 5) ya existe el usuario ibergonzi@gmail (pwd petu1999) en github, pero hay que configurar el git globalmente (para los commit):
     git config --global user.name "Ivan Bergonzi"
     git config --global user.email "ibergonzi@gmail.com"
-5)      sudo chown country:country html
+5) sudo chown country:country html
 6) bajar y descomprimir el yii2 (el archivo, no a traves de composer) desde http://www.yiiframework.com/download/
-7) cambiar el nombre (basic o advanced por el nombre del sitio)
+7) cambiar el nombre (advanced por el nombre del sitio)
 8) dentro de la carpeta country, actualizar Yii2 con composer:
     composer update
-9) solo en el caso de usar la plantilla advanced, ejecutar:
+9.1) Crear un usuario en mysql a traves de phpmyadmin (usuario:usario) SIN ningún privilegio
+9.2) Crear la base de datos "country" con el usuario root y cotejamiento "utf8-general-ci"
+9.3) Agregar (por ahora) todos los privilegios del usuario "usuario" para la base de datos country
+10) inicializar la plantilla advanced, ejecutar:
      php init
-10) sudo chgrp www-data country
-11) sudo chgrp www-data models (dentro de country) y hacer lo mismo con controllers y views
-12) cambiar el grupo de las carpetas models, controllers y views a www-data (ojo: no recursivamente)
-13) solo en caso de usar la plantilla basic, en config/web.php poner cualquier cosa en cookieValidationKey
-14) completar datos base de datos, con basic->config/db.php, con advanced->common/config/main-local.php
-15) en config/web.php habilitar URLs amigables (dentro de seccion components)
+11) sudo chgrp www-data country
+12) sudo chgrp www-data models (dentro de country/frontend) y hacer lo mismo con controllers y views
+13) desde el explorador de archivos (visual), entrar a las propiedades de las carpetas models, controllers y views, 
+    cambiar "Cambiar contenido" de "Solo por el propietario" por "Solo el propietario y el grupo" de forma NO recursiva     
+14) completar datos base de datos en common/config/main-local.php (OJO este archivo está en el .gitignore, evaluar si
+    no hay que habilitarlo para que lo administre Git)
+15) en frontend/config/main.php habilitar URLs amigables (dentro de seccion components)
         'urlManager' => [
                             
           'showScriptName' => false, 
@@ -36,11 +40,11 @@ Linux
 17) como root, crear configuracion para el sitio yii2, en /etc/apache2/sites-available/, crear el archivo country.conf con el siguiente contenido :
    <VirtualHost *:80>
                             
- ServerName country.com
+   ServerName miraflores
                           
-DocumentRoot "/var/www/html/country/web"
+   DocumentRoot "/var/www/html/country/frontend/web"
                             
-<Directory "/var/www/html/country/web">
+   <Directory "/var/www/html/country/frontend/web">
                             
     # usamos mod_rewrite para las urls amigables
                             
@@ -55,18 +59,31 @@ DocumentRoot "/var/www/html/country/web"
     # Si no, enviamos la petición a index.php
                             
     RewriteRule . index.php
+    
+    # Usar index.php como archivo indice
+    DirectoryIndex index.php
                             
-</Directory>
+    </Directory>
                             
-</VirtualHost>
+    </VirtualHost>
 
 18) como root, habilitar el nuevo virtual host:
   a2ensite country.conf
 19) opcionalmente deshabilitar el virtual host por defecto:
     a2dissite 000-default.conf
+19.1) editar /etc/hosts y agregar linea
+      127.0.0.1 miraflores
 20) reiniciar apache:
    service apache2 reload
-21) ya se puede ingresar a localhost/gii o localhost/site (o localhost/vista hecha con GII)  
+21) ya se puede ingresar a miraflores, miraflores/gii o miraflores/site/* (o miraflores/vista hecha con GII)  
+    OJO para usar el gii hay que tener cuidado con los namespaces, en la plantilla simple se usa "app", pero con la 
+    plantilla "advanced" hay que usar "frontend", "backend" o "common", por ejemplo para generar controller y vistas en frontent
+    usando el modelo User (que está en common\models) se hace asi:
+    Model class: common\models\User
+    Search model class: frontend\models\UserSearch
+    Controller class: frontend\controllers\UserController
+    
+    
 22) la forma de modificar los tamaños de letra y controles en general (de bootstrap) es sobreescribir propiedades css de bootstrap,
     esto se hace en web/css, por ejemplo:
     input[type="text"] {
@@ -110,6 +127,9 @@ Borrar un archivo (ejemplo con prueba.txt en la carpeta country)
    rm prueba.txt
    git rm prueba.txt
 Pero luego hay que hacer commit y actualizar el repositorio remoto    
+
+Volver a la versión anterior de un archivo (modo local)
+   git checkout -- prueba.txt
    
 
 Con 2 instalaciones de YII

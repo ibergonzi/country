@@ -1,0 +1,206 @@
+Linux
+1) instalar LAMP server (ojo el caret al final)
+   sudo apt-get install lamp-server^
+2) instalar desde el gestor de paquetes synaptic: phpmyadmin, mysql-workbench, geany, git, curl
+3) instalar composer (chequear en https://getcomposer.org/ que no hay cambiado nada):
+   curl -sS https://getcomposer.org/installer | php
+   sudo mv composer.phar /usr/local/bin/composer
+4) preparar composer para YII2 (chequear antes en http://www.yiiframework.com/download/):
+       composer global require "fxp/composer-asset-plugin:~1.1.1"
+5) ya existe el usuario ibergonzi@gmail (pwd petu1999) en github, pero hay que configurar el git globalmente (para los commit):
+    git config --global user.name "Ivan Bergonzi"
+    git config --global user.email "ibergonzi@gmail.com"
+5) sudo chown country:country html
+6) bajar y descomprimir el yii2 (el archivo, no a traves de composer) desde http://www.yiiframework.com/download/
+7) cambiar el nombre (advanced por el nombre del sitio)
+8) dentro de la carpeta country, actualizar Yii2 con composer:
+    composer update
+9.1) Crear un usuario en mysql a traves de phpmyadmin (usuario:usario) SIN ningún privilegio
+9.2) Crear la base de datos "country" con el usuario root y cotejamiento "utf8-general-ci"
+9.3) Agregar (por ahora) todos los privilegios del usuario "usuario" para la base de datos country
+10) inicializar la plantilla advanced, ejecutar:
+     php init
+11) sudo chgrp www-data country
+12) sudo chgrp www-data models (dentro de country/frontend) y hacer lo mismo con controllers y views
+13) desde el explorador de archivos (visual), entrar a las propiedades de las carpetas models, controllers y views, 
+    cambiar "Cambiar contenido" de "Solo por el propietario" por "Solo el propietario y el grupo" de forma NO recursiva     
+14) completar datos base de datos en common/config/main-local.php (OJO este archivo está en el .gitignore, evaluar si
+    no hay que habilitarlo para que lo administre Git)
+15) en frontend/config/main.php habilitar URLs amigables (dentro de seccion components)
+        'urlManager' => [
+                            
+          'showScriptName' => false, 
+                            
+          'enablePrettyUrl' => true
+                            
+                  ],
+
+16) como root, habilitar el modo rewrite:
+    a2enmod rewrite
+17) como root, crear configuracion para el sitio yii2, en /etc/apache2/sites-available/, crear el archivo country.conf con el siguiente contenido :
+   <VirtualHost *:80>
+                            
+   ServerName miraflores
+                          
+   DocumentRoot "/var/www/html/country/frontend/web"
+                            
+   <Directory "/var/www/html/country/frontend/web">
+                            
+    # usamos mod_rewrite para las urls amigables
+                            
+    RewriteEngine on
+                            
+    # Si un directorio o fichero existe, lo usamos
+                            
+    RewriteCond %{REQUEST_FILENAME} !-f
+                            
+    RewriteCond %{REQUEST_FILENAME} !-d
+                            
+    # Si no, enviamos la petición a index.php
+                            
+    RewriteRule . index.php
+    
+    # Usar index.php como archivo indice
+    DirectoryIndex index.php
+                            
+    </Directory>
+                            
+    </VirtualHost>
+
+18) como root, habilitar el nuevo virtual host:
+  a2ensite country.conf
+19) opcionalmente deshabilitar el virtual host por defecto:
+    a2dissite 000-default.conf
+19.1) editar /etc/hosts y agregar linea
+      127.0.0.1 miraflores
+20) reiniciar apache:
+   service apache2 reload
+21) ya se puede ingresar a miraflores, miraflores/gii o miraflores/site/* (o miraflores/vista hecha con GII)  
+    OJO para usar el gii hay que tener cuidado con los namespaces, en la plantilla simple se usa "app", pero con la 
+    plantilla "advanced" hay que usar "frontend", "backend" o "common", por ejemplo para generar controller y vistas en frontent
+    usando el modelo User (que está en common\models) se hace asi:
+    Model class: common\models\User
+    Search model class: frontend\models\UserSearch
+    Controller class: frontend\controllers\UserController
+    
+    
+22) la forma de modificar los tamaños de letra y controles en general (de bootstrap) es sobreescribir propiedades css de bootstrap,
+    esto se hace en web/css, por ejemplo:
+    input[type="text"] {
+           height: 20px;
+           font-size: 12px;
+           line-height: 20px;
+        }
+    Lo mas recomendable seria agregar un archivo css personalizado y no modificar el web/css
+23) para hacer los botones mas chicos hay que modificar la vista:
+     'btn btn-success btn-sm' en vez de 'btn btn-success'        
+ 
+   
+   
+   
+GIT
+Se creo un repositorio en github (usuario ibergonzi, pwd petu1999) de nombre "country" OJO: publico y sin inicializar
+Una vez que se instalo el yii se debe inicializar el repositorio local, dentro de la carpeta country
+   git init
+luego se agrega el repositorio remoto
+   git remote add origin https://github.com/ibergonzi/country.git
+despues se agregan todos los archivos al repositorio local
+   git add .
+se hace el primer commit
+   git commit -m "Primer commit"
+y se actualiza el repositorio remoto            
+   git push -u origin master
+   
+Agregar un archivo (ejemplo con prueba.txt en la carpeta country)
+Para agregar un archivo al repositorio local
+   git add prueba.txt
+Se comprueba que prueba.txt está bajo seguimiento y preparado
+   git status
+git add tambien se usa cuando se modifica el contenido de un archivo que ya estaba bajo seguimiento, esto se llama "prepararlo"
+Se hace el commit
+   git commit -m "agregado prueba.txt"
+Luego se actualiza nuevamente el repositorio remoto
+   git push -u origin master
+   
+   
+Borrar un archivo (ejemplo con prueba.txt en la carpeta country) 
+   rm prueba.txt
+   git rm prueba.txt
+Pero luego hay que hacer commit y actualizar el repositorio remoto    
+
+Volver a la versión anterior de un archivo (modo local)
+   git checkout -- prueba.txt
+   
+
+Con 2 instalaciones de YII
+1) hay que usar el mismo archivo de yii y descomprimirlo en la maquina deploy
+2) despues de setear git hay que ejecutar composer update 
+3) git init
+4) git remote add origin https://github.com/ibergonzi/country.git
+5) git pull remote master
+6) 
+
+
+
+Anotaciones generales
+1) Para ocultar un grid (para después mostrarlo mediante un boton):
+            echo GridView::widget([
+				'id'=>'gridrrd',
+				'options'=> ['style'=>'display:none'
+				],
+   El id es importante para después tomarlo con jQuery
+   Luego hay que tener un button o html::a que lo visualice, la forma mas fácil es asignarle un class que no 
+   se repita (por ejemplo "mostrargridrrd") y registrar el evento click para mostrar el grid:
+   
+   <?= Html::a('<span class="glyphicon glyphicon-eye-open"></span>&nbsp;Mostrar grid', 
+				['#'], ['class' => 'btn btn-success mostrargridrrd']) ?>
+				
+   $this->registerJs('$(".mostrargridrrd").on("click", function(event){
+			event.preventDefault();
+			$("#gridrrd").css("display", "block"); 
+		});',
+		yii\web\View::POS_READY);
+	
+	Tambien se puede usar id en vez de un class:
+
+   <?= Html::a('<span class="glyphicon glyphicon-eye-open"></span>&nbsp;Mostrar grid', 
+				['#'], ['class' => 'btn btn-success','id' => 'mostrargridrrd']) ?>
+				
+   $this->registerJs('$("#mostrargridrrd").on("click", function(event){
+			event.preventDefault();
+			$("#gridrrd").css("display", "block"); 
+		});',
+		yii\web\View::POS_READY);
+	
+		
+2) Cualquier código javascript o jQuery hay que registrarlo SI o SI, sino no funciona, ver punto 1
+
+3) Hasta el momento voy a usar datetime para datos con horas, no los voy a separar en fecha y hora en la BD
+4) Pruebas con behaviors, los campos created_at y updated_at DEBEN ser datetime y los campos created_by 
+   y updated_by deben ser INT
+
+   en el modelo:
+   use yii\behaviors\TimestampBehavior;
+   use yii\behaviors\BlameableBehavior;
+   use yii\db\Expression;
+   
+         public function behaviors()
+          {
+              return [
+                  [
+                      'class' => BlameableBehavior::className(),
+                      'createdByAttribute' => 'created_by',
+                      'updatedByAttribute' => 'updated_by',
+                  ],
+                  [
+                      'class' => TimestampBehavior::className(),
+					  'createdAtAttribute' => 'created_at',
+					  'updatedAtAttribute' => 'updated_at',                 
+                      //'value' => new Expression('NOW()')
+                      'value' => new Expression('CURRENT_TIMESTAMP')
+
+                  ],
+
+              ];
+          }
+

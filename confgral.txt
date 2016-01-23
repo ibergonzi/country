@@ -239,18 +239,47 @@ poder visualizar los roles "consejo" y "administrador", como asi tampoco los per
 El rol "administrador" solo puede ejecutar consultas, basicamente debe tener acceso a todos los index y reportes
 El rol "consejo" puede hacer lo del rol "administrador" mas la posibilidad de definir a que usuario se le asigna el rol de administrador, 
 intendente y operador intendencia 
+La instalacion de RBAC se hace de la siguiente forma:
+   en common/config/main.php:
+   'authManager' => [
+            'class' => 'yii\rbac\DbManager',
+        ],
+   luego en consola:
+   ./yii migrate --migrationPath=@yii/rbac/migrations  
+   
+Se creo el archivo RbacController.php en console/controllers para la definicion inicial de roles y permisos y se ejecuta:
+   ./yii rbac/init      
+   
+el archivo tiene esta estructura (por ejemplo para crear el rol "consejo"):
+   <?php
+   namespace console\controllers;
+
+   use Yii;
+   use yii\console\Controller;
+
+   class RbacController extends Controller
+   {
+       public function actionInit()
+       {
+           $auth = Yii::$app->authManager;
+		   $consejo=$auth->createRole('consejo');		
+		   $auth->add($consejo);
+	   }
+   }		   
+
+
 
 ACCESO AL SISTEMA
 Se crearon 3 direcciones de mail:
-   usuario: miraflores.adm.notif@gmail.com
+   usuario: miraflores.adm.notif@gmail.com (no tiene usuario en el sistema)
    pwd: mirafloresadm
    proposito: lo usa el sistema para enviar mails, está definido en common/config/mail-local.php
    
-   usuario: miraflores.adm.adm@gmail.com
+   usuario: miraflores.adm.adm@gmail.com (usuario de sistema: administracion)
    pwd: mirafloresadm
    proposito: se usa para crear el usuario del rol "administrador", se debe especificar solo para resetear la contraseña
    
-   usuario: miraflores.adm.consejo@gmail.com
+   usuario: miraflores.adm.consejo@gmail.com (usuario de sistema: consejo)
    pwd: mirafloresadm
    proposito: idem administrador
    

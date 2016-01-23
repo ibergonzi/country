@@ -228,3 +228,34 @@ Anotaciones generales
               ];
           }
 
+SISTEMA
+Los actores del sistema son: Consejo, Administrador, Intendente, Operador Intendencia, Arquitecto, Portero, Propietario, Guardia
+Por cada actor se define un rol de RBAC. El RBAC funciona a base de roles y permisos. Los permisos en principio deber ser denominados
+como verbos en infinitivo (para interpretar mejor la funcion "can" de RBAC), por ejemplo "Eliminar multa" o "Cargar ingresos"
+Las restricciones son las siguientes:
+Cualquier usuario con rol "consejo" puede decidir si pueden acceder al sistema cualquiera del resto de los usuarios
+El rol "intendencia" administra todos los roles, excepto "consejo" y "administracion". En la vista que usa el intendente no se deberian
+poder visualizar los roles "consejo" y "administrador", como asi tampoco los permisos especificos que podrian utilizar estos 2 roles
+El rol "administrador" solo puede ejecutar consultas, basicamente debe tener acceso a todos los index y reportes
+El rol "consejo" puede hacer lo del rol "administrador" mas la posibilidad de definir a que usuario se le asigna el rol de administrador, 
+intendente y operador intendencia 
+
+ACCESO AL SISTEMA
+Se crearon 3 direcciones de mail:
+   usuario: miraflores.adm.notif@gmail.com
+   pwd: mirafloresadm
+   proposito: lo usa el sistema para enviar mails, está definido en common/config/mail-local.php
+   
+   usuario: miraflores.adm.adm@gmail.com
+   pwd: mirafloresadm
+   proposito: se usa para crear el usuario del rol "administrador", se debe especificar solo para resetear la contraseña
+   
+   usuario: miraflores.adm.consejo@gmail.com
+   pwd: mirafloresadm
+   proposito: idem administrador
+   
+A excepcion de los usuarios "consejo" y "administrador", que se crean como si fuesen parametros del sistema, el resto de los usuarios
+debe usar el propio sitio.
+Cuando un usuario se da de alta, este queda en stand-by hasta que la intendencia le asigne el rol correspondiente   
+   
+

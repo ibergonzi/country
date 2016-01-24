@@ -265,7 +265,10 @@ el archivo tiene esta estructura (por ejemplo para crear el rol "consejo"):
 		   $consejo=$auth->createRole('consejo');		
 		   $auth->add($consejo);
 	   }
-   }		   
+   }	
+El sistema se entrega con 3 usuarios predefinidos: consejo, administracion e intendencia
+Se crea tambien un rol "sinRol", el cual se asigna automaticamente desde el signup a todos los usuarios que se den de alta,
+para que luego intendencia defina cual es su rol dentro del sistema    	   
 
 
 

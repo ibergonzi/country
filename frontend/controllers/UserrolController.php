@@ -31,7 +31,7 @@ class UserrolController extends Controller
                     [
                         'actions' => ['index','create','delete','update','view'],
                         'allow' => true,
-                        'roles' => ['administrador','consejo'], 
+                        'roles' => ['administrador','consejo','intendente'], 
                     ],
 
                  ],
@@ -98,9 +98,16 @@ class UserrolController extends Controller
         if ($model->load(Yii::$app->request->post())) {
 			//var_dump($model->item_name);
 			//die;
-			\yii\helpers\VarDumper::dump($model);
+			//\yii\helpers\VarDumper::dump($model);
 			//$model->save()
-            return $this->redirect(['view', 'id' => $model->id]);
+		    $auth = Yii::$app->authManager;
+		    
+		    $auth->revokeAll($id);
+		    $rol=$auth->getRole($model->item_name);
+		    $auth->assign($rol,$id);
+			
+            //return $this->redirect(['view', 'id' => $model->id]);
+			return $this->redirect(['index']);            
         } else {
             return $this->render('update', [
                 'model' => $model,

@@ -3,6 +3,10 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
+use yii\helpers\ArrayHelper;
+use frontend\models\UserRol;
+
+
 /* @var $this yii\web\View */
 /* @var $model frontend\models\UserRol */
 /* @var $form yii\widgets\ActiveForm */
@@ -22,7 +26,11 @@ use yii\widgets\ActiveForm;
     //echo $form->field($model, 'email')->textInput(['maxlength' => true]) 
     ?>
 
-    <?= $form->field($model, 'item_name')->textInput(['maxlength' => true]) ?>
+    <?php 
+    echo $form->field($model, 'item_name')->dropDownList(
+             ArrayHelper::map(UserRol::listaRoles(), 'name', 'description')
+        );
+    ?>
 
     <?php 
     // echo $form->field($model, 'name')->textInput(['maxlength' => true]) 

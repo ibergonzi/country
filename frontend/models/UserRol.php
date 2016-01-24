@@ -11,7 +11,7 @@ use Yii;
  * @property string $username
  * @property string $email
  * @property string $item_name
- * @property string $name
+ * @property string $description
  */
 class UserRol extends \yii\db\ActiveRecord
 {
@@ -28,6 +28,34 @@ class UserRol extends \yii\db\ActiveRecord
     {     
         return ['id'];   
     }    
+    
+    public static function listaRoles()
+    {
+		// devuelve array de roles filtrado por el rol del usuario activo
+	    $auth = Yii::$app->authManager;
+	    // se averigua el rol del usuario activo
+		$rolesUser=$auth->getRolesByUser(Yii::$app->user->getId());
+		foreach ($rolesUser as $rol) {
+			// acá no hace nada, se hace asi porque siempre hay un solo rol por usuario
+		}		
+		
+		// se traen todos los roles
+		$roles=$auth->getRoles();
+		// aca se filtran
+		switch($rol->name) {
+			case (string)"intendente": 
+				unset($roles['intendente'],$roles['administrador'],$roles['consejo']);
+				break;
+			case (string)"administrador": 
+				unset($roles['administrador'],$roles['consejo']);		
+				break;
+			case (string)"consejo": 
+				unset($roles['consejo']);		
+				break;
+		}		
+		return $roles;
+
+	}
 
     /**
      * @inheritdoc
@@ -36,9 +64,9 @@ class UserRol extends \yii\db\ActiveRecord
     {
         return [
             [['id'], 'integer'],
-            [['username', 'email'], 'required'],
+            [['username', 'email'], 'safe'],
             [['username', 'email'], 'string', 'max' => 255],
-            [['item_name', 'name'], 'string', 'max' => 64]
+            [['item_name', 'description'], 'string', 'max' => 64]
         ];
     }
 
@@ -52,7 +80,7 @@ class UserRol extends \yii\db\ActiveRecord
             'username' => Yii::t('app', 'Username'),
             'email' => Yii::t('app', 'Email'),
             'item_name' => Yii::t('app', 'Item Name'),
-            'name' => Yii::t('app', 'Name'),
+            'description' => Yii::t('app', 'description'),
         ];
     }
 }

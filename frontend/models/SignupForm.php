@@ -50,6 +50,10 @@ class SignupForm extends Model
             $user->setPassword($this->password);
             $user->generateAuthKey();
             if ($user->save()) {
+				// Aca es donde se asigna el rol "sinRol" a los nuevos usuarios
+				$auth = Yii::$app->authManager;
+				$sinRol = $auth->getRole('sinRol');
+				$auth->assign($sinRol, $user->getId());
                 return $user;
             }
         }

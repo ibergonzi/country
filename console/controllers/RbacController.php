@@ -9,8 +9,6 @@ class RbacController extends Controller
     public function actionInit()
     {
         $auth = Yii::$app->authManager;
-
-		/*
 		
 		// Creacion de roles
 		$consejo=$auth->createRole('consejo');
@@ -29,12 +27,9 @@ class RbacController extends Controller
 		$propietario->description='Propietario';		
 		$guardia=$auth->createRole('guardia');
 		$guardia->description='Guardia';	
-		*/	
 		$sinrol=$auth->createRole('sinRol');
 		$sinrol->description='Sin rol asignado';
-		$auth->add($sinrol);
-	
-		/*
+
 		$auth->add($consejo);
 		$auth->add($administrador);		
 		$auth->add($intendente);
@@ -42,7 +37,8 @@ class RbacController extends Controller
 		$auth->add($arquitecto);
 		$auth->add($portero);		
 		$auth->add($propietario);
-		$auth->add($guardia);		
+		$auth->add($guardia);	
+		$auth->add($sinrol);			
 
 		// Creacion de permisos
 		$accederUser=$auth->createPermission('accederUser');
@@ -53,8 +49,6 @@ class RbacController extends Controller
 		$accederUserRol->description='Acceder: rol de usuarios';
 		$auth->add($accederUserRol);
 		
-
-		
 		// Asignaciones de permisos a roles
 		$auth->addChild($consejo, $accederUser);
 		$auth->addChild($administrador, $accederUser);	
@@ -64,22 +58,10 @@ class RbacController extends Controller
 		$auth->addChild($administrador, $accederUserRol);	
 		$auth->addChild($intendente, $accederUserRol);	
 		
-		
 		// Asignaciones de roles a usuarios OJO con el id de user
 		$auth->assign($administrador, 8);
         $auth->assign($consejo, 7);
         $auth->assign($intendente, 9);
-        
-        */
-        
-        
-        /* 
-		$roles=$auth->getRoles();
-		foreach ($roles as $r) {
-			echo $r->name;
-		}
-		*/
-		
-		
+	
     }
 }

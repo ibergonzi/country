@@ -166,7 +166,7 @@ Con 2 instalaciones de YII
 
 
 
-Anotaciones generales
+ANOTACIONES GENERALES
 1) Para ocultar un grid (para después mostrarlo mediante un boton):
             echo GridView::widget([
 				'id'=>'gridrrd',
@@ -227,6 +227,13 @@ Anotaciones generales
 
               ];
           }
+5) i18n
+5.1) desde consola:
+   ./yii message/config @common/config/i18n.php
+5.2) crear carpeta "messages" dentro de common
+5.3) editar common/config/i18n.php y configurar sourcePath, messagePath y languages
+      
+             
 
 SISTEMA
 Los actores del sistema son: Consejo, Administrador, Intendente, Operador Intendencia, Arquitecto, Portero, Propietario, Guardia

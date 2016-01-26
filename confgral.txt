@@ -296,5 +296,39 @@ Se crearon 3 direcciones de mail:
 A excepcion de los usuarios "consejo" y "administrador", que se crean como si fuesen parametros del sistema, el resto de los usuarios
 debe usar el propio sitio.
 Cuando un usuario se da de alta, este queda en stand-by hasta que la intendencia le asigne el rol correspondiente   
+
+Libro de guardia
+Cualquiera de los porteros puede ingresar al libro de guardia y registrar una entrada al libro, no puede eliminar ni modificar nada.
+Debe quedar registrado la entrada al libro, fecha, hora, operador, porton. El portero puede ver todo el libro, inclusive del otro porton
+Intendencia solo puede leer el libro y adjuntar una observacion. Se debe registrar el usuario, fecha-hora de la observacion.
+
+Se debe poder adjuntar la foto al id de persona, si es propietario lo  debe hacer intendencia, para el resto lo puede hacer tambien el 
+portero.
+
+Vehiculos sin patente: se debe permitir cargar un vehiculo sin patente (marca, modelo y color son obligatorios), antes de la confirmacion
+se debe preguntar si es un vehiculo sin patente, caso afirmativo grabar "SIN PATENTE"
+
+Todo lo que se ingrese por porteria se debe grabar en mayusculas.
+
+Conceptos de accesos: la tabla debe ser id o codigo, concepto, requiereTarjeta
+
+Luego de identificar la persona y el vehiculo, los datos que se piden son Concepto, Motivo (escritura libre en mayusculas) y Autorizantes/
+U.F.. Se debe permitir la carga de mas de un autorizante, luego hay que presentar todas las unidades funcionales y que el portero elija
+cual corresponde (puede ser mas de una UF)
+
+Restricciones de acceso por autorizante: de dos tipos: permanente o eventual. Se elige el autorizante, se define la persona a autorizar 
+(o a restringir) y horarios (por cada dia de la semana). La eventual es idem anterior, pero se setea una fecha (de hoy o futura) y el 
+horario
+
+Consulta de personas y vehiculos. Cuando se amplia una consulta y se quieren ver los datos de la persona, se deben traer los accesos con su
+autorizante y todos los vehiculos asociados. Lo mismo sucede con la consulta a un vehiculo (pero debe traer las personas asociadas)
+
+La busqueda en la pantalla de ingresos se hace por patente, apellido, UF o documento
+
+Debe existir una consulta de ingresos sin egresos, el cual no tiene filtro, es decir, debe traer todos los registros. Se debe especificar 
+todos los datos del ingreso. En teoria esta misma consulta se deberia usar como base para los egresos y egresos grupales.
+
+Se debe evaluar la posibilidad de que el acceso de los porteros se restrinja por la ip de sus equipos, para evitar ingresos desde el 
+exterior.
    
 

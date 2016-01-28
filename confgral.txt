@@ -120,7 +120,31 @@ Linux
         ],        
  
  25) Esquema de backups y restores
-/etc/mysql/mysql.conf.d/mysqld.cnf
+ Luego de corroborar el funcionamiento de mysql, phpmyadmin hay que habilitar los bin logs de mysql para poder hacer
+ backups incrementales
+ a) como root entrar a /etc/mysql/mysql.conf.d/mysqld.cnf y cambiar la siguiente linea:
+    #log_bin = /var/log/mysql/mysql-bin.log
+    por:
+    log_bin=
+ b) Luego reiniciar el equipo. Los bin logs se generan en la carpeta /var/lib/mysql:
+    -rw-rw---- 1 mysql mysql      508 ene 28 12:44 mysqld-bin.000001
+    -rw-rw---- 1 mysql mysql       20 ene 28 12:42 mysqld-bin.index
+    
+    donde el archivo .index contiene la lista de los bin logs. Los permisos y owner:group son importantes para hacer la restauracion
+ c) La estrategia de backup consiste en hacer un backup lógico en caliente de todas las bases de datos InnoDB (con mysqldump), 
+    rotar el bin log actual por uno nuevo (con mysqladmin flush-logs) y respaldar el log bin anterior
+ d) Para el backup logico: mysqldump --single-transaction --flush-logs --master-data=2 \
+         --all-databases --delete-master-logs > backup_lunes.sql
+         
+    --single-transaction permite hacer el backup sin afectar las transacciones en curso
+    --flush-logs rota el bin log actual (como si se hiciese un mysqladmin flus-logs)
+    --master-data=2 escribe el standard output del comando en el archivo sql
+    --delete-master-logs elimina los bin logs viejos
+ e) Para restaurar:
+    mysql < backup_lunes.sql
+    y
+    mysqlbinlog mysqld-bin.000007 mysqld-bin.000008 | mysql
+    
    
    
    

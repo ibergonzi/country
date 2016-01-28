@@ -387,5 +387,25 @@ Tanto las infracciones como las multas se refieren a UF, el resto de los datos e
 Tambien debería existir una consulta conjunta por rango de fechas.
 Preguntar si esta informacion tiene que salir en la pantalla del portero.
 
-   
+Control de personal y mensajes
+En control de personal consiste en utilizar un boton en la pantalla de entrada y salida para solicitar una observacion. Debe existir una
+consulta en donde se vea autorizante, persona, vehiculo, fecha y hora y la observacion (ver que ocurre cuando hay mas de una UF)
+Los mensajes se vinculan a un id de persona (cualquiera) y se presentan en la pantalla de entrada y salida. El mensaje lo puede dejar 
+cualquier operador del sistema. Una vez que se presenta, la opcion por defecto es "salir", la otra opcion es "borrar" y queda al criterio
+del operador
+
+Corte de carpeta y recolección de residuos
+Son informes para la administracion. La unidad funcional debe pasar por varios estados: lote vacio, forestacion, lote ocupado
+Ademas existen las UF que pertenecen al fideicomiso o a un propietario
+EL informe de corte de carpeta debe mostrar las UF vacías, excepto las que son del fideicomiso
+El informe de recoleccion de residuos debe mostrar las UF ocupadas
+En ninguno de los dos casos tienen que figurar las UF en forestacion
+
+Cortes de luz y control de grupos electrógenos
+Cualquier operador puede usar esta pantalla.
+Boton START/STOP, cuando se hace stop el sistema debe pedir un motivo/observacion y opcionalmente los tiempos de NO funcionamiento
+de el o los generadores. Si no se ingresa nada, se asume que los generadores funcionaron durante todo el corte de luz
+
+Carnets
+Impresion de carnets 
 

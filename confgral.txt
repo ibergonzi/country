@@ -310,7 +310,7 @@ se debe preguntar si es un vehiculo sin patente, caso afirmativo grabar "SIN PAT
 
 Todo lo que se ingrese por porteria se debe grabar en mayusculas.
 
-Conceptos de accesos: la tabla debe ser id o codigo, concepto, requiereTarjeta
+Conceptos de accesos: la tabla debe ser id o codigo, concepto, requiereTarjeta y solicitaSeguroART (estricto o flexible)
 
 Luego de identificar la persona y el vehiculo, los datos que se piden son Concepto, Motivo (escritura libre en mayusculas) y Autorizantes/
 U.F.. Se debe permitir la carga de mas de un autorizante, luego hay que presentar todas las unidades funcionales y que el portero elija
@@ -330,5 +330,36 @@ todos los datos del ingreso. En teoria esta misma consulta se deberia usar como 
 
 Se debe evaluar la posibilidad de que el acceso de los porteros se restrinja por la ip de sus equipos, para evitar ingresos desde el 
 exterior.
+
+Seguros: Para que el sistema controle la vigencia del seguro (ART), el concepto ingresado debe estar parametrizado: estricto o flexible.
+El estricto se aplica al concepto Operario, se controla siempre. Si está vencido el operario debe entregar documentacion para que el portero
+lo deje pasar, en tal caso ingresa la nueva fecha de vencimiento del seguro.
+El flexible se aplica a todos los proveedores, queda a criterio del portero si carga una fecha de vencimiento (de acuerdo al motivo,
+pero esto es responsabilidad del portero) o si acepta la fecha propuesta, es decir la fecha del dia. Esto quiere decir que el portero
+le da acceso por el dia de hoy, al dia siguiente aparece un cartel de seguro vencido (es decir del dia anterior).
+
+Infracciones y multas
+En el sistema actual están todas juntas, la diferencia es que la multa tiene asignado en algun lugar el monto base. En algun otro lugar
+del sistema está especificado el porcentaje de reincidencia y la cantidad de meses que se toman como base del calculo de las reincidencias
+Hay que separarlas, una tabla de infracciones y una de multas (y sus correspondientes tablas de conceptos).
+La tabla de conceptos de infracciones debe especificar un campo diasLaborales para aquellas infracciones que pueden terminar en multa,
+estas infracciones deberian, en base a este parametro almacenar la fecha correspondiente. Tiene que existir una consulta por esta fecha
+para que alguien vaya a verificar si el motivo de la infraccion fue resuelto, caso contrario se debe hacer la multa. Si fue resuelto, 
+hay que marcar la infraccion como cumplida. OJO con los dias hábiles, como se deben considerar los feriados?
+A las infracciones las cargan los porteros y las multas se cargan en Intendencia.
+La tabla de conceptos de multas debe especificar el monto base, la cantidad de meses para el calculo y el porcentaje por reincidencia.
+Para el cálculo del importe de la multa se deben considerar las reincidencias (incluyendo la multa que se está cargando en ese momento)+ 
+de los meses que están definidos en el concepto (hoy son 6 meses para todas las multas).
+La cantidad de reincidencias se calcula: 
+importe=montoBase + (montoBase * ((cantMultas-1)*porcReinc) / 100)
+cantMultas se obtiene sumando la cantidad de multas grabadas en el periodo definido (fecha de multa nueva-cantidad de meses definida)+1
+es decir las grabadas + la que se está grabando en ese momento
+Este calculo es valido solo para una multa nueva, si se modifica una multa existente, solo se cuentan las grabadas (que tambien incluye
+a esta multa a modificar)
+En la multa se deberian grabar las bases de este cálculo (montoBase, porcReinc, cantReinc, etc.)
+Tanto las infracciones como las multas se refieren a UF, el resto de los datos es informativo (esto es porque las expensas son por UF)
+Tambien debería existir una consulta conjunta por rango de fechas.
+Preguntar si esta informacion tiene que salir en la pantalla del portero.
+
    
 

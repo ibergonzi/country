@@ -119,6 +119,8 @@ Linux
             
         ],        
  
+ 25) Esquema de backups y restores
+/etc/mysql/mysql.conf.d/mysqld.cnf
    
    
    

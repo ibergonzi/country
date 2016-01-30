@@ -36,5 +36,10 @@ return [
         ],
 
     ],
+    'modules' => [
+		'gridview' =>  [
+			'class' => '\kartik\grid\Module'
+			]
+	],
     'params' => $params,
 ];

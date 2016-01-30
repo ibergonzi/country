@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
+use kartik\grid\GridView;
 
 /* @var $this yii\web\View */
 /* @var $searchModel frontend\models\UserSearch */
@@ -29,18 +29,23 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
-        'tableOptions'=> ['class'=>'table  table-bordered table-hover'
-        ],
+        //'tableOptions'=> ['class'=>'table  table-bordered table-hover'
+        //],
         //table-striped
         'rowOptions'=> function ($model, $key, $index, $column) {
-			return [
-				'style'=>'cursor: pointer',
-				'onclick'=> 'location.href="' . Yii::$app->UrlManager->createUrl(['user/view', 
+						return [
+								'style'=>'cursor: pointer',
+								'onclick'=> 'location.href="' . Yii::$app->UrlManager->createUrl(['user/view', 
                                              'id' => $key]) . '"',
-				                                         
-					
-			];
-		},
+												];
+						},
+		'panel'=>[
+			'heading'=>'<h3 class="panel-title"><i class="glyphicon glyphicon-eye-open"></i> '.$this->title.'</h3>',
+			'type'=>'primary',
+			'before'=>'&nbsp;', // para que dibuje el toolbar (cuac)
+		],		
+		'condensed'=>true, 				
+						
         'columns' => [
             [
 				'class' => 'yii\grid\SerialColumn',
@@ -70,6 +75,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
+ 
     ]); ?>
 
 </div>

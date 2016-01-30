@@ -7,6 +7,13 @@ use yii\grid\GridView;
 /* @var $searchModel frontend\models\UserSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
+// registra 
+use app\assets\GridkeysAsset;
+GridkeysAsset::register($this);
+
+$this->registerJs('$(":input.flat:first").focus();',yii\web\View::POS_READY);
+
+
 $this->title = Yii::t('app', 'Users');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -22,10 +29,36 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'tableOptions'=> ['class'=>'table  table-bordered table-hover'
+        ],
+        //table-striped
+        'rowOptions'=> function ($model, $key, $index, $column) {
+			return [
+				'style'=>'cursor: pointer',
+				'onclick'=> 'location.href="' . Yii::$app->UrlManager->createUrl(['user/view', 
+                                             'id' => $key]) . '"',
+				                                         
+					
+			];
+		},
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+            [
+				'class' => 'yii\grid\SerialColumn',
+				            
+            ],
 
-            'id',
+
+            [
+       		'attribute'=>'id',
+                    'format' => 'raw',
+                    'value' => function ($model, $key, $index, $column) {
+                        return Html::textInput('usrnm'.$index, $model->id,
+                                ['readonly' => true,'class'=>'flat','style'=>'width:20px;background-color:#fff;border:none']
+                                );
+                        },
+    
+                    //'checked' => '($data->reclamo)'
+            		],		
             'username',
             'auth_key',
             'password_hash',

@@ -12,6 +12,9 @@ use frontend\models\Persona;
  */
 class PersonaSearch extends Persona
 {
+	public $fecdesde;
+	public $fechasta;	
+	
     /**
      * @inheritdoc
      */
@@ -19,7 +22,8 @@ class PersonaSearch extends Persona
     {
         return [
             [['id', 'dni', 'created_by', 'updated_by'], 'integer'],
-            [['apellido', 'nombre', 'nombre2', 'created_at', 'updated_at','fecnac'], 'safe'],
+            [['apellido', 'nombre', 'nombre2', 'created_at', 'updated_at','fecnac',], 'safe'],
+            [['fecdesde','fechasta',],'safe'],
         ];
     }
 
@@ -45,15 +49,22 @@ class PersonaSearch extends Persona
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+                'pagination' => [
+					'pageSize' => -1,
+						],
         ]);
-//var_dump($params);die;
+
+		
         $this->load($params);
-//echo $this->fecnac;die;
+        //var_dump($params);die;
+
+		
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
             return $dataProvider;
         }
+        
 
         $query->andFilterWhere([
             'id' => $this->id,
@@ -68,9 +79,15 @@ class PersonaSearch extends Persona
 		
         $query->andFilterWhere(['like', 'apellido', $this->apellido])
             ->andFilterWhere(['like', 'nombre', $this->nombre])
-            ->andFilterWhere(['like', 'nombre2', $this->nombre2])
-            ->andFilterWhere(['like', 'updated_at', $this->updated_at])
-            ;
+            ->andFilterWhere(['like', 'nombre2', $this->nombre2]);
+            
+        if (isset($this->fecdesde) && isset($this->fechasta)) {
+			
+			$query->andFilterWhere(['between', 'updated_at', $this->fecdesde, $this->fechasta]);
+			//unset($this->fecdesde);
+		} else {    
+            $query->andFilterWhere(['like', 'updated_at', $this->updated_at]);
+		}
 
         return $dataProvider;
     }

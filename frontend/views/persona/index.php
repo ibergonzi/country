@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use kartik\datecontrol\DateControl;
 use yii\widgets\Pjax;
+use yii\bootstrap\Collapse;
 
 /* @var $this yii\web\View */
 /* @var $searchModel frontend\models\PersonaSearch */
@@ -16,12 +17,22 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="persona-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php //echo $this->render('_search', ['model' => $searchModel]); ?>
+    
+
 
     <p>
         <?= Html::a(Yii::t('app', 'Create Persona'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
-
+    <?php echo Collapse::widget([
+		'items'=>[
+			[
+				'label'=> 'Buscar por rango de fechas',
+				'content'=>$this->render('_searchfec', ['model' => $searchModel])
+			]
+		]
+    ]);
+    ?>
 <?php Pjax::begin(['id' => 'grilla', 'timeout' => false ,'clientOptions' => ['method' => 'POST'] ]); ?>
 
     <?= GridView::widget([

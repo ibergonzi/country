@@ -37,7 +37,7 @@ class PersonaController extends Controller
         
         $post = Yii::$app->request->post();
         $dataProvider = $searchModel->search($post);        
-
+		
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,

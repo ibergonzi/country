@@ -66,6 +66,36 @@ Linux
     </Directory>
                             
     </VirtualHost>
+    
+    
+Config. de la cucha:
+<VirtualHost *:80>
+
+ ServerName country.com
+
+# Especificamos la raiz a "basic/web"
+
+DocumentRoot "/var/www/html/country/frontend/web"
+
+<Directory "/var/www/html/country/frontend/web">
+
+    # usamos mod_rewrite para las urls amigables
+
+    RewriteEngine on
+
+    # Si un directorio o fichero existe, lo usamos
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Si no, enviamos la petición a index.php
+
+    RewriteRule . index.php    
+ </Directory>
+                            
+ </VirtualHost>
+    
 
 18) como root, habilitar el nuevo virtual host:
   a2ensite country.conf

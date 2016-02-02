@@ -64,7 +64,8 @@ class Persona extends \yii\db\ActiveRecord
         return [
             [['dni', 'created_by', 'updated_by'], 'integer'],
             [['created_at', 'updated_at','created_by','updated_by','fecnac'], 'safe'],
-            [['apellido', 'nombre', 'nombre2'], 'string', 'max' => 45]
+            [['apellido', 'nombre', 'nombre2'], 'string', 'max' => 45],
+            //[['fecnac'], 'default', 'value' => null],
         ];
     }
 
@@ -83,6 +84,8 @@ class Persona extends \yii\db\ActiveRecord
             'created_at' => Yii::t('app', 'Created At'),
             'updated_by' => Yii::t('app', 'Updated By'),
             'updated_at' => Yii::t('app', 'Updated At'),
+            'fecdesde' => Yii::t('app', 'Fecha desde'),   
+            'fechasta' => Yii::t('app', 'Fecha hasta'),           
         ];
     }
 

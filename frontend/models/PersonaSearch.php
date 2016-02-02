@@ -82,8 +82,9 @@ class PersonaSearch extends Persona
             ->andFilterWhere(['like', 'nombre2', $this->nombre2]);
             
         if (isset($this->fecdesde) && isset($this->fechasta)) {
-			
-			$query->andFilterWhere(['between', 'updated_at', $this->fecdesde, $this->fechasta]);
+			$f=new \DateTime($this->fechasta);
+			$f->add(new \DateInterval('P1D'));
+			$query->andFilterWhere(['between', 'updated_at', $this->fecdesde, $f->format('Y-m-d')]);
 			//unset($this->fecdesde);
 		} else {    
             $query->andFilterWhere(['like', 'updated_at', $this->updated_at]);

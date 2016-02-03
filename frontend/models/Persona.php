@@ -65,7 +65,9 @@ class Persona extends \yii\db\ActiveRecord
             [['dni', 'created_by', 'updated_by'], 'integer'],
             [['created_at', 'updated_at','created_by','updated_by','fecnac'], 'safe'],
             [['apellido', 'nombre', 'nombre2'], 'string', 'max' => 45],
-            //[['fecnac'], 'default', 'value' => null],
+            [['fecnac'], 'default', 'value' => null],
+            // se tiene que especificar format porque el datecontrol ya lo puso en formato mysql
+            [['fecnac'],'date','format' => 'php:Y-m-d'],
         ];
     }
 

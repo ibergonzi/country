@@ -4,11 +4,11 @@
 		{
 			// Enter
 			case 13:
-			var currentRowE =$(this).parent().parent().closest('tr');
-			currentRowE.children('td').children('a:first').click();
-			//console.log(currentRowE.attr('data-key'));
+				var currentRowE =$(this).parent().parent().closest('tr');
+				currentRowE.children('td').children('a:first').click();
+				console.log(currentRowE.children('td').children('a:first').attr('href'));
 
-			break;
+				break;
 			// left arrow
 			case 37:
 				$(this).parent()

@@ -10,16 +10,16 @@ return [
             'class' => 'yii\rbac\DbManager',
         ],
         
-        /*
+        
         'i18n' => [
 			'translations' => [
-				'frontend*' => [
+				'app*' => [
 					'class' => 'yii\i18n\PhpMessageSource',
 					'basePath' => '@common/messages',
 				],
 			],
 		],
-        */
+        
         
     ],
 ];

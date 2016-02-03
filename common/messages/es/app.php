@@ -19,8 +19,7 @@
 return [
     'Are you sure you want to delete this item?' => 'Seguro?',
     'Create' => 'Crear',
-    'Create User' => 'Crear usuario',
-    'Create User Rol' => 'Crear rol de usuario',
+    'Create {modelClass}' => 'Crear {modelClass}: ',
     'Delete' => 'Eliminar',
     'Email' => 'eMail',
     'ID' => 'ID',

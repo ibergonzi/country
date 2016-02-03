@@ -1,8 +1,11 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
-use kartik\datecontrol\DateControl
+//use yii\widgets\ActiveForm;
+use yii\bootstrap\ActiveForm;
+
+use kartik\datecontrol\DateControl;
+use kartik\widgets\DatePicker;
 
 /* @var $this yii\web\View */
 /* @var $model frontend\models\PersonaSearch */
@@ -14,22 +17,33 @@ use kartik\datecontrol\DateControl
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'post',
+		'layout' => 'inline'        
     ]); ?>
 
-    <?= $form->field($model, 'fecdesde')->widget(DateControl::className(),
+    <?php
+   
+		echo $form->field($model, 'fecdesde')->widget(DateControl::className(),
 						['type' =>DateControl::FORMAT_DATE,
+						 
 						 'options'=>[
+							 'options'=>['placeholder'=>'Desde fecha'],							 
 							 'id'=>'fcd',
 							 'pluginEvents'=>[ 'clearDate'=>'function(e) { 
 												$("#fcd").val("");
 											}'
 								],	
+								
 							]
 						]
-	) ?> 
-    <?= $form->field($model, 'fechasta')->widget(DateControl::className(),
+	);
+	
+	?> 
+    <?php
+    
+		echo $form->field($model, 'fechasta')->widget(DateControl::className(),
 						['type' =>DateControl::FORMAT_DATE,
 						 'options'=>[
+						     'options'=>['placeholder'=>'Hasta fecha'],	
 							 'id'=>'fch',
 							 'pluginEvents'=>[ 'clearDate'=>'function(e) { 
 												$("#fch").val("");
@@ -37,7 +51,11 @@ use kartik\datecontrol\DateControl
 								],	
 							]						
 						]
-	) ?> 
+	);
+	
+	?> 
+	
+
 
  
 

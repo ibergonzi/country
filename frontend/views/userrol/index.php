@@ -7,30 +7,31 @@ use yii\grid\GridView;
 /* @var $searchModel frontend\models\UserRolSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'User Rols');
+$this->title = 'Asignación de roles';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-rol-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h2><?= Html::encode($this->title) ?></h2>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <p>
-        <?= Html::a(Yii::t('app', 'Create User Rol'), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+ 
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-           ['class' => 'yii\grid\ActionColumn'],
+
            
             'username',
             'email:email',
 
             //'item_name',
             'description',
-
+            
+           ['class' => 'yii\grid\ActionColumn',
+           'template' => '{update}',
+           
+           ],
  
         ],
     ]); ?>

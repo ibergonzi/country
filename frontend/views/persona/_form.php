@@ -25,8 +25,10 @@ use kartik\datecontrol\DateControl
     
     <?= $form->field($model, 'fecnac')->widget(DateControl::className(),
 						['type' =>DateControl::FORMAT_DATE,
+						
 						 'options'=>[
 							 'id'=>'fcnc',
+							 
 							 'pluginEvents'=>[ 'clearDate'=>'function(e) { 
 												$("#fcnc").val("");
 											}'

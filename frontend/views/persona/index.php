@@ -13,17 +13,14 @@ use yii\bootstrap\Collapse;
 $this->title = Yii::t('app', 'Personas');
 $this->params['breadcrumbs'][] = $this->title;
 
+
 ?>
 <div class="persona-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h2><?= Html::encode($this->title) ?></h2>
     <?php //echo $this->render('_search', ['model' => $searchModel]); ?>
     
 
-
-    <p>
-        <?= Html::a(Yii::t('app', 'Create Persona'), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
     <?php echo Collapse::widget([
 		'items'=>[
 			[
@@ -41,7 +38,10 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
 
-            'id',
+           
+            ['attribute'=>'id',
+				'options'=>['style'=>'width:55px'], 
+            ],
             'dni',
             'apellido',
             'nombre',
@@ -52,8 +52,8 @@ $this->params['breadcrumbs'][] = $this->title;
 				'attribute'=>'fecnac',
 				'type' =>DateControl::FORMAT_DATE,
                 'options' => [
-					'pluginEvents'=>[ 'clearDate'=>'function(e) { $.pjax.reload({container:"#grilla"});}'						],	
-
+					'pluginEvents'=>[ 'clearDate'=>'function(e) { $.pjax.reload({container:"#grilla"});}'],	
+					
 					],
                 
             ])
@@ -79,7 +79,15 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'updated_by',
            
 
-            ['class' => 'yii\grid\ActionColumn'],
+            ['class' => 'yii\grid\ActionColumn',
+             'header'=>Html::a('<span class="glyphicon glyphicon-plus-sign"></span>',
+                                    ['create'], 
+                                ['class' => 'btn-sm btn-primary',
+                                 'title' => Yii::t('app', 'Alta de persona'),]),
+
+             'headerOptions'=>['style'=>'text-align:center'],   
+             'options'=>['style'=>'width:70px'],         
+            ],
         ],
     ]); ?>
 <?php Pjax::end(); ?>

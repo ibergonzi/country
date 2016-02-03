@@ -41,7 +41,7 @@ return [
 			'dateFormat' => 'php:d/m/Y',
 			'datetimeFormat' => 'php:d/m/Y H:i:s',
 			'timeFormat' => 'php:H:i:s',
-			'timeZone' => 'UTC',
+			'timeZone' => 'America/Argentina/Buenos_Aires',
 		],
 
     ],
@@ -79,7 +79,12 @@ return [
 			
 			// default settings for each widget from kartik\widgets used when autoWidget is true
 			'autoWidgetSettings' => [
-				Module::FORMAT_DATE => ['type'=>2,'pickerButton'=>false, 'pluginOptions'=>['autoclose'=>true,]], // example
+				Module::FORMAT_DATE => ['type'=>2,
+						'pickerButton'=>false, 
+						'pluginOptions'=>['autoclose'=>true,],
+						'removeButton'=>['class'=>'btn-sm btn-default'],
+				], 
+				
 				Module::FORMAT_DATETIME => [], // setup if needed
 				Module::FORMAT_TIME => [], // setup if needed
 			],

@@ -24,8 +24,24 @@ class PersonaSearch extends Persona
             [['id', 'dni', 'created_by', 'updated_by'], 'integer'],
             [['apellido', 'nombre', 'nombre2', 'created_at', 'updated_at','fecnac',], 'safe'],
             [['fecdesde','fechasta',],'safe'],
+            [['fecdesde','fechasta',],'validaRangoFechas','skipOnEmpty' => true],
         ];
     }
+    
+    public function validaRangoFechas($attribute, $params) 
+    {
+		if (empty($this->fecdesde) || empty($this->fechasta)) {
+			if (empty($this->fecdesde)) {
+				$this->addError('fecdesde','Debe ingresar un rango de fechas');return;
+			}
+			if (empty($this->fechasta)) {
+				$this->addError('fechasta','Debe ingresar un rango de fechas');return;
+			}
+		}
+		if (strtotime($this->fecdesde) > strtotime($this->fechasta)) {
+			$this->addError('fechasta','Esta fecha no puede ser anterior a la otra fecha');return;
+		}
+	}
 
     /**
      * @inheritdoc

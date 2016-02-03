@@ -17,7 +17,7 @@ use kartik\widgets\DatePicker;
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'post',
-		'layout' => 'inline'        
+		//'layout' => 'inline'        
     ]); ?>
 
     <?php
@@ -61,7 +61,7 @@ use kartik\widgets\DatePicker;
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton(Yii::t('app', 'Reset'), ['class' => 'btn btn-default']) ?>
+        <?php //Html::resetButton(Yii::t('app', 'Reset'), ['class' => 'btn btn-default']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

@@ -18,18 +18,23 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="persona-index">
 
     <h2><?= Html::encode($this->title) ?></h2>
-    <?php //echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php echo $this->render('_searchfec', ['model' => $searchModel]); ?>
     
 
-    <?php echo Collapse::widget([
+    <?php 
+		/*
+		echo Collapse::widget([
 		'items'=>[
-			[
+				[
 				'label'=> 'Buscar por rango de fechas',
 				'content'=>$this->render('_searchfec', ['model' => $searchModel])
+				]
 			]
-		]
-    ]);
+		]);
+		*/
     ?>
+
+    
 <?php Pjax::begin(['id' => 'grilla', 'timeout' => false ,'clientOptions' => ['method' => 'POST'] ]); ?>
 
     <?= GridView::widget([

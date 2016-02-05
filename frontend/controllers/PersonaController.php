@@ -12,6 +12,8 @@ use yii\filters\VerbFilter;
 use yii\db\Query;
 use yii\helpers\Json;
 
+use kartik\widgets\ActiveForm;
+
 /**
  * PersonaController implements the CRUD actions for Persona model.
  */
@@ -118,6 +120,8 @@ public function actionApellidoslist($q = null, $id = null) {
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
+     
+	/*	
     public function actionCreate()
     {
         $model = new Persona();
@@ -133,6 +137,86 @@ public function actionApellidoslist($q = null, $id = null) {
             ]);
         }
     }
+    */
+    public function actionCreate()
+    {
+        $model = new Persona();
+
+		
+        if ($model->load(Yii::$app->request->post()) ) {
+
+			if ($model->save()) {
+				Yii::$app->response->format = 'json';
+				return [
+					//'message' => 'Success!!!',
+					'modelP'=>$model
+				];
+			}
+		}
+		 	
+        return $this->renderAjax('createajax', [
+                'model' => $model,
+         ]);
+    }
+    
+    /*
+    public function actionCreateAjax()
+    {
+        $model = new Persona();
+
+        if ($model->load(Yii::$app->request->post())) {
+			//echo $model->fecnac;die;
+			if ($model->save()) {
+				Yii::$app->response->format = 'json';
+				return [
+					'id' => $model->id,
+					'apellido'=>$model->apellido,
+					'nombre'=>$model->nombre,
+				];
+			}
+        } else {
+            return $this->renderAjax('createAjax', [
+                'model' => $model,
+            ]);
+        }
+    }
+    */
+
+	public function actionCreateAjax()
+	{
+		$model = new Persona();
+		$request = \Yii::$app->getRequest();
+		if ($request->isPost && $model->load($request->post())) {
+			Yii::$app->response->format = 'json';
+			return ['success' => $model->save()];
+		}
+		return $this->renderAjax('createajax', [
+			'model' => $model,
+		]);
+	}
+
+
+    
+	public function actionValidateAjax()
+	{
+		$model = new Persona();
+		
+		$request = \Yii::$app->getRequest();
+		if ($request->isPost && $model->load($request->post())) {
+			Yii::$app->response->format = 'json';
+			$arrayErrores=ActiveForm::validate($model);
+			if (!empty($arrayErrores)) {
+				return $arrayErrores;
+			}
+			else
+			{	
+				echo 'cuac';die;
+				$model->save();
+				return ['success'=>true];
+			}	
+		}
+	}    
+    
 
     /**
      * Updates an existing Persona model.

@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
     ?>
 
     
-<?php Pjax::begin(['id' => 'grilla', 'timeout' => false ,'clientOptions' => ['method' => 'POST'] ]); ?>
+<?php //Pjax::begin(['id' => 'grilla', 'timeout' => false ,'clientOptions' => ['method' => 'POST'] ]); ?>
 
     <?= GridView::widget([
 
@@ -95,5 +95,5 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ],
     ]); ?>
-<?php Pjax::end(); ?>
+<?php //Pjax::end(); ?>
 </div>

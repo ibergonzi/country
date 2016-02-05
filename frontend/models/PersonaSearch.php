@@ -7,6 +7,7 @@ use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use frontend\models\Persona;
 
+
 /**
  * PersonaSearch represents the model behind the search form about `frontend\models\Persona`.
  */
@@ -14,6 +15,7 @@ class PersonaSearch extends Persona
 {
 	public $fecdesde;
 	public $fechasta;	
+	public $nomCompleto;
 	
     /**
      * @inheritdoc
@@ -22,7 +24,7 @@ class PersonaSearch extends Persona
     {
         return [
             [['id', 'dni', 'created_by', 'updated_by'], 'integer'],
-            [['apellido', 'nombre', 'nombre2', 'created_at', 'updated_at','fecnac',], 'safe'],
+            [['apellido', 'nombre', 'nombre2', 'created_at', 'updated_at','fecnac','nomCompleto'], 'safe'],
             [['fecdesde','fechasta',],'safe'],
             [['fecdesde','fechasta',],'validaRangoFechas','skipOnEmpty' => true],
         ];

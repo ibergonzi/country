@@ -9,6 +9,9 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
+use yii\db\Query;
+use yii\helpers\Json;
+
 /**
  * PersonaController implements the CRUD actions for Persona model.
  */
@@ -25,6 +28,60 @@ class PersonaController extends Controller
             ],
         ];
     }
+
+public function actionApellidoslist($q = null, $id = null) {
+    \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+    $out = ['results' => ['id' => '', 'text' => '']];
+    if (!is_null($q)) {
+        $query = new Query;
+        $query->select(['id', new \yii\db\Expression("CONCAT(`apellido`, ' ',`nombre`) as text")])
+            ->from('personas')
+            ->where(['like', 'apellido', $q])
+            ->limit(20);
+        $command = $query->createCommand();
+        $data = $command->queryAll();
+        $out['results'] = array_values($data);
+    }
+    elseif ($id > 0) {
+        $out['results'] = ['id' => $id, 'text' => Persona::find($id)->apellido];
+    }
+    return $out;
+}
+
+
+/* Para usar con typeahead
+	public function actionBuscar($q=null) {
+		$query = new Query;
+		
+		$query->select('apellido')
+			->from('personas')
+			->where('apellido LIKE "%' . $q .'%"')
+			->orderBy('apellido');
+		$command = $query->createCommand();
+		$data = $command->queryAll();
+		$out = [];
+		foreach ($data as $d) {
+			$out[] = ['value' => $d['apellido']];
+		}
+		echo Json::encode($out);
+	}
+	
+	public function actionPre() {
+		$query = new Query;
+		
+		$query->select('apellido')
+			->from('personas')
+			->limit(10)
+			->orderBy('apellido');
+		$command = $query->createCommand();
+		$data = $command->queryAll();
+		$out = [];
+		foreach ($data as $d) {
+			$out[] = ['value' => $d['apellido']];
+		}
+		echo Json::encode($out);
+	}	
+*/
 
     /**
      * Lists all Persona models.

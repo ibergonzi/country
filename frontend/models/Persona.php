@@ -28,6 +28,8 @@ use yii\db\Expression;
  */
 class Persona extends \yii\db\ActiveRecord
 {
+
+	
     /**
      * @inheritdoc
      */
@@ -63,7 +65,7 @@ class Persona extends \yii\db\ActiveRecord
     {
         return [
             [['dni', 'created_by', 'updated_by'], 'integer'],
-            [['created_at', 'updated_at','created_by','updated_by','fecnac'], 'safe'],
+            [['created_at', 'updated_at','created_by','updated_by','fecnac',], 'safe'],
             [['apellido', 'nombre', 'nombre2'], 'string', 'max' => 45],
             [['fecnac'], 'default', 'value' => null],
             // se tiene que especificar format porque el datecontrol ya lo puso en formato mysql
@@ -87,7 +89,8 @@ class Persona extends \yii\db\ActiveRecord
             'updated_by' => Yii::t('app', 'Updated By'),
             'updated_at' => Yii::t('app', 'Updated At'),
             'fecdesde' => Yii::t('app', 'Fecha desde'),   
-            'fechasta' => Yii::t('app', 'Fecha hasta'),           
+            'fechasta' => Yii::t('app', 'Fecha hasta'),  
+            'nomCompleto' => Yii::t('app', 'Nombre completo'),           
         ];
     }
 

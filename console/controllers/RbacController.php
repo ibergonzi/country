@@ -11,24 +11,25 @@ class RbacController extends Controller
         $auth = Yii::$app->authManager;
 		
 		// Creacion de roles
+		
 		$consejo=$auth->createRole('consejo');
-		$consejo->description='Consejo';
+		$consejo->description='Rol: Consejo';
 		$administrador=$auth->createRole('administrador');
-		$administrador->description='Administrador';
+		$administrador->description='Rol: Administrador';
 		$intendente=$auth->createRole('intendente');
-		$intendente->description='Intendente';
+		$intendente->description='Rol: Intendente';
 		$opIntendencia=$auth->createRole('opIntendencia');
-		$opIntendencia->description='Operador de Intendencia';
+		$opIntendencia->description='Rol: Operador de Intendencia';
 		$arquitecto=$auth->createRole('arquitecto');
-		$arquitecto->description='Arquitecto';	
+		$arquitecto->description='Rol: Arquitecto';	
 		$portero=$auth->createRole('portero');
-		$portero->description='Portero';		
+		$portero->description='Rol: Portero';		
 		$propietario=$auth->createRole('propietario');
-		$propietario->description='Propietario';		
+		$propietario->description='Rol: Propietario';		
 		$guardia=$auth->createRole('guardia');
-		$guardia->description='Guardia';	
+		$guardia->description='Rol: Guardia';	
 		$sinrol=$auth->createRole('sinRol');
-		$sinrol->description='Sin rol asignado';
+		$sinrol->description='Rol: Sin rol asignado';
 
 		$auth->add($consejo);
 		$auth->add($administrador);		
@@ -42,14 +43,24 @@ class RbacController extends Controller
 
 		// Creacion de permisos
 		$accederUser=$auth->createPermission('accederUser');
-		$accederUser->description='Acceder: usuarios';
+		$accederUser->description='Acceso: usuarios';
 		$auth->add($accederUser);
 		
 		$accederUserRol=$auth->createPermission('accederUserRol');
-		$accederUserRol->description='Acceder: rol de usuarios';
+		$accederUserRol->description='Acceso: rol de usuarios';
 		$auth->add($accederUserRol);
 		
+		$accederPorton=$auth->createPermission('accederPorton');
+		$accederPorton->description='Acceso: elección de portón';
+		$auth->add($accederPorton);
+
+		$accederEntradas=$auth->createPermission('accederEntradas');
+		$accederEntradas->description='Acceso: Entradas';
+		$auth->add($accederEntradas);
+
+		
 		// Asignaciones de permisos a roles
+		
 		$auth->addChild($consejo, $accederUser);
 		$auth->addChild($administrador, $accederUser);	
 		$auth->addChild($intendente, $accederUser);	
@@ -58,10 +69,14 @@ class RbacController extends Controller
 		$auth->addChild($administrador, $accederUserRol);	
 		$auth->addChild($intendente, $accederUserRol);	
 		
+		$auth->addChild($intendente, $accederPorton);		
+		$auth->addChild($intendente, $accederEntradas);
+				
 		// Asignaciones de roles a usuarios OJO con el id de user
+		
 		$auth->assign($administrador, 8);
         $auth->assign($consejo, 7);
         $auth->assign($intendente, 9);
-	
+		
     }
 }

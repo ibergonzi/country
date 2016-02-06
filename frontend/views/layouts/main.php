@@ -42,10 +42,18 @@ AppAsset::register($this);
         $menuItems[] = ['label' => 'Registrarse', 'url' => ['/site/signup']];
         $menuItems[] = ['label' => 'Ingresar', 'url' => ['/site/login']];
     } else {
+		if (\Yii::$app->user->can('accederEntradas')) {
+			if (\Yii::$app->session->get('porton')) {	
+				$menuItems[] = ['label' => 'Entradas', 'url' => ['/entradas']];
+			}
+		}
 		
-		$menuItems[] = ['label' => 'Entradas', 'url' => ['/entradas']];
-		$menuItems[] = ['label' => 'Personas', 'url' => ['/persona']];
-
+		$menuItems[] = ['label' => 'Personas', 'url' => ['/persona']];	
+			
+		if (\Yii::$app->user->can('accederPorton')) {		
+			$menuItems[] = ['label' => 'Elegir portón', 'url' => ['/portones/elegir']];
+		}
+		
         $menuItems[] = [
             'label' => 'Salir (' . Yii::$app->user->identity->username . ')',
             'url' => ['/site/logout'],

@@ -1,4 +1,4 @@
--- MySQL dump 10.13  Distrib 5.6.28, for debian-linux-gnu (i686)
+-- MySQL dump 10.13  Distrib 5.6.28, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: country
 -- ------------------------------------------------------
@@ -37,7 +37,7 @@ CREATE TABLE `auth_assignment` (
 
 LOCK TABLES `auth_assignment` WRITE;
 /*!40000 ALTER TABLE `auth_assignment` DISABLE KEYS */;
-INSERT INTO `auth_assignment` VALUES ('administrador','8',1453657131),('consejo','7',1453657131),('intendente','9',1453657131),('sinRol','11',1453668090);
+INSERT INTO `auth_assignment` VALUES ('administrador','8',1454792330),('consejo','7',1454792330),('intendente','9',1454792330);
 /*!40000 ALTER TABLE `auth_assignment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -69,7 +69,7 @@ CREATE TABLE `auth_item` (
 
 LOCK TABLES `auth_item` WRITE;
 /*!40000 ALTER TABLE `auth_item` DISABLE KEYS */;
-INSERT INTO `auth_item` VALUES ('accederUser',2,'Acceder: usuarios',NULL,NULL,1453657131,1453657131),('accederUserRol',2,'Acceder: rol de usuarios',NULL,NULL,1453657131,1453657131),('administrador',1,'Administrador',NULL,NULL,1453657130,1453657130),('arquitecto',1,'Arquitecto',NULL,NULL,1453657131,1453657131),('consejo',1,'Consejo',NULL,NULL,1453657130,1453657130),('guardia',1,'Guardia',NULL,NULL,1453657131,1453657131),('intendente',1,'Intendente',NULL,NULL,1453657130,1453657130),('opIntendencia',1,'Operador de Intendencia',NULL,NULL,1453657131,1453657131),('portero',1,'Portero',NULL,NULL,1453657131,1453657131),('propietario',1,'Propietario',NULL,NULL,1453657131,1453657131),('sinRol',1,'Sin rol asignado',NULL,NULL,1453662094,1453662094);
+INSERT INTO `auth_item` VALUES ('accederEntradas',2,'Acceso: Entradas',NULL,NULL,1454792330,1454792330),('accederPorton',2,'Acceso: elección de portón',NULL,NULL,1454792330,1454792330),('accederUser',2,'Acceso: usuarios',NULL,NULL,1454792330,1454792330),('accederUserRol',2,'Acceso: rol de usuarios',NULL,NULL,1454792330,1454792330),('administrador',1,'Rol: Administrador',NULL,NULL,1454792330,1454792330),('arquitecto',1,'Rol: Arquitecto',NULL,NULL,1454792330,1454792330),('consejo',1,'Rol: Consejo',NULL,NULL,1454792330,1454792330),('guardia',1,'Rol: Guardia',NULL,NULL,1454792330,1454792330),('intendente',1,'Rol: Intendente',NULL,NULL,1454792330,1454792330),('opIntendencia',1,'Rol: Operador de Intendencia',NULL,NULL,1454792330,1454792330),('portero',1,'Rol: Portero',NULL,NULL,1454792330,1454792330),('propietario',1,'Rol: Propietario',NULL,NULL,1454792330,1454792330),('sinRol',1,'Rol: Sin rol asignado',NULL,NULL,1454792330,1454792330);
 /*!40000 ALTER TABLE `auth_item` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -96,7 +96,7 @@ CREATE TABLE `auth_item_child` (
 
 LOCK TABLES `auth_item_child` WRITE;
 /*!40000 ALTER TABLE `auth_item_child` DISABLE KEYS */;
-INSERT INTO `auth_item_child` VALUES ('administrador','accederUser'),('consejo','accederUser'),('intendente','accederUser'),('administrador','accederUserRol'),('consejo','accederUserRol'),('intendente','accederUserRol');
+INSERT INTO `auth_item_child` VALUES ('intendente','accederEntradas'),('intendente','accederPorton'),('administrador','accederUser'),('consejo','accederUser'),('intendente','accederUser'),('administrador','accederUserRol'),('consejo','accederUserRol'),('intendente','accederUserRol');
 /*!40000 ALTER TABLE `auth_item_child` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -134,15 +134,18 @@ DROP TABLE IF EXISTS `entradas`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `entradas` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `idpersonas_fk` int(11) DEFAULT NULL,
-  `idvehiculos_fk` int(11) DEFAULT NULL,
+  `idporton` tinyint(4) NOT NULL,
+  `idpersona` int(11) DEFAULT NULL,
+  `idvehiculo` int(11) DEFAULT NULL,
   `motivo` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `fk_entradas_1_idx` (`idpersonas_fk`),
-  KEY `fk_entradas_2_idx` (`idvehiculos_fk`),
-  CONSTRAINT `fk_entradas_1` FOREIGN KEY (`idpersonas_fk`) REFERENCES `personas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_entradas_2` FOREIGN KEY (`idvehiculos_fk`) REFERENCES `vehiculos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  KEY `fk_entradas_1_idx` (`idpersona`),
+  KEY `fk_entradas_2_idx` (`idvehiculo`),
+  KEY `fk_entradas_3` (`idporton`),
+  CONSTRAINT `fk_entradas_1` FOREIGN KEY (`idpersona`) REFERENCES `personas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_entradas_2` FOREIGN KEY (`idvehiculo`) REFERENCES `vehiculos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_entradas_3` FOREIGN KEY (`idporton`) REFERENCES `portones` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -151,6 +154,7 @@ CREATE TABLE `entradas` (
 
 LOCK TABLES `entradas` WRITE;
 /*!40000 ALTER TABLE `entradas` DISABLE KEYS */;
+INSERT INTO `entradas` VALUES (3,1,9,NULL,'');
 /*!40000 ALTER TABLE `entradas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -218,16 +222,17 @@ DROP TABLE IF EXISTS `personas`;
 CREATE TABLE `personas` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `dni` int(11) DEFAULT NULL,
-  `apellido` varchar(45) DEFAULT NULL,
-  `nombre` varchar(45) DEFAULT NULL,
+  `apellido` varchar(45) NOT NULL,
+  `nombre` varchar(45) NOT NULL,
   `nombre2` varchar(45) DEFAULT NULL,
   `fecnac` date DEFAULT NULL,
+  `foto` varchar(100) DEFAULT NULL,
   `created_by` int(11) NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_by` int(11) NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=86 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -236,8 +241,33 @@ CREATE TABLE `personas` (
 
 LOCK TABLES `personas` WRITE;
 /*!40000 ALTER TABLE `personas` DISABLE KEYS */;
-INSERT INTO `personas` VALUES (9,23038545,'Bergonzi','Ivan','Patricio','1972-10-23',7,'2016-01-30 18:10:48',7,'2016-01-31 15:40:32'),(10,41404561,'Bergonzi','Stefano','',NULL,7,'2016-01-30 18:11:47',7,'2016-01-30 18:11:47'),(11,14012345,'Santiago Santos','Miralva','',NULL,7,'2016-01-30 18:12:29',7,'2016-01-30 18:12:29'),(22,435543535,'bjjgdbbdb','dsgdtdh','','2015-12-10',7,'2016-01-31 19:21:13',7,'2016-01-31 19:21:13'),(23,5454,'ktrjgnfvtvt','frcdctfvtr','','2016-01-29',7,'2016-01-31 19:21:35',7,'2016-01-31 19:21:35'),(24,543235433,'fjdffvjd','fjhbfvdc','',NULL,7,'2016-01-31 21:49:40',7,'2016-01-31 21:49:40'),(25,6543455,'gfgvdv','axxsgbjfb','',NULL,7,'2016-01-31 21:50:06',7,'2016-01-31 21:50:06'),(26,9764466,'llhfczvhtvy','vcrdhvbjv','',NULL,7,'2016-01-31 21:50:38',7,'2016-01-31 21:50:38'),(27,744636,'ggmx,j h ','gh dthgfvh','',NULL,7,'2016-01-31 21:52:30',7,'2016-01-31 21:52:30'),(28,47456545,'kudrdvghbu','rgvhv ktchtd','',NULL,7,'2016-01-31 21:53:03',7,'2016-01-31 21:53:03'),(29,806465455,'yjdcdc','dcrchtvyj yb','',NULL,7,'2016-01-31 21:53:40',7,'2016-01-31 21:53:40');
+INSERT INTO `personas` VALUES (9,23038545,'Bergonzi','Ivan','Patricio','1972-10-23','',7,'2016-01-30 18:10:48',0,'2016-02-03 12:20:27'),(10,41404561,'Bergonzi','Stefano','',NULL,'',7,'2016-01-30 18:11:47',7,'2016-01-30 18:11:47'),(11,14012345,'Santiago Santos','Miralva','','2016-02-02','',7,'2016-01-30 18:12:29',0,'2016-02-02 10:09:54'),(30,454545,'Bergonzi','Martina','',NULL,'',9,'2016-02-05 12:55:34',9,'2016-02-05 12:55:34'),(77,464646,'Perez','Juan','',NULL,'',9,'2016-02-06 10:55:53',9,'2016-02-06 10:55:53'),(84,343423,'Bergonzi','Yuyu','',NULL,'84.jpg',9,'2016-02-06 14:12:25',9,'2016-02-06 15:22:18');
 /*!40000 ALTER TABLE `personas` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `portones`
+--
+
+DROP TABLE IF EXISTS `portones`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `portones` (
+  `id` tinyint(4) NOT NULL,
+  `descripcion` varchar(25) NOT NULL,
+  `habilitado` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `portones`
+--
+
+LOCK TABLES `portones` WRITE;
+/*!40000 ALTER TABLE `portones` DISABLE KEYS */;
+INSERT INTO `portones` VALUES (1,'Portón Entrada (1)',1),(2,'Portón Proveedores (2)',1),(3,'Golf',0);
+/*!40000 ALTER TABLE `portones` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -372,4 +402,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-02-01 17:23:06
+-- Dump completed on 2016-02-06 19:36:57

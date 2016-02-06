@@ -4,13 +4,13 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model frontend\models\Entradas */
+/* @var $model frontend\models\Portones */
 
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Entradas'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Portones'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="entradas-view">
+<div class="portones-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -29,10 +29,8 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'idporton',
-            'idpersona',
-            'idvehiculo',
-            'motivo',
+            'descripcion',
+            'habilitado',
         ],
     ]) ?>
 

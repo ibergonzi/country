@@ -8,12 +8,14 @@ use Yii;
  * This is the model class for table "entradas".
  *
  * @property integer $id
- * @property integer $idpersonas_fk
- * @property integer $idvehiculos_fk
+ * @property integer $idporton
+ * @property integer $idpersona
+ * @property integer $idvehiculo
  * @property string $motivo
  *
- * @property Personas $idpersonasFk
- * @property Vehiculos $idvehiculosFk
+ * @property Personas $persona
+ * @property Vehiculos $vehiculo
+ * @property Portones $porton
  * @property Movimientos[] $movimientos
  */
 class Entradas extends \yii\db\ActiveRecord
@@ -32,7 +34,8 @@ class Entradas extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['idpersonas_fk', 'idvehiculos_fk'], 'integer'],
+            [['idporton'], 'required'],
+            [['idporton', 'idpersona', 'idvehiculo'], 'integer'],
             [['motivo'], 'string', 'max' => 45]
         ];
     }
@@ -44,8 +47,9 @@ class Entradas extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
-            'idpersonas_fk' => Yii::t('app', 'Idpersonas Fk'),
-            'idvehiculos_fk' => Yii::t('app', 'Idvehiculos Fk'),
+            'idporton' => Yii::t('app', 'Idporton'),
+            'idpersona' => Yii::t('app', 'Idpersona'),
+            'idvehiculo' => Yii::t('app', 'Idvehiculo'),
             'motivo' => Yii::t('app', 'Motivo'),
         ];
     }
@@ -55,7 +59,7 @@ class Entradas extends \yii\db\ActiveRecord
      */
     public function getPersona()
     {
-        return $this->hasOne(Persona::className(), ['id' => 'idpersonas_fk']);
+        return $this->hasOne(Personas::className(), ['id' => 'idpersona']);
     }
 
     /**
@@ -63,7 +67,15 @@ class Entradas extends \yii\db\ActiveRecord
      */
     public function getVehiculo()
     {
-        return $this->hasOne(Vehiculos::className(), ['id' => 'idvehiculos_fk']);
+        return $this->hasOne(Vehiculos::className(), ['id' => 'idvehiculo']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPorton()
+    {
+        return $this->hasOne(Portones::className(), ['id' => 'idporton']);
     }
 
     /**

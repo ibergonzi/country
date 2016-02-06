@@ -4,19 +4,19 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel frontend\models\EntradasSearch */
+/* @var $searchModel frontend\models\PortonesSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Entradas');
+$this->title = Yii::t('app', 'Portones');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="entradas-index">
+<div class="portones-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a(Yii::t('app', 'Create Entradas'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('app', 'Create Portones'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?= GridView::widget([
@@ -26,10 +26,8 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'id',
-            'idporton',
-            'idpersona',
-            'idvehiculo',
-            'motivo',
+            'descripcion',
+            'habilitado',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

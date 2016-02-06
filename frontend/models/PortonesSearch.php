@@ -5,12 +5,12 @@ namespace frontend\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use frontend\models\Entradas;
+use frontend\models\Portones;
 
 /**
- * EntradasSearch represents the model behind the search form about `frontend\models\Entradas`.
+ * PortonesSearch represents the model behind the search form about `frontend\models\Portones`.
  */
-class EntradasSearch extends Entradas
+class PortonesSearch extends Portones
 {
     /**
      * @inheritdoc
@@ -18,8 +18,8 @@ class EntradasSearch extends Entradas
     public function rules()
     {
         return [
-            [['id', 'idpersona', 'idvehiculo','idporton'], 'integer'],
-            [['motivo'], 'safe'],
+            [['id', 'habilitado'], 'integer'],
+            [['descripcion'], 'safe'],
         ];
     }
 
@@ -41,7 +41,7 @@ class EntradasSearch extends Entradas
      */
     public function search($params)
     {
-        $query = Entradas::find();
+        $query = Portones::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -57,13 +57,14 @@ class EntradasSearch extends Entradas
 
         $query->andFilterWhere([
             'id' => $this->id,
-            'idpersona' => $this->idpersona,
-            'idvehiculo' => $this->idvehiculo,
-            'idporton' => $this->idporton,
+            'habilitado' => $this->habilitado,
         ]);
 
-        $query->andFilterWhere(['like', 'motivo', $this->motivo]);
+        $query->andFilterWhere(['like', 'descripcion', $this->descripcion]);
 
         return $dataProvider;
     }
+    
+ 
+    
 }

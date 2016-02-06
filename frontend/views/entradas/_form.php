@@ -21,10 +21,10 @@ use yii\bootstrap\Modal;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?php //echo $form->field($model, 'idpersonas_fk')->textInput() ?>
+    <?php //echo $form->field($model, 'idpersona')->textInput() ?>
    
 <?php    
-	$personaDesc = empty($model->idpersonas_fk) ? '' : $model->persona->apellido.' '.$model->persona->nombre;
+	$personaDesc = empty($model->idpersona) ? '' : $model->persona->apellido.' '.$model->persona->nombre;
 	
 	
 	//$url=Yii::$app->urlManager->createUrl(['persona/create-ajax']);
@@ -49,9 +49,11 @@ use yii\bootstrap\Modal;
                     ]),	
 			'asButton' => true
 		]
-	];	
-	 
-	echo $form->field($model, 'idpersonas_fk')->widget(Select2::classname(), [
+	];
+		
+    echo $form->field($model, 'idporton')->textInput();
+    	 
+	echo $form->field($model, 'idpersona')->widget(Select2::classname(), [
 		
 		'initValueText' => $personaDesc, // set the initial display text
 		'options' => ['id'=>'selectorPersonas','placeholder' => '...'],
@@ -71,7 +73,7 @@ use yii\bootstrap\Modal;
 	]);  
 ?>  
 
-    <?= $form->field($model, 'idvehiculos_fk')->textInput() ?>
+    <?= $form->field($model, 'idvehiculo')->textInput() ?>
 
     <?= $form->field($model, 'motivo')->textInput(['maxlength' => true]) ?>
 

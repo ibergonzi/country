@@ -23,8 +23,7 @@
         "kartik-v/yii2-builder": "@dev",
         "kartik-v/yii2-grid": "@dev",
         "kartik-v/yii2-mpdf": "dev-master",
-        "kartik-v/yii2-icons": "@dev",
-        "mauricesvay/php-facedetection": "*"
+        "kartik-v/yii2-icons": "@dev"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",

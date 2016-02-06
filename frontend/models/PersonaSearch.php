@@ -17,6 +17,7 @@ class PersonaSearch extends Persona
 	public $fechasta;	
 	public $nomCompleto;
 	
+	
     /**
      * @inheritdoc
      */
@@ -24,7 +25,7 @@ class PersonaSearch extends Persona
     {
         return [
             [['id', 'dni', 'created_by', 'updated_by'], 'integer'],
-            [['apellido', 'nombre', 'nombre2', 'created_at', 'updated_at','fecnac','nomCompleto'], 'safe'],
+            [['apellido', 'nombre', 'nombre2', 'created_at', 'updated_at','fecnac','nomCompleto','foto'], 'safe'],
             [['fecdesde','fechasta',],'safe'],
             [['fecdesde','fechasta',],'validaRangoFechas','skipOnEmpty' => true],
         ];

@@ -15,8 +15,7 @@ use yii\bootstrap\Modal;
 /* @var $model frontend\models\Entradas */
 /* @var $form yii\widgets\ActiveForm */
 
-//$this->registerJs('$("#btnNuevaPersona").click(function(){alert("cuac");})',yii\web\View::POS_READY);
-
+?>
 
 <div class="entradas-form">
 
@@ -29,7 +28,7 @@ use yii\bootstrap\Modal;
 	
 	
 	//$url=Yii::$app->urlManager->createUrl(['persona/create-ajax']);
-	$url=Yii::$app->urlManager->createUrl(['persona/create']);
+	$url=Yii::$app->urlManager->createUrl(['persona/create-ajax']);
 
 	$addon = [
 		'append' => [

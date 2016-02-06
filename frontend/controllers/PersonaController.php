@@ -14,6 +14,7 @@ use yii\helpers\Json;
 
 use kartik\widgets\ActiveForm;
 
+use yii\web\UploadedFile;
 /**
  * PersonaController implements the CRUD actions for Persona model.
  */
@@ -31,59 +32,26 @@ class PersonaController extends Controller
         ];
     }
 
-public function actionApellidoslist($q = null, $id = null) {
-    \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-    $out = ['results' => ['id' => '', 'text' => '']];
-    if (!is_null($q)) {
-        $query = new Query;
-        $query->select(['id', new \yii\db\Expression("CONCAT(`apellido`, ' ',`nombre`) as text")])
-            ->from('personas')
-            ->where(['like', 'apellido', $q])
-            ->limit(20);
-        $command = $query->createCommand();
-        $data = $command->queryAll();
-        $out['results'] = array_values($data);
-    }
-    elseif ($id > 0) {
-        $out['results'] = ['id' => $id, 'text' => Persona::find($id)->apellido];
-    }
-    return $out;
-}
-
-
-/* Para usar con typeahead
-	public function actionBuscar($q=null) {
-		$query = new Query;
-		
-		$query->select('apellido')
-			->from('personas')
-			->where('apellido LIKE "%' . $q .'%"')
-			->orderBy('apellido');
-		$command = $query->createCommand();
-		$data = $command->queryAll();
-		$out = [];
-		foreach ($data as $d) {
-			$out[] = ['value' => $d['apellido']];
+	// funcion utilizada para los select2, devuelve json
+	public function actionApellidoslist($q = null, $id = null) {
+		\Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+		$out = ['results' => ['id' => '', 'text' => '']];
+		if (!is_null($q)) {
+			$query = new Query;
+			$query->select(['id', new \yii\db\Expression("CONCAT(`apellido`, ' ',`nombre`) as text")])
+				->from('personas')
+				->where(['like', 'apellido', $q])
+				->limit(20);
+			$command = $query->createCommand();
+			$data = $command->queryAll();
+			$out['results'] = array_values($data);
 		}
-		echo Json::encode($out);
+		elseif ($id > 0) {
+			$out['results'] = ['id' => $id, 'text' => Persona::find($id)->apellido];
+		}
+		return $out;
 	}
-	
-	public function actionPre() {
-		$query = new Query;
-		
-		$query->select('apellido')
-			->from('personas')
-			->limit(10)
-			->orderBy('apellido');
-		$command = $query->createCommand();
-		$data = $command->queryAll();
-		$out = [];
-		foreach ($data as $d) {
-			$out[] = ['value' => $d['apellido']];
-		}
-		echo Json::encode($out);
-	}	
-*/
+
 
     /**
      * Lists all Persona models.
@@ -121,15 +89,32 @@ public function actionApellidoslist($q = null, $id = null) {
      * @return mixed
      */
      
-	/*	
+
     public function actionCreate()
     {
         $model = new Persona();
 
+
         if ($model->load(Yii::$app->request->post())) {
-			//echo $model->fecnac;die;
-			if ($model->save()) {
-				return $this->redirect(['view', 'id' => $model->id]);
+			// Si vino por post se recupera el archivo
+			$model->foto = UploadedFile::getInstance($model, 'foto');
+            // cuando viene un archivo se debe forzar el validate y 
+            // si se graba el modelo exitosamente se graba tambien el archivo			
+			if ($model->validate() && $model->save()) {
+				// evalua si se debe o no grabar el archivo
+                if ($model->foto instanceof UploadedFile) {    
+					$dirFotos='images/personas/';          
+					$archOrig=$model->foto->baseName . '.' . $model->foto->extension;
+					$archResize=$model->id.'.'.$model->foto->extension;
+                    $model->foto->saveAs($dirFotos . $archOrig);
+                    $this->resizeFoto($dirFotos, $archOrig, $dirFotos, $archResize);            
+                    // sobreescribo el campo foto con el string de la foto toqueteada
+                    $model->foto=$archResize;
+                    $model->update();
+                    //se elimina el archivo uploaded
+                    unlink($dirFotos . $archOrig);
+                }
+				return $this->redirect(['index']);
 			}
         } else {
             return $this->render('create', [
@@ -137,12 +122,13 @@ public function actionApellidoslist($q = null, $id = null) {
             ]);
         }
     }
-    */
-    public function actionCreate()
+    
+    
+
+    public function actionCreateAjax()
     {
         $model = new Persona();
 
-		
         if ($model->load(Yii::$app->request->post()) ) {
 
 			if ($model->save()) {
@@ -158,64 +144,7 @@ public function actionApellidoslist($q = null, $id = null) {
                 'model' => $model,
          ]);
     }
-    
-    /*
-    public function actionCreateAjax()
-    {
-        $model = new Persona();
-
-        if ($model->load(Yii::$app->request->post())) {
-			//echo $model->fecnac;die;
-			if ($model->save()) {
-				Yii::$app->response->format = 'json';
-				return [
-					'id' => $model->id,
-					'apellido'=>$model->apellido,
-					'nombre'=>$model->nombre,
-				];
-			}
-        } else {
-            return $this->renderAjax('createAjax', [
-                'model' => $model,
-            ]);
-        }
-    }
-    */
-
-	public function actionCreateAjax()
-	{
-		$model = new Persona();
-		$request = \Yii::$app->getRequest();
-		if ($request->isPost && $model->load($request->post())) {
-			Yii::$app->response->format = 'json';
-			return ['success' => $model->save()];
-		}
-		return $this->renderAjax('createajax', [
-			'model' => $model,
-		]);
-	}
-
-
-    
-	public function actionValidateAjax()
-	{
-		$model = new Persona();
-		
-		$request = \Yii::$app->getRequest();
-		if ($request->isPost && $model->load($request->post())) {
-			Yii::$app->response->format = 'json';
-			$arrayErrores=ActiveForm::validate($model);
-			if (!empty($arrayErrores)) {
-				return $arrayErrores;
-			}
-			else
-			{	
-				echo 'cuac';die;
-				$model->save();
-				return ['success'=>true];
-			}	
-		}
-	}    
+ 
     
 
     /**
@@ -228,21 +157,45 @@ public function actionApellidoslist($q = null, $id = null) {
     {
         $model = $this->findModel($id);
 
+        // antes de recuperar los valores del post, se guarda el valor que tenia $model->archivo
+        // esto se hace porque UploadedFile::getInstance sobreescribe el modelo y si en el formulario
+        // no se eligio ningun archivo, se borra el que tenia antes de grabar
+        $arch=$model->foto;    
+
         if ($model->load(Yii::$app->request->post())) {
-			//echo $model->fecnac;die;
-			if ($model->save()) { 
-            return $this->redirect(['view', 'id' => $model->id]);
-		} else {	
-            return $this->render('update', [
+           // Si vino por post, se recupera el archivo
+            $model->foto = UploadedFile::getInstance($model, 'foto');
+
+            // si ya tenia un valor y el usuario no subio ningun archivo, deja el valor original
+            if ($arch !== null && $model->foto == '') {
+                    $model->foto=$arch;
+            }
+            
+            
+			if ($model->validate() && $model->save()) { 
+               // evalua si se debe o no grabar el archivo
+               if ($model->foto instanceof UploadedFile) {    
+					$dirFotos='images/personas/';          
+					$archOrig=$model->foto->baseName . '.' . $model->foto->extension;
+					$archResize=$model->id.'.'.$model->foto->extension;
+                    $model->foto->saveAs($dirFotos . $archOrig);
+                    $this->resizeFoto($dirFotos, $archOrig, $dirFotos, $archResize);            
+                    // sobreescribo el campo foto con el string de la foto toqueteada
+                    $model->foto=$archResize;
+                    $model->update();
+                    //se elimina el archivo uploaded
+                    unlink($dirFotos . $archOrig);
+                }
+				return $this->redirect(['index']);
+
+            }
+        } 
+        return $this->render('update', [
                 'model' => $model,
-            ]);
-			}
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
-        }
+           ]);
     }
+    
+    
 
     /**
      * Deletes an existing Persona model.
@@ -253,7 +206,8 @@ public function actionApellidoslist($q = null, $id = null) {
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-
+		$dirFotos='images/personas/'; 
+		
         return $this->redirect(['index']);
     }
 
@@ -272,4 +226,29 @@ public function actionApellidoslist($q = null, $id = null) {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+    
+	public function resizeFoto($dirOrig,$nombreOrig,$dirDestino,$nombreDestino)
+	{ 
+		// valores maximos
+		$width = 200;
+		$height = 200;
+
+		list($width_orig, $height_orig) = getimagesize($dirOrig.$nombreOrig);
+
+		$ratio_orig = $width_orig/$height_orig;
+
+		if ($width/$height > $ratio_orig) {
+		   $width = $height*$ratio_orig;
+		} else {
+		   $height = $width/$ratio_orig;
+		}
+
+		// Resample
+		$image_p = imagecreatetruecolor($width, $height);
+		$image = imagecreatefromjpeg($dirOrig.$nombreOrig);
+		imagecopyresampled($image_p, $image, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig);		
+		
+		imagejpeg($image_p, $dirDestino.$nombreDestino, 100);
+	}    
+    
 }

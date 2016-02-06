@@ -10,7 +10,6 @@ use kartik\datecontrol\DateControl;
 /* @var $model frontend\models\Persona */
 /* @var $form yii\widgets\ActiveForm $("#persona-fecnac-disp").val("");*/
 
-//$this->registerJs('$(document).on("beforeSubmit", "#form-personanueva-ajax", function () {return false;});',yii\web\View::POS_READY);
 	$js = 
 <<<JS
 	$('form#form-personanueva-ajax').
@@ -20,20 +19,17 @@ use kartik\datecontrol\DateControl;
 				form.attr('action'),
 				form.serialize()
 			).done(function(result) {
-				console.log(result);
-				form.parent().html(result.modelP);
-				
-				var seleccion=$("#selectorPersonas option:selected");
-				seleccion.replaceWith("<option value='11' selected>CUAC</option>")
-				//alert(result.modelP);
-
-				
+				var seleccion=$('#selectorPersonas');
+				var option = $('<option></option>').
+					 attr('selected', true).
+					 text(result.modelP['apellido']+' '+result.modelP['nombre']).
+					 val(result.modelP['id']);
+				option.appendTo(seleccion);
+				seleccion.trigger('change');
 				$('#modalpersonanueva').modal('hide');
-				location.reload();
+				//location.reload();
 			});
-		
 			return false;
-
 			}).
 		on('submit', function(e){
 			e.preventDefault();
@@ -42,16 +38,13 @@ JS;
 $this->registerJs($js,yii\web\View::POS_READY);
 ?>
 
-?>
+
 
 <div class="persona-form">
 
     <?php $form = ActiveForm::begin(
 		[
 			'id' => 'form-personanueva-ajax',
-			//'action' => \yii\helpers\Url::to(['persona/create-ajax']), // actionCreateAjax
-			//'enableAjaxValidation' => true,
-			//'validationUrl' => \yii\helpers\Url::to(['persona/validate-ajax']), //actionValidateAjax
 		]    
     ); 
     ?>

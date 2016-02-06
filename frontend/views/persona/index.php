@@ -13,33 +13,35 @@ use yii\bootstrap\Collapse;
 $this->title = Yii::t('app', 'Personas');
 $this->params['breadcrumbs'][] = $this->title;
 
-use svay\FaceDetector;
+	$js = 
+<<<JS
+$(".mostrarIMG").mouseover(function(){
+	                           $("#pop-up").show();
+	                         });
+$(".mostrarIMG").mouseout(function(){
+	                           $("#pop-up").hide();
+	                         });
+JS;
+$this->registerJs($js,yii\web\View::POS_READY);
 
-set_time_limit(90); 
-$detector = new FaceDetector('detection.dat');
-$detector->faceDetect('cuac.jpg');
-//$detector->cropFaceToJpeg('img/petu.jpg');
-$detector->toJpeg();
-die;
+
 
 ?>
 <div class="persona-index">
 
     <h2><?= Html::encode($this->title) ?></h2>
-    <?php echo $this->render('_searchfec', ['model' => $searchModel]); ?>
+    <?php //echo $this->render('_searchfec', ['model' => $searchModel]); ?>
     
 
     <?php 
-		/*
-		echo Collapse::widget([
-		'items'=>[
-				[
-				'label'=> 'Buscar por rango de fechas',
-				'content'=>$this->render('_searchfec', ['model' => $searchModel])
+			echo Collapse::widget([
+			'items'=>[
+					[
+					'label'=> 'Buscar por rango de fechas',
+					'content'=>$this->render('_searchfec', ['model' => $searchModel])
+					]
 				]
-			]
-		]);
-		*/
+			]);
     ?>
 
     
@@ -53,7 +55,8 @@ die;
 
            
             ['attribute'=>'id',
-				'options'=>['style'=>'width:55px'], 
+				'options'=>['style'=>'width:55px',], 
+				
             ],
             'dni',
             'apellido',

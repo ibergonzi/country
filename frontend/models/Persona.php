@@ -18,6 +18,7 @@ use yii\db\Expression;
  * @property string $nombre
  * @property string $nombre2
  * @property string $fecnac
+ * @property string $foto
 
  * @property integer $created_by
  * @property string $created_at
@@ -68,10 +69,11 @@ class Persona extends \yii\db\ActiveRecord
             [['dni', 'created_by', 'updated_by'], 'integer'],
             [['created_at', 'updated_at','created_by','updated_by','fecnac',], 'safe'],
             [['apellido', 'nombre', 'nombre2'], 'string', 'max' => 45],
-            ['apellido','required'],
+            [['apellido','nombre'],'required'],
             [['fecnac'], 'default', 'value' => null],
             // se tiene que especificar format porque el datecontrol ya lo puso en formato mysql
             [['fecnac'],'date','format' => 'php:Y-m-d'],
+			[['foto'], 'file', 'extensions'=>'jpg, jpeg'],            
         ];
     }
 
@@ -92,7 +94,8 @@ class Persona extends \yii\db\ActiveRecord
             'updated_at' => Yii::t('app', 'Updated At'),
             'fecdesde' => Yii::t('app', 'Fecha desde'),   
             'fechasta' => Yii::t('app', 'Fecha hasta'),  
-            'nomCompleto' => Yii::t('app', 'Nombre completo'),           
+            'nomCompleto' => Yii::t('app', 'Nombre completo'),  
+            'foto'=>Yii::t('app','Foto'),         
         ];
     }
 

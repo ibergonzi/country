@@ -23,7 +23,11 @@ Linux
 11) sudo chgrp www-data country
 12) sudo chgrp www-data models (dentro de country/frontend) y hacer lo mismo con controllers y views
 13) desde el explorador de archivos (visual), entrar a las propiedades de las carpetas models, controllers y views, 
-    cambiar "Cambiar contenido" de "Solo por el propietario" por "Solo el propietario y el grupo" de forma NO recursiva     
+    cambiar "Cambiar contenido" de "Solo por el propietario" por "Solo el propietario y el grupo" de forma NO recursiva  
+13.a) crear carpeta images en frontend/web
+      sudo chgrp www-data images
+13.b) crear carpeta personas dentro de frontend/web/images y sudo chgrp www-data images      
+       
 14) completar datos base de datos en common/config/main-local.php (OJO este archivo está en el .gitignore, evaluar si
     no hay que habilitarlo para que lo administre Git)
 15) en frontend/config/main.php habilitar URLs amigables (dentro de seccion components)

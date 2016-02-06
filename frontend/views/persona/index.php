@@ -13,6 +13,14 @@ use yii\bootstrap\Collapse;
 $this->title = Yii::t('app', 'Personas');
 $this->params['breadcrumbs'][] = $this->title;
 
+use svay\FaceDetector;
+
+set_time_limit(90); 
+$detector = new FaceDetector('detection.dat');
+$detector->faceDetect('cuac.jpg');
+//$detector->cropFaceToJpeg('img/petu.jpg');
+$detector->toJpeg();
+die;
 
 ?>
 <div class="persona-index">

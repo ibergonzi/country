@@ -8,6 +8,7 @@ use yii\behaviors\TimestampBehavior;
 use yii\behaviors\BlameableBehavior;
 use yii\db\Expression;
 
+
 /**
  * This is the model class for table "personas".
  *

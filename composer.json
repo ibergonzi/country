@@ -24,7 +24,7 @@
         "kartik-v/yii2-grid": "@dev",
         "kartik-v/yii2-mpdf": "dev-master",
         "kartik-v/yii2-icons": "@dev",
-        "kartik-v/yii2-field-range": "*"
+        "mauricesvay/php-facedetection": "*"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",

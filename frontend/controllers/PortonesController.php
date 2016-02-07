@@ -29,15 +29,20 @@ class PortonesController extends Controller
 
     public function actionElegir()
     {
-		$model = '';
+
+		$model = Portones::find()->where(['habilitado' => true])->all();
+		if (empty($model)) {
+	        return $this->render('deshabilitado');
+		}
 		
-        if (\Yii::$app->session->get('porton')) {
-            return $this->redirect(['entradas']);
-        } else {
-            return $this->render('elegir', [
+		if (isset(Yii::$app->request->post()['eligeporton'])) {
+			\Yii::$app->session->set('porton',Yii::$app->request->post()['eligeporton']);
+		}
+		
+        return $this->render('elegir', [
                 'model' => $model,
-            ]);
-        }
+        ]);
+  
     }
 
     /**

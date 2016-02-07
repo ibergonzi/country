@@ -63,11 +63,11 @@ use kartik\datecontrol\DateControl
 
 			<?php
 				if (!empty($model->foto)) {
-					echo Html::img(Yii::$app->urlManager->createUrl('images/personas/'.$model->foto));
+					echo Html::img(Yii::$app->urlManager->createUrl('images/personas/'.$model->foto),['class'=>'img-thumbnail']);
 				}
 				else
 				{
-					echo Html::img(Yii::$app->urlManager->createUrl('images/sinfoto.png'));
+					echo Html::img(Yii::$app->urlManager->createUrl('images/sinfoto.png'),['class'=>'img-thumbnail']);
 				}
 			?>
 

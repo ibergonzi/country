@@ -3,7 +3,11 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 
+use yii\widgets\ActiveForm;
+
 use kartik\widgets\SwitchInput;
+
+use frontend\models\Portones;
 
 /* @var $this yii\web\View */
 /* @var $searchModel frontend\models\PortonesSearch */
@@ -14,34 +18,47 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="portones-index">
 
-    <h2><?php 
+    <div class="jumbotron">
+		<H2>
+		<?php 
 			if (\Yii::$app->session->get('porton')) {
-				echo 'PORTON SELECCIONADO:' .  \Yii::$app->session->get('porton');
+				echo 'Activado: ' .  \Yii::$app->session->get('porton');
+				$cartel=Portones::findOne(\Yii::$app->session->get('porton'))->descripcion;
 			} else
 			{
 				echo 'No ha elegido ningún portón para continuar operando';
+				$cartel='';
 			}
 		?>
-	</h2>
+		</H2>		
+		<p class="lead"><?= $cartel ?></p>		
+	</div>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-    
-    <?php
+    <hr/>    
+    <?php $form = ActiveForm::begin(); ?>    
+		<?php
+		$opt=[];
+		foreach ($model as $porton) {
+			$opt[] = ['label'=>$porton->descripcion, 'value'=>$porton->id];
+		}
+		
 		echo SwitchInput::widget([
 			'name' => 'eligeporton',
 			'type' => SwitchInput::RADIO,
-			'items' => [
-				['label' => 'Portón 1', 'value' => 1],
-				['label' => 'Portón 2', 'value' => 2],
-				['label' => 'Portón 3', 'value' => 3],
-			],
+			'items' => $opt,
+			'value' => \Yii::$app->session->get('porton'),
 			'pluginOptions' => ['size' => 'large',
 					'onText' => 'SI',
 					'offText' => 'NO',			
 					],
 			'labelOptions' => ['style' => 'font-size: 16px'],
 		]);
-		\Yii::$app->session->set('porton',1);
-?>
-
+		//\Yii::$app->session->set('porton',1); 		   
+		?>
+		<hr/>
+		<div class="form-group">
+			<?= Html::submitButton('Confirmar la selección', ['class' => 'btn btn-success']) ?>
+		</div>		
+	<?php ActiveForm::end(); ?>		
  
 </div>

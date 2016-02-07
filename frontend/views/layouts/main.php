@@ -50,8 +50,13 @@ AppAsset::register($this);
 		
 		$menuItems[] = ['label' => 'Personas', 'url' => ['/persona']];	
 			
-		if (\Yii::$app->user->can('accederPorton')) {		
-			$menuItems[] = ['label' => 'Elegir portón', 'url' => ['/portones/elegir']];
+		if (\Yii::$app->user->can('accederPorton')) {
+			if (\Yii::$app->session->get('porton')) {	
+				$menuItems[] = ['label' => 'Portón '.\Yii::$app->session->get('porton'), 
+															'url' => ['/portones/elegir']];					
+			} else {
+				$menuItems[] = ['label' => 'Elegir portón', 'url' => ['/portones/elegir']];
+			}
 		}
 		
         $menuItems[] = [

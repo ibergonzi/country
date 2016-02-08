@@ -59,7 +59,7 @@ class Entradas extends \yii\db\ActiveRecord
      */
     public function getPersona()
     {
-        return $this->hasOne(Personas::className(), ['id' => 'idpersona']);
+        return $this->hasOne(Persona::className(), ['id' => 'idpersona']);
     }
 
     /**

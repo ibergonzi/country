@@ -26,6 +26,7 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
 
+
     /**
      * @inheritdoc
      */
@@ -54,6 +55,26 @@ class User extends ActiveRecord implements IdentityInterface
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
         ];
     }
+    
+    
+    /**
+     * @return \yii\db\ActiveQuery agregada a mano
+     */
+    public function getAuthAssignment()
+    {
+        return $this->hasOne(\frontend\models\AuthAssignment::className(), ['user_id' => 'id']);
+    }    
+    // agregada a mano, devuelve objeto AuthItem
+    public static function getRol($id)
+    {
+        $auth = Yii::$app->authManager;
+		$roles=$auth->getRolesByUser($id);
+		foreach ($roles as $rol) {
+			// acá no hace nada, se hace asi porque siempre hay un solo rol por usuario
+		}
+		return $rol;
+	}
+    
 
     /**
      * @inheritdoc

@@ -10,6 +10,10 @@ use yii\widgets\Breadcrumbs;
 use frontend\assets\AppAsset;
 use common\widgets\Alert;
 
+use kartik\popover\PopoverX;
+use common\models\User;
+
+
 AppAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
@@ -58,16 +62,45 @@ AppAsset::register($this);
 				$menuItems[] = ['label' => 'Elegir portón', 'url' => ['/portones/elegir']];
 			}
 		}
-		
+		/* Opcion de salir por defecto de yii2
         $menuItems[] = [
             'label' => 'Salir (' . Yii::$app->user->identity->username . ')',
             'url' => ['/site/logout'],
             'linkOptions' => ['data-method' => 'post']
         ];
+        */
+        $u=User::findOne(Yii::$app->user->getId());
+        
+		if (!empty($u->foto)) {
+			$contenido=Html::img(Yii::$app->urlManager->createUrl('images/usuarios/'.$u->foto),
+				['class'=>'img-thumbnail']);
+		}
+		else
+        {
+			$contenido=Html::img(Yii::$app->urlManager->createUrl('images/sinfoto.png'),['class'=>'img-thumbnail']);
+		}
+
+        $headerPopover='<p><i>Usuario: '. Yii::$app->user->identity->username.'</i></p>'.
+			'<p><i>'. User::getRol(Yii::$app->user->getId())->description . '</i></p>';
+		$userPopover = '<li class="dropdown"><div class="navbar-form">' . PopoverX::widget([
+			'header' => $headerPopover,
+			'placement' => PopoverX::ALIGN_BOTTOM_RIGHT,
+			'size' => 'md',
+			'content' => $contenido,
+			'footer' => Html::a('Cerrar sesión &raquo;',['/site/logout'], 
+							['data-method' => 'post','class'=>'btn btn-sm btn-success']),
+			'toggleButton' => [
+				'label' => Html::tag('span', '', ['class' => 'glyphicon glyphicon-lock',]),
+				'class'=>'btn btn-sm btn-success'
+			]
+		]) . '</div></li>';        
+        $menuItems[] = $userPopover;
     }
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => $menuItems,
+        // para que muestre el popover
+        'encodeLabels' => false
     ]);
     NavBar::end();
     ?>

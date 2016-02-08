@@ -24,9 +24,10 @@ DROP TABLE IF EXISTS `auth_assignment`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `auth_assignment` (
   `item_name` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
-  `user_id` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `user_id` int(11) NOT NULL,
   `created_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`item_name`,`user_id`),
+  KEY `auth_assig_usr` (`user_id`),
   CONSTRAINT `auth_assignment_ibfk_1` FOREIGN KEY (`item_name`) REFERENCES `auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -37,7 +38,7 @@ CREATE TABLE `auth_assignment` (
 
 LOCK TABLES `auth_assignment` WRITE;
 /*!40000 ALTER TABLE `auth_assignment` DISABLE KEYS */;
-INSERT INTO `auth_assignment` VALUES ('administrador','8',1454792330),('consejo','7',1454792330),('intendente','9',1454792330);
+INSERT INTO `auth_assignment` VALUES ('administrador',8,1454792330),('consejo',7,1454792330),('guardia',12,1454960074),('intendente',9,1454792330),('sinRol',11,1454957230);
 /*!40000 ALTER TABLE `auth_assignment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -159,6 +160,35 @@ INSERT INTO `entradas` VALUES (3,1,9,NULL,'');
 UNLOCK TABLES;
 
 --
+-- Table structure for table `libro`
+--
+
+DROP TABLE IF EXISTS `libro`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `libro` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `texto` varchar(500) NOT NULL,
+  `idporton` tinyint(4) NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_by` int(11) NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `libro`
+--
+
+LOCK TABLES `libro` WRITE;
+/*!40000 ALTER TABLE `libro` DISABLE KEYS */;
+INSERT INTO `libro` VALUES (1,'In this tutorial i will explain how to use jui auto complete in yii2. The Autocomplete widget enables users to quickly find and select from a pre-populated list of values as they type, leveraging searching and filtering. ',1,9,'2016-02-07 17:27:34',9,'2016-02-08 17:27:34'),(2,'  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod vehicula eros pellentesque lacinia. Nulla suscipit metus ut enim iaculis, vitae sollicitudin velit vehicula. Nunc et elit sagittis, venenatis arcu vitae, pretium purus. Praesent venenatis libero vel lobortis consectetur. Nulla ut feugiat tortor. Quisque vestibulum, nisi sit amet luctus lobortis, diam diam dignissim tellus, a dignissim nibh massa ac magna. Nullam in nisi risus.  Donec finibus condimentum arcu. Nunc eu risus ph',2,9,'2016-02-08 18:44:28',9,'2016-02-08 18:44:28'),(3,'Fusce imperdiet at sapien vel tempor. Integer mattis, ipsum ac commodo aliquam, justo ligula dapibus justo, ut rhoncus purus arcu et nisi. Nunc vulputate et nibh sit amet tincidunt. Integer dictum, elit eu malesuada egestas, massa eros sodales nisi, a suscipit magna ex finibus diam. Duis maximus massa nec scelerisque ullamcorper. Praesent risus metus, maximus eget turpis ac, ultricies pretium tortor. Nulla cursus ante diam. Mauris posuere nisi feugiat tortor. ',2,9,'2016-02-08 19:21:14',9,'2016-02-08 19:21:14');
+/*!40000 ALTER TABLE `libro` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `migration`
 --
 
@@ -232,7 +262,7 @@ CREATE TABLE `personas` (
   `updated_by` int(11) NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=86 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=85 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -313,13 +343,14 @@ CREATE TABLE `user` (
   `password_reset_token` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `status` smallint(6) NOT NULL DEFAULT '10',
+  `foto` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `password_reset_token` (`password_reset_token`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -328,7 +359,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (7,'consejo','vt3jVR8_7Lp28wuGUKtnwf0Yp_iW1YUH','$2y$13$hO5BpsjMsPaIqWjbw0kGye8yKPuoktIl6mY.TxCy4Pi6xv5VOqKUS',NULL,'miraflores.adm.consejo@gmail.com',10,1453571317,1453571317),(8,'administracion','_MQYFP_FDxzIlGUVgQNTpoRVfLtoqZ-B','$2y$13$5Wrt.uiqIepY0VrzKB5.qOFqDwiqPCUZ2Di3hwwT70jjXSAla0C72',NULL,'miraflores.adm.adm@gmail.com',10,1453571342,1453571342),(9,'intendencia','KtqPN2-xODBwAGRcEwnZKjkMmFH7Z-pN','$2y$13$nKB4I1JzQR3G/dloJI2UfOVECEMUSTFWE6G4OM2AxZ7NJkMdqcVja',NULL,'ibergonzi@hotmail.com',10,1453571509,1453571509),(11,'ibergonzi','d1wCybevudCGF1MzsMtebe2lSB-OLjMK','$2y$13$VdzaAs3i5wo.nSY2xjnyEObTW4AlmMIID2eAf5PlQYbxNkWM0lPQe',NULL,'cuac@hotmail.com',10,1453662742,1453662742);
+INSERT INTO `user` VALUES (7,'consejo','vt3jVR8_7Lp28wuGUKtnwf0Yp_iW1YUH','$2y$13$hO5BpsjMsPaIqWjbw0kGye8yKPuoktIl6mY.TxCy4Pi6xv5VOqKUS',NULL,'miraflores.adm.consejo@gmail.com',10,NULL,1453571317,1453571317),(8,'administracion','_MQYFP_FDxzIlGUVgQNTpoRVfLtoqZ-B','$2y$13$5Wrt.uiqIepY0VrzKB5.qOFqDwiqPCUZ2Di3hwwT70jjXSAla0C72',NULL,'miraflores.adm.adm@gmail.com',10,NULL,1453571342,1453571342),(9,'intendencia','KtqPN2-xODBwAGRcEwnZKjkMmFH7Z-pN','$2y$13$nKB4I1JzQR3G/dloJI2UfOVECEMUSTFWE6G4OM2AxZ7NJkMdqcVja',NULL,'ibergonzi@hotmail.com',10,NULL,1453571509,1453571509),(11,'ibergonzi','d1wCybevudCGF1MzsMtebe2lSB-OLjMK','$2y$13$VdzaAs3i5wo.nSY2xjnyEObTW4AlmMIID2eAf5PlQYbxNkWM0lPQe',NULL,'cuac@hotmail.com',10,NULL,1453662742,1454957670),(12,'petu','YbaD3j46eRWHI1Zhu4xvIhGBihYy2dxV','$2y$13$ENwLvej.4LH.8mVq0QzT4uX08cjTZ2OF9vW91FbYhFofiv7Qmu5Ou',NULL,'petu@com.ar',10,'12.jpg',1454958741,1454960075);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -402,4 +433,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-02-06 19:36:57
+-- Dump completed on 2016-02-08 19:27:07

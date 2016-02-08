@@ -12,6 +12,8 @@ use common\models\User;
  */
 class UserSearch extends User
 {
+	public $descRolUsuario;
+	
     /**
      * @inheritdoc
      */
@@ -19,7 +21,7 @@ class UserSearch extends User
     {
         return [
             [['id', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['username', 'auth_key', 'password_hash', 'password_reset_token', 'email'], 'safe'],
+            [['username', 'auth_key', 'password_hash', 'password_reset_token', 'email','descRolUsuario'], 'safe'],
         ];
     }
 
@@ -41,11 +43,40 @@ class UserSearch extends User
      */
     public function search($params)
     {
-        $query = User::find();
+        $query = User::find()->joinWith('authAssignment.authItem');
+		
+		// Aca se cocina lo que deberia ver el usuario segun su rol
+
+		$rol=User::getRol(Yii::$app->user->getId());
+
+		switch($rol->name) {
+			case (string)"intendente": 
+				$query->andFilterWhere(['not in','item_name','intendente'])
+								->andWhere(['not in','item_name','administrador'])
+								->andWhere(['not in','item_name','consejo']);
+				break;
+			case (string)"administrador": 
+				$query->andFilterWhere(['not in','item_name','administrador'])
+								->andWhere(['not in','item_name','consejo']);
+				break;
+			case (string)"consejo": 
+				$query->andFilterWhere(['not in','item_name','consejo']);
+
+				break;
+		}
+		$query->andFilterWhere(['status' => User::STATUS_ACTIVE]);
+
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+        
+        // Agregado a mano, para que incluya el ordenamiento por descCliente
+        $dataProvider->sort->attributes['descRolUsuario'] = [
+            'asc' => ['auth_item.description' => SORT_ASC],
+            'desc' => ['auth_item.description' => SORT_DESC],
+        ];
+        
 
         $this->load($params);
 
@@ -63,10 +94,11 @@ class UserSearch extends User
         ]);
 
         $query->andFilterWhere(['like', 'username', $this->username])
-            ->andFilterWhere(['like', 'auth_key', $this->auth_key])
-            ->andFilterWhere(['like', 'password_hash', $this->password_hash])
-            ->andFilterWhere(['like', 'password_reset_token', $this->password_reset_token])
-            ->andFilterWhere(['like', 'email', $this->email]);
+            //->andFilterWhere(['like', 'auth_key', $this->auth_key])
+            //->andFilterWhere(['like', 'password_hash', $this->password_hash])
+            //->andFilterWhere(['like', 'password_reset_token', $this->password_reset_token])
+            ->andFilterWhere(['like', 'email', $this->email])
+            ->andFilterWhere(['like', 'auth_item.description', $this->descRolUsuario]);
 
         return $dataProvider;
     }

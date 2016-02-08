@@ -26,7 +26,9 @@ Linux
     cambiar "Cambiar contenido" de "Solo por el propietario" por "Solo el propietario y el grupo" de forma NO recursiva  
 13.a) crear carpeta images en frontend/web
       sudo chgrp www-data images
-13.b) crear carpeta personas dentro de frontend/web/images y sudo chgrp www-data images      
+13.b) crear carpeta personas dentro de frontend/web/images y sudo chgrp www-data personas      
+13.c) crear carpeta usuarios dentro de frontend/web/images y sudo chgrp www-data usuarios
+
        
 14) completar datos base de datos en common/config/main-local.php (OJO este archivo está en el .gitignore, evaluar si
     no hay que habilitarlo para que lo administre Git)

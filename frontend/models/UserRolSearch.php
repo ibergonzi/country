@@ -50,18 +50,19 @@ class UserRolSearch extends UserRol
 		//var_dump($rol->name);die;
 		switch($rol->name) {
 			case (string)"intendente": 
-				$query=UserRol::find()->where(['not in','item_name','intendente'])
+				$query=UserRol::find()->andwhere(['not in','item_name','intendente'])
 								->andWhere(['not in','item_name','administrador'])
 								->andWhere(['not in','item_name','consejo']);
 				break;
 			case (string)"administrador": 
-				$query=UserRol::find()->where(['not in','item_name','administrador'])
+				$query=UserRol::find()->andwhere(['not in','item_name','administrador'])
 								->andWhere(['not in','item_name','consejo']);			
 				break;
 			case (string)"consejo": 
-				$query=UserRol::find()->where(['not in','item_name','consejo']);	
+				$query=UserRol::find()->andwhere(['not in','item_name','consejo']);	
 				break;
 		}
+		$query=UserRol::find()->andwhere(['is','item_name',null]);	
 		
 
 		

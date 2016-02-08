@@ -59,15 +59,17 @@ use kartik\datecontrol\DateControl
 			</div>
 		</div>	
 		
-		<div class="col-md-offset-1 col-md-1 col-md-offset-1">
+		<div class="col-md-3">
 
 			<?php
 				if (!empty($model->foto)) {
-					echo Html::img(Yii::$app->urlManager->createUrl('images/personas/'.$model->foto),['class'=>'img-thumbnail']);
+					echo Html::img(Yii::$app->urlManager->createUrl('images/personas/'.$model->foto),
+							['class'=>'img-thumbnail pull-right']);
 				}
 				else
 				{
-					echo Html::img(Yii::$app->urlManager->createUrl('images/sinfoto.png'),['class'=>'img-thumbnail']);
+					echo Html::img(Yii::$app->urlManager->createUrl('images/sinfoto.png'),
+						['class'=>'img-thumbnail pull-right']);
 				}
 			?>
 

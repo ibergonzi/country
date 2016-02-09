@@ -82,7 +82,7 @@ class LibroSearch extends Libro
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
+            $query->where('0=1');
             return $dataProvider;
         }
 
@@ -97,15 +97,43 @@ class LibroSearch extends Libro
 
         $query->andFilterWhere(['like', 'texto', $this->texto])
 			->andFilterWhere(['like', 'user.username', $this->descUsuario]);
+		
+		if (isset($params['resetFechas'])) {
+			\Yii::$app->session->remove('libroFecDesde');
+			\Yii::$app->session->remove('libroFecHasta');
+			$this->fecdesde=null;
+			$this->fechasta=null;
+			unset($params['resetFechas']);
+		}
+		
+
+        if (!empty($this->fecdesde) && !empty($this->fechasta)) {
+			// cada vez que se envia el form con el rango de fechas se guardan las fechas en sesion
+			\Yii::$app->session->set('libroFecDesde',$this->fecdesde);			
+			\Yii::$app->session->set('libroFecHasta',$this->fechasta);					
 			
-			
-        if (isset($this->fecdesde) && isset($this->fechasta)) {
+			// para el between entre datetimes se debe agregar un dia mas a la fecha hasta
 			$f=new \DateTime($this->fechasta);
 			$f->add(new \DateInterval('P1D'));
 			$query->andFilterWhere(['between', 'libro.created_at', $this->fecdesde, $f->format('Y-m-d')]);
 			//unset($this->fecdesde);
-		} else {    
-            $query->andFilterWhere(['like', 'libro.created_at', $this->created_at]);
+		} else {
+			$sfd=\Yii::$app->session->get('libroFecDesde')?\Yii::$app->session->get('libroFecDesde'):'';
+			$sfh=\Yii::$app->session->get('libroFecHasta')?\Yii::$app->session->get('libroFecHasta'):'';
+			
+			// si todavia están en sesion las variables del rango de fechas se hace el between y se elimina created_at
+			if ($sfd && $sfh) {
+				// para el between entre datetimes se debe agregar un dia mas a la fecha hasta
+				$f=new \DateTime(\Yii::$app->session->get('libroFecHasta'));
+				$f->add(new \DateInterval('P1D'));
+				$query->andFilterWhere(['between', 'libro.created_at', \Yii::$app->session->get('libroFecDesde'), 
+						$f->format('Y-m-d')]);
+				$this->created_at='';		
+			}				
+			else
+			{	
+				$query->andFilterWhere(['like', 'libro.created_at', $this->created_at]);
+			}	
 		}			
 
         return $dataProvider;

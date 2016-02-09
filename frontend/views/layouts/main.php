@@ -91,7 +91,7 @@ AppAsset::register($this);
 							['data-method' => 'post','class'=>'btn btn-sm btn-success']),
 			'toggleButton' => [
 				'label' => Html::tag('span', '', ['class' => 'glyphicon glyphicon-lock',]),
-				'class'=>'btn btn-sm btn-success'
+				'class'=>'btn btn-sm btn-default'
 			]
 		]) . '</div></li>';        
         $menuItems[] = $userPopover;
@@ -130,4 +130,9 @@ AppAsset::register($this);
 <?php $this->endBody() ?>
 </body>
 </html>
+<?php
+if (!isset($this->params['focus']) ) {
+    $this->registerJs('$(":input:not(:button,:hidden):enabled:visible:first").focus();',yii\web\View::POS_READY);
+}
+?>
 <?php $this->endPage() ?>

@@ -9,24 +9,25 @@ use yii\behaviors\BlameableBehavior;
 use yii\db\Expression;
 
 /**
- * This is the model class for table "libro".
+ * This is the model class for table "comentarios".
  *
  * @property integer $id
- * @property string $texto
- * @property integer $idporton
+ * @property string $comentario
+ * @property string $model
+ * @property integer $model_id
  * @property integer $created_by
  * @property string $created_at
  * @property integer $updated_by
  * @property string $updated_at
  */
-class Libro extends \yii\db\ActiveRecord
+class Comentarios extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'libro';
+        return 'comentarios';
     }
 
     public function behaviors()
@@ -49,20 +50,20 @@ class Libro extends \yii\db\ActiveRecord
 	  ];
     }
 
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['texto', 'idporton', ], 'required'],
-            [['id', 'idporton', 'created_by', 'updated_by'], 'integer'],
-            [['created_by','created_at', 'updated_by','updated_at'], 'safe'],
-            [['texto'], 'string', 'max' => 500]
+            [['comentario', ], 'required'],
+            [['model_id', 'created_by', 'updated_by'], 'integer'],
+            [['created_at', 'updated_at','model', 'model_id', 'created_by','updated_by'], 'safe'],
+            [['comentario'], 'string', 'max' => 500],
+            [['model'], 'string', 'max' => 50]
         ];
     }
-
-
 
     /**
      * @inheritdoc
@@ -71,15 +72,15 @@ class Libro extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
-            'texto' => Yii::t('app', 'Texto'),
-            'idporton' => Yii::t('app', 'Portón'),
+            'comentario' => Yii::t('app', 'Comentario'),
+            'model' => Yii::t('app', 'Model'),
+            'model_id' => Yii::t('app', 'Model ID'),
             'created_by' => Yii::t('app', 'Creado por'),
             'created_at' => Yii::t('app', 'Creado el'),
             'updated_by' => Yii::t('app', 'Modificado por'),
             'updated_at' => Yii::t('app', 'Modificado el'),
-			'descUsuario'=>'Usuario alta',
-            'userCreatedBy.username'=>'Usuario alta',
-            'userUpdatedBy.username'=>'Usuario modificación',            
+			'userCreatedBy.username'=>'Usuario alta',
+            'userUpdatedBy.username'=>'Usuario modificación', 
         ];
     }
     
@@ -91,5 +92,6 @@ class Libro extends \yii\db\ActiveRecord
     public function getUserUpdatedBy()
     {
         return $this->hasOne(\common\models\User::className(), ['id' => 'updated_by']);
-    }        
+    }       
+    
 }

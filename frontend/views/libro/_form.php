@@ -21,7 +21,7 @@ use yii\widgets\ActiveForm;
 		$form = ActiveForm::begin();
 
 		echo $form->field($model, 'idporton')->textInput(['value'=>\Yii::$app->session->get('porton'),
-					'readonly' => true]);
+					'disabled' => true]);
 		echo $form->field($model, 'texto')->textInput(['maxlength' => true]);
 	?>
 

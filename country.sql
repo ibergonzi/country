@@ -127,6 +127,37 @@ LOCK TABLES `auth_rule` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `comentarios`
+--
+
+DROP TABLE IF EXISTS `comentarios`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `comentarios` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `comentario` varchar(500) NOT NULL,
+  `model` varchar(50) NOT NULL,
+  `model_id` int(11) NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_by` int(11) NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `model_id` (`model_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `comentarios`
+--
+
+LOCK TABLES `comentarios` WRITE;
+/*!40000 ALTER TABLE `comentarios` DISABLE KEYS */;
+INSERT INTO `comentarios` VALUES (1,'CUACCCCCC','',0,9,'2016-02-09 17:05:29',9,'2016-02-09 17:05:29'),(2,'otro mas','frontend\\models\\Libro',5,9,'2016-02-09 17:08:20',9,'2016-02-09 17:08:20'),(3,'Para el otro CUACCCCCCCCCCCC','frontend\\models\\Libro',4,9,'2016-02-09 17:10:56',9,'2016-02-09 17:10:56');
+/*!40000 ALTER TABLE `comentarios` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `entradas`
 --
 
@@ -175,7 +206,7 @@ CREATE TABLE `libro` (
   `updated_by` int(11) NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -184,7 +215,7 @@ CREATE TABLE `libro` (
 
 LOCK TABLES `libro` WRITE;
 /*!40000 ALTER TABLE `libro` DISABLE KEYS */;
-INSERT INTO `libro` VALUES (1,'In this tutorial i will explain how to use jui auto complete in yii2. The Autocomplete widget enables users to quickly find and select from a pre-populated list of values as they type, leveraging searching and filtering. ',1,9,'2016-02-07 17:27:34',9,'2016-02-08 17:27:34'),(2,'  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod vehicula eros pellentesque lacinia. Nulla suscipit metus ut enim iaculis, vitae sollicitudin velit vehicula. Nunc et elit sagittis, venenatis arcu vitae, pretium purus. Praesent venenatis libero vel lobortis consectetur. Nulla ut feugiat tortor. Quisque vestibulum, nisi sit amet luctus lobortis, diam diam dignissim tellus, a dignissim nibh massa ac magna. Nullam in nisi risus.  Donec finibus condimentum arcu. Nunc eu risus ph',2,9,'2016-02-08 18:44:28',9,'2016-02-08 18:44:28'),(3,'Fusce imperdiet at sapien vel tempor. Integer mattis, ipsum ac commodo aliquam, justo ligula dapibus justo, ut rhoncus purus arcu et nisi. Nunc vulputate et nibh sit amet tincidunt. Integer dictum, elit eu malesuada egestas, massa eros sodales nisi, a suscipit magna ex finibus diam. Duis maximus massa nec scelerisque ullamcorper. Praesent risus metus, maximus eget turpis ac, ultricies pretium tortor. Nulla cursus ante diam. Mauris posuere nisi feugiat tortor. ',2,9,'2016-02-08 19:21:14',9,'2016-02-08 19:21:14');
+INSERT INTO `libro` VALUES (1,'In this tutorial i will explain how to use jui auto complete in yii2. The Autocomplete widget enables users to quickly find and select from a pre-populated list of values as they type, leveraging searching and filtering. ',1,9,'2016-02-07 17:27:34',9,'2016-02-08 17:27:34'),(2,'  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod vehicula eros pellentesque lacinia. Nulla suscipit metus ut enim iaculis, vitae sollicitudin velit vehicula. Nunc et elit sagittis, venenatis arcu vitae, pretium purus. Praesent venenatis libero vel lobortis consectetur. Nulla ut feugiat tortor. Quisque vestibulum, nisi sit amet luctus lobortis, diam diam dignissim tellus, a dignissim nibh massa ac magna. Nullam in nisi risus.  Donec finibus condimentum arcu. Nunc eu risus ph',2,9,'2016-02-08 18:44:28',9,'2016-02-08 18:44:28'),(3,'Fusce imperdiet at sapien vel tempor. Integer mattis, ipsum ac commodo aliquam, justo ligula dapibus justo, ut rhoncus purus arcu et nisi. Nunc vulputate et nibh sit amet tincidunt. Integer dictum, elit eu malesuada egestas, massa eros sodales nisi, a suscipit magna ex finibus diam. Duis maximus massa nec scelerisque ullamcorper. Praesent risus metus, maximus eget turpis ac, ultricies pretium tortor. Nulla cursus ante diam. Mauris posuere nisi feugiat tortor. ',2,9,'2016-02-08 19:21:14',9,'2016-02-08 19:21:14'),(4,'prueba',1,9,'2016-02-09 15:26:29',9,'2016-02-09 15:26:29'),(5,'otra prubea por la hora',1,9,'2016-02-09 15:35:09',9,'2016-02-09 15:35:09');
 /*!40000 ALTER TABLE `libro` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -364,22 +395,6 @@ INSERT INTO `user` VALUES (7,'consejo','vt3jVR8_7Lp28wuGUKtnwf0Yp_iW1YUH','$2y$1
 UNLOCK TABLES;
 
 --
--- Temporary view structure for view `user_rol`
---
-
-DROP TABLE IF EXISTS `user_rol`;
-/*!50001 DROP VIEW IF EXISTS `user_rol`*/;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-/*!50001 CREATE VIEW `user_rol` AS SELECT 
- 1 AS `id`,
- 1 AS `username`,
- 1 AS `email`,
- 1 AS `item_name`,
- 1 AS `description`*/;
-SET character_set_client = @saved_cs_client;
-
---
 -- Table structure for table `vehiculos`
 --
 
@@ -405,24 +420,6 @@ LOCK TABLES `vehiculos` WRITE;
 INSERT INTO `vehiculos` VALUES (1,'EFD926','FIAT','PALIO','GRIS'),(2,'CMX618','VOLSWAGEN','GOLF','ROJO');
 /*!40000 ALTER TABLE `vehiculos` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Final view structure for view `user_rol`
---
-
-/*!50001 DROP VIEW IF EXISTS `user_rol`*/;
-/*!50001 SET @saved_cs_client          = @@character_set_client */;
-/*!50001 SET @saved_cs_results         = @@character_set_results */;
-/*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_unicode_ci */;
-/*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `user_rol` AS select `user`.`id` AS `id`,`user`.`username` AS `username`,`user`.`email` AS `email`,`auth_assignment`.`item_name` AS `item_name`,`auth_item`.`description` AS `description` from ((`user` left join `auth_assignment` on((`user`.`id` = `auth_assignment`.`user_id`))) left join `auth_item` on((`auth_assignment`.`item_name` = `auth_item`.`name`))) where (`user`.`status` = 10) */;
-/*!50001 SET character_set_client      = @saved_cs_client */;
-/*!50001 SET character_set_results     = @saved_cs_results */;
-/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -433,4 +430,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-02-08 19:27:07
+-- Dump completed on 2016-02-09 17:18:32

@@ -6,24 +6,13 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Libro */
 
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Libros'), 'url' => ['index']];
+$this->title = 'Detalle de entrada de Libro de guardia';
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Libro de guardia'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="libro-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
+    <h2><?= Html::encode($this->title) ?></h2>
 
     <?= DetailView::widget([
         'model' => $model,
@@ -31,10 +20,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'texto',
             'idporton',
-            'created_by',
-            'created_at',
-            'updated_by',
-            'updated_at',
+            'userCreatedBy.username',
+            'created_at:datetime',
+            'userUpdatedBy.username',
+            'updated_at:datetime',
         ],
     ]) ?>
 

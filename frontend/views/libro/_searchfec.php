@@ -17,6 +17,7 @@ use kartik\widgets\DatePicker;
 <div class="persona-search">
 
     <?php $form = ActiveForm::begin([
+		//'id'=>'formfec1',
         'action' => ['index'],
         'method' => 'post',
 		'layout' => 'inline'        
@@ -25,11 +26,12 @@ use kartik\widgets\DatePicker;
     <?php
 		echo $form->field($model, 'fecdesde')->widget(DateControl::className(),
 						['type' =>DateControl::FORMAT_DATE,
+						 //'value'=>$model->fecdesde!=''?$model->fecdesde:'',
 						 'options'=>[
 							 'options'=>['placeholder'=>'Desde fecha'],							 
 							 'id'=>'fcd',
 							 'pluginEvents'=>[ 'clearDate'=>'function(e) { 
-												$("#fcd").val("");
+													$("#fcd").val("");												
 											}'
 								],	
 							]
@@ -44,7 +46,7 @@ use kartik\widgets\DatePicker;
 						     'options'=>['placeholder'=>'Hasta fecha'],	
 							 'id'=>'fch',
 							 'pluginEvents'=>[ 'clearDate'=>'function(e) { 
-												$("#fch").val("");
+													$("#fch").val("");												
 											}'
 								],	
 							]						
@@ -54,8 +56,23 @@ use kartik\widgets\DatePicker;
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary']) ?>
         <?php //Html::resetButton(Yii::t('app', 'Reset'), ['class' => 'btn btn-default']) ?>
+    <?php ActiveForm::end(); ?>
+    
+        <?php
+			if (\Yii::$app->session->get('libroFecDesde')) {			
+				echo Html::a('<span class="glyphicon glyphicon-remove"></span>',['index'],[
+										'class'=>'btn btn-danger',
+										'title'=>'Eliminar Filtro',
+										'data'=>[
+											'params'=>['resetFechas'=>true],
+											'method'=>'post'
+												]
+									]);        
+			}
+
+		?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+
 
 </div>

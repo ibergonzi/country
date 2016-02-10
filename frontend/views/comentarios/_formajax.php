@@ -3,6 +3,10 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
+use frontend\models\Comentarios;
+
+use yii\widgets\DetailView;
+
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Comentarios */
 /* @var $form yii\widgets\ActiveForm */
@@ -27,6 +31,8 @@ use yii\widgets\ActiveForm;
 JS;
 $this->registerJs($js,yii\web\View::POS_READY);
 
+// esto es para que las columnas del detailView no cambien de tamaño
+$this->registerCss('table.detail-view th {width: 25%;} table.detail-view td {width: 75%;}');	
 
 ?>
 
@@ -46,5 +52,32 @@ $this->registerJs($js,yii\web\View::POS_READY);
     </div>
 
     <?php ActiveForm::end(); ?>
+
+    <?php 
+    	$models=Comentarios::find()->where(['model'=>$modelNameOrigen,'model_id'=>$modelIDOrigen])
+			->orderBy(['created_at'=>SORT_DESC])->all();
+		$primeraVez=true;	
+		foreach($models as $m) {
+			if ($primeraVez) {
+				echo '<hr/>';
+				echo '<p>Cantidad de comentarios '.kartik\helpers\Html::badge(count($models)).'</p>';
+				$primeraVez=false;
+			}
+			echo DetailView::widget([
+			'model' => $m,
+			'attributes' => [
+				//'id',
+				'comentario',
+				//'model',
+				//'model_id',
+				'userCreatedBy.username',
+				'created_at:datetime',
+				//'updated_by',
+				//'updated_at',
+				],
+			]);
+			echo '<hr/>';
+		}
+    ?>
 
 </div>

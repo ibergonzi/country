@@ -9,14 +9,17 @@ use yii\bootstrap\Collapse;
 
 use yii\bootstrap\Modal;
 
+use frontend\models\Comentarios;
+
 /* @var $this yii\web\View */
 /* @var $searchModel frontend\models\LibroSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = Yii::t('app', 'Libro de guardia');
 $this->params['breadcrumbs'][] = $this->title;
-		
+$this->registerCss('.modal-body { max-height: calc(100vh - 210px);overflow-y: auto;}');		
 ?>
+
 <div class="libro-index">
 
     <h2><?= Html::encode($this->title) ?></h2>
@@ -49,6 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
+			'id',
            ['attribute'=>'idporton',
 				'options'=>['style'=>'width:55px',], 
 				
@@ -90,15 +94,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
              'headerOptions'=>['style'=>'text-align:center'],   
              'options'=>['style'=>'width:70px'],   
-             'template' => '{view} {comentario}',  
+             'template' => '{view}&nbsp;&nbsp;&nbsp;{comentario}',  
   			 'buttons' => [
 				'comentario' => function ($url, $model) {
-					//$c=Comentarios::getComentarioByModelId($model->className(),$model->id);
-					$c=null;
+					$c=Comentarios::getComentariosByModelId($model->className(),$model->id);
+
 					$text='<span class="glyphicon glyphicon-copyright-mark"';
-					if ($c !== null) {
+					if (!empty($c)) {
 						$text.=' style="color:#FF8000"></span>';
-						$titl='Ver/modificar comentario';
+						$titl='Ingresar nuevo/Ver comentarios';
 					} else {
 						$text.='></span>';
 						$titl='Ingresar nuevo comentario';
@@ -123,21 +127,21 @@ $this->params['breadcrumbs'][] = $this->title;
 				
 			'urlCreator' => function ($action, $model, $key, $index) {
 				 if ($action === 'comentario') {
-					//$c=Comentarios::getComentarioByModelId($model->className(),$model->id);
-					$c=null;
-					if ($c == null) {
+						// en ComentariosController.CreateAjax se resuelve tanto el alta como la consulta de todos los comentarios
+						// que ya tenga la entrada del libro
 						$url=Yii::$app->urlManager->createUrl(
 								['comentarios/create-ajax',
 									'modelName'=>$model->className(),
 									'modelID'=>$model->id]);
-					} else {
-						$url=Yii::$app->urlManager->createUrl(
-								['comentarios/update',
-									'id'=>$c->id]);
-					}			
 					return $url;
 				 }
-						 
+			 	 if ($action === 'view') {
+					$url=Yii::$app->urlManager->createUrl(
+							['libro/view', 
+							 'id' => $model->id
+							]);
+					return $url;
+				 }						 
 
 			  }
       
@@ -148,8 +152,14 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php Pjax::end(); ?>
 
 <?php	
+	// para usar los comentarios en cualquier vista se incluyen:
+	/*
+	use yii\bootstrap\Modal;
+	use frontend\models\Comentarios;
+	$this->registerCss('.modal-body { max-height: calc(100vh - 210px);overflow-y: auto;}');
+	*/
 	Modal::begin(['id'=>'modalcomentarionuevo',
-		'header'=>'<span class="btn-warning">&nbsp;Nuevo comentario&nbsp;</span>']);
+		'header'=>'<span class="btn-warning">&nbsp;Comentarios&nbsp;</span>']);
 		echo '<div id="divcomentarionuevo"></div>';
 	Modal::end();    
 ?>

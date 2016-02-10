@@ -12,7 +12,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="libro-view">
 
-    <h2><?= Html::encode($this->title) ?></h2>
+    <h3><?= Html::encode($this->title) ?></h3>
 
     <?= DetailView::widget([
         'model' => $model,

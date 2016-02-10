@@ -52,6 +52,8 @@ class ComentariosController extends Controller
             'model' => $this->findModel($id),
         ]);
     }
+ 
+  
 
     /**
      * Creates a new Comentarios model.
@@ -90,6 +92,8 @@ class ComentariosController extends Controller
 		 	
         return $this->renderAjax('createajax', [
                 'model' => $model,
+                'modelNameOrigen' => $modelName,
+                'modelIDOrigen' => $modelID,                               
          ]);
     }    
     

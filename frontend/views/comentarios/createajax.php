@@ -12,10 +12,12 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="comentarios-create">
 
-    <h2><?= Html::encode($this->title) ?></h2>
+
 
     <?= $this->render('_formajax', [
         'model' => $model,
+		'modelNameOrigen' => $modelNameOrigen,
+		'modelIDOrigen' => $modelIDOrigen,         
     ]) ?>
 
 </div>

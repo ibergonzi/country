@@ -22,6 +22,14 @@ use yii\db\Expression;
  */
 class Comentarios extends \yii\db\ActiveRecord
 {
+	
+	public static function getComentariosByModelId($modelName,$modelID)
+    {
+	    $ms=self::find()->where(['model'=>$modelName,'model_id'=>$modelID])->orderBy(['created_at'=>SORT_DESC])->all();
+		return $ms;
+	}	
+	
+	
     /**
      * @inheritdoc
      */

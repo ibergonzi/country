@@ -94,11 +94,13 @@ return [
 			// this will be used when autoWidget is set to false at module or widget level.
 			'widgetSettings' => [
 				Module::FORMAT_DATE => [
-					'class' => 'yii\jui\DatePicker', // example
+					'class' => 'kartik\daterange\DateRangePicker', // example
+					/*
 					'options' => [
 						'dateFormat' => 'php:d-M-Y',
 						'options' => ['class'=>'form-control'],
 					]
+					*/
 				]
 			]
 			// other settings

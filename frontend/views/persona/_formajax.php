@@ -51,11 +51,11 @@ $this->registerJs($js,yii\web\View::POS_READY);
 
     <?= $form->field($model, 'dni')->textInput() ?>
 
-    <?= $form->field($model, 'apellido')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'apellido')->textInput(['maxlength' => true,'style' => 'text-transform: uppercase']) ?>
 
-    <?= $form->field($model, 'nombre')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'nombre')->textInput(['maxlength' => true,'style' => 'text-transform: uppercase']) ?>
 
-    <?= $form->field($model, 'nombre2')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'nombre2')->textInput(['maxlength' => true,'style' => 'text-transform: uppercase']) ?>
     
     <?= $form->field($model, 'fecnac')->widget(DateControl::className(),
 						['type' =>DateControl::FORMAT_DATE,

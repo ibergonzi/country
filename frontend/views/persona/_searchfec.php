@@ -44,7 +44,7 @@ echo $form->field($model, 'id')->widget(Select2::classname(), [
     'options' => ['placeholder' => '...'],
     'pluginOptions' => [
         'allowClear' => true,
-        'minimumInputLength' => 3,
+        'minimumInputLength' => 2,
         'ajax' => [
             'url' => \yii\helpers\Url::to(['apellidoslist']),
             'dataType' => 'json',

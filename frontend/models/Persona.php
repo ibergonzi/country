@@ -40,6 +40,18 @@ class Persona extends \yii\db\ActiveRecord
         return 'personas';
     }
     
+    
+    public function beforeSave($insert)
+    {
+			$this->apellido=mb_strtoupper($this->apellido);
+			$this->nombre=mb_strtoupper($this->nombre);
+			$this->nombre2=mb_strtoupper($this->nombre2);						
+ 
+            parent::beforeSave($insert);
+            return true;
+    }    
+    
+    
     public function behaviors()
     {
 	  return [
@@ -69,6 +81,7 @@ class Persona extends \yii\db\ActiveRecord
             [['dni', 'created_by', 'updated_by'], 'integer'],
             [['created_at', 'updated_at','created_by','updated_by','fecnac',], 'safe'],
             [['apellido', 'nombre', 'nombre2'], 'string', 'max' => 45],
+            [['apellido', 'nombre', 'nombre2'], 'trim'],            
             [['apellido','nombre'],'required'],
             [['fecnac'], 'default', 'value' => null],
             // se tiene que especificar format porque el datecontrol ya lo puso en formato mysql

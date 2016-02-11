@@ -40,7 +40,7 @@ class PersonaController extends Controller
 			$query = new Query;
 			$query->select(['id', new \yii\db\Expression("CONCAT(`apellido`, ' ',`nombre`) as text")])
 				->from('personas')
-				->where(['like', 'apellido', $q])
+				->where(['like', new \yii\db\Expression("CONCAT(`apellido`, ' ',`nombre`)"), $q])
 				->limit(20);
 			$command = $query->createCommand();
 			$data = $command->queryAll();

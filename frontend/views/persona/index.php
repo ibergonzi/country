@@ -1,10 +1,14 @@
 <?php
 
 use yii\helpers\Html;
+
 use yii\grid\GridView;
+//use kartik\grid\GridView;
+
 use kartik\datecontrol\DateControl;
 use yii\widgets\Pjax;
 use yii\bootstrap\Collapse;
+
 
 /* @var $this yii\web\View */
 /* @var $searchModel frontend\models\PersonaSearch */
@@ -66,31 +70,24 @@ $this->registerJs($js,yii\web\View::POS_READY);
              'filter' => DateControl::widget([
 				'model'=>$searchModel,
 				'attribute'=>'fecnac',
+
 				'type' =>DateControl::FORMAT_DATE,
                 'options' => [
 					'pluginEvents'=>[ 'clearDate'=>'function(e) { $.pjax.reload({container:"#grilla"});}'],	
-					
 					],
                 
             ])
             ],
             // 'created_by',
             //'created_at',
-            ['attribute'=>'created_at','format'=>['datetime']],
+            ['attribute'=>'created_at',
+             'format'=>['datetime'],
+ 
+            ],
+            
+            
             ['attribute'=>'updated_at',
              'format'=>['datetime'],
-            
-             'filter' => DateControl::widget([
-				'model'=>$searchModel,
-				'attribute'=>'updated_at',
-				'type' =>DateControl::FORMAT_DATE,
-                'options' => [
-					'pluginEvents'=>[ 'clearDate'=>'function(e) { $.pjax.reload({container:"#grilla"});}'						],	
-
-					],
-                
-				])
-				
             ],
             // 'updated_by',
            

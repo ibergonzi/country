@@ -71,16 +71,26 @@ WHERE nombre1 + ' ' + nombre2 + ' ' + apellido1 + ' ' + apellido2 LIKE '%Perez%'
 		\Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 		$out = ['results' => ['id' => '', 'text' => '']];
 
-		$concat=new \yii\db\Expression("CONCAT(`apellido`, ' ',`nombre`,' ',`nombre2`)");
+
 		
 		if (!is_null($q)) {
+			/*
 			$query = new Query;
-			$query->select(['id', $concat . ' as text','foto'])
+			$concat=new \yii\db\Expression("CONCAT(`apellido`, ' ',`nombre`,' ',`nombre2`)");			
+			$query->select(['id', $concat . ' as text'])
 				->from('personas')
 				->where(['like', $concat , $q])
 				->orderBy('text')
-				->limit(20);
+				->limit(40);
 			$command = $query->createCommand();
+			*/
+			
+			
+			$sp='CALL personas_busca_nombres(:query)' ;
+            $command = Yii::$app->db->createCommand($sp);
+            $command->bindParam(":query", trim($q));
+            
+			
 			$data = $command->queryAll();
 			$out['results'] = array_values($data);
 		}

@@ -1,7 +1,7 @@
 <?php
 
-use yii\helpers\Html;
-use yii\grid\GridView;
+use kartik\helpers\Html;
+use kartik\grid\GridView;
 
 use kartik\datecontrol\DateControl;
 use yii\widgets\Pjax;
@@ -11,20 +11,26 @@ use yii\bootstrap\Modal;
 
 use frontend\models\Comentarios;
 
+
+
+
 /* @var $this yii\web\View */
 /* @var $searchModel frontend\models\LibroSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = Yii::t('app', 'Libro de guardia');
 $this->params['breadcrumbs'][] = $this->title;
+
+// esto se setea para que los comentarios tengan scrollbar
 $this->registerCss('.modal-body { max-height: calc(100vh - 210px);overflow-y: auto;}');		
 ?>
 
 <div class="libro-index">
 
-    <h2><?= Html::encode($this->title) ?></h2>
+    <?php //echo Html::encode($this->title) ?>
  	
     <?php 
+   
 			if (\Yii::$app->session->get('libroFecDesde')) {
 				$lbl=Html::tag('span','',['class'=>'glyphicon glyphicon-warning-sign','style'=>'color:#FF8000']).
 					'  '.
@@ -44,53 +50,59 @@ $this->registerCss('.modal-body { max-height: calc(100vh - 210px);overflow-y: au
 					]
 				]
 			]);
+		
 			
     ?>
 	<?php Pjax::begin(['id' => 'grilla', 'timeout' => false ,
-	
 		'enablePushState' => false,
-	
-		'clientOptions' => ['method' => 'GET'] ]); ?>	
+		'clientOptions' => ['method' => 'GET'] ]); 
+		
+	?>	
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-			'id',
-           ['attribute'=>'idporton',
+	<?php
+	
+		$gridColumns=[
+
+           [	'attribute'=>'idporton',
 				'options'=>['style'=>'width:55px',], 
 				
-            ],        
-            //'created_by',
+           ],        
+
            [
                 'attribute'=>'descUsuario',
                 'value'=>'userCreatedBy.username',  
                 'options'=>['style'=>'width:140px',],  
            ],                   
  
-            //'created_at',
-            ['attribute'=>'created_at',
-             'options'=>['style'=>'width:160px',],             
-             'format'=>['datetime'],
-            
-             'filter' => DateControl::widget([
-				'model'=>$searchModel,
-				'attribute'=>'created_at',
-				'type' =>DateControl::FORMAT_DATE,
-                'options' => [
-						'pluginEvents'=>[ 'clearDate'=>'function(e) { $.pjax.reload({container:"#grilla"});}',
-										],	
 
-					],
-                
-				])
+		   [
+				 'attribute'=>'created_at',
+				 'options'=>['style'=>'width:160px',],             
+				 'format'=>['datetime'],
 				
-            ],            
-            'texto',
-            // 'updated_by',
-            // 'updated_at',
+				 'filter' => DateControl::widget([
+					'model'=>$searchModel,
+					'attribute'=>'created_at',
+					'type' =>DateControl::FORMAT_DATE,
+					'options' => [
+							'pluginEvents'=>[ 'clearDate'=>'function(e) { $.pjax.reload({container:"#grilla"});}',
+											],	
 
-           ['class' => 'yii\grid\ActionColumn',
+						],
+					
+					])
+				
+            ],   
+            [         
+				   'attribute'=>'texto',
+				   'format'=>'text', 
+				   'width'=>'500px',
+				   
+				   
+				   
+            ],
+ 
+            ['class' => 'yii\grid\ActionColumn',
              'header'=>Html::a('<span class="glyphicon glyphicon-plus-sign"></span>',
                                     ['create'], 
                                 ['class' => 'btn btn-sm btn-primary',
@@ -150,10 +162,52 @@ $this->registerCss('.modal-body { max-height: calc(100vh - 210px);overflow-y: au
 			  }
       
             ],
-        ],
-    ]); ?>
+        ];
 
-<?php Pjax::end(); ?>
+		// para evitar que la pagina se cuelgue cuando se le saca la paginación y hay muchos registros a mostrar
+		if ($dataProvider->totalCount <= 100) {
+			$toolbar=['{export}','{toggleData}'];
+		} else {
+			$toolbar=['{export}'];
+		}
+		
+	?>
+
+
+
+
+    <?= GridView::widget([
+        'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
+        
+		'panel'=>[
+			'heading'=>'<h3 class="panel-title"><i class="glyphicon glyphicon-book"></i> '.$this->title.'</h3>',
+			'type'=>'default',
+			//'before'=>'&nbsp;', // para que dibuje el toolbar (cuac)
+		 ],		
+		//'condensed'=>true, 	
+		
+		
+		// set a label for default menu
+		'export' => [
+			'label' => 'Página',
+			'fontAwesome' => true,
+		    'showConfirmAlert'=>false,				
+		],
+		// your toolbar can include the additional full export menu
+		'toolbar' => $toolbar,
+		//'toggleDataContainer' => ['class' => 'btn-group-sm'],
+		//'exportContainer' => ['class' => 'btn-group-sm'],		        
+		//'tableOptions'=>['class'=>'skip-export-txt'],   
+        
+        
+        'columns' => $gridColumns
+    ]); 
+    ?>
+
+<?php Pjax::end(); 
+
+?>
 
 <?php	
 	// para usar los comentarios en cualquier vista se incluyen:

@@ -27,7 +27,6 @@ use yii\bootstrap\Modal;
 	$personaDesc = empty($model->idpersona) ? '' : $model->persona->apellido.' '.$model->persona->nombre;
 	
 	
-	//$url=Yii::$app->urlManager->createUrl(['persona/create-ajax']);
 	$url=Yii::$app->urlManager->createUrl(['persona/create-ajax']);
 
 	$addon = [
@@ -54,7 +53,9 @@ use yii\bootstrap\Modal;
     echo $form->field($model, 'idporton')->textInput();
     	 
 	echo $form->field($model, 'idpersona')->widget(Select2::classname(), [
-		
+
+	    //'model' => $model,
+	    //'attribute' => 'idpersona',
 		'initValueText' => $personaDesc, // set the initial display text
 		'options' => ['id'=>'selectorPersonas','placeholder' => '...'],
 		'addon'=>$addon,
@@ -67,8 +68,8 @@ use yii\bootstrap\Modal;
 				'data' => new JsExpression('function(params) { return {q:params.term}; }')
 			],
 			'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-			'templateResult' => new JsExpression('function(id) { return id.text; }'),
-			'templateSelection' => new JsExpression('function (id) { return id.text; }'),
+			'templateResult' => new JsExpression('function(idpersona) { return idpersona.text; }'),
+			'templateSelection' => new JsExpression('function (idpersona) { return idpersona.text; }'),
 		],
 	]);  
 ?>  

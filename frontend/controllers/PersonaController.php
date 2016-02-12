@@ -32,6 +32,29 @@ class PersonaController extends Controller
         ];
     }
 
+	/*
+En lenguaje PHP:
+
+$consulta = "SELECT * FROM persona WHERE ";
+$palabras = explode(" ", $_POST["frase"]);
+$c = 0;
+foreach ($palabras as $palabra)
+{
+$c++;
+$consulta .= " nombre1 + ' ' + nombre2 + ' ' + apellido1 + ' ' + apellido2 LIKE '%".$palabra."%' ";
+$consulta .= (count($palabras) == $c ? "": " OR ");
+}
+Lo que daría por resultado:
+
+SELECT *
+FROM persona
+WHERE
+nombre1 + ' ' + nombre2 + ' ' + apellido1 + ' ' + apellido2 LIKE '%Juan%'
+OR nombre1 + ' ' + nombre2 + ' ' + apellido1 + ' ' + apellido2 LIKE '%Perez%'; 
+	*/
+
+
+
 	// funcion utilizada para los select2, devuelve json
 	public function actionApellidoslist($q = null, $id = null) {
 		\Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
@@ -47,11 +70,18 @@ class PersonaController extends Controller
 			$out['results'] = array_values($data);
 		}
 		elseif ($id > 0) {
-			$out['results'] = ['id' => $id, 'text' => Persona::find($id)->apellido];
+			$out['results'] = ['id' => $id, 'text' => $this->formateaPersona($id)];
 		}
 		return $out;
 	}
 
+
+	public function formateaPersona($id) 
+	{
+		$p=Persona::find($id);
+		$r=$p->apellido.' '.$p->nombre.' '.$p->nombre2.' ('.$id.')';
+		return $r;
+	}
 
     /**
      * Lists all Persona models.

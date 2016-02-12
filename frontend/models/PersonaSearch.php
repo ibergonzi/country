@@ -69,7 +69,7 @@ class PersonaSearch extends Persona
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
                 'pagination' => [
-					'pageSize' => -1,
+					'pageSize' => 12,
 						],
         ]);
 

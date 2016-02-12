@@ -87,7 +87,7 @@ class LibroSearch extends Libro
         }
 
         $query->andFilterWhere([
-            'id' => $this->id,
+            'libro.id' => $this->id,
             'idporton' => $this->idporton,
             //'created_by' => $this->created_by,
             //'created_at' => $this->created_at,

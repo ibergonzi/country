@@ -46,7 +46,11 @@ $this->registerCss('.modal-body { max-height: calc(100vh - 210px);overflow-y: au
 			]);
 			
     ?>
-	<?php Pjax::begin(['id' => 'grilla', 'timeout' => false ,'clientOptions' => ['method' => 'POST'] ]); ?>	
+	<?php Pjax::begin(['id' => 'grilla', 'timeout' => false ,
+	
+		'enablePushState' => false,
+	
+		'clientOptions' => ['method' => 'GET'] ]); ?>	
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,

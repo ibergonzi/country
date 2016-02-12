@@ -51,6 +51,17 @@ FROM persona
 WHERE
 nombre1 + ' ' + nombre2 + ' ' + apellido1 + ' ' + apellido2 LIKE '%Juan%'
 OR nombre1 + ' ' + nombre2 + ' ' + apellido1 + ' ' + apellido2 LIKE '%Perez%'; 
+
+pero es mas eficiente:
+SELECT *
+FROM persona
+WHERE nombre1 + ' ' + nombre2 + ' ' + apellido1 + ' ' + apellido2 LIKE '%Juan%' 
+UNION
+SELECT *
+FROM persona
+WHERE nombre1 + ' ' + nombre2 + ' ' + apellido1 + ' ' + apellido2 LIKE '%Perez%'; 
+ 
+ 
 	*/
 
 
@@ -59,11 +70,15 @@ OR nombre1 + ' ' + nombre2 + ' ' + apellido1 + ' ' + apellido2 LIKE '%Perez%';
 	public function actionApellidoslist($q = null, $id = null) {
 		\Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 		$out = ['results' => ['id' => '', 'text' => '']];
+
+		$concat=new \yii\db\Expression("CONCAT(`apellido`, ' ',`nombre`,' ',`nombre2`)");
+		
 		if (!is_null($q)) {
 			$query = new Query;
-			$query->select(['id', new \yii\db\Expression("CONCAT(`apellido`, ' ',`nombre`) as text")])
+			$query->select(['id', $concat . ' as text','foto'])
 				->from('personas')
-				->where(['like', new \yii\db\Expression("CONCAT(`apellido`, ' ',`nombre`)"), $q])
+				->where(['like', $concat , $q])
+				->orderBy('text')
 				->limit(20);
 			$command = $query->createCommand();
 			$data = $command->queryAll();

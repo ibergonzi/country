@@ -36,10 +36,10 @@ class LibroController extends Controller
 
         $searchModel = new LibroSearch();
         
-        //$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $post = Yii::$app->request->post();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        //$post = Yii::$app->request->post();
         
-        $dataProvider = $searchModel->search($post);  
+        //$dataProvider = $searchModel->search($post);  
 
 		
         return $this->render('index', [

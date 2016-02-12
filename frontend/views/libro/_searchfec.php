@@ -19,7 +19,7 @@ use kartik\widgets\DatePicker;
     <?php $form = ActiveForm::begin([
 		//'id'=>'formfec1',
         'action' => ['index'],
-        'method' => 'post',
+        'method' => 'get',
 		'layout' => 'inline'        
     ]); ?>
 
@@ -65,7 +65,7 @@ use kartik\widgets\DatePicker;
 										'title'=>'Eliminar Filtro',
 										'data'=>[
 											'params'=>['resetFechas'=>true],
-											'method'=>'post'
+											'method'=>'get'
 												]
 									]);        
 			}

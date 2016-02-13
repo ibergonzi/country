@@ -298,6 +298,9 @@ ANOTACIONES GENERALES
    ./yii message/config @common/config/i18n.php
 5.2) crear carpeta "messages" dentro de common
 5.3) editar common/config/i18n.php y configurar sourcePath, messagePath y languages
+5.4) ./yii message/extract @common/config/i18n.php
+5.5) Buscar vendor/kartik-v/yii2-grid/messages/es y cambiar:
+'There are {totalCount} records. Are you sure you want to display them all?' => 'Hay {totalCount} registros. Está seguro de querer mostrar todo?'
       
              
 

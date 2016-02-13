@@ -15,6 +15,8 @@ class LibroSearch extends Libro
 	public $descUsuario;
 	public $fecdesde;
 	public $fechasta;	
+	public $exportColumns;
+
 	
     /**
      * @inheritdoc
@@ -23,7 +25,7 @@ class LibroSearch extends Libro
     {
         return [
             [['id', 'idporton', 'created_by', 'updated_by'], 'integer'],
-            [['texto', 'created_at', 'updated_at','descUsuario'], 'safe'],
+            [['texto', 'created_at', 'updated_at','descUsuario','exportColumns'], 'safe'],
             [['fecdesde','fechasta',],'safe'],
             [['fecdesde','fechasta',],'validaRangoFechas','skipOnEmpty' => true],            
         ];
@@ -66,6 +68,9 @@ class LibroSearch extends Libro
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination'=>[
+				'pageSize' => 5,
+			],
 			'sort' => ['defaultOrder' => [
 							  'created_at' => SORT_DESC,
 							  ]

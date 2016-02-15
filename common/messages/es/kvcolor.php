@@ -17,10 +17,10 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    'Clear Color Selection' => '',
-    'No Color Selected' => '',
-    'cancel' => '',
-    'choose' => '',
-    'less' => '',
-    'more' => '',
+    'cancel' => "Cancelar",
+    'choose' => "Elegir",
+    'Clear Color Selection' => "Borrar color seleccionado",
+    'less' => "Menos",
+    'more' => "Más",
+    'No Color Selected' => "Ningún color seleccionado",
 ];

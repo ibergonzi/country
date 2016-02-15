@@ -206,7 +206,7 @@ CREATE TABLE `libro` (
   `updated_by` int(11) NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -215,7 +215,7 @@ CREATE TABLE `libro` (
 
 LOCK TABLES `libro` WRITE;
 /*!40000 ALTER TABLE `libro` DISABLE KEYS */;
-INSERT INTO `libro` VALUES (1,'In this tutorial i will explain how to use jui auto complete in yii2. The Autocomplete widget enables users to quickly find and select from a pre-populated list of values as they type, leveraging searching and filtering. ',1,9,'2016-02-07 17:27:34',9,'2016-02-08 17:27:34'),(2,'  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod vehicula eros pellentesque lacinia. Nulla suscipit metus ut enim iaculis, vitae sollicitudin velit vehicula. Nunc et elit sagittis, venenatis arcu vitae, pretium purus. Praesent venenatis libero vel lobortis consectetur. Nulla ut feugiat tortor. Quisque vestibulum, nisi sit amet luctus lobortis, diam diam dignissim tellus, a dignissim nibh massa ac magna. Nullam in nisi risus.  Donec finibus condimentum arcu. Nunc eu risus ph',2,9,'2016-02-08 18:44:28',9,'2016-02-08 18:44:28'),(3,'Fusce imperdiet at sapien vel tempor. Integer mattis, ipsum ac commodo aliquam, justo ligula dapibus justo, ut rhoncus purus arcu et nisi. Nunc vulputate et nibh sit amet tincidunt. Integer dictum, elit eu malesuada egestas, massa eros sodales nisi, a suscipit magna ex finibus diam. Duis maximus massa nec scelerisque ullamcorper. Praesent risus metus, maximus eget turpis ac, ultricies pretium tortor. Nulla cursus ante diam. Mauris posuere nisi feugiat tortor. ',2,9,'2016-02-08 19:21:14',9,'2016-02-08 19:21:14'),(4,'prueba',1,9,'2016-02-09 15:26:29',9,'2016-02-09 15:26:29'),(5,'otra prubea por la hora',1,9,'2016-02-09 15:35:09',9,'2016-02-09 15:35:09');
+INSERT INTO `libro` VALUES (1,'In this tutorial i will explain how to use jui auto complete in yii2. The Autocomplete widget enables users to quickly find and select from a pre-populated list of values as they type, leveraging searching and filtering. ',1,9,'2016-02-07 17:27:34',9,'2016-02-08 17:27:34'),(2,'  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod vehicula eros pellentesque lacinia. Nulla suscipit metus ut enim iaculis, vitae sollicitudin velit vehicula. Nunc et elit sagittis, venenatis arcu vitae, pretium purus. Praesent venenatis libero vel lobortis consectetur. Nulla ut feugiat tortor. Quisque vestibulum, nisi sit amet luctus lobortis, diam diam dignissim tellus, a dignissim nibh massa ac magna. Nullam in nisi risus.  Donec finibus condimentum arcu. Nunc eu risus ph',2,9,'2016-02-08 18:44:28',9,'2016-02-08 18:44:28'),(3,'Fusce imperdiet at sapien vel tempor. Integer mattis, ipsum ac commodo aliquam, justo ligula dapibus justo, ut rhoncus purus arcu et nisi. Nunc vulputate et nibh sit amet tincidunt. Integer dictum, elit eu malesuada egestas, massa eros sodales nisi, a suscipit magna ex finibus diam. Duis maximus massa nec scelerisque ullamcorper. Praesent risus metus, maximus eget turpis ac, ultricies pretium tortor. Nulla cursus ante diam. Mauris posuere nisi feugiat tortor. ',2,9,'2016-02-08 19:21:14',9,'2016-02-08 19:21:14'),(4,'prueba',1,9,'2016-02-09 15:26:29',9,'2016-02-09 15:26:29'),(5,'otra prubea por la hora',1,9,'2016-02-09 15:35:09',9,'2016-02-09 15:35:09'),(6,'Aliquam erat volutpat. Praesent sagittis metus tellus. In porttitor pulvinar libero, quis iaculis ligula sagittis eget. Aenean in erat ac purus suscipit suscipit et in orci. Vestibulum viverra orci mi, in euismod purus sollicitudin id. Integer ligula ipsum, eleifend in vehicula sit amet, pretium a elit. Praesent volutpat dui mattis.',1,9,'2016-02-13 17:43:24',9,'2016-02-13 17:43:24'),(7,'Integer blandit bibendum massa eu sodales. Sed viverra tempus ultrices. Morbi consectetur augue eget lacus efficitur, mollis vestibulum ligula malesuada. Vivamus iaculis ultrices elit, ut suscipit velit facilisis sit amet. Integer interdum aliquet mauris, sit amet mollis erat blandit ut. Curabitur metus nibh, dapibus in tincidunt non, venenatis et diam. ',1,9,'2016-02-13 17:44:58',9,'2016-02-13 17:44:58'),(8,'Ut tellus risus, vulputate at scelerisque at, consequat nec justo. Proin blandit ex scelerisque purus facilisis, sed tincidunt nibh vehicula. Donec at turpis ac dui mattis vestibulum. Donec quis odio aliquet, fringilla nunc et, maximus nisi. Aenean porttitor at libero et blandit. Fusce pellentesque risus eu suscipit egestas. Cras imperdiet.',1,9,'2016-02-13 17:46:02',9,'2016-02-13 17:46:02');
 /*!40000 ALTER TABLE `libro` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -421,6 +421,29 @@ LOCK TABLES `vehiculos` WRITE;
 INSERT INTO `vehiculos` VALUES (1,'EFD926','FIAT','PALIO','GRIS'),(2,'CMX618','VOLSWAGEN','GOLF','ROJO');
 /*!40000 ALTER TABLE `vehiculos` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Dumping routines for database 'country'
+--
+/*!50003 DROP PROCEDURE IF EXISTS `personas_busca_nombres` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `personas_busca_nombres`(IN `_query` VARCHAR(45) CHARSET utf8)
+    READS SQL DATA
+    SQL SECURITY INVOKER
+SELECT `id`, CONCAT(`apellido`, ' ',`nombre`,' ',`nombre2`) as text FROM `personas` WHERE CONCAT(`apellido`, ' ',`nombre`,' ',`nombre2`) LIKE CONCAT('%', _query , '%') ORDER BY `text` LIMIT 40 ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -431,4 +454,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-02-12 19:48:12
+-- Dump completed on 2016-02-15  9:09:55

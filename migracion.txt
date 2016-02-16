@@ -12,7 +12,7 @@ En new.personas va a haber 3 campos para nombres: apellido, nombre y nombre2. Ha
 en dos, teniendo cuidado con nombres como: Del Carmen (es un solo nombre y va al campo new.personas.nombre)
 Hay que pasar todos los nombres en mayusculas y sin espacios en ningún lado (trim)
 
-Hay 3 o 4 registros con fechas nullas, descartarlos completamente
+Hay 3 o 4 registros con fechas nulas, descartarlos completamente
 
 
 

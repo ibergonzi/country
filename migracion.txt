@@ -1,0 +1,71 @@
+TABLA OLD.VISITAS
+En principio las tablas de destino son new.personas y new.propietarios.
+old.visitas.autoriza toma 2 valores, 0 y 1 donde 1 indica que es autorizante, es decir copropietario
+Hay que pasar estas personas a una tabla new.propietarios (id, idpersona, etc.)
+
+SOLO hay 2 duplicaciones exactas por tipo_doc y nro_doc: old.visitas.numero in (16089,16764) WTF?
+Hay duplicaciones por nro_doc (distintos tipo_doc), en la mayoria de los casos los datos son casi iguales, 
+dejar 1 solo (a criterio)
+Hay registros con tipo_doc que no están referenciados ni en 
+
+En new.personas va a haber 3 campos para nombres: apellido, nombre y nombre2. Hay que separar old.visitas.nombre 
+en dos, teniendo cuidado con nombres como: Del Carmen (es un solo nombre y va al campo new.personas.nombre)
+Hay que pasar todos los nombres en mayusculas y sin espacios en ningún lado (trim)
+
+Hay 3 o 4 registros con fechas nullas, descartarlos completamente
+
+
+
+
+
+TABLA OLD.AGENDA
+Hay que pasarla como está, con errores y todo
+
+
+TABLA OLD.AUTOS
+No hay duplicaciones de patentes, excepto patente=8888 y 9999 (entre los dos hay casi 20.000 registros)
+que significan "bicicleta" y "a pie" WTF?
+La idea es que si la persona no entra con un vehiculo no se deberia grabar un vehiculo nuevo cada vez. 
+Ya existen 2 registros:
+old.autos.numero 1  
+old.autos.marca 40 
+old.autos.patente=8888
+y
+old.autos.numero 2  
+old.autos.marca 54 
+old.autos.patente=9999
+
+Habria que usar solamente estos 2 vehiculos en old.accesos y eliminar todos los duplicados en old.autos
+en new.vehiculos habria que reemplazar patente por "BICICLETA" y "CAMINANDO" respectivamente 
+En la tabla nueva NO se van a admitir duplicados en patente
+
+Hay que pasar todos los campos a mayúsculas y ver que pasa con old.autos.color que hay vacíos y null (
+se tendrian que pasar a null)
+
+TABLA OLD.MARCAS
+Pasarla como está a new.vehiculos_marcas
+
+TABLA OLD.CONCEPTO
+Pasarla como está a new.entradas_conceptos
+
+TABLA OLD.OBRAS
+Relacionada con old.profesionales y old.empcons
+Pasarla como está a new.obras. Las fechas datetime se pasan a date
+
+TABLA OLD.PROFESIONALES
+Pasarla como está a new.profesionales
+
+TABLA OLD.EMPCONS
+Pasarla como está a new.empresas_constr
+
+TABLA OLD.TIP_INF
+Pasarla a new.infracciones_tipos
+El campo CobroPersona tiene 3 valores: S, N o null, se pasa S como S, el resto es N
+El campo ImportePersona se pasa si el valor es > 0, sino se pasa 0
+Es decir, los campos CobroPersona e ImportePersona no tienen que ser nulos
+
+TABLA OLD.INFRAC
+Pasarla a new.infracciones
+En el campo foto, si tiene algun valor, es decir, si tiene foto, colocar numero+'.jpg'
+Los campos Monto, CantidadPersonas, ImportePersonas, ImportePersonasTotal, MontoTotal reciben el mismo tratamiento
+que old.tip_inf.ImportePersona

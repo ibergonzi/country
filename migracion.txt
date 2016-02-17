@@ -14,8 +14,12 @@ Hay que pasar todos los nombres en mayusculas y sin espacios en ningún lado (tr
 
 Hay 3 o 4 registros con fechas nulas, descartarlos completamente
 
+Campos old.visitas.avisar_a y old.visitas.mensaje: se deben pasar a new.personas.mensajes
+
+Campos old.visitas.tarjeta y old.visitas.vtotarj: se deben pasar a new.personas.seguros
 
 
+TABLA OLD.ACCESOS
 
 
 TABLA OLD.AGENDA
@@ -46,7 +50,9 @@ TABLA OLD.MARCAS
 Pasarla como está a new.vehiculos_marcas
 
 TABLA OLD.CONCEPTO
-Pasarla como está a new.entradas_conceptos
+Pasarla como está a new.entradas_conceptos, en esta tabla se agregará un campo "req_seguro" donde será "true" para los
+conceptos 2,4 y 9 (Proveedores, personal doméstico y obreros)
+
 
 TABLA OLD.OBRAS
 Relacionada con old.profesionales y old.empcons

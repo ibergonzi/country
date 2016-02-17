@@ -17,6 +17,7 @@ class PersonaSearch extends Persona
 	public $fechasta;	
 	public $nomCompleto;
 	
+
 	
     /**
      * @inheritdoc

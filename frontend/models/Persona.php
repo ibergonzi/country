@@ -112,6 +112,20 @@ class Persona extends \yii\db\ActiveRecord
         ];
     }
 
+	// Relación N a N via junction table, en este caso personas_unidades
+
+    public function getPersonasUnidades()
+    {
+        return $this->hasMany(PersonasUnidades::className(), ['idpersona' => 'id']);
+    }
+    
+    public function getUnidades()
+    {
+        return $this->hasMany(Unidades::className(), ['id' => 'idunidad'])
+			->via('personasUnidades');
+    }
+
+
     /**
      * @return \yii\db\ActiveQuery
      */

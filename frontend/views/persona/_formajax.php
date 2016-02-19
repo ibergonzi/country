@@ -19,15 +19,20 @@ use kartik\datecontrol\DateControl;
 				form.attr('action'),
 				form.serialize()
 			).done(function(result) {
-				var seleccion=$('#selectorPersonas');
-				var option = $('<option></option>').
-					 attr('selected', true).
-					 text(result.modelP['apellido']+' '+result.modelP['nombre']).
-					 val(result.modelP['id']);
-				option.appendTo(seleccion);
-				seleccion.trigger('change');
-				$('#modalpersonanueva').modal('hide');
-				//location.reload();
+				console.log(result);
+				
+			
+				
+					var seleccion=$('#selectorPersonas');
+					var option = $('<option></option>').
+						 attr('selected', true).
+						 text(result.modelP['apellido']+' '+result.modelP['nombre']).
+						 val(result.modelP['id']);
+					option.appendTo(seleccion);
+					seleccion.trigger('change');
+					$('#modalpersonanueva').modal('hide');
+					//location.reload();
+				
 			});
 			return false;
 			}).
@@ -45,6 +50,8 @@ $this->registerJs($js,yii\web\View::POS_READY);
     <?php $form = ActiveForm::begin(
 		[
 			'id' => 'form-personanueva-ajax',
+			// se habilita ajax para la validación porque el dni tiene un rule "unique" (tiene que ir a la BD)
+			'enableAjaxValidation'=>true,
 		]    
     ); 
     ?>

@@ -40,6 +40,7 @@ use yii\bootstrap\Modal;
                         cache    : false,
                         url  : $(this).attr("href"),
                         success  : function(response) {
+									console.log(response);
                                     $("#divpersonanueva").html(response);
                                     $("#modalpersonanueva").modal("show")
                                     

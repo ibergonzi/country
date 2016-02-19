@@ -31,7 +31,6 @@ use yii\db\Expression;
 class Persona extends \yii\db\ActiveRecord
 {
 
-	
     /**
      * @inheritdoc
      */
@@ -86,7 +85,9 @@ class Persona extends \yii\db\ActiveRecord
             [['fecnac'], 'default', 'value' => null],
             // se tiene que especificar format porque el datecontrol ya lo puso en formato mysql
             [['fecnac'],'date','format' => 'php:Y-m-d'],
-			[['foto'], 'file', 'extensions'=>'jpg, jpeg'],            
+			[['foto'], 'file', 'extensions'=>'jpg, jpeg'],  
+			
+			['dni','unique','targetAttribute' => 'dni'],          
         ];
     }
 

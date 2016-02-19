@@ -187,20 +187,36 @@ WHERE nombre1 + ' ' + nombre2 + ' ' + apellido1 + ' ' + apellido2 LIKE '%Perez%'
     {
         $model = new Persona();
 
-        if ($model->load(Yii::$app->request->post()) ) {
+		// Al estar habilitado la validation ajax, $_POST['ajax'] viene seteado, si vino por el submit, esta variable no existe
+		// Siempre se devuelve el validate
+		if (isset($_POST['ajax'])) {
 
-			if ($model->save()) {
-				Yii::$app->response->format = 'json';
-				return [
-					//'message' => 'Success!!!',
-					'modelP'=>$model
-				];
-			}
+				Yii::$app->response->format = 'json';				
+				$model->load(Yii::$app->request->post());
+				return ActiveForm::validate($model);
+
 		}
-		 	
-        return $this->renderAjax('createajax', [
-                'model' => $model,
-         ]);
+		
+		// si no viene seteado $_POST['ajax'] se asume que se entro por el submit
+		if ($model->load(Yii::$app->request->post()) ) {
+				if ($model->save()) {
+
+					Yii::$app->response->format = 'json';
+					return [
+						//'message' => 'Success!!!',
+						'modelP'=>$model
+					];				
+				} else {
+
+					Yii::$app->response->format = 'json';				
+					return ActiveForm::validate($model);
+			}
+		}	
+
+		return $this->renderAjax('createajax', [
+				'model' => $model,
+		 ]);
+
     }
  
     

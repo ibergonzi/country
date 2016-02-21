@@ -6,7 +6,7 @@ use yii\widgets\ActiveForm;
 use kartik\widgets\Select2; // or kartik\select2\Select2
 use yii\web\JsExpression;
 
-use frontend\models\Persona;
+use frontend\models\Personas;
 
 use yii\bootstrap\Modal;
 
@@ -24,10 +24,10 @@ use yii\bootstrap\Modal;
     <?php //echo $form->field($model, 'idpersona')->textInput() ?>
    
 <?php    
-	$personaDesc = empty($model->idpersona) ? '' : $model->persona->apellido.' '.$model->persona->nombre;
+	$personaDesc=$model->isNewRecord?'':Personas::formateaPersonaSelect2($model->idpersona,false);
+
 	
-	
-	$url=Yii::$app->urlManager->createUrl(['persona/create-ajax']);
+	$url=Yii::$app->urlManager->createUrl(['personas/create-ajax']);
 
 	$addon = [
 		'append' => [
@@ -64,7 +64,7 @@ use yii\bootstrap\Modal;
 			'allowClear' => true,
 			'minimumInputLength' => 3,
 			'ajax' => [
-				'url' => \yii\helpers\Url::to(['persona/apellidoslist']),
+				'url' => \yii\helpers\Url::to(['personas/apellidoslist']),
 				'dataType' => 'json',
 				'data' => new JsExpression('function(params) { return {q:params.term}; }')
 			],

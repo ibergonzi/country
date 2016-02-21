@@ -71,7 +71,7 @@ class PersonasSearch extends Personas
         }
 
         $query->andFilterWhere([
-            'id' => $this->id,
+            'personas.id' => $this->id,
             'id_tipo_doc' => $this->tipoDoc, // se usa el campo agregado (viene con el valor en el filter) en vez de $this->id_tipo_doc,
             'created_by' => $this->created_by,
             'created_at' => $this->created_at,

@@ -2,19 +2,19 @@
 
 use yii\helpers\Html;
 
-
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Personas */
 
-$this->title = 'Nueva Persona';
+$this->title = 'Deshabilitar persona ID: ' . $model->id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Personas'), 'url' => ['index']];
+//$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="personas-create">
+<div class="personas-update">
 
     <h3><?= Html::encode($this->title) ?></h3>
 
-    <?= $this->render('_form', [
+    <?= $this->render('_delete', [
         'model' => $model,
     ]) ?>
 

@@ -8,18 +8,47 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Personas */
 /* @var $form yii\widgets\ActiveForm */
-?>
-<div class='container'>
-	
-	<div class='row'>
 
-		<div class="col-md-9">
+$js = 
+<<<JS
+	$('form#form-personanueva-ajax').
+		on('beforeSubmit', function(e) {
+			var form = $(this);
+			$.post(
+				form.attr('action'),
+				form.serialize()
+			).done(function(result) {
+					var seleccion=$('#selectorPersonas');
+					var option = $('<option></option>').
+						 attr('selected', true).
+						 text(result.modelP['apellido']+' '+result.modelP['nombre']).
+						 val(result.modelP['id']);
+					option.appendTo(seleccion);
+					seleccion.trigger('change');
+					$('#modalpersonanueva').modal('hide');
+					//location.reload();
+				
+			});
+			return false;
+			}).
+		on('submit', function(e){
+			e.preventDefault();
+		});
+JS;
+$this->registerJs($js,yii\web\View::POS_READY);
+?>
+
 			
 			<div class="personas-form">
 
 				<?php $form = ActiveForm::begin(						
-					// agregado a mano para hacer uploads
-						['options' => ['enctype' => 'multipart/form-data']] ); ?>
+					[
+						'id' => 'form-personanueva-ajax',
+						// se habilita ajax para la validación porque el nro_doc tiene un rule "unique" (tiene que ir a la BD)
+						'enableAjaxValidation'=>true,
+					]  
+					);  
+				?>
 
 				<?= $form->field($model, 'apellido')->textInput(['maxlength' => true,'style' => 'text-transform: uppercase']) ?>
 
@@ -31,13 +60,6 @@ use yii\widgets\ActiveForm;
 
 				<?= $form->field($model, 'nro_doc')->textInput(['maxlength' => true]) ?>
 
-				<?php
-				if ($model->isNewRecord) echo $form->field($model, 'foto')->fileInput() ;
-				if (!$model->isNewRecord) echo $form->field($model, 'foto')
-												->hint($model->foto)
-												->fileInput() ;
-				?>
-
 				<?= $form->field($model, 'estado')->hiddenInput()->label(false) ?>
 
 				<div class="form-group">
@@ -48,22 +70,4 @@ use yii\widgets\ActiveForm;
 
 			</div>
 			
-		</div>	
-		
-		<div class="col-md-3">
-
-			<?php
-				if (!empty($model->foto)) {
-					echo Html::img(Yii::$app->urlManager->createUrl('images/personas/'.$model->foto),
-							['class'=>'img-thumbnail pull-right']);
-				}
-				else
-				{
-					echo Html::img(Yii::$app->urlManager->createUrl('images/sinfoto.png'),
-						['class'=>'img-thumbnail pull-right']);
-				}
-			?>
-
-		</div>	
-	</div>
-</div>					
+					

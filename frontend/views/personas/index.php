@@ -30,7 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             [
 				'attribute'=>'id',
-					'options'=>['style'=>'width:55px',], 
+					'options'=>['style'=>'width:75px',], 
 				
             ],
             'apellido',
@@ -62,7 +62,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                  'title' => Yii::t('app', 'Alta de persona'),]),
 
              'headerOptions'=>['style'=>'text-align:center'],   
-             'options'=>['style'=>'width:70px'],         
+             'options'=>['style'=>'width:70px;text-align:"center";'],  
+			 'template' => '{view}',       
             ],
         ],
     ]); 

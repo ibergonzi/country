@@ -103,11 +103,13 @@ class Personas extends \yii\db\ActiveRecord
         return [
             [['apellido', 'nombre', 'id_tipo_doc', 'nro_doc'], 'required'],
             [['id_tipo_doc', 'created_by', 'updated_by','nro_doc'], 'integer'],
-            [['created_at', 'updated_at','estado'], 'safe'],
+            [['created_at', 'updated_at','estado','motivo_baja'], 'safe'],
             [['apellido', 'nombre', 'nombre2'], 'string', 'max' => 45],
-            [['nro_doc'], 'string', 'max' => 20],
-            [['foto'], 'string', 'max' => 100],
-            [['motivo_baja'], 'string', 'max' => 50]
+			[['apellido', 'nombre', 'nombre2'], 'trim'],             
+ 			[['foto'], 'file', 'extensions'=>'jpg, jpeg'],  
+            [['motivo_baja'], 'string', 'max' => 50],
+   			['nro_doc','unique','targetAttribute' => ['nro_doc','id_tipo_doc','estado']], 
+			['estado','default','value'=>Personas::ESTADO_ACTIVO],
         ];
     }
 
@@ -134,6 +136,20 @@ class Personas extends \yii\db\ActiveRecord
             'userUpdatedBy.username'=>'Usuario modif.',              
         ];
     }
+    
+    
+
+	public static function formateaPersonaSelect2($id,$es_por_nro) 
+	{
+		$p=Personas::findOne($id);
+		if ($es_por_nro) {
+			$r=$p->nro_doc . ' ' . $p->apellido.' '.$p->nombre.' '.$p->nombre2.  ' ('. $id . ')';
+		} else {
+			$r=$p->apellido.' '.$p->nombre.' '.$p->nombre2. ' D:' . $p->nro_doc . ' ('. $id . ')';			
+		}
+		return $r;
+	}    
+
 
     /**
      * @return \yii\db\ActiveQuery

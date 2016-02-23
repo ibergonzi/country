@@ -23,6 +23,7 @@ use yii\web\UploadedFile;
 class PersonasController extends Controller
 {
 	/*
+	// se anula porque no se puede eliminar desde el index, sino desde el view (se llama por GET y no por POST)
     public function behaviors()
     {
         return [
@@ -169,10 +170,8 @@ class PersonasController extends Controller
 		// Al estar habilitado la validation ajax, $_POST['ajax'] viene seteado, si vino por el submit, esta variable no existe
 		// Siempre se devuelve el validate
 		if (isset($_POST['ajax'])) {
-
 				Yii::$app->response->format = 'json';				
 				$model->load(Yii::$app->request->post());
-				Yii::trace($model);
 				return ActiveForm::validate($model);
 		}
 		

@@ -50,7 +50,7 @@ TABLA OLD.MARCAS
 Pasarla como está a new.vehiculos_marcas
 
 TABLA OLD.CONCEPTO
-Pasarla como está a new.entradas_conceptos, en esta tabla se agregará un campo "req_seguro" donde será "true" para los
+Pasarla como está a new.accesos_conceptos, en esta tabla se agregará un campo "req_seguro" donde será "true" para los
 conceptos 2,4 y 9 (Proveedores, personal doméstico y obreros)
 
 

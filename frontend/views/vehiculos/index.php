@@ -5,16 +5,16 @@ use yii\grid\GridView;
 
 use yii\widgets\Pjax;
 
-use frontend\models\Personas;
+use frontend\models\Vehiculos;
 
 /* @var $this yii\web\View */
-/* @var $searchModel frontend\models\PersonasSearch */
+/* @var $searchModel frontend\models\VehiculosSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Personas');
+$this->title = Yii::t('app', 'Vehiculos');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="personas-index">
+<div class="vehiculos-index">
 
     <h3><?= Html::encode($this->title) ?></h3>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -33,25 +33,24 @@ $this->params['breadcrumbs'][] = $this->title;
 					'options'=>['style'=>'width:75px',], 
 				
             ],
-            'apellido',
-            'nombre',
-            'nombre2',
             [
-				'attribute'=>'tipoDoc',
-				'value'=>'tipoDoc.desc_tipo_doc_abr',
-				'filter'=>$searchModel->listaTiposdoc,
+				'attribute'=>'marca',
+				'value'=>'vehiculoMarca.desc_marca',
+				'filter'=>$searchModel->listaMarcas,
             ],
-            //'id_tipo_doc',
-            'nro_doc',
-            // 'foto',
+            'modelo',
+            'patente',
+            'color',
             // 'created_by',
             // 'created_at',
             // 'updated_by',
             // 'updated_at',
+            // 'estado',
             // 'motivo_baja',
+
             [
 				'attribute'=>'estado',
-                'value'=>function($data) {return Personas::getEstados($data->estado);},
+                'value'=>function($data) {return Vehiculos::getEstados($data->estado);},
                 'filter'=>$searchModel->estados,
             ],           
 
@@ -59,15 +58,13 @@ $this->params['breadcrumbs'][] = $this->title;
              'header'=>Html::a('<span class="glyphicon glyphicon-plus-sign"></span>',
                                     ['create'], 
                                 ['class' => 'btn-sm btn-primary',
-                                 'title' => Yii::t('app', 'Alta de persona'),]),
+                                 'title' => Yii::t('app', 'Alta de vehiculo'),]),
 
              'headerOptions'=>['style'=>'text-align:center'],   
              'options'=>['style'=>'width:70px;text-align:"center";'],  
 			 'template' => '{view}',       
-            ],
+            ]
         ],
-    ]); 
-    ?>
-
+    ]); ?>
 <?php Pjax::end(); ?>
 </div>

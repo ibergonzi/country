@@ -16,6 +16,132 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `accesos`
+--
+
+DROP TABLE IF EXISTS `accesos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `accesos` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id_persona` int(11) NOT NULL,
+  `ing_id_vehiculo` int(11) NOT NULL,
+  `ing_fecha` date NOT NULL,
+  `ing_hora` datetime NOT NULL,
+  `ing_id_porton` smallint(6) NOT NULL,
+  `ing_id_user` int(11) NOT NULL,
+  `egr_id_vehiculo` int(11) DEFAULT NULL,
+  `egr_fecha` date DEFAULT NULL,
+  `egr_hora` datetime DEFAULT NULL,
+  `egr_id_porton` smallint(6) DEFAULT NULL,
+  `egr_id_user` int(11) DEFAULT NULL,
+  `id_concepto` int(11) NOT NULL,
+  `motivo` varchar(50) NOT NULL,
+  `cant_acomp` tinyint(4) NOT NULL DEFAULT '0',
+  `created_by` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_by` int(11) NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `estado` tinyint(4) NOT NULL DEFAULT '1',
+  `motivo_baja` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_ing_fecha` (`ing_fecha`) USING BTREE,
+  KEY `idx_id_persona` (`id_persona`) USING BTREE,
+  KEY `idx_ing_id_vehiculo` (`ing_id_vehiculo`) USING BTREE,
+  KEY `idx_egr_id_vehiculo` (`egr_id_vehiculo`) USING BTREE,
+  KEY `idx_id_concepto` (`id_concepto`) USING BTREE,
+  CONSTRAINT `fk_concepto` FOREIGN KEY (`id_concepto`) REFERENCES `accesos_conceptos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_egr_vehiculo` FOREIGN KEY (`egr_id_vehiculo`) REFERENCES `vehiculos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_ing_vehiculo` FOREIGN KEY (`ing_id_vehiculo`) REFERENCES `vehiculos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_personas` FOREIGN KEY (`id_persona`) REFERENCES `personas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `accesos`
+--
+
+LOCK TABLES `accesos` WRITE;
+/*!40000 ALTER TABLE `accesos` DISABLE KEYS */;
+/*!40000 ALTER TABLE `accesos` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `accesos_autorizantes`
+--
+
+DROP TABLE IF EXISTS `accesos_autorizantes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `accesos_autorizantes` (
+  `id_acceso` int(11) unsigned NOT NULL,
+  `id_autorizante` int(11) NOT NULL,
+  UNIQUE KEY `id_acceso` (`id_acceso`,`id_autorizante`),
+  KEY `fk_personas_aut` (`id_autorizante`),
+  CONSTRAINT `fk_accesos_aut` FOREIGN KEY (`id_acceso`) REFERENCES `accesos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_personas_aut` FOREIGN KEY (`id_autorizante`) REFERENCES `personas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `accesos_autorizantes`
+--
+
+LOCK TABLES `accesos_autorizantes` WRITE;
+/*!40000 ALTER TABLE `accesos_autorizantes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `accesos_autorizantes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `accesos_conceptos`
+--
+
+DROP TABLE IF EXISTS `accesos_conceptos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `accesos_conceptos` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `concepto` varchar(50) NOT NULL,
+  `req_tarjeta` tinyint(4) NOT NULL,
+  `req_seguro` tinyint(4) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `accesos_conceptos`
+--
+
+LOCK TABLES `accesos_conceptos` WRITE;
+/*!40000 ALTER TABLE `accesos_conceptos` DISABLE KEYS */;
+/*!40000 ALTER TABLE `accesos_conceptos` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `accesos_uf`
+--
+
+DROP TABLE IF EXISTS `accesos_uf`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `accesos_uf` (
+  `id_acceso` int(10) unsigned NOT NULL,
+  `id_uf` int(11) NOT NULL,
+  PRIMARY KEY (`id_acceso`,`id_uf`),
+  CONSTRAINT `fk_accesos_uf` FOREIGN KEY (`id_acceso`) REFERENCES `accesos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `accesos_uf`
+--
+
+LOCK TABLES `accesos_uf` WRITE;
+/*!40000 ALTER TABLE `accesos_uf` DISABLE KEYS */;
+/*!40000 ALTER TABLE `accesos_uf` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `auth_assignment`
 --
 
@@ -158,39 +284,6 @@ INSERT INTO `comentarios` VALUES (1,'CUACCCCCC','',0,9,'2016-02-09 17:05:29',9,'
 UNLOCK TABLES;
 
 --
--- Table structure for table `entradas`
---
-
-DROP TABLE IF EXISTS `entradas`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `entradas` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `idporton` tinyint(4) NOT NULL,
-  `idpersona` int(11) DEFAULT NULL,
-  `idvehiculo` int(11) DEFAULT NULL,
-  `motivo` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_entradas_1_idx` (`idpersona`),
-  KEY `fk_entradas_2_idx` (`idvehiculo`),
-  KEY `fk_entradas_3` (`idporton`),
-  CONSTRAINT `fk_entradas_1` FOREIGN KEY (`idpersona`) REFERENCES `personas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_entradas_2` FOREIGN KEY (`idvehiculo`) REFERENCES `vehiculos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_entradas_3` FOREIGN KEY (`idporton`) REFERENCES `portones` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `entradas`
---
-
-LOCK TABLES `entradas` WRITE;
-/*!40000 ALTER TABLE `entradas` DISABLE KEYS */;
-INSERT INTO `entradas` VALUES (3,1,9,NULL,'');
-/*!40000 ALTER TABLE `entradas` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `libro`
 --
 
@@ -241,36 +334,6 @@ LOCK TABLES `migration` WRITE;
 /*!40000 ALTER TABLE `migration` DISABLE KEYS */;
 INSERT INTO `migration` VALUES ('m000000_000000_base',1451753954),('m130524_201442_init',1451753965),('m140506_102106_rbac_init',1453566729);
 /*!40000 ALTER TABLE `migration` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `movimientos`
---
-
-DROP TABLE IF EXISTS `movimientos`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `movimientos` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `entrada_id` int(11) DEFAULT NULL,
-  `entrada_fecha` datetime DEFAULT NULL,
-  `salida_id` int(11) DEFAULT NULL,
-  `salida_fecha` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_movimientos_1_idx` (`entrada_id`),
-  KEY `fk_movimientos_2_idx` (`salida_id`),
-  CONSTRAINT `fk_movimientos_1` FOREIGN KEY (`entrada_id`) REFERENCES `entradas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_movimientos_2` FOREIGN KEY (`salida_id`) REFERENCES `salidas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `movimientos`
---
-
-LOCK TABLES `movimientos` WRITE;
-/*!40000 ALTER TABLE `movimientos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `movimientos` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -338,34 +401,6 @@ INSERT INTO `portones` VALUES (1,'Portón Entrada (1)',1),(2,'Portón Proveedore
 UNLOCK TABLES;
 
 --
--- Table structure for table `salidas`
---
-
-DROP TABLE IF EXISTS `salidas`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `salidas` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `idpersonas_fk` int(11) DEFAULT NULL,
-  `idvehiculos_fk` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_salidas_1_idx` (`idpersonas_fk`),
-  KEY `fk_salidas_2_idx` (`idvehiculos_fk`),
-  CONSTRAINT `fk_salidas_1` FOREIGN KEY (`idpersonas_fk`) REFERENCES `personas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_salidas_2` FOREIGN KEY (`idvehiculos_fk`) REFERENCES `vehiculos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `salidas`
---
-
-LOCK TABLES `salidas` WRITE;
-/*!40000 ALTER TABLE `salidas` DISABLE KEYS */;
-/*!40000 ALTER TABLE `salidas` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `tiposdoc`
 --
 
@@ -426,22 +461,6 @@ INSERT INTO `user` VALUES (7,'consejo','vt3jVR8_7Lp28wuGUKtnwf0Yp_iW1YUH','$2y$1
 UNLOCK TABLES;
 
 --
--- Temporary view structure for view `user_rol`
---
-
-DROP TABLE IF EXISTS `user_rol`;
-/*!50001 DROP VIEW IF EXISTS `user_rol`*/;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-/*!50001 CREATE VIEW `user_rol` AS SELECT 
- 1 AS `id`,
- 1 AS `username`,
- 1 AS `email`,
- 1 AS `item_name`,
- 1 AS `description`*/;
-SET character_set_client = @saved_cs_client;
-
---
 -- Table structure for table `vehiculos`
 --
 
@@ -450,12 +469,21 @@ DROP TABLE IF EXISTS `vehiculos`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `vehiculos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `patente` varchar(10) DEFAULT NULL,
-  `marca` varchar(45) DEFAULT NULL,
-  `modelo` varchar(45) DEFAULT NULL,
-  `color` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+  `id_marca` tinyint(4) NOT NULL,
+  `modelo` varchar(30) NOT NULL,
+  `patente` varchar(10) NOT NULL,
+  `color` varchar(10) NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_by` int(11) NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `estado` tinyint(4) NOT NULL DEFAULT '1',
+  `motivo_baja` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `patente` (`patente`),
+  KEY `id_marca` (`id_marca`),
+  CONSTRAINT `fk_marcas` FOREIGN KEY (`id_marca`) REFERENCES `vehiculos_marcas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -464,8 +492,32 @@ CREATE TABLE `vehiculos` (
 
 LOCK TABLES `vehiculos` WRITE;
 /*!40000 ALTER TABLE `vehiculos` DISABLE KEYS */;
-INSERT INTO `vehiculos` VALUES (1,'EFD926','FIAT','PALIO','GRIS'),(2,'CMX618','VOLSWAGEN','GOLF','ROJO');
+INSERT INTO `vehiculos` VALUES (1,1,'FALCON','DQN576','AZUL',9,'2016-02-22 00:00:00',9,'2016-02-22 21:00:21',1,NULL);
 /*!40000 ALTER TABLE `vehiculos` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vehiculos_marcas`
+--
+
+DROP TABLE IF EXISTS `vehiculos_marcas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `vehiculos_marcas` (
+  `id` tinyint(4) NOT NULL AUTO_INCREMENT,
+  `desc_marca` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vehiculos_marcas`
+--
+
+LOCK TABLES `vehiculos_marcas` WRITE;
+/*!40000 ALTER TABLE `vehiculos_marcas` DISABLE KEYS */;
+INSERT INTO `vehiculos_marcas` VALUES (1,'FORD'),(2,'RENAULT');
+/*!40000 ALTER TABLE `vehiculos_marcas` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -509,24 +561,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-
---
--- Final view structure for view `user_rol`
---
-
-/*!50001 DROP VIEW IF EXISTS `user_rol`*/;
-/*!50001 SET @saved_cs_client          = @@character_set_client */;
-/*!50001 SET @saved_cs_results         = @@character_set_results */;
-/*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_unicode_ci */;
-/*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `user_rol` AS select `user`.`id` AS `id`,`user`.`username` AS `username`,`user`.`email` AS `email`,`auth_assignment`.`item_name` AS `item_name`,`auth_item`.`description` AS `description` from ((`user` left join `auth_assignment` on((`user`.`id` = `auth_assignment`.`user_id`))) left join `auth_item` on((`auth_assignment`.`item_name` = `auth_item`.`name`))) where (`user`.`status` = 10) */;
-/*!50001 SET character_set_client      = @saved_cs_client */;
-/*!50001 SET character_set_results     = @saved_cs_results */;
-/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -537,4 +571,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-02-20 22:15:32
+-- Dump completed on 2016-02-22 21:05:19

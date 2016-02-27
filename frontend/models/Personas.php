@@ -103,7 +103,7 @@ class Personas extends \yii\db\ActiveRecord
         return [
             [['apellido', 'nombre', 'id_tipo_doc', 'nro_doc'], 'required'],
             [['id_tipo_doc', 'created_by', 'updated_by','nro_doc'], 'integer'],
-            [['created_at', 'updated_at','estado','motivo_baja'], 'safe'],
+            [['created_at', 'updated_at','estado','motivo_baja','id'], 'safe'],
             [['apellido', 'nombre', 'nombre2'], 'string', 'max' => 45],
 			[['apellido', 'nombre', 'nombre2'], 'trim'],             
  			[['foto'], 'file', 'extensions'=>'jpg, jpeg'],  

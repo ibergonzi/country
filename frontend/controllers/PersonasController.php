@@ -262,7 +262,7 @@ class PersonasController extends Controller
 				foreach($cadauno as $key=>$valor) {
 					if ($key=='id') {
 						$t=Personas::formateaPersonaSelect2($valor,is_numeric($q));
-						$aux[]=['id'=>$key,'text'=>$t];
+						$aux[]=['id'=>$valor,'text'=>$t];
 					}
 				}
 			}

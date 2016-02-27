@@ -49,14 +49,15 @@ return [
     'modules' => [
 		'gridview' =>  [
 			'class' => '\kartik\grid\Module',
-			
+			/*
 			'i18n' => [
 					'class' => 'yii\i18n\PhpMessageSource',
 					'basePath' => '@common/messages',
 					'forceTranslation' => true
 				]
-			
+			*/			
 			],
+
 		
 	   'datecontrol' =>  [
 			'class' => 'kartik\datecontrol\Module',

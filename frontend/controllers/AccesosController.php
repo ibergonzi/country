@@ -9,6 +9,13 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
+use yii\base\Model;
+
+use frontend\models\Personas;
+use yii\data\ArrayDataProvider;
+
+
+
 /**
  * AccesosController implements the CRUD actions for Accesos model.
  */
@@ -72,10 +79,57 @@ class AccesosController extends Controller
     }
     
 
-    public function actionIngreso()
+    public function actionIngreso($nueva=null)
     {
+		/*
+		\Yii::$app->session->remove('personas');
+			
+		$sess=\Yii::$app->session['personas'];
+		$sess[]=9;
+		$sess[]=10;
+		$sess[]=11;
+		\Yii::$app->session['personas']=$sess;
+		
+		die();
+		*/
+		
+		
         $model = new Accesos();
 
+		// Se crea el array vacio que va a contener Personas
+		$personas=[];
+		
+		// Se recupera de la sesion, cuando se graba se debe limpiar la session Personas asi: Yii::$app->session->remove('personas');
+		$sess=\Yii::$app->session->get('personas');	
+		
+		if (isset($nueva)) {
+			$sess[]=$nueva;
+			\Yii::$app->session['personas']=$sess;			
+		}
+		
+        if ($sess)  {
+			// La session personas solo contiene los IDs, se recorre el array y se completa $personas con el objeto Personas
+			foreach ($sess as $p) {
+				$personas[]=Personas::findOne($p);
+			}
+			$dataProvider = new ArrayDataProvider([
+				'allModels'=>$personas
+			]);			
+		} else {
+			// dataProvider vacio
+			$dataProvider = new ArrayDataProvider([
+				'allModels'=>[ ['id'=>'', 'apellido'=>'', 'nombre'=>''], ]
+			]);					
+		}
+
+        return $this->render('ingreso', [
+            //'model' => $searchModel,
+            'model' => $model,
+            'dataProvider'=>$dataProvider,
+        ]);        
+        
+        
+		/*
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
@@ -83,6 +137,7 @@ class AccesosController extends Controller
                 'model' => $model,
             ]);
         }
+        */
     }
 
     

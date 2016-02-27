@@ -1,7 +1,7 @@
 TABLA OLD.VISITAS
-En principio las tablas de destino son new.personas y new.propietarios.
+En principio las tablas de destino son new.personas y new.autorizantes.
 old.visitas.autoriza toma 2 valores, 0 y 1 donde 1 indica que es autorizante, es decir copropietario
-Hay que pasar estas personas a una tabla new.propietarios (id, idpersona, etc.)
+Hay que pasar estas personas a una tabla new.autorizantes (id, idpersona, etc.)
 
 SOLO hay 2 duplicaciones exactas por tipo_doc y nro_doc: old.visitas.numero in (16089,16764) WTF?
 Hay duplicaciones por nro_doc (distintos tipo_doc), en la mayoria de los casos los datos son casi iguales, 
@@ -20,6 +20,7 @@ Campos old.visitas.tarjeta y old.visitas.vtotarj: se deben pasar a new.personas.
 
 
 TABLA OLD.ACCESOS
+
 
 
 TABLA OLD.AGENDA

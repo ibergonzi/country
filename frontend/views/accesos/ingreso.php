@@ -12,6 +12,8 @@ use yii\web\JsExpression;
 
 use yii\bootstrap\Modal;
 
+use yii\widgets\Pjax;
+
 
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Accesos */
@@ -30,7 +32,7 @@ JS;
 
 ?>
 <div class="accesos-ingreso">
-
+						
 	<div class='container'> 
 	
 		<div class='row'>
@@ -38,6 +40,7 @@ JS;
 			<div id="col1" class="col-md-5">
 				
 				    <?php 
+				   
 						$form = ActiveForm::begin();
 						$personaDesc=$model->isNewRecord?'':Personas::formateaPersonaSelect2($model->idpersona,false);
 
@@ -91,7 +94,7 @@ JS;
 								'change' => 'function(e) { 
 									var seleccion=$("#selectorPersonas:first"); 
 									console.log(seleccion.val());
-									$.post("ingreso?nueva=" + seleccion.val());
+									$.post("ingreso?nueva=" + seleccion.val(),$("#w1").serialize());
 								}',
 							]							
 						]);  	
@@ -103,18 +106,25 @@ JS;
 
 			<div id="col2" class="col-md-5">
 				<?php
+						Pjax::begin();
 						echo Html::beginForm();
 						echo TabularForm::widget([
 							'dataProvider'=>$dataProvider,
 							'formName'=>'kvTabForm',
+						    'actionColumn'=>false,
+						    'serialColumn'=>false,
+						    'checkboxColumn'=>false,
 							'attributes'=>[
 								'id'=>['type'=>TabularForm::INPUT_HIDDEN_STATIC],
 								'apellido'=>['type'=>TabularForm::INPUT_HIDDEN_STATIC],
-								'nombre'=>['type'=>TabularForm::INPUT_HIDDEN_STATIC]
+								'nombre'=>['type'=>TabularForm::INPUT_HIDDEN_STATIC],
+								'nombre2'=>['type'=>TabularForm::INPUT_HIDDEN_STATIC],
+								'nro_doc'=>['type'=>TabularForm::INPUT_HIDDEN_STATIC]
 							],
 						]);
 						echo Html::submitButton();
 						echo Html::endForm();
+						Pjax::end();	
 ?>
 
 					
@@ -124,6 +134,7 @@ JS;
 				    <?php 
 				    echo 'Columna 3';
 						//$this->render('_form', ['model' => $model,]);
+
 					?>
 
 			</div><!-- fin div col3 -->

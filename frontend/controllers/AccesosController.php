@@ -122,12 +122,21 @@ class AccesosController extends Controller
 			]);					
 		}
 
-        return $this->render('ingreso', [
-            //'model' => $searchModel,
-            'model' => $model,
-            'dataProvider'=>$dataProvider,
-        ]);        
-        
+		if (isset($nueva)) {
+			return $this->renderAjax('ingreso', [
+				//'model' => $searchModel,
+				'model' => $model,
+				'dataProvider'=>$dataProvider,
+			]);       				
+			
+		} else {
+				
+			return $this->render('ingreso', [
+				//'model' => $searchModel,
+				'model' => $model,
+				'dataProvider'=>$dataProvider,
+			]);        
+		}
         
 		/*
         if ($model->load(Yii::$app->request->post()) && $model->save()) {

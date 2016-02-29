@@ -14,6 +14,10 @@ use yii\base\Model;
 use frontend\models\Personas;
 use yii\data\ArrayDataProvider;
 
+use yii\grid\GridView;
+
+use yii\helpers\Html;
+
 
 
 /**
@@ -78,36 +82,66 @@ class AccesosController extends Controller
         }
     }
     
-
-    public function actionIngreso($nueva=null)
+    
+    public function actionAddListaPersonas($id)
     {
-		/*
-		\Yii::$app->session->remove('personas');
-			
-		$sess=\Yii::$app->session['personas'];
-		$sess[]=9;
-		$sess[]=10;
-		$sess[]=11;
-		\Yii::$app->session['personas']=$sess;
-		
-		die();
-		*/
-		
-		
-        $model = new Accesos();
-
-		// Se crea el array vacio que va a contener Personas
-		$personas=[];
+		if (empty($id)) {return;}
 		
 		// Se recupera de la sesion, cuando se graba se debe limpiar la session Personas asi: Yii::$app->session->remove('personas');
 		$sess=\Yii::$app->session->get('personas');	
 		
-		if (isset($nueva)) {
-			$sess[]=$nueva;
-			\Yii::$app->session['personas']=$sess;			
+		if (isset($id)) {
+			// se pregunta si está seteado $sess sino la funcion in_array devuelve error
+			if ($sess) {
+				//Chequea que no se duplique la persona en la lista
+				if (!in_array($id, $sess)) {
+					$sess[]=$id;
+					\Yii::$app->session['personas']=$sess;			
+				}
+			} else {
+				$sess[]=$id;
+				\Yii::$app->session['personas']=$sess;			
+			}
+			$response=$this->refreshListaPersonas();
+			return $response;
+			
 		}
+	}
+	
+    public function actionDropListaPersonas($id)
+    {
+		if (empty($id)) {return;}
 		
-        if ($sess)  {
+		// Se recupera de la sesion, cuando se graba se debe limpiar la session Personas asi: Yii::$app->session->remove('personas');
+		$sess=\Yii::$app->session->get('personas');	
+		
+		if (isset($id)) {
+			// se pregunta si está seteado $sess sino la funcion in_array devuelve error
+			if ($sess) {
+				if (count($sess)==1) {
+					\Yii::$app->session->remove('personas');
+				} else {
+					//Chequea que la persona exista en la lista
+					$key=array_search($id, $sess);
+					if ($key) {
+						unset($sess[$key]);
+						\Yii::$app->session['personas']=$sess;			
+					}
+				}
+			} 
+			$response=$this->refreshListaPersonas();
+			return $response;
+			
+		}
+	}	
+	
+	public function refreshListaPersonas() {
+		// Se recupera de la sesion, cuando se graba se debe limpiar la session Personas asi: Yii::$app->session->remove('personas');
+		$sess=\Yii::$app->session->get('personas');			
+
+        if (!empty($sess)) {
+			// Se crea el array vacio que va a contener Personas
+			$personas=[];				
 			// La session personas solo contiene los IDs, se recorre el array y se completa $personas con el objeto Personas
 			foreach ($sess as $p) {
 				$personas[]=Personas::findOne($p);
@@ -117,26 +151,88 @@ class AccesosController extends Controller
 			]);			
 		} else {
 			// dataProvider vacio
+			return '';
+			/*
 			$dataProvider = new ArrayDataProvider([
-				'allModels'=>[ ['id'=>'', 'apellido'=>'', 'nombre'=>''], ]
-			]);					
+				'allModels'=>[ ['id'=>'', 'apellido'=>'', 'nombre'=>'','nombre2'=>'','nro_doc'=>''], ]
+			]);
+			*/					
 		}
 
-		if (isset($nueva)) {
-			return $this->renderAjax('ingreso', [
-				//'model' => $searchModel,
-				'model' => $model,
-				'dataProvider'=>$dataProvider,
-			]);       				
+		 
+		$response=GridView::widget([
+			'dataProvider' => $dataProvider,
+			'layout'=>'{items}',
+			'columns' => [
+				'id',
+				'apellido',
+				'nombre',
+				'nombre2',
+				'nro_doc',
+				[
+					'class' => 'yii\grid\ActionColumn',
+					'template' => $dataProvider->getCount()==1?'':'{delete}',
+					'buttons' => [
+						'delete' => function ($url, $model) {
+							return Html::a('<span class="glyphicon glyphicon-trash"></span>', 
+								$url,
+								['title' => 'Eliminar',
+								 'onclick'=>'$.ajax({
+									type     : "POST",
+									cache    : false,
+									url      : $(this).attr("href"),
+									success  : function(response) {
+													$("#divlistapersonas").html(response);
+												}
+								});return false;',
+								]);							
+							},
+					],
+					
+					'urlCreator' => function ($action, $model, $key, $index) {
+						 if ($action === 'delete') {
+							$url=Yii::$app->urlManager->createUrl(
+									['accesos/drop-lista-personas', 
+									 'id' => isset($model->id)?$model->id:''
+									]);
+							return $url;
+						 }						 
+
+					  },			  						
+					
+					
+				],
+			],
 			
-		} else {
-				
-			return $this->render('ingreso', [
-				//'model' => $searchModel,
-				'model' => $model,
-				'dataProvider'=>$dataProvider,
-			]);        
-		}
+		]);
+		return $response;
+	
+	}
+
+    public function actionIngreso()
+    {
+		/*
+		\Yii::$app->session->remove('personas');
+			
+		//$sess=\Yii::$app->session['personas'];
+		//$sess[]=9;
+		//$sess[]=10;
+		//$sess[]=11;
+		//\Yii::$app->session['personas']=$sess;
+		
+		die();
+		*/
+		
+		
+        $model = new Accesos();
+		$tmpListaPersonas=$this->refreshListaPersonas();	
+		return $this->render('ingreso', [
+			//'model' => $searchModel,
+			'model' => $model,
+			'tmpListaPersonas'=>$tmpListaPersonas,
+			
+		]);        
+
         
 		/*
         if ($model->load(Yii::$app->request->post()) && $model->save()) {

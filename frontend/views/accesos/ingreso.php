@@ -20,16 +20,6 @@ use yii\widgets\Pjax;
 
 $this->title = Yii::t('app', 'Ingresos');
 
-$js = 
-<<<JS
-$("#selectorPersonas").select2()
-        .on("change", function(e) {
-          console.log("change val=" + e.val);
-        })
-JS;
-//$this->registerJs($js,yii\web\View::POS_READY);
-
-
 ?>
 <div class="accesos-ingreso">
 						
@@ -61,7 +51,6 @@ JS;
 														console.log(response);
 														$("#divpersonanueva").html(response);
 														$("#modalpersonanueva").modal("show")
-														
 														}
 										});return false;',
 										]),	
@@ -93,9 +82,39 @@ JS;
 							'pluginEvents' => [
 								'change' => 'function(e) { 
 									var seleccion=$("#selectorPersonas:first"); 
-									console.log(seleccion.val());
-									$.post("ingreso?nueva=" + seleccion.val(),$("#w1").serialize());
+									if (seleccion.val()) {
+										$.ajax({
+												type     : "POST",
+												cache    : false,
+												url      : "add-lista-personas?id=" + seleccion.val(),
+												success  : function(response) {
+															$("#divlistapersonas").html(response);														
+															}
+										});						
+									}			
 								}',
+								
+								'select2:unselecting'=>'function(e) {
+									var seleccion=$("#selectorPersonas:first"); 
+									if (seleccion.val()) {
+										$.ajax({
+												type     : "POST",
+												cache    : false,
+												url      : "drop-lista-personas?id=" + seleccion.val(),
+												success  : function(response) {
+															$("#divlistapersonas").html(response);														
+															}
+										});						
+									}			
+
+								}'
+								
+								/*
+								removed val=0 choice={"id":0,"text":"story"}
+change {"val":"","removed":{"id":0,"text":"story"}}
+								*/
+								
+								
 							]							
 						]);  	
 						echo Html::submitButton();
@@ -105,7 +124,9 @@ JS;
 			</div><!-- fin div col1 -->
 
 			<div id="col2" class="col-md-5">
+				<div id="divlistapersonas"><?php echo isset($tmpListaPersonas)?$tmpListaPersonas:'' ?></div>
 				<?php
+						/*
 						Pjax::begin();
 						echo Html::beginForm();
 						echo TabularForm::widget([
@@ -125,6 +146,7 @@ JS;
 						echo Html::submitButton();
 						echo Html::endForm();
 						Pjax::end();	
+						*/
 ?>
 
 					

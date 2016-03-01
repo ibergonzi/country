@@ -33,13 +33,9 @@ $this->params['breadcrumbs'][] = $this->title;
 					'options'=>['style'=>'width:75px',], 
 				
             ],
-            [
-				'attribute'=>'marca',
-				'value'=>'vehiculoMarca.desc_marca',
-				'filter'=>$searchModel->listaMarcas,
-            ],
-            'modelo',
             'patente',
+			'marca',
+            'modelo',
             'color',
             // 'created_by',
             // 'created_at',

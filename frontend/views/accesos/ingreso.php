@@ -32,16 +32,15 @@ $this->title = Yii::t('app', 'Ingresos');
 				    <?php 
 				   
 						$form = ActiveForm::begin();
+
+						// -------------------Selector de personas c/botón de alta ----------------------------------------
 						$personaDesc=$model->isNewRecord?'':Personas::formateaPersonaSelect2($model->idpersona,false);
-
-						
-						$url=Yii::$app->urlManager->createUrl(['personas/create-ajax']);
-
-						$addon = [
+						$personasUrl=Yii::$app->urlManager->createUrl(['personas/create-ajax']);
+						$personasAddon = [
 							'append' => [
 								'content'=>Html::a('<span 
 										class="btn btn-primary">Nueva</span>', 
-										$url,
+										$personasUrl,
 										['title' => Yii::t('app', 'Nueva Persona'),
 										 'onclick'=>'$.ajax({
 											type     :"POST",
@@ -57,16 +56,10 @@ $this->title = Yii::t('app', 'Ingresos');
 								'asButton' => true
 							]
 						];
-							
-						
-							 
 						echo $form->field($model, 'id_persona')->widget(Select2::classname(), [
-
-							//'model' => $model,
-							//'attribute' => 'idpersona',
 							'initValueText' => $personaDesc, 
 							'options' => ['id'=>'selectorPersonas','placeholder' => '...'],
-							'addon'=>$addon,
+							'addon'=>$personasAddon,
 							'pluginOptions' => [
 								'allowClear' => true,
 								'minimumInputLength' => 3,
@@ -86,37 +79,100 @@ $this->title = Yii::t('app', 'Ingresos');
 										$.ajax({
 												type     : "POST",
 												cache    : false,
-												url      : "add-lista-personas?id=" + seleccion.val(),
+												url      : "add-lista?grupo=personas&id=" + seleccion.val(),
 												success  : function(response) {
 															$("#divlistapersonas").html(response);														
 															}
 										});						
 									}			
 								}',
-								
 								'select2:unselecting'=>'function(e) {
 									var seleccion=$("#selectorPersonas:first"); 
 									if (seleccion.val()) {
 										$.ajax({
 												type     : "POST",
 												cache    : false,
-												url      : "drop-lista-personas?id=" + seleccion.val(),
+												url      : "drop-lista?grupo=personas&id=" + seleccion.val(),
 												success  : function(response) {
 															$("#divlistapersonas").html(response);														
 															}
 										});						
 									}			
-
 								}'
-								
-								/*
-								removed val=0 choice={"id":0,"text":"story"}
-change {"val":"","removed":{"id":0,"text":"story"}}
-								*/
-								
-								
 							]							
 						]);  	
+
+						
+
+						// -------------------Selector de vehiculos c/botón de alta ----------------------------------------
+						$vehiculoDesc=$model->isNewRecord?'':Vehiculos::formateaVehiculoSelect2($model->ing_id_vehiculo);
+						$vehiculosUrl=Yii::$app->urlManager->createUrl(['vehiculos/create-ajax']);
+						$vehiculosAddon = [
+							'append' => [
+								'content'=>Html::a('<span 
+										class="btn btn-primary">Nuevo</span>', 
+										$vehiculosUrl,
+										['title' => Yii::t('app', 'Nuevo Vehiculo'),
+										 'onclick'=>'$.ajax({
+											type     :"POST",
+											cache    : false,
+											url  : $(this).attr("href"),
+											success  : function(response) {
+														console.log(response);
+														$("#divvehiculonuevo").html(response);
+														$("#modalvehiculonuevo").modal("show")
+														}
+										});return false;',
+										]),	
+								'asButton' => true
+							]
+						];
+						echo $form->field($model, 'ing_id_vehiculo')->widget(Select2::classname(), [
+							'initValueText' => $vehiculoDesc, 
+							'options' => ['id'=>'selectorVehiculos','placeholder' => '...'],
+							'addon'=>$vehiculosAddon,
+							'pluginOptions' => [
+								'allowClear' => true,
+								'minimumInputLength' => 3,
+								'ajax' => [
+									'url' => \yii\helpers\Url::to(['vehiculos/vehiculoslist']),
+									'dataType' => 'json',
+									'data' => new JsExpression('function(params) { return {q:params.term}; }')
+								],
+								'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+								'templateResult' => new JsExpression('function(idvehiculo) { return idvehiculo.text; }'),
+								'templateSelection' => new JsExpression('function (idvehiculo) { return idvehiculo.text; }'),
+							],
+							'pluginEvents' => [
+								'change' => 'function(e) { 
+									var seleccion=$("#selectorVehiculos:first"); 
+									if (seleccion.val()) {
+										$.ajax({
+												type     : "POST",
+												cache    : false,
+												url      : "add-lista?grupo=vehiculos&id=" + seleccion.val(),
+												success  : function(response) {
+															$("#divlistavehiculos").html(response);														
+															}
+										});						
+									}			
+								}',
+								'select2:unselecting'=>'function(e) {
+									var seleccion=$("#selectorVehiculos:first"); 
+									if (seleccion.val()) {
+										$.ajax({
+												type     : "POST",
+												cache    : false,
+												url      : "drop-lista?grupo=vehiculos&id=" + seleccion.val(),
+												success  : function(response) {
+															$("#divlistavehiculos").html(response);														
+															}
+										});						
+									}			
+								}'
+							]							
+						]);  	
+
 						echo Html::submitButton();
 						ActiveForm::end();			    
 					?>
@@ -125,6 +181,7 @@ change {"val":"","removed":{"id":0,"text":"story"}}
 
 			<div id="col2" class="col-md-5">
 				<div id="divlistapersonas"><?php echo isset($tmpListaPersonas)?$tmpListaPersonas:'' ?></div>
+				<div id="divlistavehiculos"><?php echo isset($tmpListaVehiculos)?$tmpListaVehiculos:'' ?></div>				
 				<?php
 						/*
 						Pjax::begin();

@@ -3,6 +3,9 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
+use frontend\models\Vehiculos;
+use yii\jui\AutoComplete;
+
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Vehiculos */
 /* @var $form yii\widgets\ActiveForm */
@@ -12,11 +15,28 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'id_marca')->dropDownList($model->listaMarcas) ?>
+    <?= $form->field($model, 'patente')->textInput(['maxlength' => true,'style' => 'text-transform: uppercase']) ?>
+
+    <?= $form->field($model, 'marca')->widget(AutoComplete::className(),[
+            'model' => $model,
+            'attribute' => 'marca',
+            'options'=>[
+                'style'=>'text-transform: uppercase',
+                'class'=>'form-control',
+                'max-height'=>'100px',
+                'overflow-y'=>'auto',
+                'overflow-x'=>'hidden',
+
+            ],
+            'clientOptions' => [
+                'source' => Vehiculos::getMarcasVehiculos(),
+                'minLength' => 1,
+               
+            ], 
+        ])
+    ?>
 
     <?= $form->field($model, 'modelo')->textInput(['maxlength' => true,'style' => 'text-transform: uppercase']) ?>
-
-    <?= $form->field($model, 'patente')->textInput(['maxlength' => true,'style' => 'text-transform: uppercase']) ?>
 
     <?= $form->field($model, 'color')->textInput(['maxlength' => true,'style' => 'text-transform: uppercase']) ?>
     

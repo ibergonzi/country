@@ -18,13 +18,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
 	<?php 
 	if ($model->estado==Vehiculos::ESTADO_ACTIVO) {
-		echo '<p>';
-		echo Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary'])
-		
-		.'  '. Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
-			'class' => 'btn btn-danger',
-			]);
-		echo '</p>';	
+		if ($model->id !== \Yii::$app->params['sinVehiculo.id'] && $model->id !== \Yii::$app->params['bicicleta.id']) {
+			echo '<p>';
+			echo Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary'])
+			
+			.'  '. Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
+				'class' => 'btn btn-danger',
+				]);
+			echo '</p>';	
+		}
 	}
 	?>
 
@@ -32,10 +34,9 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            //'id_marca',
-            'vehiculoMarca.desc_marca',
-            'modelo',
             'patente',
+            'marca',
+            'modelo',
             'color',
 			'userCreatedBy.username',
 			'created_at:datetime',

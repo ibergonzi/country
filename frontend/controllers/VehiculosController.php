@@ -168,4 +168,40 @@ class VehiculosController extends Controller
             throw new NotFoundHttpException('Vehiculo inexistente');
         }
     }
+    
+	// funcion utilizada para los select2, devuelve json
+	public function actionVehiculoslist($q = null, $id = null) {
+		\Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+		$out = ['results' => ['id' => '', 'text' => '']];
+	
+		if (!is_null($q)) {
+			$q=str_replace(' ','%',$q);
+			$sp='CALL vehiculos_busca(:query)' ;
+            $command = Yii::$app->db->createCommand($sp);
+            $command->bindParam(":query", trim($q));
+			
+			$data = $command->queryAll();
+			
+			// el command devuelve un array de array con forma id=>n,text=>''
+			// se recorre todo el array, se detecta el key id y con su valor se busca el vehiculo
+			// y se agrega a un nuevo array para despues ordenarlo por text y devolverlo 
+			$aux=['id'=>'','text'=>''];
+			foreach ($data as $cadauno) {				
+				foreach($cadauno as $key=>$valor) {
+					if ($key=='id') {
+						$t=Vehiculos::formateaVehiculoSelect2($valor);
+						$aux[]=['id'=>$valor,'text'=>$t];
+					}
+				}
+			}
+			asort($aux);
+		
+			$out['results'] = array_values($aux);
+		}
+		elseif ($id > 0) {
+			$out['results'] = ['id' => $id, 'text' => Vehiculos::formateaVehiculoSelect2($id)];
+		}
+		return $out;
+	}    
+    
 }

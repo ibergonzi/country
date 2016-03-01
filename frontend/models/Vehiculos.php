@@ -5,7 +5,6 @@ namespace frontend\models;
 use Yii;
 
 use yii\helpers\ArrayHelper;
-use \frontend\models\VehiculosMarcas;
 
 use yii\behaviors\TimestampBehavior;
 use yii\behaviors\BlameableBehavior;
@@ -15,9 +14,9 @@ use yii\db\Expression;
  * This is the model class for table "vehiculos".
  *
  * @property integer $id
- * @property integer $id_marca
- * @property string $modelo
  * @property string $patente
+ * @property integer $marca
+ * @property string $modelo
  * @property string $color
  * @property integer $created_by
  * @property string $created_at
@@ -43,17 +42,6 @@ class Vehiculos extends \yii\db\ActiveRecord
     const ESTADO_BAJA = 0;
 	const ESTADO_ACTIVO = 1;
     
-
-	// devuelve lista de tipos documentos preparada para los dropDownList
-	// se usa:  $form->field($model, 'id_tipo_doc')->dropDownList($model->listaTiposdoc)
-	public static function getListaMarcas()
-	{
-		$opciones = VehiculosMarcas::find()->asArray()->all();
-		return ArrayHelper::map($opciones, 'id', 'desc_marca');
-	}        
-	
-	
-		
 	// funcion agregada a mano
 	public static function getEstados($key=null)
 	{
@@ -68,6 +56,7 @@ class Vehiculos extends \yii\db\ActiveRecord
 	// se graban los nombres en mayúsculas
     public function beforeSave($insert)
     {
+			$this->marca=mb_strtoupper($this->marca);
 			$this->modelo=mb_strtoupper($this->modelo);
 			$this->patente=mb_strtoupper($this->patente);
 			$this->color=mb_strtoupper($this->color);						
@@ -75,6 +64,7 @@ class Vehiculos extends \yii\db\ActiveRecord
             parent::beforeSave($insert);
             return true;
     }    
+  
     
     // extiende los comportamientos de la clase Personas para grabar datos de auditoría
     public function behaviors()
@@ -96,21 +86,39 @@ class Vehiculos extends \yii\db\ActiveRecord
     }
 
 
+	public static function getMarcasVehiculos() {
+       $sql = "SELECT DISTINCT marca FROM vehiculos WHERE id NOT IN (:pie,:bici) ORDER BY marca";
+
+       $command = \Yii::$app->db->createCommand($sql);
+       $command->bindParam(":pie", \Yii::$app->params['sinVehiculo.id']);
+       $command->bindParam(":bici", \Yii::$app->params['bicicleta.id']);
+
+       $result=$command->queryAll();
+       
+       $p=[];
+	   foreach ($result as $k=>$v) $p[]=$v['marca'];
+
+	   return $p;
+    }	
+
+
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['modelo', 'patente', 'color'], 'required'],
-            [['id_marca', 'created_by', 'updated_by', 'estado'], 'integer'],
-            [['created_at', 'updated_at','created_by','updated_by'], 'safe'],
+            [['marca','patente'], 'required'],
+            [['created_by', 'updated_by', 'estado'], 'integer'],
+            [['created_at', 'updated_at','created_by','updated_by','modelo','color'], 'safe'],
             [['modelo'], 'string', 'max' => 30],
+            [['marca'], 'string', 'max' => 20],
             [['patente', 'color'], 'string', 'max' => 10],
             [['motivo_baja'], 'string', 'max' => 50],
             [['patente'], 'unique'],
-			[['modelo', 'patente', 'color'], 'trim'],   
-			['estado','default','value'=>Vehiculos::ESTADO_ACTIVO],         
+			[['modelo', 'patente', 'color','marca'], 'trim'],   
+			['estado','default','value'=>Vehiculos::ESTADO_ACTIVO],   
         ];
     }
 
@@ -121,7 +129,7 @@ class Vehiculos extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
-            'id_marca' => Yii::t('app', 'Marca'),
+            'marca' => Yii::t('app', 'Marca'),
             'modelo' => Yii::t('app', 'Modelo'),
             'patente' => Yii::t('app', 'Patente'),
             'color' => Yii::t('app', 'Color'),
@@ -135,6 +143,14 @@ class Vehiculos extends \yii\db\ActiveRecord
             'userUpdatedBy.username'=>'Usuario modif.',  
         ];
     }
+
+	public static function formateaVehiculoSelect2($id) 
+	{
+		$p=Vehiculos::findOne($id);
+		$r=$p->patente .' '. $p->marca .' '.$p->modelo .' '. $p->color.  ' ('. $id . ')';
+		return $r;
+	}    
+
 
     /**
      * @return \yii\db\ActiveQuery
@@ -152,14 +168,7 @@ class Vehiculos extends \yii\db\ActiveRecord
         return $this->hasMany(Accesos::className(), ['ing_id_vehiculo' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getVehiculoMarca()
-    {
-        return $this->hasOne(VehiculosMarcas::className(), ['id' => 'id_marca']);
-    }
-    
+   
     
     public function getUserCreatedBy()
     {

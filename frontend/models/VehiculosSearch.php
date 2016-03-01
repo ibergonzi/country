@@ -12,16 +12,14 @@ use frontend\models\Vehiculos;
  */
 class VehiculosSearch extends Vehiculos
 {
-	
-	public $marca;
-	
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['id', 'id_marca', 'created_by', 'updated_by', 'estado'], 'integer'],
+            [['id', 'created_by', 'updated_by', 'estado'], 'integer'],
             [['modelo', 'patente', 'color', 'created_at', 'updated_at', 'motivo_baja','marca'], 'safe'],
         ];
     }
@@ -44,7 +42,7 @@ class VehiculosSearch extends Vehiculos
      */
     public function search($params)
     {
-        $query = Vehiculos::find()->joinWith('vehiculoMarca'); // se usa el nombre de la relación en Vehiculos
+        $query = Vehiculos::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -54,13 +52,7 @@ class VehiculosSearch extends Vehiculos
                       ],                  
         ]);
         
-        // Agregado a mano, para que incluya el ordenamiento por tipo de documento
-        $dataProvider->sort->attributes['marca'] = [
-            'asc' => ['vehiculos_marcas.desc_marca' => SORT_ASC],
-            'desc' => ['vehiculos_marcas.desc_marca' => SORT_DESC],
-        ];        
-
-        $this->load($params);
+         $this->load($params);
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
@@ -70,7 +62,6 @@ class VehiculosSearch extends Vehiculos
 
         $query->andFilterWhere([
             'vehiculos.id' => $this->id,
-            'id_marca' => $this->marca,  // se usa el campo agregado (viene con el valor en el filter) en vez de $this->id_marca,
             'created_by' => $this->created_by,
             'created_at' => $this->created_at,
             'updated_by' => $this->updated_by,
@@ -80,6 +71,7 @@ class VehiculosSearch extends Vehiculos
 
         $query->andFilterWhere(['like', 'modelo', $this->modelo])
             ->andFilterWhere(['like', 'patente', $this->patente])
+            ->andFilterWhere(['like', 'marca', $this->marca])
             ->andFilterWhere(['like', 'color', $this->color])
             ->andFilterWhere(['like', 'motivo_baja', $this->motivo_baja]);
 

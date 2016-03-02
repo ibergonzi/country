@@ -26,12 +26,10 @@ use yii\jui\AutoComplete;
                 'max-height'=>'100px',
                 'overflow-y'=>'auto',
                 'overflow-x'=>'hidden',
-
+ 
             ],
             'clientOptions' => [
                 'source' => Vehiculos::getMarcasVehiculos(),
-                'minLength' => 1,
-               
             ], 
         ])
     ?>

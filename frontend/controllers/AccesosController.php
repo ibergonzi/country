@@ -96,11 +96,18 @@ class AccesosController extends Controller
 		if (isset($id)) {
 			// se pregunta si está seteado $sess sino la funcion in_array devuelve error
 			if ($sess) {
-				//Chequea que no se duplique el id en la lista
-				if (!in_array($id, $sess)) {
-					$sess[]=$id;
-					\Yii::$app->session[$grupo]=$sess;			
-				}
+				if ($grupo =='vehiculos') {
+					// el grupo vehiculos solo debe tener 1 elemento, si ya existia se reemplaza
+						$sess[0]=$id;
+						\Yii::$app->session[$grupo]=$sess;	
+					
+				} else {
+					//Chequea que no se duplique el id en la lista
+					if (!in_array($id, $sess)) {
+						$sess[]=$id;
+						\Yii::$app->session[$grupo]=$sess;			
+					} 
+				} 
 			} else {
 				$sess[]=$id;
 				\Yii::$app->session[$grupo]=$sess;			

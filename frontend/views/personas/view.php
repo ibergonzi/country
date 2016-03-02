@@ -26,15 +26,20 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
 						<?php 
+						echo '<p>';
 						if ($model->estado==Personas::ESTADO_ACTIVO) {
-							echo '<p>';
+
 							echo Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary'])
-							
 							.'  '. Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
 								'class' => 'btn btn-danger',
-								]);
-							echo '</p>';	
+								]).'  ';
 						}
+						if (isset($model->ultIngreso->id)) {
+							echo Html::a('Ult.Ingreso', ['accesos/view', 
+								'id' => $model->ultIngreso->id], 
+								['class' => 'btn btn-default']);
+						}
+						echo '</p>';	
 						?>
 					
 

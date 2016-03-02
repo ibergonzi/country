@@ -154,6 +154,35 @@ class Personas extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getAccesosEgresos()
+    {
+        return $this->hasMany(Accesos::className(), ['id_persona' => 'id']);			
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAccesosIngresos()
+    {
+        return $this->hasMany(Accesos::className(), ['id_persona' => 'id']);
+    }
+
+    public function getUltEgreso()
+    {
+        return $this->hasOne(Accesos::className(), ['id_persona' => 'id'])
+			->orderBy(['id' => SORT_DESC])->limit(1)->one();			
+    }
+
+    public function getUltIngreso()
+    {
+        return $this->hasOne(Accesos::className(), ['id_persona' => 'id'])
+        	->orderBy(['id' => SORT_DESC])->limit(1)->one();			
+    }
+
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getTipoDoc()
     {
         return $this->hasOne(Tiposdoc::className(), ['id' => 'id_tipo_doc']);

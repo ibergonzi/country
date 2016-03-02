@@ -38,8 +38,7 @@ $this->title = Yii::t('app', 'Ingresos');
 						$personasUrl=Yii::$app->urlManager->createUrl(['personas/create-ajax']);
 						$personasAddon = [
 							'append' => [
-								'content'=>Html::a('<span 
-										class="btn btn-primary">Nueva</span>', 
+								'content'=>Html::a('<span class="glyphicon glyphicon-plus-sign btn btn-primary"></span>',
 										$personasUrl,
 										['title' => Yii::t('app', 'Nueva Persona'),
 										 'onclick'=>'$.ajax({
@@ -47,7 +46,7 @@ $this->title = Yii::t('app', 'Ingresos');
 											cache    : false,
 											url  : $(this).attr("href"),
 											success  : function(response) {
-														console.log(response);
+														//console.log(response);
 														$("#divpersonanueva").html(response);
 														$("#modalpersonanueva").modal("show")
 														}
@@ -81,7 +80,8 @@ $this->title = Yii::t('app', 'Ingresos');
 												cache    : false,
 												url      : "add-lista?grupo=personas&id=" + seleccion.val(),
 												success  : function(response) {
-															$("#divlistapersonas").html(response);														
+															$("#divlistapersonas").html(response);
+															$("#selectorPersonas").select2("val","");														
 															}
 										});						
 									}			
@@ -109,8 +109,7 @@ $this->title = Yii::t('app', 'Ingresos');
 						$vehiculosUrl=Yii::$app->urlManager->createUrl(['vehiculos/create-ajax']);
 						$vehiculosAddon = [
 							'append' => [
-								'content'=>Html::a('<span 
-										class="btn btn-primary">Nuevo</span>', 
+								'content'=>Html::a('<span class="glyphicon glyphicon-plus-sign btn btn-primary"></span>', 
 										$vehiculosUrl,
 										['title' => Yii::t('app', 'Nuevo Vehiculo'),
 										 'onclick'=>'$.ajax({
@@ -118,7 +117,7 @@ $this->title = Yii::t('app', 'Ingresos');
 											cache    : false,
 											url  : $(this).attr("href"),
 											success  : function(response) {
-														console.log(response);
+														//console.log(response);
 														$("#divvehiculonuevo").html(response);
 														$("#modalvehiculonuevo").modal("show")
 														}
@@ -152,7 +151,8 @@ $this->title = Yii::t('app', 'Ingresos');
 												cache    : false,
 												url      : "add-lista?grupo=vehiculos&id=" + seleccion.val(),
 												success  : function(response) {
-															$("#divlistavehiculos").html(response);														
+															$("#divlistavehiculos").html(response);	
+															$("#selectorVehiculos").select2("val","");													
 															}
 										});						
 									}			
@@ -226,7 +226,11 @@ $this->title = Yii::t('app', 'Ingresos');
 	Modal::begin(['id'=>'modalpersonanueva',
 		'header'=>'<span class="btn-warning">&nbsp;Persona nueva&nbsp;</span>']);
 		echo '<div id="divpersonanueva"></div>';
-	Modal::end();    
+	Modal::end();  
+	Modal::begin(['id'=>'modalvehiculonuevo',
+		'header'=>'<span class="btn-warning">&nbsp;Vehiculo nuevo&nbsp;</span>']);
+		echo '<div id="divvehiculonuevo"></div>';
+	Modal::end();  	  
 	?>
 
 

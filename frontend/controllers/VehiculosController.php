@@ -9,6 +9,8 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
+use kartik\widgets\ActiveForm;
+
 /**
  * VehiculosController implements the CRUD actions for Vehiculos model.
  */
@@ -74,31 +76,11 @@ class VehiculosController extends Controller
             ]);
         }
     }
-
-    /**
-     * Updates an existing Vehiculos model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
-        }
-    }
-    
     
     public function actionCreateAjax()
     {
         $model = new Vehiculos();
-      	$model->estado=Vehiculos::ESTADO_ACTIVO;      
+     	$model->estado=Vehiculos::ESTADO_ACTIVO;      
 
 		// Al estar habilitado la validation ajax, $_POST['ajax'] viene seteado, si vino por el submit, esta variable no existe
 		// Siempre se devuelve el validate
@@ -124,7 +106,31 @@ class VehiculosController extends Controller
 		return $this->renderAjax('createajax', [
 				'model' => $model,
 		 ]);
-    }        
+    }    
+    
+    
+
+    /**
+     * Updates an existing Vehiculos model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionUpdate($id)
+    {
+        $model = $this->findModel($id);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
+        } else {
+            return $this->render('update', [
+                'model' => $model,
+            ]);
+        }
+    }
+    
+    
+ 
 
     /**
      * Deletes an existing Vehiculos model.

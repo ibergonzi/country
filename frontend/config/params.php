@@ -8,5 +8,7 @@ return [
     
     'bicicleta.id'=>1,
     'bicicleta.patente'=>'8888',
+    
+    //'breadcrumbs'=>[],
 
 ];

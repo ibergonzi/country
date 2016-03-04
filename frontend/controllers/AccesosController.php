@@ -83,6 +83,46 @@ class AccesosController extends Controller
         }
     }
     
+    public function actionBuscaVehiculos($id_persona)
+    {
+		// recupera los vehiculos utilizados por la persona en ingresos
+		$vehiculos=Accesos::getVehiculosPorPersona($id_persona);
+
+		// siempre debe agregar al principio de la lista los ids de vehiculos "sin vehiculo" y "bicicleta"
+		
+		// recorre el array para chequear si corresponde insertar al pcio de la lista 
+		$estaIDsinVehiculo=false;
+		$estaIDbicicleta=false;		
+		foreach ($vehiculos as $vehiculo){
+			if ($vehiculo['id_vehiculo'] == \Yii::$app->params['sinVehiculo.id']) {
+				$estaIDsinVehiculo=true;
+				break;
+			}
+		}
+		foreach ($vehiculos as $vehiculo){
+			if ($vehiculo['id_vehiculo'] == \Yii::$app->params['bicicleta.id']) {
+				$estaIDbicicleta=true;
+				break;
+			}
+		}
+		
+		// inserta al principio de la lista
+		if (!$estaIDbicicleta) {
+			array_unshift($vehiculos,['id_vehiculo'=>\Yii::$app->params['bicicleta.id']]);			
+		}
+		if (!$estaIDsinVehiculo) {
+			array_unshift($vehiculos,['id_vehiculo'=>\Yii::$app->params['sinVehiculo.id']]);
+		}
+
+
+		
+		$response='<h2>'.$id_persona.'</h2>';
+		foreach ($vehiculos as $vehiculo){
+			$response.=$vehiculo['id_vehiculo'].'-';
+		}		
+		return $response;
+	}
+    
     
     public function actionAddLista($grupo, $id)
     {

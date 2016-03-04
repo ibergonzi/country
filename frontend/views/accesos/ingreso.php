@@ -2,18 +2,19 @@
 
 use yii\helpers\Html;
 
-
 use yii\widgets\ActiveForm;
 use kartik\builder\TabularForm;
-
 
 use kartik\widgets\Select2; // or kartik\select2\Select2
 use yii\web\JsExpression;
 
 use yii\bootstrap\Modal;
-
 use yii\widgets\Pjax;
 
+use common\models\User;
+
+use kartik\icons\Icon;
+Icon::map($this, Icon::FA);
 
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Accesos */
@@ -27,7 +28,7 @@ $this->title = Yii::t('app', 'Ingresos');
 	
 		<div class='row'>
 
-			<div id="col1" class="col-md-5">
+			<div id="col1" class="col-md-4"><!-- comienzo div col1 -->
 				
 				    <?php 
 				   
@@ -37,10 +38,15 @@ $this->title = Yii::t('app', 'Ingresos');
 						$personaDesc=$model->isNewRecord?'':Personas::formateaPersonaSelect2($model->idpersona,false);
 						$personasUrl=Yii::$app->urlManager->createUrl(['personas/create-ajax']);
 						$personasAddon = [
+							'prepend'=>[
+								'content'=>'<span class="glyphicon glyphicon-user "></span>'
+							],
+								
 							'append' => [
 								'content'=>Html::a('<span class="glyphicon glyphicon-plus-sign btn btn-primary"></span>',
 										$personasUrl,
 										['title' => Yii::t('app', 'Nueva Persona'),
+										 'tabindex'=>-1,										
 										 'onclick'=>'$.ajax({
 											type     :"POST",
 											cache    : false,
@@ -48,16 +54,16 @@ $this->title = Yii::t('app', 'Ingresos');
 											success  : function(response) {
 														//console.log(response);
 														$("#divpersonanueva").html(response);
-														$("#modalpersonanueva").modal("show")
+														$("#modalpersonanueva").modal("show");
 														}
 										});return false;',
 										]),	
 								'asButton' => true
 							]
 						];
-						echo $form->field($model, 'id_persona')->widget(Select2::classname(), [
+						echo $form->field($model, 'id_persona')->label(false)->widget(Select2::classname(), [
 							'initValueText' => $personaDesc, 
-							'options' => ['id'=>'selectorPersonas','placeholder' => '...'],
+							'options' => ['id'=>'selectorPersonas','placeholder' => 'Buscar por documento o nombre'],
 							'addon'=>$personasAddon,
 							'pluginOptions' => [
 								'allowClear' => true,
@@ -73,26 +79,40 @@ $this->title = Yii::t('app', 'Ingresos');
 							],
 							'pluginEvents' => [
 								'change' => 'function(e) { 
-									var seleccion=$("#selectorPersonas:first"); 
-									if (seleccion.val()) {
+									var seleccion=$("#selectorPersonas:first").val(); 
+									if (seleccion) {
+										
 										$.ajax({
-												type     : "POST",
-												cache    : false,
-												url      : "add-lista?grupo=personas&id=" + seleccion.val(),
-												success  : function(response) {
+											type     : "POST",
+											cache    : false,
+											async    : false,
+											url      : "add-lista?grupo=personas&id=" + seleccion,
+											success  : function(response) {
 															$("#divlistapersonas").html(response);
-															$("#selectorPersonas").select2("val","");														
-															}
+															$("#selectorPersonas").select2("val","");
+														}
 										});						
+										
+										$.ajax({
+											type     : "POST",
+											cache    : false,
+											url      : "busca-vehiculos?id_persona=" + seleccion,
+											success  : function(response) {
+															$("#divvehiculos_persona").html(response);
+															$("#modalvehiculos_persona").modal("show");
+														}
+										});
+
+										
 									}			
 								}',
 								'select2:unselecting'=>'function(e) {
-									var seleccion=$("#selectorPersonas:first"); 
-									if (seleccion.val()) {
+									var seleccion=$("#selectorPersonas:first").val(); 
+									if (seleccion) {
 										$.ajax({
 												type     : "POST",
 												cache    : false,
-												url      : "drop-lista?grupo=personas&id=" + seleccion.val(),
+												url      : "drop-lista?grupo=personas&id=" + seleccion,
 												success  : function(response) {
 															$("#divlistapersonas").html(response);														
 															}
@@ -108,10 +128,14 @@ $this->title = Yii::t('app', 'Ingresos');
 						$vehiculoDesc=$model->isNewRecord?'':Vehiculos::formateaVehiculoSelect2($model->ing_id_vehiculo);
 						$vehiculosUrl=Yii::$app->urlManager->createUrl(['vehiculos/create-ajax']);
 						$vehiculosAddon = [
+							'prepend'=>[
+								'content'=>Icon::show('car',[],Icon::FA)
+							],						
 							'append' => [
 								'content'=>Html::a('<span class="glyphicon glyphicon-plus-sign btn btn-primary"></span>', 
 										$vehiculosUrl,
 										['title' => Yii::t('app', 'Nuevo Vehiculo'),
+										 'tabindex'=>-1,
 										 'onclick'=>'$.ajax({
 											type     :"POST",
 											cache    : false,
@@ -119,16 +143,16 @@ $this->title = Yii::t('app', 'Ingresos');
 											success  : function(response) {
 														//console.log(response);
 														$("#divvehiculonuevo").html(response);
-														$("#modalvehiculonuevo").modal("show")
+														$("#modalvehiculonuevo").modal("show");
 														}
 										});return false;',
 										]),	
 								'asButton' => true
 							]
 						];
-						echo $form->field($model, 'ing_id_vehiculo')->widget(Select2::classname(), [
+						echo $form->field($model, 'ing_id_vehiculo')->label(false)->widget(Select2::classname(), [
 							'initValueText' => $vehiculoDesc, 
-							'options' => ['id'=>'selectorVehiculos','placeholder' => '...'],
+							'options' => ['id'=>'selectorVehiculos','placeholder' => 'Buscar por patente o marca/modelo'],
 							'addon'=>$vehiculosAddon,
 							'pluginOptions' => [
 								'allowClear' => true,
@@ -144,12 +168,12 @@ $this->title = Yii::t('app', 'Ingresos');
 							],
 							'pluginEvents' => [
 								'change' => 'function(e) { 
-									var seleccion=$("#selectorVehiculos:first"); 
-									if (seleccion.val()) {
+									var seleccion=$("#selectorVehiculos:first").val(); 
+									if (seleccion) {
 										$.ajax({
 												type     : "POST",
 												cache    : false,
-												url      : "add-lista?grupo=vehiculos&id=" + seleccion.val(),
+												url      : "add-lista?grupo=vehiculos&id=" + seleccion,
 												success  : function(response) {
 															$("#divlistavehiculos").html(response);	
 															$("#selectorVehiculos").select2("val","");													
@@ -158,12 +182,12 @@ $this->title = Yii::t('app', 'Ingresos');
 									}			
 								}',
 								'select2:unselecting'=>'function(e) {
-									var seleccion=$("#selectorVehiculos:first"); 
-									if (seleccion.val()) {
+									var seleccion=$("#selectorVehiculos:first").val(); 
+									if (seleccion) {
 										$.ajax({
 												type     : "POST",
 												cache    : false,
-												url      : "drop-lista?grupo=vehiculos&id=" + seleccion.val(),
+												url      : "drop-lista?grupo=vehiculos&id=" + seleccion,
 												success  : function(response) {
 															$("#divlistavehiculos").html(response);														
 															}
@@ -179,41 +203,29 @@ $this->title = Yii::t('app', 'Ingresos');
 				
 			</div><!-- fin div col1 -->
 
-			<div id="col2" class="col-md-5">
-				<div id="divlistapersonas"><?php echo isset($tmpListaPersonas)?$tmpListaPersonas:'' ?></div>
-				<div id="divlistavehiculos"><?php echo isset($tmpListaVehiculos)?$tmpListaVehiculos:'' ?></div>				
-				<?php
-						/*
-						Pjax::begin();
-						echo Html::beginForm();
-						echo TabularForm::widget([
-							'dataProvider'=>$dataProvider,
-							'formName'=>'kvTabForm',
-						    'actionColumn'=>false,
-						    'serialColumn'=>false,
-						    'checkboxColumn'=>false,
-							'attributes'=>[
-								'id'=>['type'=>TabularForm::INPUT_HIDDEN_STATIC],
-								'apellido'=>['type'=>TabularForm::INPUT_HIDDEN_STATIC],
-								'nombre'=>['type'=>TabularForm::INPUT_HIDDEN_STATIC],
-								'nombre2'=>['type'=>TabularForm::INPUT_HIDDEN_STATIC],
-								'nro_doc'=>['type'=>TabularForm::INPUT_HIDDEN_STATIC]
-							],
-						]);
-						echo Html::submitButton();
-						echo Html::endForm();
-						Pjax::end();	
-						*/
-?>
-
-					
+			<div id="col2" class="col-md-6"><!-- comienzo div col2 -->
+				<div id="divlistapersonas">
+					<?php echo isset($tmpListaPersonas)?$tmpListaPersonas:'' ?>
+				</div>
+				<div id="divlistavehiculos">
+					<?php echo isset($tmpListaVehiculos)?$tmpListaVehiculos:'' ?>
+				</div>				
 			</div><!-- fin div col2 -->
 
-			<div id="col3" class="col-md-2">
+			<div id="col3" class="col-md-2"><!-- comienzo div col3 -->
 				    <?php 
-				    echo 'Columna 3';
-						//$this->render('_form', ['model' => $model,]);
-
+					$u=User::findOne(Yii::$app->user->getId());
+					
+					if (!empty($u->foto)) {
+						$contenido=Html::img(Yii::$app->urlManager->createUrl('images/usuarios/'.$u->foto),
+							['class'=>'img-thumbnail']);
+					}
+					else
+					{
+						$contenido=Html::img(Yii::$app->urlManager->createUrl('images/sinfoto.png'),['class'=>'img-thumbnail']);
+					}
+					echo $contenido;
+					echo '<p><i>Usuario: '. Yii::$app->user->identity->username.'</i></p>';					
 					?>
 
 			</div><!-- fin div col3 -->
@@ -223,14 +235,25 @@ $this->title = Yii::t('app', 'Ingresos');
 	</div>
 
 	<?php	
+	// modal que se abre cuando se presiona el boton de agregar persona nueva
 	Modal::begin(['id'=>'modalpersonanueva',
 		'header'=>'<span class="btn-warning">&nbsp;Persona nueva&nbsp;</span>']);
 		echo '<div id="divpersonanueva"></div>';
 	Modal::end();  
+	// modal que se abre cuando se presiona el boton de agregar vehiculos nuevo	
 	Modal::begin(['id'=>'modalvehiculonuevo',
 		'header'=>'<span class="btn-warning">&nbsp;Vehiculo nuevo&nbsp;</span>']);
 		echo '<div id="divvehiculonuevo"></div>';
-	Modal::end();  	  
+	Modal::end();  
+	// modal que se abre cuando se agrega una persona a la lista de personas (trae los vehiculos utilizados por la persona)	
+	Modal::begin(['id'=>'modalvehiculos_persona',
+		'header'=>'<span class="btn-warning">&nbsp;Vehiculos&nbsp;</span>']);
+		echo '<div id="divvehiculos_persona"></div>';
+	Modal::end();  	
+	
+	
+	
+	  
 	?>
 
 

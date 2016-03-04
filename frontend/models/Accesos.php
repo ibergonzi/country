@@ -4,6 +4,8 @@ namespace frontend\models;
 
 use Yii;
 
+use frontend\models\Personas;
+
 /**
  * This is the model class for table "accesos".
  *
@@ -146,6 +148,26 @@ class Accesos extends \yii\db\ActiveRecord
     {
         return $this->hasMany(AccesosUf::className(), ['id_acceso' => 'id']);
     }
+    
+    
+    // Devuelve todos los vehiculos utilizados de una determinada persona (y que los vehiculos sigan activos)
+    public static function getVehiculosPorPersona($id_persona) 
+    {
+		// se hace para verificar que exista el parametro pasado a esta funcion
+		$p=Personas::findOne($id_persona);
+		$command=\Yii::$app->db->createCommand('SELECT DISTINCT ing_id_vehiculo AS id_vehiculo 
+													FROM accesos LEFT JOIN vehiculos ON ing_id_vehiculo=vehiculos.id
+													WHERE id_persona=:persona AND vehiculos.estado=1 
+													ORDER BY ing_id_vehiculo DESC');
+		$command->bindParam(':persona', $id_persona);
+		$vehiculos=$command->queryAll();
+		/*	
+		foreach ($vehiculos as $vehiculo){
+			echo $vehiculo['id_vehiculo'];
+		}
+		*/ 
+		return $vehiculos;
+	}
 
     /**
      * @inheritdoc

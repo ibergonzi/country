@@ -87,6 +87,11 @@ class AccesosController extends Controller
     {
 		// recupera los vehiculos utilizados por la persona en ingresos
 		$vehiculos=Accesos::getVehiculosPorPersona($id_persona);
+		
+		// Si la persona es nueva o nunca tuvo accesos devuelve una bandera para que no se muestre el modal
+		if (count($vehiculos)==0) {
+			return 'NADA';
+		}		
 
 		// siempre debe agregar al principio de la lista los ids de vehiculos "sin vehiculo" y "bicicleta"
 		
@@ -108,21 +113,59 @@ class AccesosController extends Controller
 		
 		// inserta al principio de la lista
 		if (!$estaIDbicicleta) {
-			array_unshift($vehiculos,['id_vehiculo'=>\Yii::$app->params['bicicleta.id']]);			
+			array_unshift($vehiculos,['id_vehiculo'=>\Yii::$app->params['bicicleta.id'],'desc_vehiculo'=>'']);			
 		}
 		if (!$estaIDsinVehiculo) {
-			array_unshift($vehiculos,['id_vehiculo'=>\Yii::$app->params['sinVehiculo.id']]);
+			array_unshift($vehiculos,['id_vehiculo'=>\Yii::$app->params['sinVehiculo.id'],'desc_vehiculo'=>'']);
 		}
 
+		Yii::trace($vehiculos);
+
+		$aux=[];
+		foreach ($vehiculos as $vehiculo){
+			$aux[]=['id_vehiculo'=>$vehiculo['id_vehiculo'],
+					'desc_vehiculo'=>Vehiculos::formateaVehiculoSelect2($vehiculo['id_vehiculo'])];
+		}
+		Yii::trace($aux);		
+		
+		
+		return $this->renderAjax('_ingvehiculos', [
+			'vehiculos' => $aux,
+		]);
+	}
+	
+    public function actionBuscaPersonas($id_vehiculo)
+    {
+		// recupera las personas que utilizaron el vehiculo
+		$personas=Accesos::getPersonasPorVehiculo($id_vehiculo);
+
+		// Si el vehiculo es nuevo o nunca tuvo accesos devuelve una bandera para que no se muestre el modal
+		if (count($personas)==0) {
+			return 'NADA';
+		}
+		
+		$aux=[];
+		foreach ($personas as $persona){
+			$aux[]=['id_persona'=>$persona['id_persona'],
+					'desc_persona'=>Personas::formateaPersonaSelect2($persona['id_persona'],false)];
+		}
 
 		
-		$response='<h2>'.$id_persona.'</h2>';
-		foreach ($vehiculos as $vehiculo){
-			$response.=$vehiculo['id_vehiculo'].'-';
-		}		
-		return $response;
-	}
+		return $this->renderAjax('_ingpersonas', [
+			'personas' => $aux,
+		]);
+	}	
     
+    
+    public function actionAddListaArray($grupo, $id)
+    {
+		// se llama desde _ingpersonas.php, $id es un array
+		$aux=explode(',',$id);
+		foreach ($aux as $i) {
+			$r=$this->actionAddLista($grupo, $i);
+		}
+		return $r;
+	}
     
     public function actionAddLista($grupo, $id)
     {
@@ -293,6 +336,7 @@ class AccesosController extends Controller
 			'dataProvider' => $dataProvider,
 			'layout'=>'{items}',
 			'columns' => $columns,
+			'tableOptions' => ['class' => 'table table-striped table-condensed'],			
 		]);
 		
 		return $response;

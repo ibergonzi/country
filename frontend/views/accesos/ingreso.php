@@ -21,6 +21,24 @@ Icon::map($this, Icon::FA);
 
 $this->title = Yii::t('app', 'Ingresos');
 
+$this->registerCss('
+.fade {
+  opacity: 0;
+  -webkit-transition: opacity 0s linear;
+       -o-transition: opacity 0s linear;
+          transition: opacity 0s linear;
+}
+.modal.fade .modal-dialog {
+  -webkit-transition: -webkit-transform 0s ease-out;
+       -o-transition:      -o-transform 0s ease-out;
+          transition:         transform 0s ease-out;
+
+}
+.nofade {
+   transition: none;
+}
+');
+
 ?>
 <div class="accesos-ingreso">
 						
@@ -81,29 +99,27 @@ $this->title = Yii::t('app', 'Ingresos');
 								'change' => 'function(e) { 
 									var seleccion=$("#selectorPersonas:first").val(); 
 									if (seleccion) {
-										
 										$.ajax({
-											type     : "POST",
-											cache    : false,
-											async    : false,
-											url      : "add-lista?grupo=personas&id=" + seleccion,
-											success  : function(response) {
-															$("#divlistapersonas").html(response);
-															$("#selectorPersonas").select2("val","");
-														}
+											type   : "POST",cache  : false,
+											url    : "add-lista?grupo=personas&id=" + seleccion,
+											success: function(r) {
+													$("#divlistapersonas").html(r);
+													$("#selectorPersonas").select2("val","");
+													$.ajax({
+														type   : "POST", cache  : false,
+														url    : "busca-vehiculos?id_persona=" + seleccion,
+														success: function(r) {
+																if (r != "NADA") {
+																	$("#divvehiculos_persona").html(r);
+																	$("#modalvehiculos_persona").modal("show");
+																}
+															}
+													});															
+													
+													
+												}
 										});						
-										
-										$.ajax({
-											type     : "POST",
-											cache    : false,
-											url      : "busca-vehiculos?id_persona=" + seleccion,
-											success  : function(response) {
-															$("#divvehiculos_persona").html(response);
-															$("#modalvehiculos_persona").modal("show");
-														}
-										});
 
-										
 									}			
 								}',
 								'select2:unselecting'=>'function(e) {
@@ -141,7 +157,6 @@ $this->title = Yii::t('app', 'Ingresos');
 											cache    : false,
 											url  : $(this).attr("href"),
 											success  : function(response) {
-														//console.log(response);
 														$("#divvehiculonuevo").html(response);
 														$("#modalvehiculonuevo").modal("show");
 														}
@@ -171,14 +186,28 @@ $this->title = Yii::t('app', 'Ingresos');
 									var seleccion=$("#selectorVehiculos:first").val(); 
 									if (seleccion) {
 										$.ajax({
-												type     : "POST",
-												cache    : false,
-												url      : "add-lista?grupo=vehiculos&id=" + seleccion,
-												success  : function(response) {
-															$("#divlistavehiculos").html(response);	
-															$("#selectorVehiculos").select2("val","");													
+											type   : "POST", cache  : false,
+											url    : "add-lista?grupo=vehiculos&id=" + seleccion,
+											success: function(r) {
+												$("#divlistavehiculos").html(r);	
+												$("#selectorVehiculos").select2("val","");	
+												if (seleccion > 2) { // si es 1 o 2 es bicicleta o caminando
+													$.ajax({
+														type   : "POST", cache  : false,
+														url    : "busca-personas?id_vehiculo=" + seleccion,
+														success: function(r) {
+																if (r != "NADA") {
+																	console.log(r);
+																	$("#divpersonas_vehiculo").html(r);
+																	$("#modalpersonas_vehiculo").modal("show");
+																}
 															}
-										});						
+													});		
+												}																									
+																						
+											}
+										});	
+													
 									}			
 								}',
 								'select2:unselecting'=>'function(e) {
@@ -237,20 +266,28 @@ $this->title = Yii::t('app', 'Ingresos');
 	<?php	
 	// modal que se abre cuando se presiona el boton de agregar persona nueva
 	Modal::begin(['id'=>'modalpersonanueva',
-		'header'=>'<span class="btn-warning">&nbsp;Persona nueva&nbsp;</span>']);
+		'header'=>'<span class="btn-warning">&nbsp;Persona nueva&nbsp;</span>',
+		'options'=>['class'=>'nofade']]);
 		echo '<div id="divpersonanueva"></div>';
 	Modal::end();  
 	// modal que se abre cuando se presiona el boton de agregar vehiculos nuevo	
 	Modal::begin(['id'=>'modalvehiculonuevo',
-		'header'=>'<span class="btn-warning">&nbsp;Vehiculo nuevo&nbsp;</span>']);
+		'header'=>'<span class="btn-warning">&nbsp;Vehiculo nuevo&nbsp;</span>',
+		'options'=>['class'=>'nofade']]);
 		echo '<div id="divvehiculonuevo"></div>';
 	Modal::end();  
 	// modal que se abre cuando se agrega una persona a la lista de personas (trae los vehiculos utilizados por la persona)	
 	Modal::begin(['id'=>'modalvehiculos_persona',
-		'header'=>'<span class="btn-warning">&nbsp;Vehiculos&nbsp;</span>']);
+		'header'=>'<span class="btn-warning">&nbsp;Vehiculos&nbsp;</span>',
+		'options'=>['class'=>'nofade']]);
 		echo '<div id="divvehiculos_persona"></div>';
 	Modal::end();  	
-	
+	// modal que se abre cuando se agrega un vehiculo a la lista de vehiculos (trae las personas que utilizaron el vehiculo)	
+	Modal::begin(['id'=>'modalpersonas_vehiculo',
+		'header'=>'<span class="btn-warning">&nbsp;Personas&nbsp;</span>',
+		'options'=>['class'=>'nofade']]);
+		echo '<div id="divpersonas_vehiculo"></div>';
+	Modal::end();  		
 	
 	
 	  

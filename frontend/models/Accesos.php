@@ -5,6 +5,7 @@ namespace frontend\models;
 use Yii;
 
 use frontend\models\Personas;
+use frontend\models\Vehiculos;
 
 /**
  * This is the model class for table "accesos".
@@ -155,7 +156,7 @@ class Accesos extends \yii\db\ActiveRecord
     {
 		// se hace para verificar que exista el parametro pasado a esta funcion
 		$p=Personas::findOne($id_persona);
-		$command=\Yii::$app->db->createCommand('SELECT DISTINCT ing_id_vehiculo AS id_vehiculo 
+		$command=\Yii::$app->db->createCommand('SELECT DISTINCT ing_id_vehiculo AS id_vehiculo,"" AS desc_vehiculo 
 													FROM accesos LEFT JOIN vehiculos ON ing_id_vehiculo=vehiculos.id
 													WHERE id_persona=:persona AND vehiculos.estado=1 
 													ORDER BY ing_id_vehiculo DESC');
@@ -166,8 +167,29 @@ class Accesos extends \yii\db\ActiveRecord
 			echo $vehiculo['id_vehiculo'];
 		}
 		*/ 
+
 		return $vehiculos;
 	}
+	
+    // Devuelve todos los vehiculos utilizados de una determinada persona (y que los vehiculos sigan activos)
+    public static function getPersonasPorVehiculo($id_vehiculo) 
+    {
+		// se hace para verificar que exista el parametro pasado a esta funcion
+		$p=Vehiculos::findOne($id_vehiculo);
+		$command=\Yii::$app->db->createCommand('SELECT DISTINCT id_persona AS id_persona,"" AS desc_persona 
+													FROM accesos LEFT JOIN personas ON id_persona=personas.id
+													WHERE ing_id_vehiculo=:vehiculo AND personas.estado=1 
+													ORDER BY id_persona DESC');
+		$command->bindParam(':vehiculo', $id_vehiculo);
+		$personas=$command->queryAll();
+		/*	
+		foreach ($vehiculos as $vehiculo){
+			echo $vehiculo['id_vehiculo'];
+		}
+		*/ 
+
+		return $personas;
+	}	
 
     /**
      * @inheritdoc

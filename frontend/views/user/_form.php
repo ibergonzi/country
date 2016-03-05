@@ -39,6 +39,7 @@ use common\models\User;
 					$rol=User::getRol($model->id);	
 
 					echo Html::label('Rol', 'rol',['class'=>'control-label']);
+					//Yii::trace(ArrayHelper::map(AuthAssignment::listaRoles(), 'name', 'description'));
 					echo Html::dropDownList('rol', $rol->name,
 							 ArrayHelper::map(AuthAssignment::listaRoles(), 'name', 'description')
 							,['id'=>'rol','class'=>'form-control']);

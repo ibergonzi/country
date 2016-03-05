@@ -254,7 +254,7 @@ class PersonasController extends Controller
 			
 			$data = $command->queryAll();
 			
-			// el command devuelve un array de array con forma id=>n,text=>''
+			// el command devuelve un array de arrays con forma id=>n,text=>''
 			// se recorre todo el array, se detecta el key id y con su valor se busca la persona
 			// y se agrega a un nuevo array para despues ordenarlo por text y devolverlo 
 			$aux=['id'=>'','text'=>''];

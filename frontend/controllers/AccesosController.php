@@ -19,6 +19,9 @@ use yii\grid\GridView;
 
 use yii\helpers\Html;
 
+use frontend\models\Comentarios;
+use frontend\models\Mensajes;
+
 
 
 /**
@@ -232,6 +235,12 @@ class AccesosController extends Controller
 		}
 	}	
 	
+	public function actionRefrescaLista($grupo) 
+	{
+		$response=$this->refreshLista($grupo);
+		return $response;
+	}
+	
 	public function refreshLista($grupo) {
 		// Se recupera de la sesion, cuando se graba se debe limpiar la session Personas asi: Yii::$app->session->remove('personas');
 		$sess=\Yii::$app->session->get($grupo);			
@@ -292,6 +301,39 @@ class AccesosController extends Controller
 					'nombre',
 					'nombre2',
 					'nro_doc',
+					[
+						'header'=>'',
+						'attribute'=>'Mensajes',
+						'format' => 'raw',
+						'value' => function ($model, $index, $widget) {
+											$c=Mensajes::getMensajesByModelId($model->className(),$model->id);
+
+											if (!empty($c)) {
+												$text='<span class="glyphicon glyphicon-alert" style="color:#FF8000"></span>';
+												$titl='Ver mensaje';
+											} else {
+												$text='<span class="glyphicon glyphicon-envelope"></span>';
+												$titl='Ingresar nuevo mensaje';
+											}								
+											$url=Yii::$app->urlManager->createUrl(
+													['mensajes/create-ajax',
+														'modelName'=>$model->className(),
+														'modelID'=>$model->id]);							
+											return Html::a($text, 
+												$url,
+											['title' => $titl,
+											 'onclick'=>'$.ajax({
+												type     :"POST",
+												cache    : false,
+												url  : $(this).attr("href"),
+												success  : function(response) {
+															$("#divcomentarionuevo").html(response);
+															$("#modalcomentarionuevo").modal("show");
+															}
+											});return false;',
+											]);			
+									},						
+					],
 				];
 				break;	
 			case 'vehiculos':

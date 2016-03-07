@@ -65,6 +65,7 @@ $this->registerCss('table.detail-view th {width: 25%;} table.detail-view td {wid
 			}
 			echo DetailView::widget([
 			'model' => $m,
+			'options'=>['class' => 'table table-striped table-bordered table-condensed detail-view'],
 			'attributes' => [
 				//'id',
 				'comentario',

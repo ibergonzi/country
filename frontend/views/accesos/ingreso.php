@@ -21,6 +21,7 @@ Icon::map($this, Icon::FA);
 
 $this->title = Yii::t('app', 'Ingresos');
 
+// Hace que la transición de los modals sea mas rapida
 $this->registerCss('
 .fade {
   opacity: 0;
@@ -38,6 +39,31 @@ $this->registerCss('
    transition: none;
 }
 ');
+// Agrega scrollbars a los modals que se exceden de tamaño
+$this->registerCss('.modal-body { max-height: calc(100vh - 210px);overflow-y: auto;}');
+
+// refresca los gridviews luego de que se cierra el modal de comentarios
+	$js = 
+<<<JS
+	$('#modalcomentarionuevo').on('hidden.bs.modal', function (e) {
+		$.ajax({
+			type   : "POST",cache  : false,
+			url    : "refresca-lista?grupo=personas",
+			success: function(r) {
+					$("#divlistapersonas").html(r);
+				}
+		});		
+		$.ajax({
+			type   : "POST",cache  : false,
+			url    : "refresca-lista?grupo=vehiculos",
+			success: function(r) {
+					$("#divlistavehiculos").html(r);
+				}
+		});		
+
+	})
+JS;
+$this->registerJs($js,yii\web\View::POS_READY);
 
 ?>
 <div class="accesos-ingreso">
@@ -288,7 +314,11 @@ $this->registerCss('
 		'options'=>['class'=>'nofade']]);
 		echo '<div id="divpersonas_vehiculo"></div>';
 	Modal::end();  		
-	
+
+	Modal::begin(['id'=>'modalcomentarionuevo',
+		'header'=>'<span class="btn-warning">&nbsp;Mensajes/Comentarios&nbsp;</span>']);
+		echo '<div id="divcomentarionuevo"></div>';
+	Modal::end();  	
 	
 	  
 	?>

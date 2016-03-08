@@ -25,6 +25,46 @@ class AutorizantesController extends Controller
             ],
         ];
     }
+    
+    
+	// funcion utilizada para los select2, devuelve json
+	public function actionApellidoslist($q = null, $id = null) {
+		\Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+		$out = ['results' => ['id' => '', 'text' => '']];
+	
+		if (!is_null($q)) {
+			if (is_numeric($q)) {
+				$sp='CALL autorizantes_busca_nrosdoc(:query)' ;				
+			} else {	
+				$q=str_replace(' ','%',$q);
+				$sp='CALL autorizantes_busca_nombres(:query)' ;
+			}
+            $command = Yii::$app->db->createCommand($sp);
+            $command->bindParam(":query", trim($q));
+			
+			$data = $command->queryAll();
+			
+			// el command devuelve un array de arrays con forma id=>n,text=>''
+			// se recorre todo el array, se detecta el key id y con su valor se busca la persona
+			// y se agrega a un nuevo array para despues ordenarlo por text y devolverlo 
+			$aux=['id'=>'','text'=>''];
+			foreach ($data as $cadauno) {				
+				foreach($cadauno as $key=>$valor) {
+					if ($key=='id') {
+						$t=Autorizantes::formateaAutorizanteSelect2($valor,is_numeric($q));
+						$aux[]=['id'=>$valor,'text'=>$t];
+					}
+				}
+			}
+			asort($aux);
+		
+			$out['results'] = array_values($aux);
+		}
+		elseif ($id > 0) {
+			$out['results'] = ['id' => $id, 'text' => Autorizantes::formateaAutorizanteSelect2($id,false)];
+		}
+		return $out;
+	}    
 
     /**
      * Lists all Autorizantes models.

@@ -8,17 +8,13 @@ use Yii;
  * This is the model class for table "autorizantes".
  *
  * @property integer $id_persona
- * @property integer $created_by
- * @property string $created_at
- * @property integer $updated_by
- * @property string $updated_at
- * @property integer $estado
- * @property string $motivo_baja
+
  *
  * @property Personas $idPersona
  */
 class Autorizantes extends \yii\db\ActiveRecord
 {
+
     /**
      * @inheritdoc
      */
@@ -27,16 +23,18 @@ class Autorizantes extends \yii\db\ActiveRecord
         return 'autorizantes';
     }
 
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['id_persona', 'created_by', 'created_at', 'updated_by', 'updated_at'], 'required'],
-            [['id_persona', 'created_by', 'updated_by', 'estado'], 'integer'],
-            [['created_at', 'updated_at'], 'safe'],
-            [['motivo_baja'], 'string', 'max' => 50]
+            [['id_persona'], 'required'],
+            [['id_persona'], 'integer'],
+            [['id_persona'], 'safe'],
+
+       
         ];
     }
 
@@ -46,15 +44,21 @@ class Autorizantes extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_persona' => Yii::t('app', 'Id Persona'),
-            'created_by' => Yii::t('app', 'Created By'),
-            'created_at' => Yii::t('app', 'Created At'),
-            'updated_by' => Yii::t('app', 'Updated By'),
-            'updated_at' => Yii::t('app', 'Updated At'),
-            'estado' => Yii::t('app', 'Estado'),
-            'motivo_baja' => Yii::t('app', 'Motivo Baja'),
+            'id_persona' => Yii::t('app', 'Persona'),
         ];
     }
+
+	public static function formateaAutorizanteSelect2($id,$es_por_nro) 
+	{
+		$p=Personas::findOne($id);
+		if ($es_por_nro) {
+			$r=$p->nro_doc . ' ' . $p->apellido.' '.$p->nombre.' '.$p->nombre2.  ' ('. $id . ')';
+		} else {
+			$r=$p->apellido.' '.$p->nombre.' '.$p->nombre2. ' D:' . $p->nro_doc . ' ('. $id . ')';			
+		}
+		return $r;
+	}    
+
 
     /**
      * @return \yii\db\ActiveQuery

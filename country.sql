@@ -76,11 +76,11 @@ DROP TABLE IF EXISTS `accesos_autorizantes`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `accesos_autorizantes` (
   `id_acceso` int(11) unsigned NOT NULL,
-  `id_autorizante` int(11) NOT NULL,
-  UNIQUE KEY `id_acceso` (`id_acceso`,`id_autorizante`),
-  KEY `fk_personas_aut` (`id_autorizante`),
+  `id_persona` int(11) NOT NULL,
+  UNIQUE KEY `id_acceso` (`id_acceso`,`id_persona`),
+  KEY `fk_personas_aut` (`id_persona`),
   CONSTRAINT `fk_accesos_aut` FOREIGN KEY (`id_acceso`) REFERENCES `accesos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_personas_aut` FOREIGN KEY (`id_autorizante`) REFERENCES `personas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_personas_aut` FOREIGN KEY (`id_persona`) REFERENCES `personas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -263,12 +263,6 @@ DROP TABLE IF EXISTS `autorizantes`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `autorizantes` (
   `id_persona` int(11) NOT NULL,
-  `created_by` int(11) NOT NULL,
-  `created_at` datetime NOT NULL,
-  `updated_by` int(11) NOT NULL,
-  `updated_at` datetime NOT NULL,
-  `estado` tinyint(4) NOT NULL DEFAULT '1',
-  `motivo_baja` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id_persona`),
   CONSTRAINT `fk_aut_personas` FOREIGN KEY (`id_persona`) REFERENCES `personas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -280,6 +274,7 @@ CREATE TABLE `autorizantes` (
 
 LOCK TABLES `autorizantes` WRITE;
 /*!40000 ALTER TABLE `autorizantes` DISABLE KEYS */;
+INSERT INTO `autorizantes` VALUES (9),(10);
 /*!40000 ALTER TABLE `autorizantes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -301,7 +296,7 @@ CREATE TABLE `comentarios` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `model_id` (`model_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -363,7 +358,7 @@ CREATE TABLE `mensajes` (
   `estado` tinyint(4) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `model_id` (`model_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -372,7 +367,7 @@ CREATE TABLE `mensajes` (
 
 LOCK TABLES `mensajes` WRITE;
 /*!40000 ALTER TABLE `mensajes` DISABLE KEYS */;
-INSERT INTO `mensajes` VALUES (5,'PORTERIA','NO DEJAR PASAR','frontend\\models\\Personas',30,9,'2016-03-07 18:47:05',9,'2016-03-07 18:47:05',1);
+INSERT INTO `mensajes` VALUES (5,'PORTERIA','NO DEJAR PASAR','frontend\\models\\Personas',30,9,'2016-03-07 18:47:05',9,'2016-03-07 18:47:05',1),(6,'PORTERIA','GUARDA!!!!','frontend\\models\\Vehiculos',4,9,'2016-03-08 16:09:19',9,'2016-03-08 16:09:38',0),(7,'PORTERIA','GUARDA CON ESTE','frontend\\models\\Personas',9,9,'2016-03-08 19:09:48',9,'2016-03-08 19:20:42',0);
 /*!40000 ALTER TABLE `mensajes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -562,6 +557,47 @@ UNLOCK TABLES;
 --
 -- Dumping routines for database 'country'
 --
+/*!50003 DROP PROCEDURE IF EXISTS `autorizantes_busca_nombres` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `autorizantes_busca_nombres`(IN `_query` VARCHAR(45) CHARSET utf8)
+    READS SQL DATA
+    SQL SECURITY INVOKER
+SELECT `id`,'' as text FROM `personas` JOIN autorizantes ON personas.id=autorizantes.id_persona
+WHERE CONCAT(`apellido`, ' ',`nombre`,' ',`nombre2`) LIKE CONCAT('%', _query , '%') AND personas.estado=1 LIMIT 40 ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `autorizantes_busca_nrosdoc` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `autorizantes_busca_nrosdoc`(IN `_query` VARCHAR(45) CHARSET utf8)
+    READS SQL DATA
+    SQL SECURITY INVOKER
+SELECT `id`,'' as text FROM `personas` 
+JOIN autorizantes ON personas.id=autorizantes.id_persona
+WHERE nro_doc LIKE CONCAT('%', _query , '%') AND personas.estado=1  LIMIT 40 ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `personas_busca_nombres` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -629,4 +665,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-03-07 18:48:43
+-- Dump completed on 2016-03-08 19:42:31

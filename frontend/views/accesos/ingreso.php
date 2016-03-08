@@ -14,6 +14,7 @@ use yii\widgets\Pjax;
 use common\models\User;
 
 use kartik\icons\Icon;
+// ver iconos en http://fortawesome.github.io/Font-Awesome/icons/
 Icon::map($this, Icon::FA);
 
 /* @var $this yii\web\View */
@@ -83,9 +84,8 @@ $this->registerJs($js,yii\web\View::POS_READY);
 						$personasUrl=Yii::$app->urlManager->createUrl(['personas/create-ajax']);
 						$personasAddon = [
 							'prepend'=>[
-								'content'=>'<span class="glyphicon glyphicon-user "></span>'
+								'content'=>'<span class="glyphicon glyphicon-user" title="Buscar Personas"></span>',
 							],
-								
 							'append' => [
 								'content'=>Html::a('<span class="glyphicon glyphicon-plus-sign btn btn-primary"></span>',
 										$personasUrl,
@@ -107,7 +107,10 @@ $this->registerJs($js,yii\web\View::POS_READY);
 						];
 						echo $form->field($model, 'id_persona')->label(false)->widget(Select2::classname(), [
 							'initValueText' => $personaDesc, 
-							'options' => ['id'=>'selectorPersonas','placeholder' => 'Buscar por documento o nombre'],
+							'options' => ['id'=>'selectorPersonas',
+										  'placeholder' => 'Buscar por documento o nombre',
+										  'title'=>'Buscar personas',
+										 ],
 							'addon'=>$personasAddon,
 							'pluginOptions' => [
 								'allowClear' => true,
@@ -141,11 +144,8 @@ $this->registerJs($js,yii\web\View::POS_READY);
 																}
 															}
 													});															
-													
-													
 												}
 										});						
-
 									}			
 								}',
 								'select2:unselecting'=>'function(e) {
@@ -163,7 +163,6 @@ $this->registerJs($js,yii\web\View::POS_READY);
 								}'
 							]							
 						]);  	
-
 						
 
 						// -------------------Selector de vehiculos c/botón de alta ----------------------------------------
@@ -171,7 +170,7 @@ $this->registerJs($js,yii\web\View::POS_READY);
 						$vehiculosUrl=Yii::$app->urlManager->createUrl(['vehiculos/create-ajax']);
 						$vehiculosAddon = [
 							'prepend'=>[
-								'content'=>Icon::show('car',[],Icon::FA)
+								'content'=>Icon::show('car',['title'=>'Buscar Vehiculos'],Icon::FA)
 							],						
 							'append' => [
 								'content'=>Html::a('<span class="glyphicon glyphicon-plus-sign btn btn-primary"></span>', 
@@ -193,7 +192,11 @@ $this->registerJs($js,yii\web\View::POS_READY);
 						];
 						echo $form->field($model, 'ing_id_vehiculo')->label(false)->widget(Select2::classname(), [
 							'initValueText' => $vehiculoDesc, 
-							'options' => ['id'=>'selectorVehiculos','placeholder' => 'Buscar por patente o marca/modelo'],
+							'options' => [
+											'id'=>'selectorVehiculos',
+											'placeholder' => 'Buscar por patente o marca/modelo',
+										    'title'=>'Buscar vehiculos',											
+										 ],
 							'addon'=>$vehiculosAddon,
 							'pluginOptions' => [
 								'allowClear' => true,
@@ -230,10 +233,8 @@ $this->registerJs($js,yii\web\View::POS_READY);
 															}
 													});		
 												}																									
-																						
 											}
 										});	
-													
 									}			
 								}',
 								'select2:unselecting'=>'function(e) {
@@ -251,8 +252,68 @@ $this->registerJs($js,yii\web\View::POS_READY);
 								}'
 							]							
 						]);  	
+						
+						
+						// -------------------Selector de autorizantes----------------------------------------
+						$autorizanteDesc=$model->isNewRecord?'':Autorizantes::formateaPersonaSelect2($model->idpersona,false);
+						$autorizantesAddon = [
+							'prepend'=>[
+								'content'=>Icon::show('key',['title'=>'Buscar Autorizantes'],Icon::FA)
+							],
+						];
+						echo Select2::widget([
+							'name'=>'autorizanteSelect2',
+							'initValueText' => $autorizanteDesc, 
+							'options' => [
+											'id'=>'selectorAutorizantes',
+											'placeholder' => 'Buscar por documento o nombre',
+										    'title'=>'Buscar autorizantes',												
+										 ],
+							'addon'=>$autorizantesAddon,
+							'pluginOptions' => [
+								'allowClear' => true,
+								'minimumInputLength' => 3,
+								'ajax' => [
+									'url' => \yii\helpers\Url::to(['autorizantes/apellidoslist']),
+									'dataType' => 'json',
+									'data' => new JsExpression('function(params) { return {q:params.term}; }')
+								],
+								'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+								'templateResult' => new JsExpression('function(idpersona) { return idpersona.text; }'),
+								'templateSelection' => new JsExpression('function (idpersona) { return idpersona.text; }'),
+							],
+							'pluginEvents' => [
+								'change' => 'function(e) { 
+									var seleccion=$("#selectorAutorizantes:first").val(); 
+									if (seleccion) {
+										$.ajax({
+											type   : "POST",cache  : false,
+											url    : "add-lista?grupo=autorizantes&id=" + seleccion,
+											success: function(r) {
+													$("#divlistaautorizantes").html(r);
+													$("#selectorAutorizantes").select2("val","");
+												}
+										});						
+									}			
+								}',
+								'select2:unselecting'=>'function(e) {
+									var seleccion=$("#selectorAutorizantes:first").val(); 
+									if (seleccion) {
+										$.ajax({
+												type     : "POST",
+												cache    : false,
+												url      : "drop-lista?grupo=autorizantes&id=" + seleccion,
+												success  : function(response) {
+															$("#divlistaautorizantes").html(response);														
+															}
+										});						
+									}			
+								}'
+							]							
+						]);  							
+						
 
-						echo Html::submitButton();
+						//echo Html::submitButton();
 						ActiveForm::end();			    
 					?>
 				
@@ -260,11 +321,15 @@ $this->registerJs($js,yii\web\View::POS_READY);
 
 			<div id="col2" class="col-md-6"><!-- comienzo div col2 -->
 				<div id="divlistapersonas">
-					<?php echo isset($tmpListaPersonas)?$tmpListaPersonas:'' ?>
+						<?php echo isset($tmpListaPersonas)?$tmpListaPersonas:'' ?>
 				</div>
 				<div id="divlistavehiculos">
-					<?php echo isset($tmpListaVehiculos)?$tmpListaVehiculos:'' ?>
+						<?php echo isset($tmpListaVehiculos)?$tmpListaVehiculos:'' ?>
 				</div>				
+				<div id="divlistaautorizantes">
+						<?php echo isset($tmpListaAutorizantes)?$tmpListaAutorizantes:'' ?>
+				</div>				
+
 			</div><!-- fin div col2 -->
 
 			<div id="col3" class="col-md-2"><!-- comienzo div col3 -->
@@ -314,7 +379,7 @@ $this->registerJs($js,yii\web\View::POS_READY);
 		'options'=>['class'=>'nofade']]);
 		echo '<div id="divpersonas_vehiculo"></div>';
 	Modal::end();  		
-
+	// modal para los comentarios o mensajes
 	Modal::begin(['id'=>'modalcomentarionuevo',
 		'header'=>'<span class="btn-warning">&nbsp;Mensajes/Comentarios&nbsp;</span>']);
 		echo '<div id="divcomentarionuevo"></div>';

@@ -15,12 +15,13 @@ use frontend\models\Personas;
 use frontend\models\Vehiculos;
 use yii\data\ArrayDataProvider;
 
-use yii\grid\GridView;
+use kartik\grid\GridView;
 
 use yii\helpers\Html;
 
 use frontend\models\Comentarios;
 use frontend\models\Mensajes;
+
 
 
 
@@ -257,6 +258,10 @@ class AccesosController extends Controller
 					case 'vehiculos':
 						$dp[]=Vehiculos::findOne($p);
 						break;							
+					case 'autorizantes':
+						// los autorizantes son personas
+						$dp[]=Personas::findOne($p);
+						break;	
 				}	
 			}
 			$dataProvider = new ArrayDataProvider(['allModels'=>$dp]);			
@@ -335,6 +340,8 @@ class AccesosController extends Controller
 									},						
 					],
 				];
+				//$heading='<i class="glyphicon glyphicon-user"></i>  Personas';
+				$heading='Personas';
 				break;	
 			case 'vehiculos':
 				$columns=[
@@ -367,9 +374,79 @@ class AccesosController extends Controller
 					'marca',
 					'modelo',
 					'color',
+					[
+						'header'=>'',
+						'attribute'=>'Mensajes',
+						'format' => 'raw',
+						'value' => function ($model, $index, $widget) {
+											$c=Mensajes::getMensajesByModelId($model->className(),$model->id);
+
+											if (!empty($c)) {
+												$text='<span class="glyphicon glyphicon-alert" style="color:#FF8000"></span>';
+												$titl='Ver mensaje';
+											} else {
+												$text='<span class="glyphicon glyphicon-envelope"></span>';
+												$titl='Ingresar nuevo mensaje';
+											}								
+											$url=Yii::$app->urlManager->createUrl(
+													['mensajes/create-ajax',
+														'modelName'=>$model->className(),
+														'modelID'=>$model->id]);							
+											return Html::a($text, 
+												$url,
+											['title' => $titl,
+											 'onclick'=>'$.ajax({
+												type     :"POST",
+												cache    : false,
+												url  : $(this).attr("href"),
+												success  : function(response) {
+															$("#divcomentarionuevo").html(response);
+															$("#modalcomentarionuevo").modal("show");
+															}
+											});return false;',
+											]);			
+									},						
+					],					
 
 				];
-				break;							
+				//$heading=Icon::show('car',[],Icon::FA). '  Vehiculos';
+				$heading='Vehiculos';
+				break;			
+			case 'autorizantes':
+				$columns=[
+					[
+						'header'=>'<span class="glyphicon glyphicon-trash"></span>',
+						'attribute'=>'Acción',
+						'format' => 'raw',
+						'value' => function ($model, $index, $widget) {
+												$url=Yii::$app->urlManager->createUrl(
+													['accesos/drop-lista',
+													'grupo'=>'autorizantes', 
+													'id' => isset($model->id)?$model->id:''
+													]);
+												return Html::a('<span class="glyphicon glyphicon-remove"></span>', 
+													$url,
+													['title' => 'Eliminar',
+													 'onclick'=>'$.ajax({
+														type     : "POST",
+														cache    : false,
+														url      : $(this).attr("href"),
+														success  : function(response) {
+																		$("#divlistaautorizantes").html(response);
+																	}
+													});return false;',
+													]);			
+									},
+					],
+					'id',
+					'apellido',
+					'nombre',
+					'nombre2',
+					'nro_doc',
+				];
+				//$heading=Icon::show('key',[],Icon::FA). '  Autorizantes';			
+				$heading='Autorizantes';			
+				break;									
 		}			
 		
 		
@@ -378,7 +455,25 @@ class AccesosController extends Controller
 			'dataProvider' => $dataProvider,
 			'layout'=>'{items}',
 			'columns' => $columns,
-			'tableOptions' => ['class' => 'table table-striped table-condensed'],			
+			//'tableOptions' => ['class' => 'table table-striped table-condensed'], esto funciona si es el gridview de yii
+			
+			//opciones validas solo para el gridview de kartik
+			'panel'=>[
+				'type'=>GridView::TYPE_INFO,
+				'heading'=>$heading,
+				'footer'=>false,
+				'before'=>false,
+				'after'=>false,
+			],		
+			'panelHeadingTemplate'=>'{heading}',			
+			'resizableColumns'=>false,			
+			'bordered'=>false,
+			'striped'=>true,
+			'condensed'=>true,
+			'responsive'=>true,
+			'hover'=>false,
+			'toolbar'=>false,
+			'export'=>false,			
 		]);
 		
 		return $response;
@@ -403,12 +498,13 @@ class AccesosController extends Controller
         $model = new Accesos();
 		$tmpListaPersonas=$this->refreshLista('personas');
 		$tmpListaVehiculos=$this->refreshLista('vehiculos');				
+		$tmpListaAutorizantes=$this->refreshLista('autorizantes');				
 		return $this->render('ingreso', [
 			//'model' => $searchModel,
 			'model' => $model,
 			'tmpListaPersonas'=>$tmpListaPersonas,
 			'tmpListaVehiculos'=>$tmpListaVehiculos,			
-			
+			'tmpListaAutorizantes'=>$tmpListaAutorizantes,			
 		]);        
 
         

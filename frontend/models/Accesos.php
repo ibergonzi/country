@@ -7,6 +7,11 @@ use Yii;
 use frontend\models\Personas;
 use frontend\models\Vehiculos;
 
+
+use yii\behaviors\TimestampBehavior;
+use yii\behaviors\BlameableBehavior;
+use yii\db\Expression;
+
 /**
  * This is the model class for table "accesos".
  *
@@ -50,17 +55,65 @@ class Accesos extends \yii\db\ActiveRecord
         return 'accesos';
     }
 
+    const ESTADO_BAJA = 0;
+	const ESTADO_ACTIVO = 1;
+
+	// funcion agregada a mano
+	public static function getEstados($key=null)
+	{
+		$estados=[self::ESTADO_ACTIVO=>'Activo',self::ESTADO_BAJA=>'Baja'];
+	    if ($key !== null) {
+			return $estados[$key];
+		}
+		return $estados;
+	}	
+	
+	
+	// se graban los nombres en mayúsculas
+    public function beforeSave($insert)
+    {
+			$this->motivo=mb_strtoupper($this->motivo);
+ 
+            parent::beforeSave($insert);
+            return true;
+    }    
+    
+    // extiende los comportamientos de la clase Personas para grabar datos de auditoría
+    public function behaviors()
+    {
+	  return [
+		  [
+			  'class' => BlameableBehavior::className(),
+			  'createdByAttribute' => 'created_by',
+			  'updatedByAttribute' => 'updated_by',
+		  ],
+		  [
+			  'class' => TimestampBehavior::className(),
+			  'createdAtAttribute' => 'created_at',
+			  'updatedAtAttribute' => 'updated_at',                 
+			  'value' => new Expression('CURRENT_TIMESTAMP')
+		  ],
+
+	  ];
+    }
+
+
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['id_persona', 'ing_id_vehiculo', 'ing_fecha', 'ing_hora', 'ing_id_porton', 'ing_id_user', 'id_concepto', 'motivo', 'created_by', 'created_at', 'updated_by', 'updated_at'], 'required'],
-            [['id_persona', 'ing_id_vehiculo', 'ing_id_porton', 'ing_id_user', 'egr_id_vehiculo', 'egr_id_porton', 'egr_id_user', 'id_concepto', 'cant_acomp', 'created_by', 'updated_by', 'estado'], 'integer'],
-            [['ing_fecha', 'ing_hora', 'egr_fecha', 'egr_hora', 'created_at', 'updated_at'], 'safe'],
+            [['id_persona', 'ing_id_vehiculo', 'ing_fecha', 'ing_hora', 
+				'ing_id_porton', 'ing_id_user', 'id_concepto', 'motivo', ], 'required'],
+            [['id_persona', 'ing_id_vehiculo', 'ing_id_porton', 
+				'ing_id_user', 'egr_id_vehiculo', 'egr_id_porton', 'egr_id_user', 
+				'id_concepto', 'cant_acomp', 'created_by', 'updated_by', 'estado'], 'integer'],
+            [['ing_fecha', 'ing_hora', 'egr_fecha', 'egr_hora', 
+				'created_by','created_at', 'updated_at','updated_by'], 'safe'],
             [['motivo', 'motivo_baja'], 'string', 'max' => 50],
-            [['ing_fecha'], 'unique']
+
         ];
     }
 
@@ -71,26 +124,31 @@ class Accesos extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
-            'id_persona' => Yii::t('app', 'Id Persona'),
-            'ing_id_vehiculo' => Yii::t('app', 'Ing Id Vehiculo'),
-            'ing_fecha' => Yii::t('app', 'Ing Fecha'),
-            'ing_hora' => Yii::t('app', 'Ing Hora'),
-            'ing_id_porton' => Yii::t('app', 'Ing Id Porton'),
-            'ing_id_user' => Yii::t('app', 'Ing Id User'),
-            'egr_id_vehiculo' => Yii::t('app', 'Egr Id Vehiculo'),
-            'egr_fecha' => Yii::t('app', 'Egr Fecha'),
-            'egr_hora' => Yii::t('app', 'Egr Hora'),
-            'egr_id_porton' => Yii::t('app', 'Egr Id Porton'),
-            'egr_id_user' => Yii::t('app', 'Egr Id User'),
-            'id_concepto' => Yii::t('app', 'Id Concepto'),
+            'id_persona' => Yii::t('app', 'Persona'),
+            'ing_id_vehiculo' => Yii::t('app', 'Vehic.Ing.'),
+            'ing_fecha' => Yii::t('app', 'Fec.Ing.'),
+            'ing_hora' => Yii::t('app', 'H.Ing.'),
+            'ing_id_porton' => Yii::t('app', 'Porton Ing.'),
+            'ing_id_user' => Yii::t('app', 'Usuario Ing.'),
+            'egr_id_vehiculo' => Yii::t('app', 'Vehic.Egr.'),
+            'egr_fecha' => Yii::t('app', 'Fec.Egr.'),
+            'egr_hora' => Yii::t('app', 'H.Egr.'),
+            'egr_id_porton' => Yii::t('app', 'Porton Egr.'),
+            'egr_id_user' => Yii::t('app', 'Usuario Egr.'),
+            'id_concepto' => Yii::t('app', 'Concepto'),
             'motivo' => Yii::t('app', 'Motivo'),
-            'cant_acomp' => Yii::t('app', 'Cant Acomp'),
-            'created_by' => Yii::t('app', 'Created By'),
-            'created_at' => Yii::t('app', 'Created At'),
-            'updated_by' => Yii::t('app', 'Updated By'),
-            'updated_at' => Yii::t('app', 'Updated At'),
-            'estado' => Yii::t('app', 'Estado'),
+            'cant_acomp' => Yii::t('app', 'Cant.Acomp.'),
+            'created_by' => Yii::t('app', 'Usuario alta'),
+            'created_at' => Yii::t('app', 'Fecha alta'),
+            'updated_by' => Yii::t('app', 'Usuario modif.'),
+            'updated_at' => Yii::t('app', 'Fecha modif.'),
+            'estado' => Yii::t('app', 'Estado'),            
             'motivo_baja' => Yii::t('app', 'Motivo Baja'),
+            'userCreatedBy.username'=>'Usuario alta',
+            'userUpdatedBy.username'=>'Usuario modif.',             
+            'userIngreso.username'=>'Usuario Ing.',
+            'userEgreso.username'=>'Usuario Egr.',             
+
         ];
     }
 
@@ -190,6 +248,28 @@ class Accesos extends \yii\db\ActiveRecord
 
 		return $personas;
 	}	
+	
+	
+    public function getUserCreatedBy()
+    {
+        return $this->hasOne(\common\models\User::className(), ['id' => 'created_by']);
+    }    
+    
+    public function getUserUpdatedBy()
+    {
+        return $this->hasOne(\common\models\User::className(), ['id' => 'updated_by']);
+    }    	
+
+    public function getUserIngreso()
+    {
+        return $this->hasOne(\common\models\User::className(), ['id' => 'ing_id_user']);
+    }    
+    
+    public function getUserEgreso()
+    {
+        return $this->hasOne(\common\models\User::className(), ['id' => 'egr_id_user']);
+    }    	
+
 
     /**
      * @inheritdoc

@@ -4,6 +4,12 @@ namespace frontend\models;
 
 use Yii;
 
+use yii\behaviors\TimestampBehavior;
+use yii\behaviors\BlameableBehavior;
+use yii\db\Expression;
+
+use yii\helpers\ArrayHelper;
+
 /**
  * This is the model class for table "accesos_conceptos".
  *
@@ -23,6 +29,58 @@ class AccesosConceptos extends \yii\db\ActiveRecord
     {
         return 'accesos_conceptos';
     }
+    
+    const ESTADO_BAJA = 0;
+	const ESTADO_ACTIVO = 1;    
+
+	// devuelve lista de tipos documentos preparada para los dropDownList
+	// se usa:  $form->field($model, 'id_tipo_doc')->dropDownList($model->listaTiposdoc)
+	public static function getListaConceptos()
+	{
+		$opciones = self::find()->where(['estado'=>self::ESTADO_ACTIVO])->asArray()->all();
+		return ArrayHelper::map($opciones, 'id', 'concepto');
+	}
+
+	// funcion agregada a mano
+	public static function getEstados($key=null)
+	{
+		$estados=[self::ESTADO_ACTIVO=>'Activo',self::ESTADO_BAJA=>'Baja'];
+	    if ($key !== null) {
+			return $estados[$key];
+		}
+		return $estados;
+	}	
+	
+	
+	// se graban los nombres en mayúsculas
+    public function beforeSave($insert)
+    {
+			$this->concepto=mb_strtoupper($this->concepto);
+ 
+            parent::beforeSave($insert);
+            return true;
+    }    
+    
+    // extiende los comportamientos de la clase Personas para grabar datos de auditoría
+    public function behaviors()
+    {
+	  return [
+		  [
+			  'class' => BlameableBehavior::className(),
+			  'createdByAttribute' => 'created_by',
+			  'updatedByAttribute' => 'updated_by',
+		  ],
+		  [
+			  'class' => TimestampBehavior::className(),
+			  'createdAtAttribute' => 'created_at',
+			  'updatedAtAttribute' => 'updated_at',                 
+			  'value' => new Expression('CURRENT_TIMESTAMP')
+		  ],
+
+	  ];
+    }
+
+
 
     /**
      * @inheritdoc

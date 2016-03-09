@@ -45,16 +45,16 @@ CREATE TABLE `accesos` (
   `estado` tinyint(4) NOT NULL DEFAULT '1',
   `motivo_baja` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `idx_ing_fecha` (`ing_fecha`) USING BTREE,
   KEY `idx_id_persona` (`id_persona`) USING BTREE,
   KEY `idx_ing_id_vehiculo` (`ing_id_vehiculo`) USING BTREE,
   KEY `idx_egr_id_vehiculo` (`egr_id_vehiculo`) USING BTREE,
   KEY `idx_id_concepto` (`id_concepto`) USING BTREE,
+  KEY `idx_ing_fecha` (`ing_fecha`) USING BTREE,
   CONSTRAINT `fk_concepto` FOREIGN KEY (`id_concepto`) REFERENCES `accesos_conceptos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_egr_vehiculo` FOREIGN KEY (`egr_id_vehiculo`) REFERENCES `vehiculos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_ing_vehiculo` FOREIGN KEY (`ing_id_vehiculo`) REFERENCES `vehiculos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_personas` FOREIGN KEY (`id_persona`) REFERENCES `personas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -63,7 +63,7 @@ CREATE TABLE `accesos` (
 
 LOCK TABLES `accesos` WRITE;
 /*!40000 ALTER TABLE `accesos` DISABLE KEYS */;
-INSERT INTO `accesos` VALUES (1,7302,4,'2016-03-02','2016-03-02 00:00:00',1,9,NULL,NULL,NULL,NULL,NULL,1,'visita',1,9,'2016-03-02 00:00:00',9,'2016-03-02 00:00:00',1,NULL),(2,9,4,'2016-03-01','2016-03-01 00:00:00',1,9,NULL,NULL,NULL,NULL,NULL,1,'VISITA',0,9,'2016-03-01 00:00:00',9,'2016-03-01 00:00:00',1,NULL);
+INSERT INTO `accesos` VALUES (13,30,4,'2016-03-09','2016-03-09 19:34:12',2,9,NULL,NULL,NULL,NULL,NULL,7,'VISITA',1,9,'2016-03-09 19:34:12',9,'2016-03-09 19:34:12',1,NULL);
 /*!40000 ALTER TABLE `accesos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -105,8 +105,13 @@ CREATE TABLE `accesos_conceptos` (
   `concepto` varchar(50) NOT NULL,
   `req_tarjeta` tinyint(4) NOT NULL,
   `req_seguro` tinyint(4) NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_by` int(11) NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `estado` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -115,7 +120,7 @@ CREATE TABLE `accesos_conceptos` (
 
 LOCK TABLES `accesos_conceptos` WRITE;
 /*!40000 ALTER TABLE `accesos_conceptos` DISABLE KEYS */;
-INSERT INTO `accesos_conceptos` VALUES (1,'Cualquiera',0,0);
+INSERT INTO `accesos_conceptos` VALUES (1,'COPROPIETARIO',0,0,0,'0000-00-00 00:00:00',0,'0000-00-00 00:00:00',1),(2,'PROVEEDOR COPROPIETARIO',0,0,0,'0000-00-00 00:00:00',0,'0000-00-00 00:00:00',1),(4,'PERSONAL DOMÉSTICO',1,1,0,'0000-00-00 00:00:00',0,'0000-00-00 00:00:00',1),(5,'INTERESADO VENTAS',0,0,0,'0000-00-00 00:00:00',0,'0000-00-00 00:00:00',1),(6,'PERSONAL FUNES HILLS',0,0,0,'0000-00-00 00:00:00',0,'0000-00-00 00:00:00',1),(7,'INVITADO COPROPIETARIO',0,0,0,'0000-00-00 00:00:00',0,'0000-00-00 00:00:00',1),(9,'OPERARIO OBRAS PARTICULARES',1,1,0,'0000-00-00 00:00:00',0,'0000-00-00 00:00:00',1),(10,'JARDINERO/PILETERO',0,0,0,'0000-00-00 00:00:00',0,'0000-00-00 00:00:00',1),(11,'PERS.ROSETTI S.A',0,0,0,'0000-00-00 00:00:00',0,'0000-00-00 00:00:00',1),(12,'PERSONAL CLUB HOUSE',0,0,0,'0000-00-00 00:00:00',0,'0000-00-00 00:00:00',1),(13,'PERSONAL SCV',0,0,0,'0000-00-00 00:00:00',0,'0000-00-00 00:00:00',1),(14,'PERSONAL PROPIENTAL',0,0,0,'0000-00-00 00:00:00',0,'0000-00-00 00:00:00',1),(15,'PERSONAL SEGRUP',0,0,0,'0000-00-00 00:00:00',0,'0000-00-00 00:00:00',1);
 /*!40000 ALTER TABLE `accesos_conceptos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -665,4 +670,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-03-08 19:42:31
+-- Dump completed on 2016-03-09 19:36:22

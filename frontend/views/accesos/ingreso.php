@@ -12,6 +12,11 @@ use yii\bootstrap\Modal;
 use yii\widgets\Pjax;
 
 use common\models\User;
+use frontend\models\AccesosConceptos;
+
+
+
+
 
 use kartik\icons\Icon;
 // ver iconos en http://fortawesome.github.io/Font-Awesome/icons/
@@ -80,7 +85,9 @@ $this->registerJs($js,yii\web\View::POS_READY);
 						$form = ActiveForm::begin();
 
 						// -------------------Selector de personas c/botón de alta ----------------------------------------
-						$personaDesc=$model->isNewRecord?'':Personas::formateaPersonaSelect2($model->idpersona,false);
+						//$personaDesc=$model->isNewRecord?'':Personas::formateaPersonaSelect2($model->id_persona,false);
+						$personaDesc='';
+
 						$personasUrl=Yii::$app->urlManager->createUrl(['personas/create-ajax']);
 						$personasAddon = [
 							'prepend'=>[
@@ -166,7 +173,9 @@ $this->registerJs($js,yii\web\View::POS_READY);
 						
 
 						// -------------------Selector de vehiculos c/botón de alta ----------------------------------------
-						$vehiculoDesc=$model->isNewRecord?'':Vehiculos::formateaVehiculoSelect2($model->ing_id_vehiculo);
+						//$vehiculoDesc=$model->isNewRecord?'':Vehiculos::formateaVehiculoSelect2($model->ing_id_vehiculo);
+						$vehiculoDesc='';
+
 						$vehiculosUrl=Yii::$app->urlManager->createUrl(['vehiculos/create-ajax']);
 						$vehiculosAddon = [
 							'prepend'=>[
@@ -255,7 +264,9 @@ $this->registerJs($js,yii\web\View::POS_READY);
 						
 						
 						// -------------------Selector de autorizantes----------------------------------------
-						$autorizanteDesc=$model->isNewRecord?'':Autorizantes::formateaPersonaSelect2($model->idpersona,false);
+						//$autorizanteDesc=$model->isNewRecord?'':Autorizantes::formateaPersonaSelect2($model->id_persona,false);
+						$autorizanteDesc='';
+
 						$autorizantesAddon = [
 							'prepend'=>[
 								'content'=>Icon::show('key',['title'=>'Buscar Autorizantes'],Icon::FA)
@@ -312,8 +323,13 @@ $this->registerJs($js,yii\web\View::POS_READY);
 							]							
 						]);  							
 						
+						echo $form->field($model, 'id_concepto')->dropDownList(AccesosConceptos::getListaConceptos());
+						
+						echo $form->field($model,'motivo')->textInput();		
+						
+						echo $form->field($model,'cant_acomp')->textInput();				
 
-						//echo Html::submitButton();
+						echo Html::submitButton();
 						ActiveForm::end();			    
 					?>
 				
@@ -345,7 +361,8 @@ $this->registerJs($js,yii\web\View::POS_READY);
 						$contenido=Html::img(Yii::$app->urlManager->createUrl('images/sinfoto.png'),['class'=>'img-thumbnail']);
 					}
 					echo $contenido;
-					echo '<p><i>Usuario: '. Yii::$app->user->identity->username.'</i></p>';					
+					echo '<p><i>Usuario: '. Yii::$app->user->identity->username.'</i></p>';	
+					echo '<h4>Portón: '.$model->ing_id_porton.'</h4>';				
 					?>
 
 			</div><!-- fin div col3 -->

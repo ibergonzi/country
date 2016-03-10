@@ -113,6 +113,7 @@ class Accesos extends \yii\db\ActiveRecord
             [['ing_fecha', 'ing_hora', 'egr_fecha', 'egr_hora', 
 				'created_by','created_at', 'updated_at','updated_by'], 'safe'],
             [['motivo', 'motivo_baja'], 'string', 'max' => 50],
+            ['cant_acomp','default','value'=>0],
 
         ];
     }

@@ -14,6 +14,8 @@ use yii\widgets\Pjax;
 use common\models\User;
 use frontend\models\AccesosConceptos;
 
+use kartik\widgets\Alert;
+
 
 
 
@@ -362,7 +364,39 @@ $this->registerJs($js,yii\web\View::POS_READY);
 					}
 					echo $contenido;
 					echo '<p><i>Usuario: '. Yii::$app->user->identity->username.'</i></p>';	
-					echo '<h4>Portón: '.\Yii::$app->session->get('porton').'</h4>';				
+					echo '<h4>Portón: '.\Yii::$app->session->get('porton').'</h4>';		
+					
+					
+					//echo Alert::widget();
+					/*
+					echo AlertBlock::widget([
+						'useSessionFlash' => true,
+						'type' => AlertBlock::TYPE_ALERT
+					]);
+					*/					
+					
+					
+					foreach (\Yii::$app->session->getAllFlashes() as $keyM => $messageM) {
+						if (is_array($messageM)) {
+							$i=0;
+							foreach ($messageM as $m) {
+								$i=$i+1;
+								echo Alert::widget([
+									'type' => 'alert-'.$keyM,
+									'body' => $m,
+									'delay' => $i*7000,
+								]);
+							}
+						} else {
+							echo Alert::widget([
+								'type' => 'alert-'.$keyM,
+								'body' => $messageM,
+								'delay' => 5000
+								]);							
+						}
+					}
+										
+							
 					?>
 
 			</div><!-- fin div col3 -->

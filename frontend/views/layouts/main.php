@@ -8,7 +8,7 @@ use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use frontend\assets\AppAsset;
-use common\widgets\Alert;
+//use common\widgets\Alert;
 
 use kartik\popover\PopoverX;
 use common\models\User;
@@ -114,7 +114,7 @@ AppAsset::register($this);
 			 
         ?>		
 
-        <?= Alert::widget() ?>
+        <?php //echo Alert::widget() ?>
         <?= $content ?>
     </div>
 </div>

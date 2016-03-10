@@ -54,7 +54,7 @@ CREATE TABLE `accesos` (
   CONSTRAINT `fk_egr_vehiculo` FOREIGN KEY (`egr_id_vehiculo`) REFERENCES `vehiculos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_ing_vehiculo` FOREIGN KEY (`ing_id_vehiculo`) REFERENCES `vehiculos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_personas` FOREIGN KEY (`id_persona`) REFERENCES `personas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -63,7 +63,7 @@ CREATE TABLE `accesos` (
 
 LOCK TABLES `accesos` WRITE;
 /*!40000 ALTER TABLE `accesos` DISABLE KEYS */;
-INSERT INTO `accesos` VALUES (13,30,4,'2016-03-09','2016-03-09 19:34:12',2,9,NULL,NULL,NULL,NULL,NULL,7,'VISITA',1,9,'2016-03-09 19:34:12',9,'2016-03-09 19:34:12',1,NULL);
+INSERT INTO `accesos` VALUES (25,9,4,'2016-03-10','2016-03-10 19:44:16',1,9,NULL,NULL,NULL,NULL,NULL,1,'1',0,9,'2016-03-10 19:44:16',9,'2016-03-10 19:44:16',1,NULL);
 /*!40000 ALTER TABLE `accesos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -90,6 +90,7 @@ CREATE TABLE `accesos_autorizantes` (
 
 LOCK TABLES `accesos_autorizantes` WRITE;
 /*!40000 ALTER TABLE `accesos_autorizantes` DISABLE KEYS */;
+INSERT INTO `accesos_autorizantes` VALUES (25,9);
 /*!40000 ALTER TABLE `accesos_autorizantes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -670,4 +671,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-03-09 19:36:22
+-- Dump completed on 2016-03-10 19:50:13

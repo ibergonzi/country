@@ -21,6 +21,7 @@ use yii\helpers\Html;
 
 use frontend\models\Comentarios;
 use frontend\models\Mensajes;
+use frontend\models\AccesosAutorizantes;
 
 use yii\db\Expression;
 
@@ -505,86 +506,114 @@ class AccesosController extends Controller
 
 		// inicializa modelo
         $model = new Accesos();
+        
+		$tmpListaPersonas=$this->refreshLista('personas');
+		$tmpListaVehiculos=$this->refreshLista('vehiculos');				
+		$tmpListaAutorizantes=$this->refreshLista('autorizantes');        
+		//$tmpListaUFs=$this->refreshLista('ufs');        
+
 
 		if (isset($_POST['Accesos'])) {
-			$haGrabado=false;
 			$model->attributes = $_POST['Accesos'];
-		
+			
 			$sessPersonas=\Yii::$app->session->get('personas');	
-			if ($sessPersonas) {
-				$model->ing_fecha=date("Y-m-d");
-				$model->ing_hora=new Expression('CURRENT_TIMESTAMP');
-				$model->ing_id_porton=\Yii::$app->session->get('porton');        
-				$model->ing_id_user=\Yii::$app->user->identity->id;					
-				
-				$transaction = Yii::$app->db->beginTransaction();				
-				try {
-					foreach ($sessPersonas as $model->id_persona) {
-						Yii::trace($model->id_persona);
-						$sessVehiculo=\Yii::$app->session->get('vehiculos');
-						if ($sessVehiculo) {
-							foreach ($sessVehiculo as $model->ing_id_vehiculo) {
-													Yii::trace($model->ing_id_vehiculo);
-								// Aunque deberia haber un solo vehiculo
-								
-								// Para que save() no funcione como update sino como insert, 
-								// se debe resetear el id y setear isNewRecord como true
-								$model->id = null;
-								$model->isNewRecord = true;
-								$model->save();
-								$haGrabado=true;
+			$sessVehiculo=\Yii::$app->session->get('vehiculos');
+			$sessAutorizantes=\Yii::$app->session->get('autorizantes');
+			//$sessUFs=\Yii::$app->session->get('ufs');
 
-								Yii::trace($model->getErrors());
-							} //foreach vehiculos
-						} //if $sessVehiculo
-				
-					} //foreach personas
-					
-					if ($haGrabado) {
-						$transaction->commit();
-						// limpia todo, deberia mostrar algun mensaje de grabacion exitosa
-						\Yii::$app->session->remove('personas');							
-						\Yii::$app->session->remove('vehiculos');							
-						\Yii::$app->session->remove('autorizantes');							
-						\Yii::$app->session->remove('ufs');	
-						$this->redirect('ingreso');
+			$rechaza=false;
+			if (!$sessPersonas) {
+				\Yii::$app->session->addFlash('danger','Debe especificar al menos una persona');
+				$rechaza=true;
+			}
+			if (!$sessVehiculo) {
+				\Yii::$app->session->addFlash('danger','Debe especificar un vehiculo');
+				$rechaza=true;
+			}
+			if (!$sessAutorizantes) {
+				\Yii::$app->session->addFlash('danger','Debe especificar al menos un autorizante');
+				$rechaza=true;
+			}
+			/*
+			if (!$sessUFs) {
+				\Yii::$app->session->addFlash('danger','Debe especificar al menos una UF');
+				$rechaza=true;
+			}
+			*/
+			if ($rechaza) {
+				// hace un render para que no se pierda los datos del modelo (en vez de redirect que limpia todo)
+				return $this->render('ingreso', [
+					'model' => $model,
+					'tmpListaPersonas'=>$tmpListaPersonas,
+					'tmpListaVehiculos'=>$tmpListaVehiculos,			
+					'tmpListaAutorizantes'=>$tmpListaAutorizantes,	
+					//'tmpListaUFs'=>$tmpListaUFs,			
+				]);        
+			}			
+
+			// Para que coincidan las fechas y horas en todos los registros se utilizan variables auxiliares antes de grabar
+			$fecAux=date("Y-m-d");
+			$horAux=new Expression('CURRENT_TIMESTAMP');
+			// Comienza Transaccion
+			$transaction = Yii::$app->db->beginTransaction();				
+			try {
+				foreach ($sessPersonas as $model->id_persona) {
+					foreach ($sessVehiculo as $model->ing_id_vehiculo) {
+						// Aunque deberia haber un solo vehiculo
 						
-					} //if haGrabado	
-				} catch(\Exception $e) {
-					$transaction->rollBack();
-					throw $e;
-				} // try..catch
+						// Para que save() no funcione como update sino como insert, 
+						// se debe resetear el id y setear isNewRecord como true
+						$model->id = null;
+						$model->ing_fecha=$fecAux;
+						$model->ing_hora=$horAux;
+						$model->ing_id_porton=\Yii::$app->session->get('porton');        
+						$model->ing_id_user=\Yii::$app->user->identity->id;					
+						
+						$model->isNewRecord = true;
+						if ($model->save()) {
+							foreach ($sessAutorizantes as $id_autorizante) {
+								$aut=new AccesosAutorizantes();
+								$aut->id_acceso=$model->id;
+								$aut->id_persona=$id_autorizante;
+								$aut->save();
+							} // foreach autorizantes
+						
+
+						}// if model->save()	
+					} //foreach vehiculos
+					
+				} //foreach personas
 				
-			} //if $sessPersonas
+				// Todo bien
+				$transaction->commit();
+				\Yii::$app->session->addFlash('success','Ingreso grabado correctamente');
+				
+				// limpia todo
+				\Yii::$app->session->remove('personas');							
+				\Yii::$app->session->remove('vehiculos');							
+				\Yii::$app->session->remove('autorizantes');							
+				\Yii::$app->session->remove('ufs');	
+				
+				return $this->redirect(['ingreso']);
+				
+
+			} catch(\Exception $e) {
+				$transaction->rollBack();
+				
+				Yii::$app->session->addFlash('danger','Hubo un error en la grabación');
+				throw $e;
+			} // try..catch
+			
 
 		} // if POST		
 		
-		
-		
-		
-		$tmpListaPersonas=$this->refreshLista('personas');
-		$tmpListaVehiculos=$this->refreshLista('vehiculos');				
-		$tmpListaAutorizantes=$this->refreshLista('autorizantes');	
-		
-					
 		return $this->render('ingreso', [
-			//'model' => $searchModel,
 			'model' => $model,
 			'tmpListaPersonas'=>$tmpListaPersonas,
 			'tmpListaVehiculos'=>$tmpListaVehiculos,			
 			'tmpListaAutorizantes'=>$tmpListaAutorizantes,			
+			//'tmpListaUFs'=>$tmpListaUFs,			
 		]);        
-
-        
-		/*
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('ingreso', [
-                'model' => $model,
-            ]);
-        }
-        */
     }
 
     

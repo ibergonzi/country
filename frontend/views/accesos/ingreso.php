@@ -362,7 +362,7 @@ $this->registerJs($js,yii\web\View::POS_READY);
 					}
 					echo $contenido;
 					echo '<p><i>Usuario: '. Yii::$app->user->identity->username.'</i></p>';	
-					echo '<h4>Portón: '.$model->ing_id_porton.'</h4>';				
+					echo '<h4>Portón: '.\Yii::$app->session->get('porton').'</h4>';				
 					?>
 
 			</div><!-- fin div col3 -->

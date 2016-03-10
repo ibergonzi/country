@@ -498,57 +498,66 @@ class AccesosController extends Controller
 		
 		// chequea que se haya elegido un porton, sino es asi se redirecciona a la eleccion de porton
 		if (!\Yii::$app->session->get('porton')) {
+			// se setea returnUrl para que funcione el goBack en portones/elegir (parecido a lo que hace login())
+			Yii::$app->user->setReturnUrl(Yii::$app->urlManager->createUrl(['accesos/ingreso']));
 			return $this->redirect(['portones/elegir']);
 		}		
 
-		// inicializa modelo, OJO si se modifica aqui, tambien modificar luego de grabar ------------------------------
+		// inicializa modelo
         $model = new Accesos();
-        $model->ing_id_porton=\Yii::$app->session->get('porton');        
-		$model->ing_id_user=\Yii::$app->user->identity->id;		
-		//-------------------------------------------------------------------------------------------------------------
-	
 
 		if (isset($_POST['Accesos'])) {
 			$haGrabado=false;
 			$model->attributes = $_POST['Accesos'];
-			
-			
+		
 			$sessPersonas=\Yii::$app->session->get('personas');	
 			if ($sessPersonas) {
 				$model->ing_fecha=date("Y-m-d");
 				$model->ing_hora=new Expression('CURRENT_TIMESTAMP');
-				foreach ($sessPersonas as $model->id_persona) {
-					Yii::trace($model->id_persona);
-					$sessVehiculo=\Yii::$app->session->get('vehiculos');
-					if ($sessVehiculo) {
-						foreach ($sessVehiculo as $model->ing_id_vehiculo) {
-												Yii::trace($model->ing_id_vehiculo);
-							// Aunque deberia haber un solo vehiculo
-							$model->save();
-							$haGrabado=true;
-							//luego de grabar se debe inicializar el modelo porque sino el segundo save() lo toma como update
-							
-							// OJO si se modifica aqui, tambien modificar despues del chequeo de porton --------------
-							$model = new Accesos();
-							$model->ing_id_porton=\Yii::$app->session->get('porton');        
-							$model->ing_id_user=\Yii::$app->user->identity->id;		
-							//----------------------------------------------------------------------------------------								
-							Yii::trace($model->getErrors());
-						}
-					}
-			
-				}
-			}
-			if ($haGrabado) {
-				// limpia todo, deberia mostrar algun mensaje de grabacion exitosa
-				\Yii::$app->session->remove('personas');							
-				\Yii::$app->session->remove('vehiculos');							
-				\Yii::$app->session->remove('autorizantes');							
-				\Yii::$app->session->remove('ufs');							
+				$model->ing_id_porton=\Yii::$app->session->get('porton');        
+				$model->ing_id_user=\Yii::$app->user->identity->id;					
 				
-			
-			}
-		}		
+				$transaction = Yii::$app->db->beginTransaction();				
+				try {
+					foreach ($sessPersonas as $model->id_persona) {
+						Yii::trace($model->id_persona);
+						$sessVehiculo=\Yii::$app->session->get('vehiculos');
+						if ($sessVehiculo) {
+							foreach ($sessVehiculo as $model->ing_id_vehiculo) {
+													Yii::trace($model->ing_id_vehiculo);
+								// Aunque deberia haber un solo vehiculo
+								
+								// Para que save() no funcione como update sino como insert, 
+								// se debe resetear el id y setear isNewRecord como true
+								$model->id = null;
+								$model->isNewRecord = true;
+								$model->save();
+								$haGrabado=true;
+
+								Yii::trace($model->getErrors());
+							} //foreach vehiculos
+						} //if $sessVehiculo
+				
+					} //foreach personas
+					
+					if ($haGrabado) {
+						$transaction->commit();
+						// limpia todo, deberia mostrar algun mensaje de grabacion exitosa
+						\Yii::$app->session->remove('personas');							
+						\Yii::$app->session->remove('vehiculos');							
+						\Yii::$app->session->remove('autorizantes');							
+						\Yii::$app->session->remove('ufs');	
+						$this->redirect('ingreso');
+						
+					} //if haGrabado	
+				} catch(\Exception $e) {
+					$transaction->rollBack();
+					throw $e;
+				} // try..catch
+				
+			} //if $sessPersonas
+
+		} // if POST		
 		
 		
 		

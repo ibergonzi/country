@@ -69,6 +69,8 @@ class LibroController extends Controller
     public function actionCreate()
     {
 		if (!\Yii::$app->session->get('porton')) {
+			// se setea returnUrl para que funcione el goBack en portones/elegir (parecido a lo que hace login())
+			Yii::$app->user->setReturnUrl(Yii::$app->urlManager->createUrl(['libro/create']));			
 			return $this->redirect(['portones/elegir']);
 		}
 		

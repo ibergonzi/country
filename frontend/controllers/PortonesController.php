@@ -37,6 +37,8 @@ class PortonesController extends Controller
 		
 		if (isset(Yii::$app->request->post()['eligeporton'])) {
 			\Yii::$app->session->set('porton',Yii::$app->request->post()['eligeporton']);
+			// para que funcione goBack hay que setear Yii::$app->user->setReturnUrl 
+			$this->goBack();
 		}
 		
         return $this->render('elegir', [

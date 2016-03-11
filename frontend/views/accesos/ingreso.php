@@ -323,10 +323,27 @@ $this->registerJs($js,yii\web\View::POS_READY);
 									}			
 								}'
 							]							
-						]);  							
-						
-						echo $form->field($model, 'id_concepto')->dropDownList(AccesosConceptos::getListaConceptos());
-						
+						]);  	
+					?>
+					<br/><br/>	
+					<div class="panel panel-default">
+						<div class="panel-body">	
+				
+					<?php	
+						echo $form->field($model, 'id_concepto')->dropDownList(AccesosConceptos::getListaConceptos(),
+							[
+							'onchange'=>'
+									$.ajax({
+										type:"POST",
+										cache:false,
+										url:"refresh-concepto?id_concepto=" + $(this).val(),
+										success: function(r) {
+										console.log(r);
+													$("#divlistapersonas").html(r);
+												}
+									});
+							',
+							]);
 						echo $form->field($model,'motivo')->textInput();		
 						
 						echo $form->field($model,'cant_acomp')->textInput();				
@@ -334,6 +351,8 @@ $this->registerJs($js,yii\web\View::POS_READY);
 						echo Html::submitButton();
 						ActiveForm::end();			    
 					?>
+						</div><!-- fin div panel body -->
+					</div><!-- fin div panel -->						
 				
 			</div><!-- fin div col1 -->
 
@@ -409,7 +428,9 @@ $this->registerJs($js,yii\web\View::POS_READY);
 	// modal que se abre cuando se presiona el boton de agregar persona nueva
 	Modal::begin(['id'=>'modalpersonanueva',
 		'header'=>'<span class="btn-warning">&nbsp;Persona nueva&nbsp;</span>',
-		'options'=>['class'=>'nofade']]);
+		'options'=>['class'=>'nofade'],
+		]
+		);
 		echo '<div id="divpersonanueva"></div>';
 	Modal::end();  
 	// modal que se abre cuando se presiona el boton de agregar vehiculos nuevo	
@@ -421,13 +442,17 @@ $this->registerJs($js,yii\web\View::POS_READY);
 	// modal que se abre cuando se agrega una persona a la lista de personas (trae los vehiculos utilizados por la persona)	
 	Modal::begin(['id'=>'modalvehiculos_persona',
 		'header'=>'<span class="btn-warning">&nbsp;Vehiculos&nbsp;</span>',
-		'options'=>['class'=>'nofade']]);
+		'options'=>['class'=>'nofade'],
+		'clientOptions'=>['backdrop'=>'static','keyboard'=>false],		
+		]);
 		echo '<div id="divvehiculos_persona"></div>';
 	Modal::end();  	
 	// modal que se abre cuando se agrega un vehiculo a la lista de vehiculos (trae las personas que utilizaron el vehiculo)	
 	Modal::begin(['id'=>'modalpersonas_vehiculo',
 		'header'=>'<span class="btn-warning">&nbsp;Personas&nbsp;</span>',
-		'options'=>['class'=>'nofade']]);
+		'options'=>['class'=>'nofade'],
+		'clientOptions'=>['backdrop'=>'static','keyboard'=>false],		
+		]);
 		echo '<div id="divpersonas_vehiculo"></div>';
 	Modal::end();  		
 	// modal para los comentarios o mensajes

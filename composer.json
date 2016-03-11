@@ -24,7 +24,8 @@
         "kartik-v/yii2-grid": "@dev",
         "kartik-v/yii2-mpdf": "dev-master",
         "kartik-v/yii2-icons": "@dev",
-        "kartik-v/yii2-popover-x": "dev-master"
+        "kartik-v/yii2-popover-x": "dev-master",
+        "kartik-v/yii2-editable": "*"
         
     },
     "require-dev": {

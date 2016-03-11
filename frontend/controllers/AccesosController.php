@@ -3,25 +3,27 @@
 namespace frontend\controllers;
 
 use Yii;
-use frontend\models\Accesos;
-use frontend\models\AccesosSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 use yii\base\Model;
 
-use frontend\models\Personas;
-use frontend\models\Vehiculos;
 use yii\data\ArrayDataProvider;
 
 use kartik\grid\GridView;
 
 use yii\helpers\Html;
 
+use frontend\models\Accesos;
+use frontend\models\AccesosSearch;
+use frontend\models\Personas;
+use frontend\models\Vehiculos;
 use frontend\models\Comentarios;
 use frontend\models\Mensajes;
 use frontend\models\AccesosAutorizantes;
+use frontend\models\AccesosConceptos;
+
 
 use yii\db\Expression;
 
@@ -239,6 +241,15 @@ class AccesosController extends Controller
 		}
 	}	
 	
+	public function actionRefreshConcepto($id_concepto) 
+	{
+		if (empty($id_concepto)) {return;}
+		$ac=AccesosConceptos::findOne($id_concepto);
+		\Yii::$app->session->set('req_seguro',$ac->req_seguro);
+		$response=$this->refreshLista('personas');
+		return $response;		
+	}
+	
 	public function actionRefrescaLista($grupo) 
 	{
 		$response=$this->refreshLista($grupo);
@@ -309,6 +320,16 @@ class AccesosController extends Controller
 					'nombre',
 					'nombre2',
 					'nro_doc',
+					[
+					    'class'=>'kartik\grid\EditableColumn',
+						'attribute'=>'vto_seguro',
+						'visible'=>\Yii::$app->session->get('req_seguro'),
+						'editableOptions'=>[
+							'header'=>'Fecha',
+							'inputType'=>\kartik\editable\Editable::INPUT_TEXT,
+							//'options'=>['pluginOptions'=>['min'=>0, 'max'=>5000]]
+						],						
+					],
 					[
 						'header'=>'',
 						'attribute'=>'Mensajes',
@@ -485,18 +506,6 @@ class AccesosController extends Controller
 
     public function actionIngreso()
     {
-		/*
-		\Yii::$app->session->remove('personas');
-			
-		//$sess=\Yii::$app->session['personas'];
-		//$sess[]=9;
-		//$sess[]=10;
-		//$sess[]=11;
-		//\Yii::$app->session['personas']=$sess;
-		
-		die();
-		*/
-		
 		// chequea que se haya elegido un porton, sino es asi se redirecciona a la eleccion de porton
 		if (!\Yii::$app->session->get('porton')) {
 			// se setea returnUrl para que funcione el goBack en portones/elegir (parecido a lo que hace login())
@@ -506,21 +515,21 @@ class AccesosController extends Controller
 
 		// inicializa modelo
         $model = new Accesos();
-        
-		$tmpListaPersonas=$this->refreshLista('personas');
-		$tmpListaVehiculos=$this->refreshLista('vehiculos');				
-		$tmpListaAutorizantes=$this->refreshLista('autorizantes');        
-		//$tmpListaUFs=$this->refreshLista('ufs');        
-
-
+		\Yii::$app->session->set('req_seguro',false);        
+ 
+		// si viene por POST, es decir, si se intenta grabar
 		if (isset($_POST['Accesos'])) {
 			$model->attributes = $_POST['Accesos'];
-			
+			// setea la variable req_seguro de la sesion de acuerdo al valor del concepto que viene en el POST
+			//$ac=AccesosConceptos::findOne($model->id_concepto);
+			\Yii::$app->session->set('req_seguro',$model->accesosConcepto->req_seguro);			
+			// recupera de la sesion los 4 grupos
 			$sessPersonas=\Yii::$app->session->get('personas');	
 			$sessVehiculo=\Yii::$app->session->get('vehiculos');
 			$sessAutorizantes=\Yii::$app->session->get('autorizantes');
 			//$sessUFs=\Yii::$app->session->get('ufs');
 
+			// se verifica que estén los 4 grupos cargados
 			$rechaza=false;
 			if (!$sessPersonas) {
 				\Yii::$app->session->addFlash('danger','Debe especificar al menos una persona');
@@ -540,7 +549,26 @@ class AccesosController extends Controller
 				$rechaza=true;
 			}
 			*/
+			
+			/*
+			if ($sessPersonas) {
+				// verifica los vencimientos de los seguros
+				if ($model->accesosConcepto->req_seguro)) {
+					foreach ($sessPersonas as $segIDpersona) {
+						
+					}
+					
+				}
+			}
+			*/
 			if ($rechaza) {
+				// actualiza los 4 grupos en variables que se van a pasar al render
+				// si se modifica, modificar tambien antes del render del final de la funcion
+				$tmpListaPersonas=$this->refreshLista('personas');
+				$tmpListaVehiculos=$this->refreshLista('vehiculos');				
+				$tmpListaAutorizantes=$this->refreshLista('autorizantes');        
+				//$tmpListaUFs=$this->refreshLista('ufs');        		
+				
 				// hace un render para que no se pierda los datos del modelo (en vez de redirect que limpia todo)
 				return $this->render('ingreso', [
 					'model' => $model,
@@ -599,7 +627,6 @@ class AccesosController extends Controller
 
 			} catch(\Exception $e) {
 				$transaction->rollBack();
-				
 				Yii::$app->session->addFlash('danger','Hubo un error en la grabación');
 				throw $e;
 			} // try..catch
@@ -607,6 +634,12 @@ class AccesosController extends Controller
 
 		} // if POST		
 		
+        // actualiza los 4 grupos en variables que se van a pasar al render
+		// si se modifica, modificar tambien dentro del if (rechaza)
+		$tmpListaPersonas=$this->refreshLista('personas');
+		$tmpListaVehiculos=$this->refreshLista('vehiculos');				
+		$tmpListaAutorizantes=$this->refreshLista('autorizantes');        
+		//$tmpListaUFs=$this->refreshLista('ufs');        		
 		return $this->render('ingreso', [
 			'model' => $model,
 			'tmpListaPersonas'=>$tmpListaPersonas,

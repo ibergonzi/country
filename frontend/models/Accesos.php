@@ -156,7 +156,7 @@ class Accesos extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdConcepto()
+    public function getAccesosConcepto()
     {
         return $this->hasOne(AccesosConceptos::className(), ['id' => 'id_concepto']);
     }

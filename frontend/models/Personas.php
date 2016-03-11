@@ -21,7 +21,8 @@ use yii\db\Expression;
  * @property integer $id_tipo_doc
  * @property string $nro_doc
  * @property string $foto
- * @property integer $created_by
+ * @property string $vto_seguro
+  * @property integer $created_by
  * @property string $created_at
  * @property integer $updated_by
  * @property string $updated_at
@@ -103,7 +104,7 @@ class Personas extends \yii\db\ActiveRecord
         return [
             [['apellido', 'nombre', 'id_tipo_doc', 'nro_doc'], 'required'],
             [['id_tipo_doc', 'created_by', 'updated_by','nro_doc'], 'integer'],
-            [['created_at', 'updated_at','estado','motivo_baja','id'], 'safe'],
+            [['created_at', 'updated_at','estado','motivo_baja','id','vto_seguro'], 'safe'],
             [['apellido', 'nombre', 'nombre2'], 'string', 'max' => 45],
 			[['apellido', 'nombre', 'nombre2'], 'trim'],             
  			[['foto'], 'file', 'extensions'=>'jpg, jpeg'],  
@@ -126,6 +127,7 @@ class Personas extends \yii\db\ActiveRecord
             'id_tipo_doc' => Yii::t('app', 'T.Doc.'),
             'nro_doc' => Yii::t('app', 'Nro.Doc.'),
             'foto' => Yii::t('app', 'Foto'),
+            'vto_seguro' => Yii::t('app', 'Vto.Seg.'),
             'created_by' => Yii::t('app', 'Usuario alta'),
             'created_at' => Yii::t('app', 'Fecha alta'),
             'updated_by' => Yii::t('app', 'Usuario modif.'),

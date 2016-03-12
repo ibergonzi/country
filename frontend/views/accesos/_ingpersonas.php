@@ -11,7 +11,7 @@ use yii\helpers\ArrayHelper;
 
 	<?php
 		echo '<div id="listboxPersonas1">';
-		echo Html::checkboxList('listboxPersonas', null, ArrayHelper::map($personas,'id_persona','desc_persona'),
+		echo Html::checkboxList('listboxPersonas', $seleccion, ArrayHelper::map($personas,'id_persona','desc_persona'),
 				['class'=>'form-control','tag'=>false,'separator'=>'<br/>']); 
 
 		echo '</div>';

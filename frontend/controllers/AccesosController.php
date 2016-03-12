@@ -128,7 +128,7 @@ class AccesosController extends Controller
 			array_unshift($vehiculos,['id_vehiculo'=>\Yii::$app->params['sinVehiculo.id'],'desc_vehiculo'=>'']);
 		}
 
-		Yii::trace($vehiculos);
+		//Yii::trace($vehiculos);
 
 		$aux=[];
 		foreach ($vehiculos as $vehiculo){
@@ -143,10 +143,32 @@ class AccesosController extends Controller
 		]);
 	}
 	
+	public function actionPideSeguro($idPersona)
+	{
+		// solo se usa para mostrar el formulario que pide el seguro
+		$p=Personas::findOne($idPersona);
+		return $this->renderAjax('_vtoseguro', [
+			'idPersona' => $idPersona,
+			'fec'=>$p->vto_seguro,
+		]);
+	}
+	
+	public function actionUpdateVtoSeguro($idPersona,$fecseguro) 
+	{
+		// actualiza el vto del seguro
+		$p=Personas::findOne($idPersona);
+        $faux=\DateTime::createFromFormat('d/m/Y',$fecseguro);
+		$p->vto_seguro=$faux->format('Y-m-d');
+		$p->save();
+		return $this->refreshLista('personas');		
+	}
+	
+	
     public function actionBuscaPersonas($id_vehiculo)
     {
-		// recupera las personas que utilizaron el vehiculo
-		$personas=Accesos::getPersonasPorVehiculo($id_vehiculo);
+		// recupera las personas que utilizaron el vehiculo alguna vez,
+		// el parametro false se refiere a $ultimasPersonas, es decir, que traiga todas las personas
+		$personas=Accesos::getPersonasPorVehiculo($id_vehiculo,false);
 
 		// Si el vehiculo es nuevo o nunca tuvo accesos devuelve una bandera para que no se muestre el modal
 		if (count($personas)==0) {
@@ -158,10 +180,23 @@ class AccesosController extends Controller
 			$aux[]=['id_persona'=>$persona['id_persona'],
 					'desc_persona'=>Personas::formateaPersonaSelect2($persona['id_persona'],false)];
 		}
+		
+		// el parametro true se refiere a $ultimasPersonas, es decir, que traiga las personas del último ingreso del vehic.
+		// esto se hace para armar la seleccion
+		$ultPersonas=Accesos::getPersonasPorVehiculo($id_vehiculo,true);
+
+		// ultPersonas es un array de arrays [idPersona=>valor]
+		$seleccion=[];
+		foreach ($ultPersonas as $p) {
+			foreach ($p as $key=>$valor) {
+				$seleccion[]=$valor;
+			}
+		}
 
 		
 		return $this->renderAjax('_ingpersonas', [
 			'personas' => $aux,
+			'seleccion'=>$seleccion,
 		]);
 	}	
     
@@ -315,91 +350,8 @@ class AccesosController extends Controller
 													]);			
 									},
 					],
-					'id',
-					'apellido',
-					'nombre',
-					'nombre2',
-					'nro_doc',
 					[
-					    'class'=>'kartik\grid\EditableColumn',
-						'attribute'=>'vto_seguro',
-						'visible'=>\Yii::$app->session->get('req_seguro'),
-						'editableOptions'=>[
-							'header'=>'Fecha',
-							'inputType'=>\kartik\editable\Editable::INPUT_TEXT,
-							//'options'=>['pluginOptions'=>['min'=>0, 'max'=>5000]]
-						],						
-					],
-					[
-						'header'=>'',
-						'attribute'=>'Mensajes',
-						'format' => 'raw',
-						'value' => function ($model, $index, $widget) {
-											$c=Mensajes::getMensajesByModelId($model->className(),$model->id);
-
-											if (!empty($c)) {
-												$text='<span class="glyphicon glyphicon-alert" style="color:#FF8000"></span>';
-												$titl='Ver mensaje';
-											} else {
-												$text='<span class="glyphicon glyphicon-envelope"></span>';
-												$titl='Ingresar nuevo mensaje';
-											}								
-											$url=Yii::$app->urlManager->createUrl(
-													['mensajes/create-ajax',
-														'modelName'=>$model->className(),
-														'modelID'=>$model->id]);							
-											return Html::a($text, 
-												$url,
-											['title' => $titl,
-											 'onclick'=>'$.ajax({
-												type     :"POST",
-												cache    : false,
-												url  : $(this).attr("href"),
-												success  : function(response) {
-															$("#divcomentarionuevo").html(response);
-															$("#modalcomentarionuevo").modal("show");
-															}
-											});return false;',
-											]);			
-									},						
-					],
-				];
-				//$heading='<i class="glyphicon glyphicon-user"></i>  Personas';
-				$heading='Personas';
-				break;	
-			case 'vehiculos':
-				$columns=[
-					[
-						'header'=>'<span class="glyphicon glyphicon-trash"></span>',
-						'attribute'=>'Acción',
-						'format' => 'raw',
-						'value' => function ($model, $index, $widget) {
-												$url=Yii::$app->urlManager->createUrl(
-													['accesos/drop-lista',
-													'grupo'=>'vehiculos', 
-													'id' => isset($model->id)?$model->id:''
-													]);
-												return Html::a('<span class="glyphicon glyphicon-remove"></span>', 
-													$url,
-													['title' => 'Eliminar',
-													 'onclick'=>'$.ajax({
-														type     : "POST",
-														cache    : false,
-														url      : $(this).attr("href"),
-														success  : function(response) {
-																		$("#divlistavehiculos").html(response);
-																	}
-													});return false;',
-													]);			
-									},
-					],
-					'id',
-					'patente',
-					'marca',
-					'modelo',
-					'color',
-					[
-						'header'=>'',
+						'header'=>'<span class="glyphicon glyphicon-envelope"></span>',
 						'attribute'=>'Mensajes',
 						'format' => 'raw',
 						'value' => function ($model, $index, $widget) {
@@ -431,6 +383,123 @@ class AccesosController extends Controller
 											]);			
 									},						
 					],					
+
+					[
+						'attribute'=>'vto_seguro',
+						'visible'=>\Yii::$app->session->get('req_seguro'),
+						'format' => 'raw',
+						'value' => function ($model, $index, $widget) {
+							
+										if (empty($model->vto_seguro)) {
+											$pide=true;
+										} else {
+											// se debe controlar si no está vencido el seguro
+											if ($this->fecVencida($model->vto_seguro)) {												
+												$pide=true;
+											} else {
+												// no está vencido, por lo tanto no se pide, solo se muestra
+												$pide=false;
+											}
+										}
+							
+										if (!$pide) {
+											return Yii::$app->formatter->format($model->vto_seguro, 'date'); 
+										} else {
+											$url=Yii::$app->urlManager->createUrl(
+													['accesos/pide-seguro','idPersona'=>$model->id,]);							
+											return Html::a(empty($model->vto_seguro)?'Sin seguro':
+													Yii::$app->formatter->format($model->vto_seguro,'date'), 
+												$url,
+												['title' => 'Modificar fecha de vencimiento',
+												 'onclick'=>'$.ajax({
+													type     :"POST",
+													cache    : false,
+													url  : $(this).attr("href"),
+													success  : function(response) {
+															console.log(response);
+															$("#divupdseguro").html(response);
+															$("#modalupdseguro").modal("show");
+
+																}
+												});return false;',
+												]);			
+										}
+								},							
+					],
+					'id',
+					'apellido',
+					'nombre',
+					'nombre2',
+					'nro_doc',					
+				];
+				//$heading='<i class="glyphicon glyphicon-user"></i>  Personas';
+				$heading='Personas';
+				break;	
+			case 'vehiculos':
+				$columns=[
+					[
+						'header'=>'<span class="glyphicon glyphicon-trash"></span>',
+						'attribute'=>'Acción',
+						'format' => 'raw',
+						'value' => function ($model, $index, $widget) {
+												$url=Yii::$app->urlManager->createUrl(
+													['accesos/drop-lista',
+													'grupo'=>'vehiculos', 
+													'id' => isset($model->id)?$model->id:''
+													]);
+												return Html::a('<span class="glyphicon glyphicon-remove"></span>', 
+													$url,
+													['title' => 'Eliminar',
+													 'onclick'=>'$.ajax({
+														type     : "POST",
+														cache    : false,
+														url      : $(this).attr("href"),
+														success  : function(response) {
+																		$("#divlistavehiculos").html(response);
+																	}
+													});return false;',
+													]);			
+									},
+					],
+					[
+						'header'=>'<span class="glyphicon glyphicon-envelope"></span>',
+						'attribute'=>'Mensajes',
+						'format' => 'raw',
+						'value' => function ($model, $index, $widget) {
+											$c=Mensajes::getMensajesByModelId($model->className(),$model->id);
+
+											if (!empty($c)) {
+												$text='<span class="glyphicon glyphicon-alert" style="color:#FF8000"></span>';
+												$titl='Ver mensaje';
+											} else {
+												$text='<span class="glyphicon glyphicon-envelope"></span>';
+												$titl='Ingresar nuevo mensaje';
+											}								
+											$url=Yii::$app->urlManager->createUrl(
+													['mensajes/create-ajax',
+														'modelName'=>$model->className(),
+														'modelID'=>$model->id]);							
+											return Html::a($text, 
+												$url,
+											['title' => $titl,
+											 'onclick'=>'$.ajax({
+												type     :"POST",
+												cache    : false,
+												url  : $(this).attr("href"),
+												success  : function(response) {
+															$("#divcomentarionuevo").html(response);
+															$("#modalcomentarionuevo").modal("show");
+															}
+											});return false;',
+											]);			
+									},						
+					],					
+					'id',
+					'patente',
+					'marca',
+					'modelo',
+					'color',
+				
 
 				];
 				//$heading=Icon::show('car',[],Icon::FA). '  Vehiculos';
@@ -499,9 +568,16 @@ class AccesosController extends Controller
 			'toolbar'=>false,
 			'export'=>false,			
 		]);
-		
+		Yii::trace($response);
 		return $response;
 	
+	}
+	
+	public function fecVencida($fec) 
+	{
+		$hoy = strtotime(date('Y-m-d'));
+		$vto = strtotime($fec);
+		return ($vto >= $hoy)?false:true;
 	}
 
     public function actionIngreso()
@@ -515,7 +591,7 @@ class AccesosController extends Controller
 
 		// inicializa modelo
         $model = new Accesos();
-		\Yii::$app->session->set('req_seguro',false);        
+		\Yii::$app->session->set('req_seguro',0);        
  
 		// si viene por POST, es decir, si se intenta grabar
 		if (isset($_POST['Accesos'])) {
@@ -550,17 +626,27 @@ class AccesosController extends Controller
 			}
 			*/
 			
-			/*
+			
 			if ($sessPersonas) {
 				// verifica los vencimientos de los seguros
-				if ($model->accesosConcepto->req_seguro)) {
+				if ($model->accesosConcepto->req_seguro) {
 					foreach ($sessPersonas as $segIDpersona) {
-						
+						$ps=Personas::findOne($segIDpersona);
+						if (empty($ps->vto_seguro)) { 
+							\Yii::$app->session->addFlash('danger','Personas sin seguro');
+							$rechaza=true;
+							break;
+						}
+						if ($this->fecVencida($ps->vto_seguro)) {
+							\Yii::$app->session->addFlash('danger','Personas con seguro vencido');
+							$rechaza=true;
+						}
 					}
+					
 					
 				}
 			}
-			*/
+			
 			if ($rechaza) {
 				// actualiza los 4 grupos en variables que se van a pasar al render
 				// si se modifica, modificar tambien antes del render del final de la funcion

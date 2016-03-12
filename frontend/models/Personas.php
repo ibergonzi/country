@@ -22,7 +22,7 @@ use yii\db\Expression;
  * @property string $nro_doc
  * @property string $foto
  * @property string $vto_seguro
-  * @property integer $created_by
+ * @property integer $created_by
  * @property string $created_at
  * @property integer $updated_by
  * @property string $updated_at

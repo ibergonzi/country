@@ -460,6 +460,14 @@ $this->registerJs($js,yii\web\View::POS_READY);
 		'header'=>'<span class="btn-warning">&nbsp;Mensajes/Comentarios&nbsp;</span>']);
 		echo '<div id="divcomentarionuevo"></div>';
 	Modal::end();  	
+	// modal que se abre cuando se agrega un vehiculo a la lista de vehiculos (trae las personas que utilizaron el vehiculo)	
+	Modal::begin(['id'=>'modalupdseguro',
+		'header'=>'<span class="btn-warning">&nbsp;Vencimiento de seguro&nbsp;</span>',
+		'options'=>['class'=>'nofade'],
+		'clientOptions'=>['backdrop'=>'static','keyboard'=>false],		
+		]);
+		echo '<div id="divupdseguro"></div>';
+	Modal::end();  		
 	
 	  
 	?>

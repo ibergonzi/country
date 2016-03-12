@@ -231,14 +231,23 @@ class Accesos extends \yii\db\ActiveRecord
 	}
 	
     // Devuelve todos los vehiculos utilizados de una determinada persona (y que los vehiculos sigan activos)
-    public static function getPersonasPorVehiculo($id_vehiculo) 
+    public static function getPersonasPorVehiculo($id_vehiculo,$ultimasPersonas) 
     {
 		// se hace para verificar que exista el parametro pasado a esta funcion
 		$p=Vehiculos::findOne($id_vehiculo);
-		$command=\Yii::$app->db->createCommand('SELECT DISTINCT id_persona AS id_persona,"" AS desc_persona 
+		if (!$ultimasPersonas) {
+			// trae todas las personas que usaron alguna vez el vehiculo
+			$command=\Yii::$app->db->createCommand('SELECT DISTINCT id_persona AS id_persona,"" AS desc_persona 
 													FROM accesos LEFT JOIN personas ON id_persona=personas.id
-													WHERE ing_id_vehiculo=:vehiculo AND personas.estado=1 
+													WHERE ing_id_vehiculo=:vehiculo 
+													AND personas.estado=1 													
 													ORDER BY id_persona DESC');
+		} else {
+			$command=\Yii::$app->db->createCommand('SELECT id_persona AS id_persona FROM accesos 
+													WHERE ing_id_vehiculo=:vehiculo 
+													AND ing_hora IN (SELECT MAX(ing_hora) 
+																		FROM accesos WHERE ing_id_vehiculo=:vehiculo)');			
+		}											
 		$command->bindParam(':vehiculo', $id_vehiculo);
 		$personas=$command->queryAll();
 		/*	

@@ -291,9 +291,22 @@ class AccesosController extends Controller
 		// $grupo puede ser 'personas' o 'vehiculos'
 		
 		if (empty($id)) {return;}
-		if ($grupo !== 'personas' && $grupo !== 'vehiculos' {return;}
+		if ($grupo !== 'personas' && $grupo !== 'vehiculos') {return;}
 		
-
+		if ($grupo=='personas') {
+			$ult=Accesos::find()->where(['id_persona'=>$id])->orderBy(['id' => SORT_DESC])->asArray()->one();
+		} else {
+			$ult=Accesos::find()->where(['ing_id_vehiculo'=>$id])->orderBy(['id' => SORT_DESC])->asArray()->one();			
+		}
+		\Yii::$app->response->format = 'json';
+		
+		$a=Accesos::findOne($ult['id']);
+		foreach ($a->accesosAutorizantes as $aa) {
+			$r=$this->actionAddLista('autorizantes', $aa->id_persona);
+		}
+		$ult['motivo_baja']=$r;
+		Yii::trace($ult);
+		return $ult;
 	}	
 	
 	
@@ -575,6 +588,7 @@ class AccesosController extends Controller
 			'panel'=>[
 				'type'=>GridView::TYPE_INFO,
 				'heading'=>$heading,
+				//'headingOptions'=>['class'=>'panel-heading'],
 				'footer'=>false,
 				'before'=>false,
 				'after'=>false,
@@ -661,6 +675,7 @@ class AccesosController extends Controller
 						if ($this->fecVencida($ps->vto_seguro)) {
 							\Yii::$app->session->addFlash('danger','Personas con seguro vencido');
 							$rechaza=true;
+							break;
 						}
 					}
 					

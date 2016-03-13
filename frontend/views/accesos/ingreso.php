@@ -46,6 +46,20 @@ $this->registerCss('
 .nofade {
    transition: none;
 }
+.panel-heading {
+  padding: 0px 5px;
+  border-bottom: 1px solid transparent;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+}
+.table-condensed > thead > tr > th,
+.table-condensed > tbody > tr > th,
+.table-condensed > tfoot > tr > th,
+.table-condensed > thead > tr > td,
+.table-condensed > tbody > tr > td,
+.table-condensed > tfoot > tr > td {
+  padding: 1px;
+}
 ');
 // Agrega scrollbars a los modals que se exceden de tamaño
 $this->registerCss('.modal-body { max-height: calc(100vh - 210px);overflow-y: auto;}');
@@ -158,17 +172,15 @@ $this->registerJs($js,yii\web\View::POS_READY);
 														type   : "POST", cache  : false,
 														url    : "busca-ult-ingreso?grupo=personas&id=" + seleccion,
 														success: function(r) {
-																if (r != "NADA") {
-																	$("#divvehiculos_persona").html(r);
-																	$("#modalvehiculos_persona").modal("show");
-																}
+																console.log(r.motivo);
+																$("#accesos-motivo").val(r.motivo);
+																$("#accesos-id_concepto").val(r.id_concepto);
+																$("#accesos-id_concepto").trigger("change");
+																$("#accesos-cant_acomp").val(r.cant_acomp);
+																$("#divlistaautorizantes").html(r.motivo_baja);
 															}
 													});													
-													
-													
-													
-													
-																											
+																				
 												}
 										});						
 									}			
@@ -259,7 +271,19 @@ $this->registerJs($js,yii\web\View::POS_READY);
 																}
 															}
 													});		
-												}																									
+												}
+												$.ajax({
+														type   : "POST", cache  : false,
+														url    : "busca-ult-ingreso?grupo=vehiculos&id=" + seleccion,
+														success: function(r) {
+																console.log(r.motivo);
+																$("#accesos-motivo").val(r.motivo);
+																$("#accesos-id_concepto").val(r.id_concepto);
+																$("#accesos-id_concepto").trigger("change");
+																$("#accesos-cant_acomp").val(r.cant_acomp);
+																$("#divlistaautorizantes").html(r.motivo_baja);
+															}
+													});																										
 											}
 										});	
 									}			
@@ -387,30 +411,6 @@ $this->registerJs($js,yii\web\View::POS_READY);
 
 			<div id="col3" class="col-md-2"><!-- comienzo div col3 -->
 				    <?php 
-					$u=User::findOne(Yii::$app->user->getId());
-					
-					if (!empty($u->foto)) {
-						$contenido=Html::img(Yii::$app->urlManager->createUrl('images/usuarios/'.$u->foto),
-							['class'=>'img-thumbnail']);
-					}
-					else
-					{
-						$contenido=Html::img(Yii::$app->urlManager->createUrl('images/sinfoto.png'),['class'=>'img-thumbnail']);
-					}
-					echo $contenido;
-					echo '<p><i>Usuario: '. Yii::$app->user->identity->username.'</i></p>';	
-					echo '<h4>Portón: '.\Yii::$app->session->get('porton').'</h4>';		
-					
-					
-					//echo Alert::widget();
-					/*
-					echo AlertBlock::widget([
-						'useSessionFlash' => true,
-						'type' => AlertBlock::TYPE_ALERT
-					]);
-					*/					
-					
-					
 					foreach (\Yii::$app->session->getAllFlashes() as $keyM => $messageM) {
 						if (is_array($messageM)) {
 							$i=0;
@@ -429,7 +429,25 @@ $this->registerJs($js,yii\web\View::POS_READY);
 								'delay' => 5000
 								]);							
 						}
+					}				    
+				    
+				    
+				    
+					$u=User::findOne(Yii::$app->user->getId());
+					
+					if (!empty($u->foto)) {
+						$contenido=Html::img(Yii::$app->urlManager->createUrl('images/usuarios/'.$u->foto),
+							['class'=>'img-thumbnail']);
 					}
+					else
+					{
+						$contenido=Html::img(Yii::$app->urlManager->createUrl('images/sinfoto.png'),['class'=>'img-thumbnail']);
+					}
+					echo $contenido;
+					echo '<p><i>Usuario: '. Yii::$app->user->identity->username.'</i></p>';	
+					echo '<h4>Portón: '.\Yii::$app->session->get('porton').'</h4>';		
+					
+
 										
 							
 					?>

@@ -466,8 +466,8 @@ class AccesosController extends Controller
 					'nombre2',
 					'nro_doc',					
 				];
-				//$heading='<i class="glyphicon glyphicon-user"></i>  Personas';
-				$heading='Personas';
+				$heading='<i class="glyphicon glyphicon-user"></i>  Personas';
+				//$heading='Personas';
 				break;	
 			case 'vehiculos':
 				$columns=[
@@ -536,8 +536,8 @@ class AccesosController extends Controller
 				
 
 				];
-				//$heading=Icon::show('car',[],Icon::FA). '  Vehiculos';
-				$heading='Vehiculos';
+				$heading='<i class="fa fa-car"></i>  Vehiculos';
+				//$heading='Vehiculos';
 				break;			
 			case 'autorizantes':
 				$columns=[
@@ -571,8 +571,9 @@ class AccesosController extends Controller
 					'nombre2',
 					'nro_doc',
 				];
-				//$heading=Icon::show('key',[],Icon::FA). '  Autorizantes';			
-				$heading='Autorizantes';			
+
+				$heading='<i class="fa fa-key"></i>  Autorizantes';						
+				//$heading='Autorizantes';			
 				break;									
 		}			
 		

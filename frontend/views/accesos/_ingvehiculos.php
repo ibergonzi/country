@@ -11,7 +11,7 @@ use yii\helpers\ArrayHelper;
 
 	<?php
 		//Yii::trace($vehiculos);
-		echo Html::listBox('listboxVehiculos', null, ArrayHelper::map($vehiculos,'id_vehiculo','desc_vehiculo'),
+		echo Html::listBox('listboxVehiculos', $seleccion, ArrayHelper::map($vehiculos,'id_vehiculo','desc_vehiculo'),
 				['id'=>'listboxVehiculos','class'=>'form-control']); 
 
 		$Url=Yii::$app->urlManager->createUrl(['accesos/add-lista','grupo'=>'vehiculos','id'=>'']);

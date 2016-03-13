@@ -152,7 +152,23 @@ $this->registerJs($js,yii\web\View::POS_READY);
 																	$("#modalvehiculos_persona").modal("show");
 																}
 															}
-													});															
+													});	
+													
+													$.ajax({
+														type   : "POST", cache  : false,
+														url    : "busca-ult-ingreso?grupo=personas&id=" + seleccion,
+														success: function(r) {
+																if (r != "NADA") {
+																	$("#divvehiculos_persona").html(r);
+																	$("#modalvehiculos_persona").modal("show");
+																}
+															}
+													});													
+													
+													
+													
+													
+																											
 												}
 										});						
 									}			

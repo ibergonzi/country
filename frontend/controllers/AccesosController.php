@@ -95,7 +95,7 @@ class AccesosController extends Controller
     public function actionBuscaVehiculos($id_persona)
     {
 		// recupera los vehiculos utilizados por la persona en ingresos
-		$vehiculos=Accesos::getVehiculosPorPersona($id_persona);
+		$vehiculos=Accesos::getVehiculosPorPersona($id_persona,false);
 		
 		// Si la persona es nueva o nunca tuvo accesos devuelve una bandera para que no se muestre el modal
 		if (count($vehiculos)==0) {
@@ -128,39 +128,28 @@ class AccesosController extends Controller
 			array_unshift($vehiculos,['id_vehiculo'=>\Yii::$app->params['sinVehiculo.id'],'desc_vehiculo'=>'']);
 		}
 
-		//Yii::trace($vehiculos);
-
 		$aux=[];
 		foreach ($vehiculos as $vehiculo){
 			$aux[]=['id_vehiculo'=>$vehiculo['id_vehiculo'],
 					'desc_vehiculo'=>Vehiculos::formateaVehiculoSelect2($vehiculo['id_vehiculo'])];
 		}
-		Yii::trace($aux);		
 		
+		// el parametro true se refiere a $ultimoVehiculo, es decir, que traiga el vehiculo del último ingreso de la persona
+		// esto se hace para armar la seleccion
+		$ultVehiculo=Accesos::getVehiculosPorPersona($id_persona,true);
+
+		// ultVehiculo es un array de arrays [idVehiculo=>valor]
+		$seleccion=[];
+		foreach ($ultVehiculo as $v) {
+			foreach ($v as $key=>$valor) {
+				$seleccion[]=$valor;
+			}
+		}		
 		
 		return $this->renderAjax('_ingvehiculos', [
 			'vehiculos' => $aux,
+			'seleccion' => $seleccion,
 		]);
-	}
-	
-	public function actionPideSeguro($idPersona)
-	{
-		// solo se usa para mostrar el formulario que pide el seguro
-		$p=Personas::findOne($idPersona);
-		return $this->renderAjax('_vtoseguro', [
-			'idPersona' => $idPersona,
-			'fec'=>$p->vto_seguro,
-		]);
-	}
-	
-	public function actionUpdateVtoSeguro($idPersona,$fecseguro) 
-	{
-		// actualiza el vto del seguro
-		$p=Personas::findOne($idPersona);
-        $faux=\DateTime::createFromFormat('d/m/Y',$fecseguro);
-		$p->vto_seguro=$faux->format('Y-m-d');
-		$p->save();
-		return $this->refreshLista('personas');		
 	}
 	
 	
@@ -199,7 +188,27 @@ class AccesosController extends Controller
 			'seleccion'=>$seleccion,
 		]);
 	}	
-    
+
+	public function actionPideSeguro($idPersona)
+	{
+		// solo se usa para mostrar el formulario que pide el seguro
+		$p=Personas::findOne($idPersona);
+		return $this->renderAjax('_vtoseguro', [
+			'idPersona' => $idPersona,
+			'fec'=>$p->vto_seguro,
+		]);
+	}
+	
+	public function actionUpdateVtoSeguro($idPersona,$fecseguro) 
+	{
+		// actualiza el vto del seguro
+		$p=Personas::findOne($idPersona);
+        $faux=\DateTime::createFromFormat('d/m/Y',$fecseguro);
+		$p->vto_seguro=$faux->format('Y-m-d');
+		$p->save();
+		return $this->refreshLista('personas');		
+	}
+	    
     
     public function actionAddListaArray($grupo, $id)
     {
@@ -275,6 +284,18 @@ class AccesosController extends Controller
 			
 		}
 	}	
+	
+	
+    public function actionBuscaUltIngreso($grupo, $id)
+    {
+		// $grupo puede ser 'personas' o 'vehiculos'
+		
+		if (empty($id)) {return;}
+		if ($grupo !== 'personas' && $grupo !== 'vehiculos' {return;}
+		
+
+	}	
+	
 	
 	public function actionRefreshConcepto($id_concepto) 
 	{

@@ -99,7 +99,7 @@ class AccesosController extends Controller
 		
 		// Si la persona es nueva o nunca tuvo accesos devuelve una bandera para que no se muestre el modal
 		if (count($vehiculos)==0) {
-			return 'NADA';
+			return 'notFound';
 		}		
 
 		// siempre debe agregar al principio de la lista los ids de vehiculos "sin vehiculo" y "bicicleta"
@@ -161,7 +161,7 @@ class AccesosController extends Controller
 
 		// Si el vehiculo es nuevo o nunca tuvo accesos devuelve una bandera para que no se muestre el modal
 		if (count($personas)==0) {
-			return 'NADA';
+			return 'notFound';
 		}
 		
 		$aux=[];
@@ -208,6 +208,25 @@ class AccesosController extends Controller
 		$p->save();
 		return $this->refreshLista('personas');		
 	}
+	
+	public function actionBuscaPorId()
+	{
+		// se usa para mostrar el formulario que busca la persona por ID o codigo de barras
+		$model=new Personas();
+
+        if ($model->load(Yii::$app->request->post())) {
+			$p=Personas::findOne($model->id);
+			if 
+			return $model->id;
+        } else {
+			return $this->renderAjax('_buscaporid', [
+				'model' => $model,
+			]);
+        }
+
+
+		
+	}	
 	    
     
     public function actionAddListaArray($grupo, $id)
@@ -301,18 +320,21 @@ class AccesosController extends Controller
 		\Yii::$app->response->format = 'json';
 		
 		$a=Accesos::findOne($ult['id']);
-		foreach ($a->accesosAutorizantes as $aa) {
-			$r=$this->actionAddLista('autorizantes', $aa->id_persona);
+		if (!empty($a)) {
+			foreach ($a->accesosAutorizantes as $aa) {
+				$r=$this->actionAddLista('autorizantes', $aa->id_persona);
+			}
+			$ult['motivo_baja']=$r;
+		} else {
+			$ult='notFound';
 		}
-		$ult['motivo_baja']=$r;
-		Yii::trace($ult);
 		return $ult;
 	}	
 	
 	
-	public function actionRefreshConcepto($id_concepto) 
+	public function actionRefreshConcepto($id_concepto=null) 
 	{
-		if (empty($id_concepto)) {return;}
+		if (empty($id_concepto) || $id_concepto=='null') {return;}
 		$ac=AccesosConceptos::findOne($id_concepto);
 		\Yii::$app->session->set('req_seguro',$ac->req_seguro);
 		$response=$this->refreshLista('personas');

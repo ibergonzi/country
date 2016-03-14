@@ -105,6 +105,7 @@ $this->registerJs($js,yii\web\View::POS_READY);
 						$personaDesc='';
 
 						$personasUrl=Yii::$app->urlManager->createUrl(['personas/create-ajax']);
+						$porID=Yii::$app->urlManager->createUrl(['accesos/busca-por-id']);
 						$personasAddon = [
 							'prepend'=>[
 								'content'=>'<span class="glyphicon glyphicon-user" title="Buscar Personas"></span>',
@@ -119,12 +120,29 @@ $this->registerJs($js,yii\web\View::POS_READY);
 											cache    : false,
 											url  : $(this).attr("href"),
 											success  : function(response) {
-														//console.log(response);
 														$("#divpersonanueva").html(response);
 														$("#modalpersonanueva").modal("show");
 														}
-										});return false;',
-										]),	
+										});
+										return false;',
+										]) 
+										. 
+										Html::a('<span class="glyphicon glyphicon-barcode btn btn-primary"></span>',
+										$porID,
+										['title' => Yii::t('app', 'Ingresa por ID'),
+										 'tabindex'=>-1,										
+										 'onclick'=>'$.ajax({
+											type     :"POST",
+											cache    : false,
+											url  : $(this).attr("href"),
+											success  : function(response) {
+														$("#divporid").html(response);
+														$("#modalporid").modal("show");
+														}
+										});
+										return false;',
+										])										
+										,	
 								'asButton' => true
 							]
 						];
@@ -161,7 +179,7 @@ $this->registerJs($js,yii\web\View::POS_READY);
 														type   : "POST", cache  : false,
 														url    : "busca-vehiculos?id_persona=" + seleccion,
 														success: function(r) {
-																if (r != "NADA") {
+																if (r != "notFound") {
 																	$("#divvehiculos_persona").html(r);
 																	$("#modalvehiculos_persona").modal("show");
 																}
@@ -172,12 +190,18 @@ $this->registerJs($js,yii\web\View::POS_READY);
 														type   : "POST", cache  : false,
 														url    : "busca-ult-ingreso?grupo=personas&id=" + seleccion,
 														success: function(r) {
-																console.log(r.motivo);
-																$("#accesos-motivo").val(r.motivo);
-																$("#accesos-id_concepto").val(r.id_concepto);
-																$("#accesos-id_concepto").trigger("change");
-																$("#accesos-cant_acomp").val(r.cant_acomp);
-																$("#divlistaautorizantes").html(r.motivo_baja);
+																if (r != "notFound") {
+																	$("#accesos-motivo").val(r.motivo);
+																	$("#accesos-id_concepto").val(r.id_concepto);
+																	$("#accesos-id_concepto").trigger("change");
+																	$("#accesos-cant_acomp").val(r.cant_acomp);
+																	$("#divlistaautorizantes").html(r.motivo_baja);
+																} else {
+																	$("#accesos-motivo").val("");
+																	$("#accesos-id_concepto").val("");
+																	$("#accesos-cant_acomp").val("");
+																	$("#divlistaautorizantes").html("");
+																}
 															}
 													});													
 																				
@@ -264,8 +288,7 @@ $this->registerJs($js,yii\web\View::POS_READY);
 														type   : "POST", cache  : false,
 														url    : "busca-personas?id_vehiculo=" + seleccion,
 														success: function(r) {
-																if (r != "NADA") {
-																	console.log(r);
+																if (r != "notFound") {
 																	$("#divpersonas_vehiculo").html(r);
 																	$("#modalpersonas_vehiculo").modal("show");
 																}
@@ -276,12 +299,18 @@ $this->registerJs($js,yii\web\View::POS_READY);
 														type   : "POST", cache  : false,
 														url    : "busca-ult-ingreso?grupo=vehiculos&id=" + seleccion,
 														success: function(r) {
-																console.log(r.motivo);
-																$("#accesos-motivo").val(r.motivo);
-																$("#accesos-id_concepto").val(r.id_concepto);
-																$("#accesos-id_concepto").trigger("change");
-																$("#accesos-cant_acomp").val(r.cant_acomp);
-																$("#divlistaautorizantes").html(r.motivo_baja);
+																if (r != "notFound") {
+																	$("#accesos-motivo").val(r.motivo);
+																	$("#accesos-id_concepto").val(r.id_concepto);
+																	$("#accesos-id_concepto").trigger("change");
+																	$("#accesos-cant_acomp").val(r.cant_acomp);
+																	$("#divlistaautorizantes").html(r.motivo_baja);
+																} else {
+																	$("#accesos-motivo").val("");
+																	$("#accesos-id_concepto").val("");
+																	$("#accesos-cant_acomp").val("");
+																	$("#divlistaautorizantes").html("");
+																}
 															}
 													});																										
 											}
@@ -372,13 +401,13 @@ $this->registerJs($js,yii\web\View::POS_READY);
 					<?php	
 						echo $form->field($model, 'id_concepto')->dropDownList(AccesosConceptos::getListaConceptos(),
 							[
+							'prompt'=>'Elija el concepto',							
 							'onchange'=>'
 									$.ajax({
 										type:"POST",
 										cache:false,
 										url:"refresh-concepto?id_concepto=" + $(this).val(),
 										success: function(r) {
-										console.log(r);
 													$("#divlistapersonas").html(r);
 												}
 									});
@@ -491,7 +520,9 @@ $this->registerJs($js,yii\web\View::POS_READY);
 	Modal::end();  		
 	// modal para los comentarios o mensajes
 	Modal::begin(['id'=>'modalcomentarionuevo',
-		'header'=>'<span class="btn-warning">&nbsp;Mensajes/Comentarios&nbsp;</span>']);
+		'header'=>'<span class="btn-warning">&nbsp;Mensajes/Comentarios&nbsp;</span>',
+		'options'=>['class'=>'nofade'],		
+		]);
 		echo '<div id="divcomentarionuevo"></div>';
 	Modal::end();  	
 	// modal que se abre cuando se agrega un vehiculo a la lista de vehiculos (trae las personas que utilizaron el vehiculo)	
@@ -501,6 +532,14 @@ $this->registerJs($js,yii\web\View::POS_READY);
 		'clientOptions'=>['backdrop'=>'static','keyboard'=>false],		
 		]);
 		echo '<div id="divupdseguro"></div>';
+	Modal::end();  		
+	// modal que se abre cuando se busca por ID o codigo de barras
+	Modal::begin(['id'=>'modalporid',
+		'header'=>'<span class="btn-warning">&nbsp;Busca persona por ID o código de barras&nbsp;</span>',
+		'options'=>['class'=>'nofade'],
+		//'clientOptions'=>['backdrop'=>'static','keyboard'=>false],		
+		]);
+		echo '<div id="divporid"></div>';
 	Modal::end();  		
 	
 	  

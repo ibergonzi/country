@@ -211,22 +211,19 @@ class AccesosController extends Controller
 	
 	public function actionBuscaPorId()
 	{
-		// se usa para mostrar el formulario que busca la persona por ID o codigo de barras
-		$model=new Personas();
-
-        if ($model->load(Yii::$app->request->post())) {
-			$p=Personas::findOne($model->id);
-			if 
-			return $model->id;
-        } else {
-			return $this->renderAjax('_buscaporid', [
-				'model' => $model,
-			]);
-        }
-
-
-		
+		// solo se usa para mostrar el formulario que busca la persona por ID o codigo de barras
+		return $this->renderAjax('_buscaporid');
 	}	
+	
+	public function actionBuscaPersonaPorId($idPersonaPorId) 
+	{
+		$p=Personas::findOne($idPersonaPorId);
+		if ($p) {
+			return $p->id;
+		} else {
+			return 'notFound';
+		}
+	}
 	    
     
     public function actionAddListaArray($grupo, $id)

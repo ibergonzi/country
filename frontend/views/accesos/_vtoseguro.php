@@ -33,7 +33,7 @@ use kartik\datecontrol\DateControl;
 										 'id'=>'btnUpdSeguro',
 										 'onclick'=>'
 												var fecs=$("#fecseguro").val();
-												console.log(fecs);
+												//console.log(fecs);
 												if (fecs === null) {
 													return false;
 												} else {										 

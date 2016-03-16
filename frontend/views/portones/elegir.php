@@ -57,7 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		?>
 		<hr/>
 		<div class="form-group">
-			<?= Html::submitButton('Confirmar la selección', ['class' => 'btn btn-success']) ?>
+			<?= Html::submitButton('Confirmar la selección', ['class' => 'btn btn-primary']) ?>
 		</div>		
 	<?php ActiveForm::end(); ?>		
  

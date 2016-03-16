@@ -487,8 +487,38 @@ CREATE TABLE `tiposdoc` (
 
 LOCK TABLES `tiposdoc` WRITE;
 /*!40000 ALTER TABLE `tiposdoc` DISABLE KEYS */;
-INSERT INTO `tiposdoc` VALUES (95,'Libreta civica','L.C.'),(96,'Documento nacional de identidad','DNI');
+INSERT INTO `tiposdoc` VALUES (80,'CUIT','CUIT'),(95,'Libreta civica','L.C.'),(96,'Documento nacional de identidad','DNI');
 /*!40000 ALTER TABLE `tiposdoc` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `unidades`
+--
+
+DROP TABLE IF EXISTS `unidades`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `unidades` (
+  `id` int(11) NOT NULL,
+  `loteo` smallint(6) NOT NULL,
+  `manzana` smallint(6) NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_by` int(11) NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `estado` tinyint(4) NOT NULL DEFAULT '1',
+  `motivo_baja` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `unidades`
+--
+
+LOCK TABLES `unidades` WRITE;
+/*!40000 ALTER TABLE `unidades` DISABLE KEYS */;
+/*!40000 ALTER TABLE `unidades` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -672,4 +702,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-03-12 19:10:18
+-- Dump completed on 2016-03-16 17:54:27

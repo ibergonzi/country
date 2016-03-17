@@ -22,7 +22,9 @@ use frontend\models\Vehiculos;
 use frontend\models\Comentarios;
 use frontend\models\Mensajes;
 use frontend\models\AccesosAutorizantes;
+use frontend\models\AccesosUf;
 use frontend\models\AccesosConceptos;
+use frontend\models\Uf;
 
 
 use yii\db\Expression;
@@ -317,11 +319,18 @@ class AccesosController extends Controller
 		\Yii::$app->response->format = 'json';
 		
 		$a=Accesos::findOne($ult['id']);
+		
 		if (!empty($a)) {
+			$r1='';
+			$r2='';
 			foreach ($a->accesosAutorizantes as $aa) {
-				$r=$this->actionAddLista('autorizantes', $aa->id_persona);
+				//$oaa=AccesosAutorizantes::find($aa->id_persona
+				$raa=$this->actionAddLista('autorizantes', $aa->id_persona);
 			}
-			$ult['motivo_baja']=$r;
+			foreach ($a->accesosUfs as $au) {
+				$raf=$this->actionAddLista('ufs', $au->id_uf);
+			}
+			$ult['motivo_baja']=['autorizantes'=>$raa,'ufs'=>$raf];
 		} else {
 			$ult='notFound';
 		}
@@ -364,6 +373,10 @@ class AccesosController extends Controller
 						// los autorizantes son personas
 						$dp[]=Personas::findOne($p);
 						break;	
+					case 'ufs':
+						$dp[]=Uf::findOne($p);
+						break;	
+
 				}	
 			}
 			$dataProvider = new ArrayDataProvider(['allModels'=>$dp]);			
@@ -594,6 +607,37 @@ class AccesosController extends Controller
 				$heading='<i class="fa fa-key"></i>  Autorizantes';						
 				//$heading='Autorizantes';			
 				break;									
+			case 'ufs':
+				$columns=[
+					[
+						'header'=>'<span class="glyphicon glyphicon-trash"></span>',
+						'attribute'=>'Acción',
+						'format' => 'raw',
+						'value' => function ($model, $index, $widget) {
+												$url=Yii::$app->urlManager->createUrl(
+													['accesos/drop-lista',
+													'grupo'=>'ufs', 
+													'id' => isset($model->id)?$model->id:''
+													]);
+												return Html::a('<span class="glyphicon glyphicon-remove"></span>', 
+													$url,
+													['title' => 'Eliminar',
+													 'onclick'=>'$.ajax({
+														type     : "POST",
+														cache    : false,
+														url      : $(this).attr("href"),
+														success  : function(response) {
+																		$("#divlistaufs").html(response);
+																	}
+													});return false;',
+													]);			
+									},
+					],
+					'id',
+				];
+
+				$heading='<i class="glyphicon glyphicon-home"></i>  Unidades';						
+				break;									
 		}			
 		
 		
@@ -658,7 +702,7 @@ class AccesosController extends Controller
 			$sessPersonas=\Yii::$app->session->get('personas');	
 			$sessVehiculo=\Yii::$app->session->get('vehiculos');
 			$sessAutorizantes=\Yii::$app->session->get('autorizantes');
-			//$sessUFs=\Yii::$app->session->get('ufs');
+			$sessUFs=\Yii::$app->session->get('ufs');
 
 			// se verifica que estén los 4 grupos cargados
 			$rechaza=false;
@@ -674,12 +718,10 @@ class AccesosController extends Controller
 				\Yii::$app->session->addFlash('danger','Debe especificar al menos un autorizante');
 				$rechaza=true;
 			}
-			/*
 			if (!$sessUFs) {
 				\Yii::$app->session->addFlash('danger','Debe especificar al menos una UF');
 				$rechaza=true;
 			}
-			*/
 			
 			
 			if ($sessPersonas) {
@@ -709,7 +751,7 @@ class AccesosController extends Controller
 				$tmpListaPersonas=$this->refreshLista('personas');
 				$tmpListaVehiculos=$this->refreshLista('vehiculos');				
 				$tmpListaAutorizantes=$this->refreshLista('autorizantes');        
-				//$tmpListaUFs=$this->refreshLista('ufs');        		
+				$tmpListaUFs=$this->refreshLista('ufs');        		
 				
 				// hace un render para que no se pierda los datos del modelo (en vez de redirect que limpia todo)
 				return $this->render('ingreso', [
@@ -717,7 +759,7 @@ class AccesosController extends Controller
 					'tmpListaPersonas'=>$tmpListaPersonas,
 					'tmpListaVehiculos'=>$tmpListaVehiculos,			
 					'tmpListaAutorizantes'=>$tmpListaAutorizantes,	
-					//'tmpListaUFs'=>$tmpListaUFs,			
+					'tmpListaUFs'=>$tmpListaUFs,			
 				]);        
 			}			
 
@@ -747,6 +789,12 @@ class AccesosController extends Controller
 								$aut->id_persona=$id_autorizante;
 								$aut->save();
 							} // foreach autorizantes
+							foreach ($sessUFs as $id_uf) {
+								$auf=new AccesosUf();
+								$auf->id_acceso=$model->id;
+								$auf->id_uf=$id_uf;
+								$auf->save();
+							} // foreach ufs
 						
 
 						}// if model->save()	
@@ -781,13 +829,13 @@ class AccesosController extends Controller
 		$tmpListaPersonas=$this->refreshLista('personas');
 		$tmpListaVehiculos=$this->refreshLista('vehiculos');				
 		$tmpListaAutorizantes=$this->refreshLista('autorizantes');        
-		//$tmpListaUFs=$this->refreshLista('ufs');        		
+		$tmpListaUFs=$this->refreshLista('ufs');        		
 		return $this->render('ingreso', [
 			'model' => $model,
 			'tmpListaPersonas'=>$tmpListaPersonas,
 			'tmpListaVehiculos'=>$tmpListaVehiculos,			
 			'tmpListaAutorizantes'=>$tmpListaAutorizantes,			
-			//'tmpListaUFs'=>$tmpListaUFs,			
+			'tmpListaUFs'=>$tmpListaUFs,			
 		]);        
     }
 

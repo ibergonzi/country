@@ -195,12 +195,14 @@ $this->registerJs($js,yii\web\View::POS_READY);
 																	$("#accesos-id_concepto").val(r.id_concepto);
 																	$("#accesos-id_concepto").trigger("change");
 																	$("#accesos-cant_acomp").val(r.cant_acomp);
-																	$("#divlistaautorizantes").html(r.motivo_baja);
+																	$("#divlistaautorizantes").html(r.motivo_baja["autorizantes"]);
+																	$("#divlistaufs").html(r.motivo_baja["ufs"]);
 																} else {
 																	$("#accesos-motivo").val("");
 																	$("#accesos-id_concepto").val("");
 																	$("#accesos-cant_acomp").val("");
 																	$("#divlistaautorizantes").html("");
+																	$("#divlistaufs").html("");
 																}
 															}
 													});													
@@ -304,12 +306,14 @@ $this->registerJs($js,yii\web\View::POS_READY);
 																	$("#accesos-id_concepto").val(r.id_concepto);
 																	$("#accesos-id_concepto").trigger("change");
 																	$("#accesos-cant_acomp").val(r.cant_acomp);
-																	$("#divlistaautorizantes").html(r.motivo_baja);
+																	$("#divlistaautorizantes").html(r.motivo_baja["autorizantes"]);
+																	$("#divlistaufs").html(r.motivo_baja["ufs"]);
 																} else {
 																	$("#accesos-motivo").val("");
 																	$("#accesos-id_concepto").val("");
 																	$("#accesos-cant_acomp").val("");
 																	$("#divlistaautorizantes").html("");
+																	$("#divlistaufs").html("");
 																}
 															}
 													});																										
@@ -434,6 +438,9 @@ $this->registerJs($js,yii\web\View::POS_READY);
 				</div>				
 				<div id="divlistaautorizantes">
 						<?php echo isset($tmpListaAutorizantes)?$tmpListaAutorizantes:'' ?>
+				</div>				
+				<div id="divlistaufs">
+						<?php echo isset($tmpListaUFs)?$tmpListaUFs:'' ?>
 				</div>				
 
 			</div><!-- fin div col2 -->

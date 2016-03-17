@@ -136,6 +136,8 @@ CREATE TABLE `accesos_uf` (
   `id_acceso` int(10) unsigned NOT NULL,
   `id_uf` int(11) NOT NULL,
   PRIMARY KEY (`id_acceso`,`id_uf`),
+  KEY `id_uf` (`id_uf`),
+  CONSTRAINT `accesos_uf_ibfk_1` FOREIGN KEY (`id_uf`) REFERENCES `uf` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_accesos_uf` FOREIGN KEY (`id_acceso`) REFERENCES `accesos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -146,6 +148,7 @@ CREATE TABLE `accesos_uf` (
 
 LOCK TABLES `accesos_uf` WRITE;
 /*!40000 ALTER TABLE `accesos_uf` DISABLE KEYS */;
+INSERT INTO `accesos_uf` VALUES (34,128);
 /*!40000 ALTER TABLE `accesos_uf` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -492,13 +495,13 @@ INSERT INTO `tiposdoc` VALUES (80,'CUIT','CUIT'),(95,'Libreta civica','L.C.'),(9
 UNLOCK TABLES;
 
 --
--- Table structure for table `unidades`
+-- Table structure for table `uf`
 --
 
-DROP TABLE IF EXISTS `unidades`;
+DROP TABLE IF EXISTS `uf`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `unidades` (
+CREATE TABLE `uf` (
   `id` int(11) NOT NULL,
   `loteo` smallint(6) NOT NULL,
   `manzana` smallint(6) NOT NULL,
@@ -513,12 +516,77 @@ CREATE TABLE `unidades` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `unidades`
+-- Dumping data for table `uf`
 --
 
-LOCK TABLES `unidades` WRITE;
-/*!40000 ALTER TABLE `unidades` DISABLE KEYS */;
-/*!40000 ALTER TABLE `unidades` ENABLE KEYS */;
+LOCK TABLES `uf` WRITE;
+/*!40000 ALTER TABLE `uf` DISABLE KEYS */;
+INSERT INTO `uf` VALUES (128,1,1,9,'2016-03-01 00:00:00',9,'2016-03-01 00:00:00',1,NULL);
+/*!40000 ALTER TABLE `uf` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `uf_titularidad`
+--
+
+DROP TABLE IF EXISTS `uf_titularidad`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `uf_titularidad` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_uf` int(11) NOT NULL,
+  `tipo_movim` smallint(6) NOT NULL,
+  `fec_desde` datetime NOT NULL,
+  `fec_hasta` datetime DEFAULT NULL,
+  `created_by` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_by` int(11) NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `estado` tinyint(4) NOT NULL DEFAULT '1',
+  `motivo_baja` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_ud_uf` (`id_uf`) USING BTREE,
+  CONSTRAINT `uf_titularidad_ibfk_1` FOREIGN KEY (`id_uf`) REFERENCES `uf` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `uf_titularidad`
+--
+
+LOCK TABLES `uf_titularidad` WRITE;
+/*!40000 ALTER TABLE `uf_titularidad` DISABLE KEYS */;
+INSERT INTO `uf_titularidad` VALUES (1,128,1,'2016-03-01 00:00:00','2016-03-16 00:00:00',9,'2016-03-01 00:00:00',9,'2016-03-01 00:00:00',1,NULL),(2,128,1,'2016-03-17 00:00:00',NULL,9,'2016-03-17 00:00:00',9,'2016-03-17 00:00:00',1,NULL);
+/*!40000 ALTER TABLE `uf_titularidad` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `uf_titularidad_personas`
+--
+
+DROP TABLE IF EXISTS `uf_titularidad_personas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `uf_titularidad_personas` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uf_titularidad_id` int(11) NOT NULL,
+  `id_persona` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_uftp` (`id_persona`,`uf_titularidad_id`) USING BTREE,
+  KEY `idx_uftp_uf` (`uf_titularidad_id`),
+  CONSTRAINT `uf_titularidad_personas_ibfk_1` FOREIGN KEY (`id_persona`) REFERENCES `personas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `uf_titularidad_personas_ibfk_2` FOREIGN KEY (`uf_titularidad_id`) REFERENCES `uf_titularidad` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `uf_titularidad_personas`
+--
+
+LOCK TABLES `uf_titularidad_personas` WRITE;
+/*!40000 ALTER TABLE `uf_titularidad_personas` DISABLE KEYS */;
+INSERT INTO `uf_titularidad_personas` VALUES (1,1,9),(2,2,9),(3,2,10);
+/*!40000 ALTER TABLE `uf_titularidad_personas` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -702,4 +770,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-03-16 17:54:27
+-- Dump completed on 2016-03-17 19:26:48

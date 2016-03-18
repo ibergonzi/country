@@ -32,9 +32,8 @@ use yii\helpers\ArrayHelper;
 													type     :"POST",
 													cache    : false,
 													url      : $(this).attr("href")+selected,
-													success  : function(response) {
-																//console.log(response);
-																$("#divlistapersonas").html(response);
+													success  : function(r) {
+																$("#divlistapersonas").html(r["personas"]);
 																$("#modalpersonas_vehiculo").modal("hide");
 																}
 													});

@@ -208,7 +208,8 @@ class AccesosController extends Controller
         $faux=\DateTime::createFromFormat('d/m/Y',$fecseguro);
 		$p->vto_seguro=$faux->format('Y-m-d');
 		$p->save();
-		return $this->refreshLista('personas');		
+		\Yii::$app->response->format = 'json';				
+		return $this->refreshListas();		
 	}
 	
 	public function actionBuscaPorId()
@@ -235,6 +236,7 @@ class AccesosController extends Controller
 		foreach ($aux as $i) {
 			$r=$this->actionAddLista($grupo, $i);
 		}
+		\Yii::$app->response->format = 'json';		
 		return $r;
 	}
     
@@ -266,7 +268,8 @@ class AccesosController extends Controller
 				$sess[]=$id;
 				\Yii::$app->session[$grupo]=$sess;			
 			}
-			$response=$this->refreshLista($grupo);
+			\Yii::$app->response->format = 'json';				
+			$response=$this->refreshListas();
 			return $response;
 			
 		}
@@ -297,7 +300,8 @@ class AccesosController extends Controller
 					}
 				}
 			} 
-			$response=$this->refreshLista($grupo);
+			\Yii::$app->response->format = 'json';				
+			$response=$this->refreshListas();
 			return $response;
 			
 		}
@@ -321,16 +325,15 @@ class AccesosController extends Controller
 		$a=Accesos::findOne($ult['id']);
 		
 		if (!empty($a)) {
-			$r1='';
-			$r2='';
+			$raux='';
 			foreach ($a->accesosAutorizantes as $aa) {
 				//$oaa=AccesosAutorizantes::find($aa->id_persona
-				$raa=$this->actionAddLista('autorizantes', $aa->id_persona);
+				$raux=$this->actionAddLista('autorizantes', $aa->id_persona);
 			}
 			foreach ($a->accesosUfs as $au) {
-				$raf=$this->actionAddLista('ufs', $au->id_uf);
+				$raux=$this->actionAddLista('ufs', $au->id_uf);
 			}
-			$ult['motivo_baja']=['autorizantes'=>$raa,'ufs'=>$raf];
+			$ult['motivo_baja']=$raux;
 		} else {
 			$ult='notFound';
 		}
@@ -343,334 +346,340 @@ class AccesosController extends Controller
 		if (empty($id_concepto) || $id_concepto=='null') {return;}
 		$ac=AccesosConceptos::findOne($id_concepto);
 		\Yii::$app->session->set('req_seguro',$ac->req_seguro);
-		$response=$this->refreshLista('personas');
+		// en la vista solo se usa el grupo personas pero se devuelve todo
+		\Yii::$app->response->format = 'json';		
+		$response=$this->refreshListas();
 		return $response;		
 	}
 	
-	public function actionRefrescaLista($grupo) 
+	public function actionRefrescaListas() 
 	{
-		$response=$this->refreshLista($grupo);
+		// solamente se usa para los grupos personas y vehiculos (se llama luego de ingresar un mensaje/comentario)
+		\Yii::$app->response->format = 'json';		
+		$response=$this->refreshListas();
 		return $response;
 	}
-	
-	public function refreshLista($grupo) {
-		// Se recupera de la sesion, cuando se graba se debe limpiar la session Personas asi: Yii::$app->session->remove('personas');
-		$sess=\Yii::$app->session->get($grupo);			
 
-        if (!empty($sess)) {
-			// Se crea el array vacio para el dataprovider
-			$dp=[];				
-			// La session solo contiene los IDs, se recorre el array y se completa $dp con el objeto que corresponda
-			foreach ($sess as $p) {
-				switch ($grupo) {
-					case 'personas':
-						$dp[]=Personas::findOne($p);
-						break;	
-					case 'vehiculos':
-						$dp[]=Vehiculos::findOne($p);
-						break;							
-					case 'autorizantes':
-						// los autorizantes son personas
-						$dp[]=Personas::findOne($p);
-						break;	
-					case 'ufs':
-						$dp[]=Uf::findOne($p);
-						break;	
 
-				}	
-			}
-			$dataProvider = new ArrayDataProvider(['allModels'=>$dp]);			
-		} else {
-			// dataProvider vacio
-			return '';
-			/*
-			$dataProvider = new ArrayDataProvider([
-				'allModels'=>[ ['id'=>'', 'apellido'=>'', 'nombre'=>'','nombre2'=>'','nro_doc'=>''], ]
-			]);
-			*/					
-		}
-		switch ($grupo) {
-			case 'personas':
-				$columns=[
-					[
-						'header'=>'<span class="glyphicon glyphicon-trash"></span>',
-						'attribute'=>'Acción',
-						'format' => 'raw',
-						'value' => function ($model, $index, $widget) {
+	public function refreshListas() {
+		$response=['personas'=>'','vehiculos'=>'','autorizantes'=>'','ufs'=>''];
+		foreach ($response as $grupo=>$valor) {
+		
+			// Se recupera de la sesion
+			$sess=\Yii::$app->session->get($grupo);			
+
+			if (!empty($sess)) {
+				// Se crea el array vacio para el dataprovider
+				$dp=[];				
+				// La session solo contiene los IDs, se recorre el array y se completa $dp con el objeto que corresponda
+				foreach ($sess as $p) {
+					switch ($grupo) {
+						case 'personas':
+							$dp[]=Personas::findOne($p);
+							break;	
+						case 'vehiculos':
+							$dp[]=Vehiculos::findOne($p);
+							break;							
+						case 'autorizantes':
+							// los autorizantes son personas
+							$dp[]=Personas::findOne($p);
+							break;	
+						case 'ufs':
+							$dp[]=Uf::findOne($p);
+							break;	
+
+					}	
+				}
+				$dataProvider = new ArrayDataProvider(['allModels'=>$dp]);			
+			} else {
+				// dataProvider vacio
+				//return '';
+				$response[$grupo]='';
+				continue;
+			} // if !empty $sess
+			switch ($grupo) {
+				case 'personas':
+					$columns=[
+						[
+							'header'=>'<span class="glyphicon glyphicon-trash"></span>',
+							'attribute'=>'Acción',
+							'format' => 'raw',
+							'value' => function ($model, $index, $widget) {
+													$url=Yii::$app->urlManager->createUrl(
+														['accesos/drop-lista',
+														'grupo'=>'personas', 
+														'id' => isset($model->id)?$model->id:''
+														]);
+													return Html::a('<span class="glyphicon glyphicon-remove"></span>', 
+														$url,
+														['title' => 'Eliminar',
+														 'onclick'=>'$.ajax({
+															type     : "POST",
+															cache    : false,
+															url      : $(this).attr("href"),
+															success  : function(r) {
+																			$("#divlistapersonas").html(r["personas"]);
+																		}
+														});return false;',
+														]);			
+										},
+						],
+						[
+							'header'=>'<span class="glyphicon glyphicon-envelope"></span>',
+							'attribute'=>'Mensajes',
+							'format' => 'raw',
+							'value' => function ($model, $index, $widget) {
+												$c=Mensajes::getMensajesByModelId($model->className(),$model->id);
+
+												if (!empty($c)) {
+													$text='<span class="glyphicon glyphicon-alert" style="color:#FF8000"></span>';
+													$titl='Ver mensaje';
+												} else {
+													$text='<span class="glyphicon glyphicon-envelope"></span>';
+													$titl='Ingresar nuevo mensaje';
+												}								
 												$url=Yii::$app->urlManager->createUrl(
-													['accesos/drop-lista',
-													'grupo'=>'personas', 
-													'id' => isset($model->id)?$model->id:''
-													]);
-												return Html::a('<span class="glyphicon glyphicon-remove"></span>', 
+														['mensajes/create-ajax',
+															'modelName'=>$model->className(),
+															'modelID'=>$model->id]);							
+												return Html::a($text, 
 													$url,
-													['title' => 'Eliminar',
-													 'onclick'=>'$.ajax({
-														type     : "POST",
-														cache    : false,
-														url      : $(this).attr("href"),
-														success  : function(response) {
-																		$("#divlistapersonas").html(response);
-																	}
-													});return false;',
-													]);			
-									},
-					],
-					[
-						'header'=>'<span class="glyphicon glyphicon-envelope"></span>',
-						'attribute'=>'Mensajes',
-						'format' => 'raw',
-						'value' => function ($model, $index, $widget) {
-											$c=Mensajes::getMensajesByModelId($model->className(),$model->id);
-
-											if (!empty($c)) {
-												$text='<span class="glyphicon glyphicon-alert" style="color:#FF8000"></span>';
-												$titl='Ver mensaje';
-											} else {
-												$text='<span class="glyphicon glyphicon-envelope"></span>';
-												$titl='Ingresar nuevo mensaje';
-											}								
-											$url=Yii::$app->urlManager->createUrl(
-													['mensajes/create-ajax',
-														'modelName'=>$model->className(),
-														'modelID'=>$model->id]);							
-											return Html::a($text, 
-												$url,
-											['title' => $titl,
-											 'onclick'=>'$.ajax({
-												type     :"POST",
-												cache    : false,
-												url  : $(this).attr("href"),
-												success  : function(response) {
-															$("#divcomentarionuevo").html(response);
-															$("#modalcomentarionuevo").modal("show");
-															}
-											});return false;',
-											]);			
-									},						
-					],					
-
-					[
-						'attribute'=>'vto_seguro',
-						'visible'=>\Yii::$app->session->get('req_seguro'),
-						'format' => 'raw',
-						'value' => function ($model, $index, $widget) {
-							
-										if (empty($model->vto_seguro)) {
-											$pide=true;
-										} else {
-											// se debe controlar si no está vencido el seguro
-											if ($this->fecVencida($model->vto_seguro)) {												
-												$pide=true;
-											} else {
-												// no está vencido, por lo tanto no se pide, solo se muestra
-												$pide=false;
-											}
-										}
-							
-										if (!$pide) {
-											return Yii::$app->formatter->format($model->vto_seguro, 'date'); 
-										} else {
-											$url=Yii::$app->urlManager->createUrl(
-													['accesos/pide-seguro','idPersona'=>$model->id,]);							
-											return Html::a(empty($model->vto_seguro)?'Sin seguro':
-													Yii::$app->formatter->format($model->vto_seguro,'date'), 
-												$url,
-												['title' => 'Modificar fecha de vencimiento',
+												['title' => $titl,
 												 'onclick'=>'$.ajax({
 													type     :"POST",
 													cache    : false,
 													url  : $(this).attr("href"),
 													success  : function(response) {
-															console.log(response);
-															$("#divupdseguro").html(response);
-															$("#modalupdseguro").modal("show");
-
+																$("#divcomentarionuevo").html(response);
+																$("#modalcomentarionuevo").modal("show");
 																}
 												});return false;',
 												]);			
-										}
-								},							
-					],
-					'id',
-					'apellido',
-					'nombre',
-					'nombre2',
-					'nro_doc',					
-				];
-				$heading='<i class="glyphicon glyphicon-user"></i>  Personas';
-				//$heading='Personas';
-				break;	
-			case 'vehiculos':
-				$columns=[
-					[
-						'header'=>'<span class="glyphicon glyphicon-trash"></span>',
-						'attribute'=>'Acción',
-						'format' => 'raw',
-						'value' => function ($model, $index, $widget) {
-												$url=Yii::$app->urlManager->createUrl(
-													['accesos/drop-lista',
-													'grupo'=>'vehiculos', 
-													'id' => isset($model->id)?$model->id:''
-													]);
-												return Html::a('<span class="glyphicon glyphicon-remove"></span>', 
-													$url,
-													['title' => 'Eliminar',
-													 'onclick'=>'$.ajax({
-														type     : "POST",
-														cache    : false,
-														url      : $(this).attr("href"),
-														success  : function(response) {
-																		$("#divlistavehiculos").html(response);
-																	}
-													});return false;',
-													]);			
-									},
-					],
-					[
-						'header'=>'<span class="glyphicon glyphicon-envelope"></span>',
-						'attribute'=>'Mensajes',
-						'format' => 'raw',
-						'value' => function ($model, $index, $widget) {
-											$c=Mensajes::getMensajesByModelId($model->className(),$model->id);
+										},						
+						],					
 
-											if (!empty($c)) {
-												$text='<span class="glyphicon glyphicon-alert" style="color:#FF8000"></span>';
-												$titl='Ver mensaje';
+						[
+							'attribute'=>'vto_seguro',
+							'visible'=>\Yii::$app->session->get('req_seguro'),
+							'format' => 'raw',
+							'value' => function ($model, $index, $widget) {
+								
+											if (empty($model->vto_seguro)) {
+												$pide=true;
 											} else {
-												$text='<span class="glyphicon glyphicon-envelope"></span>';
-												$titl='Ingresar nuevo mensaje';
-											}								
-											$url=Yii::$app->urlManager->createUrl(
-													['mensajes/create-ajax',
-														'modelName'=>$model->className(),
-														'modelID'=>$model->id]);							
-											return Html::a($text, 
-												$url,
-											['title' => $titl,
-											 'onclick'=>'$.ajax({
-												type     :"POST",
-												cache    : false,
-												url  : $(this).attr("href"),
-												success  : function(response) {
-															$("#divcomentarionuevo").html(response);
-															$("#modalcomentarionuevo").modal("show");
-															}
-											});return false;',
-											]);			
-									},						
-					],					
-					'id',
-					'patente',
-					'marca',
-					'modelo',
-					'color',
-				
-
-				];
-				$heading='<i class="fa fa-car"></i>  Vehiculos';
-				//$heading='Vehiculos';
-				break;			
-			case 'autorizantes':
-				$columns=[
-					[
-						'header'=>'<span class="glyphicon glyphicon-trash"></span>',
-						'attribute'=>'Acción',
-						'format' => 'raw',
-						'value' => function ($model, $index, $widget) {
+												// se debe controlar si no está vencido el seguro
+												if ($this->fecVencida($model->vto_seguro)) {												
+													$pide=true;
+												} else {
+													// no está vencido, por lo tanto no se pide, solo se muestra
+													$pide=false;
+												}
+											}
+								
+											if (!$pide) {
+												return Yii::$app->formatter->format($model->vto_seguro, 'date'); 
+											} else {
 												$url=Yii::$app->urlManager->createUrl(
-													['accesos/drop-lista',
-													'grupo'=>'autorizantes', 
-													'id' => isset($model->id)?$model->id:''
-													]);
-												return Html::a('<span class="glyphicon glyphicon-remove"></span>', 
+														['accesos/pide-seguro','idPersona'=>$model->id,]);							
+												return Html::a(empty($model->vto_seguro)?'Sin seguro':
+														Yii::$app->formatter->format($model->vto_seguro,'date'), 
 													$url,
-													['title' => 'Eliminar',
+													['title' => 'Modificar fecha de vencimiento',
 													 'onclick'=>'$.ajax({
-														type     : "POST",
+														type     :"POST",
 														cache    : false,
-														url      : $(this).attr("href"),
+														url  : $(this).attr("href"),
 														success  : function(response) {
-																		$("#divlistaautorizantes").html(response);
+																console.log(response);
+																$("#divupdseguro").html(response);
+																$("#modalupdseguro").modal("show");
+
 																	}
 													});return false;',
 													]);			
-									},
-					],
-					'id',
-					'apellido',
-					'nombre',
-					'nombre2',
-					'nro_doc',
-				];
+											}
+									},							
+						],
+						'id',
+						'apellido',
+						'nombre',
+						'nombre2',
+						'nro_doc',					
+					];
+					$heading='<i class="glyphicon glyphicon-user"></i>  Personas';
+					//$heading='Personas';
+					break;	
+				case 'vehiculos':
+					$columns=[
+						[
+							'header'=>'<span class="glyphicon glyphicon-trash"></span>',
+							'attribute'=>'Acción',
+							'format' => 'raw',
+							'value' => function ($model, $index, $widget) {
+													$url=Yii::$app->urlManager->createUrl(
+														['accesos/drop-lista',
+														'grupo'=>'vehiculos', 
+														'id' => isset($model->id)?$model->id:''
+														]);
+													return Html::a('<span class="glyphicon glyphicon-remove"></span>', 
+														$url,
+														['title' => 'Eliminar',
+														 'onclick'=>'$.ajax({
+															type     : "POST",
+															cache    : false,
+															url      : $(this).attr("href"),
+															success  : function(r) {
+																			$("#divlistavehiculos").html(r["vehiculos"]);
+																		}
+														});return false;',
+														]);			
+										},
+						],
+						[
+							'header'=>'<span class="glyphicon glyphicon-envelope"></span>',
+							'attribute'=>'Mensajes',
+							'format' => 'raw',
+							'value' => function ($model, $index, $widget) {
+												$c=Mensajes::getMensajesByModelId($model->className(),$model->id);
 
-				$heading='<i class="fa fa-key"></i>  Autorizantes';						
-				//$heading='Autorizantes';			
-				break;									
-			case 'ufs':
-				$columns=[
-					[
-						'header'=>'<span class="glyphicon glyphicon-trash"></span>',
-						'attribute'=>'Acción',
-						'format' => 'raw',
-						'value' => function ($model, $index, $widget) {
+												if (!empty($c)) {
+													$text='<span class="glyphicon glyphicon-alert" style="color:#FF8000"></span>';
+													$titl='Ver mensaje';
+												} else {
+													$text='<span class="glyphicon glyphicon-envelope"></span>';
+													$titl='Ingresar nuevo mensaje';
+												}								
 												$url=Yii::$app->urlManager->createUrl(
-													['accesos/drop-lista',
-													'grupo'=>'ufs', 
-													'id' => isset($model->id)?$model->id:''
-													]);
-												return Html::a('<span class="glyphicon glyphicon-remove"></span>', 
+														['mensajes/create-ajax',
+															'modelName'=>$model->className(),
+															'modelID'=>$model->id]);							
+												return Html::a($text, 
 													$url,
-													['title' => 'Eliminar',
-													 'onclick'=>'$.ajax({
-														type     : "POST",
-														cache    : false,
-														url      : $(this).attr("href"),
-														success  : function(response) {
-																		$("#divlistaufs").html(response);
-																	}
-													});return false;',
-													]);			
-									},
-					],
-					'id',
-				];
+												['title' => $titl,
+												 'onclick'=>'$.ajax({
+													type     :"POST",
+													cache    : false,
+													url  : $(this).attr("href"),
+													success  : function(response) {
+																$("#divcomentarionuevo").html(response);
+																$("#modalcomentarionuevo").modal("show");
+																}
+												});return false;',
+												]);			
+										},						
+						],					
+						'id',
+						'patente',
+						'marca',
+						'modelo',
+						'color',
+					
 
-				$heading='<i class="glyphicon glyphicon-home"></i>  Unidades';						
-				break;									
-		}			
-		
-		
-		 
-		$response=GridView::widget([
-			'dataProvider' => $dataProvider,
-			'layout'=>'{items}',
-			'columns' => $columns,
-			//'tableOptions' => ['class' => 'table table-striped table-condensed'], esto funciona si es el gridview de yii
+					];
+					$heading='<i class="fa fa-car"></i>  Vehiculos';
+					//$heading='Vehiculos';
+					break;			
+				case 'autorizantes':
+					$columns=[
+						[
+							'header'=>'<span class="glyphicon glyphicon-trash"></span>',
+							'attribute'=>'Acción',
+							'format' => 'raw',
+							'value' => function ($model, $index, $widget) {
+													$url=Yii::$app->urlManager->createUrl(
+														['accesos/drop-lista',
+														'grupo'=>'autorizantes', 
+														'id' => isset($model->id)?$model->id:''
+														]);
+													return Html::a('<span class="glyphicon glyphicon-remove"></span>', 
+														$url,
+														['title' => 'Eliminar',
+														 'onclick'=>'$.ajax({
+															type     : "POST",
+															cache    : false,
+															url      : $(this).attr("href"),
+															success  : function(r) {
+																			$("#divlistaautorizantes").html(r["autorizantes"]);
+																		}
+														});return false;',
+														]);			
+										},
+						],
+						'id',
+						'apellido',
+						'nombre',
+						'nombre2',
+						'nro_doc',
+					];
+
+					$heading='<i class="fa fa-key"></i>  Autorizantes';						
+					//$heading='Autorizantes';			
+					break;									
+				case 'ufs':
+					$columns=[
+						[
+							'header'=>'<span class="glyphicon glyphicon-trash"></span>',
+							'attribute'=>'Acción',
+							'format' => 'raw',
+							'value' => function ($model, $index, $widget) {
+													$url=Yii::$app->urlManager->createUrl(
+														['accesos/drop-lista',
+														'grupo'=>'ufs', 
+														'id' => isset($model->id)?$model->id:''
+														]);
+													return Html::a('<span class="glyphicon glyphicon-remove"></span>', 
+														$url,
+														['title' => 'Eliminar',
+														 'onclick'=>'$.ajax({
+															type     : "POST",
+															cache    : false,
+															url      : $(this).attr("href"),
+															success  : function(r) {
+																			$("#divlistaufs").html(r["ufs"]);
+																		}
+														});return false;',
+														]);			
+										},
+						],
+						'id',
+					];
+
+					$heading='<i class="glyphicon glyphicon-home"></i>  Unidades';						
+					break;									
+			}			
 			
-			//opciones validas solo para el gridview de kartik
-			'panel'=>[
-				'type'=>GridView::TYPE_INFO,
-				'heading'=>$heading,
-				//'headingOptions'=>['class'=>'panel-heading'],
-				'footer'=>false,
-				'before'=>false,
-				'after'=>false,
-			],		
-			'panelHeadingTemplate'=>'{heading}',			
-			'resizableColumns'=>false,			
-			'bordered'=>false,
-			'striped'=>true,
-			'condensed'=>true,
-			'responsive'=>true,
-			'hover'=>false,
-			'toolbar'=>false,
-			'export'=>false,			
-		]);
-		Yii::trace($response);
+			
+			 
+			$response[$grupo]=GridView::widget([
+				'dataProvider' => $dataProvider,
+				'layout'=>'{items}',
+				'columns' => $columns,
+				//'tableOptions' => ['class' => 'table table-striped table-condensed'], esto funciona si es el gridview de yii
+				
+				//opciones validas solo para el gridview de kartik
+				'panel'=>[
+					'type'=>GridView::TYPE_INFO,
+					'heading'=>$heading,
+					//'headingOptions'=>['class'=>'panel-heading'],
+					'footer'=>false,
+					'before'=>false,
+					'after'=>false,
+				],		
+				'panelHeadingTemplate'=>'{heading}',			
+				'resizableColumns'=>false,			
+				'bordered'=>false,
+				'striped'=>true,
+				'condensed'=>true,
+				'responsive'=>true,
+				'hover'=>false,
+				'toolbar'=>false,
+				'export'=>false,			
+			]);
+		
+		} //foreach $response
 		return $response;
 	
-	}
+	}	
 	
 	public function fecVencida($fec) 
 	{
@@ -748,19 +757,11 @@ class AccesosController extends Controller
 			if ($rechaza) {
 				// actualiza los 4 grupos en variables que se van a pasar al render
 				// si se modifica, modificar tambien antes del render del final de la funcion
-				$tmpListaPersonas=$this->refreshLista('personas');
-				$tmpListaVehiculos=$this->refreshLista('vehiculos');				
-				$tmpListaAutorizantes=$this->refreshLista('autorizantes');        
-				$tmpListaUFs=$this->refreshLista('ufs');        		
-				
-				// hace un render para que no se pierda los datos del modelo (en vez de redirect que limpia todo)
+				$listas=$this->refreshListas();
 				return $this->render('ingreso', [
 					'model' => $model,
-					'tmpListaPersonas'=>$tmpListaPersonas,
-					'tmpListaVehiculos'=>$tmpListaVehiculos,			
-					'tmpListaAutorizantes'=>$tmpListaAutorizantes,	
-					'tmpListaUFs'=>$tmpListaUFs,			
-				]);        
+					'tmpListas'=>$listas,
+				]);   				
 			}			
 
 			// Para que coincidan las fechas y horas en todos los registros se utilizan variables auxiliares antes de grabar
@@ -824,18 +825,12 @@ class AccesosController extends Controller
 
 		} // if POST		
 		
-        // actualiza los 4 grupos en variables que se van a pasar al render
+        // actualiza los 4 grupos en un array que se va a pasar al render
 		// si se modifica, modificar tambien dentro del if (rechaza)
-		$tmpListaPersonas=$this->refreshLista('personas');
-		$tmpListaVehiculos=$this->refreshLista('vehiculos');				
-		$tmpListaAutorizantes=$this->refreshLista('autorizantes');        
-		$tmpListaUFs=$this->refreshLista('ufs');        		
+		$listas=$this->refreshListas();
 		return $this->render('ingreso', [
 			'model' => $model,
-			'tmpListaPersonas'=>$tmpListaPersonas,
-			'tmpListaVehiculos'=>$tmpListaVehiculos,			
-			'tmpListaAutorizantes'=>$tmpListaAutorizantes,			
-			'tmpListaUFs'=>$tmpListaUFs,			
+			'tmpListas'=>$listas,
 		]);        
     }
 

@@ -79,7 +79,6 @@ class PersonasController extends Controller
     	$model->estado=Personas::ESTADO_ACTIVO;      	
 
         if ($model->load(Yii::$app->request->post())) {
-			Yii::trace($model);
 			// Si vino por post se recupera el archivo
 			$model->foto = UploadedFile::getInstance($model, 'foto');
             // cuando viene un archivo se debe forzar el validate y 
@@ -127,8 +126,6 @@ class PersonasController extends Controller
         if ($model->load(Yii::$app->request->post())) {
            // Si vino por post, se recupera el archivo
             $model->foto = UploadedFile::getInstance($model, 'foto');
-            Yii::trace($model->foto);
-
             // si ya tenia un valor y el usuario no subio ningun archivo, deja el valor original
             if ($arch !== null && $model->foto == '') {
                     $model->foto=$arch;

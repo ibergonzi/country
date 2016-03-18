@@ -70,16 +70,10 @@ $this->registerCss('.modal-body { max-height: calc(100vh - 210px);overflow-y: au
 	$('#modalcomentarionuevo').on('hidden.bs.modal', function (e) {
 		$.ajax({
 			type   : "POST",cache  : false,
-			url    : "refresca-lista?grupo=personas",
+			url    : "refresca-listas",
 			success: function(r) {
-					$("#divlistapersonas").html(r);
-				}
-		});		
-		$.ajax({
-			type   : "POST",cache  : false,
-			url    : "refresca-lista?grupo=vehiculos",
-			success: function(r) {
-					$("#divlistavehiculos").html(r);
+					$("#divlistapersonas").html(r["personas"]);
+					$("#divlistavehiculos").html(r["vehiculos"]);
 				}
 		});		
 
@@ -173,7 +167,7 @@ $this->registerJs($js,yii\web\View::POS_READY);
 											type   : "POST",cache  : false,
 											url    : "add-lista?grupo=personas&id=" + seleccion,
 											success: function(r) {
-													$("#divlistapersonas").html(r);
+													$("#divlistapersonas").html(r["personas"]);
 													$("#selectorPersonas").select2("val","");
 													$.ajax({
 														type   : "POST", cache  : false,
@@ -218,8 +212,8 @@ $this->registerJs($js,yii\web\View::POS_READY);
 												type     : "POST",
 												cache    : false,
 												url      : "drop-lista?grupo=personas&id=" + seleccion,
-												success  : function(response) {
-															$("#divlistapersonas").html(response);														
+												success  : function(r) {
+															$("#divlistapersonas").html(r["personas"]);														
 															}
 										});						
 									}			
@@ -283,7 +277,7 @@ $this->registerJs($js,yii\web\View::POS_READY);
 											type   : "POST", cache  : false,
 											url    : "add-lista?grupo=vehiculos&id=" + seleccion,
 											success: function(r) {
-												$("#divlistavehiculos").html(r);	
+												$("#divlistavehiculos").html(r["vehiculos"]);	
 												$("#selectorVehiculos").select2("val","");	
 												if (seleccion > 2) { // si es 1 o 2 es bicicleta o caminando
 													$.ajax({
@@ -328,8 +322,8 @@ $this->registerJs($js,yii\web\View::POS_READY);
 												type     : "POST",
 												cache    : false,
 												url      : "drop-lista?grupo=vehiculos&id=" + seleccion,
-												success  : function(response) {
-															$("#divlistavehiculos").html(response);														
+												success  : function(r) {
+															$("#divlistavehiculos").html(r["vehiculos"]);
 															}
 										});						
 									}			
@@ -376,7 +370,7 @@ $this->registerJs($js,yii\web\View::POS_READY);
 											type   : "POST",cache  : false,
 											url    : "add-lista?grupo=autorizantes&id=" + seleccion,
 											success: function(r) {
-													$("#divlistaautorizantes").html(r);
+													$("#divlistaautorizantes").html(r["autorizantes"]);
 													$("#selectorAutorizantes").select2("val","");
 												}
 										});						
@@ -389,8 +383,8 @@ $this->registerJs($js,yii\web\View::POS_READY);
 												type     : "POST",
 												cache    : false,
 												url      : "drop-lista?grupo=autorizantes&id=" + seleccion,
-												success  : function(response) {
-															$("#divlistaautorizantes").html(response);														
+												success  : function(r) {
+															$("#divlistaautorizantes").html(r["autorizantes"]);	
 															}
 										});						
 									}			
@@ -412,7 +406,7 @@ $this->registerJs($js,yii\web\View::POS_READY);
 										cache:false,
 										url:"refresh-concepto?id_concepto=" + $(this).val(),
 										success: function(r) {
-													$("#divlistapersonas").html(r);
+													$("#divlistapersonas").html(r["personas"]);
 												}
 									});
 							',
@@ -431,16 +425,16 @@ $this->registerJs($js,yii\web\View::POS_READY);
 
 			<div id="col2" class="col-md-6"><!-- comienzo div col2 -->
 				<div id="divlistapersonas">
-						<?php echo isset($tmpListaPersonas)?$tmpListaPersonas:'' ?>
+						<?php echo isset($tmpListas['personas'])?$tmpListas['personas']:'' ?>
 				</div>
 				<div id="divlistavehiculos">
-						<?php echo isset($tmpListaVehiculos)?$tmpListaVehiculos:'' ?>
+						<?php echo isset($tmpListas['vehiculos'])?$tmpListas['vehiculos']:'' ?>
 				</div>				
 				<div id="divlistaautorizantes">
-						<?php echo isset($tmpListaAutorizantes)?$tmpListaAutorizantes:'' ?>
+						<?php echo isset($tmpListas['autorizantes'])?$tmpListas['autorizantes']:'' ?>
 				</div>				
 				<div id="divlistaufs">
-						<?php echo isset($tmpListaUFs)?$tmpListaUFs:'' ?>
+						<?php echo isset($tmpListas['ufs'])?$tmpListas['ufs']:'' ?>
 				</div>				
 
 			</div><!-- fin div col2 -->

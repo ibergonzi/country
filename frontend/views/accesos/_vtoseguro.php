@@ -41,8 +41,8 @@ use kartik\datecontrol\DateControl;
 														type     :"POST",
 														cache    : false,
 														url      : $(this).attr("href")+fecs,
-														success  : function(response) {
-																	$("#divlistapersonas").html(response);
+														success  : function(r) {
+																	$("#divlistapersonas").html(r["personas"]);
 																	$("#modalupdseguro").modal("hide");
 																	}
 														});

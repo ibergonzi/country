@@ -26,7 +26,6 @@ class AutorizantesController extends Controller
         ];
     }
     
-    
 	// funcion utilizada para los select2, devuelve json
 	public function actionApellidoslist($q = null, $id = null) {
 		\Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
@@ -64,7 +63,7 @@ class AutorizantesController extends Controller
 			$out['results'] = ['id' => $id, 'text' => Autorizantes::formateaAutorizanteSelect2($id,false)];
 		}
 		return $out;
-	}    
+	}      
 
     /**
      * Lists all Autorizantes models.
@@ -103,7 +102,7 @@ class AutorizantesController extends Controller
         $model = new Autorizantes();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id_persona]);
+            return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -122,7 +121,7 @@ class AutorizantesController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id_persona]);
+            return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
                 'model' => $model,

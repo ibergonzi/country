@@ -20,6 +20,7 @@ use frontend\models\AccesosSearch;
 use frontend\models\Personas;
 use frontend\models\Vehiculos;
 use frontend\models\Comentarios;
+use frontend\models\Autorizantes;
 use frontend\models\Mensajes;
 use frontend\models\AccesosAutorizantes;
 use frontend\models\AccesosUf;
@@ -242,7 +243,7 @@ class AccesosController extends Controller
     
     public function actionAddLista($grupo, $id)
     {
-		// $grupo puede ser 'personas','vehiculos','autorizantes','ufs'
+		// $grupo puede ser 'personas','vehiculos','autorizantes'
 		
 		if (empty($id)) {return;}
 		
@@ -258,16 +259,38 @@ class AccesosController extends Controller
 						\Yii::$app->session[$grupo]=$sess;	
 					
 				} else {
-					//Chequea que no se duplique el id en la lista
-					if (!in_array($id, $sess)) {
-						$sess[]=$id;
-						\Yii::$app->session[$grupo]=$sess;			
-					} 
+					if ($grupo == 'autorizantes') {
+						$aut=Autorizantes::find()->where(['id_persona'=>$id])->all();
+						foreach ($aut as $a) {
+							//Chequea que no se duplique el id en la lista
+							if (!in_array($a->id, $sess)) {
+								$sess[]=$a->id;
+								\Yii::$app->session[$grupo]=$sess;			
+							} 
+						}
+					} else {
+						//Chequea que no se duplique el id en la lista
+						if (!in_array($id, $sess)) {
+							$sess[]=$id;
+							\Yii::$app->session[$grupo]=$sess;			
+						} 
+					}
 				} 
 			} else {
-				$sess[]=$id;
-				\Yii::$app->session[$grupo]=$sess;			
+				if ($grupo == 'autorizantes') {
+					$aut=Autorizantes::find()->where(['id_persona'=>$id])->all();
+					foreach ($aut as $a) {
+						$sess[]=$a->id;
+						\Yii::$app->session[$grupo]=$sess;			
+					}
+					
+				} else {
+					$sess[]=$id;
+					\Yii::$app->session[$grupo]=$sess;
+				}
 			}
+		
+			
 			\Yii::$app->response->format = 'json';				
 			$response=$this->refreshListas();
 			return $response;
@@ -277,7 +300,7 @@ class AccesosController extends Controller
 	
     public function actionDropLista($grupo, $id)
     {
-		// $grupo puede ser 'personas','vehiculos','autorizantes','ufs'		
+		// $grupo puede ser 'personas','vehiculos','autorizantes'
 		
 		if (empty($id)) {return;}
 		
@@ -292,14 +315,15 @@ class AccesosController extends Controller
 				} else {
 					//Chequea que el id exista en la lista
 					$key=array_search($id, $sess);
-
 					if ($key || $key===0) {
 						// se compara con === porque cuando no se encuentra devuelve falso (es decir 0)
 						unset($sess[$key]);
-						\Yii::$app->session[$grupo]=$sess;			
-					}
-				}
-			} 
+						\Yii::$app->session[$grupo]=$sess;
+					} //if ($key)
+				} // if count($sess)==1
+			} // if $sess
+			
+			
 			\Yii::$app->response->format = 'json';				
 			$response=$this->refreshListas();
 			return $response;
@@ -326,12 +350,11 @@ class AccesosController extends Controller
 		
 		if (!empty($a)) {
 			$raux='';
+			// cuando se llama a actionAddLista se están cargando TODAS las uf de cada persona
+			// está hecho a proposito, es decir, no se muestran las ufs del ultimo acceso, sino que se muestran
+			// las personas del ultimo acceso y se cargan TODAS sus uf
 			foreach ($a->accesosAutorizantes as $aa) {
-				//$oaa=AccesosAutorizantes::find($aa->id_persona
 				$raux=$this->actionAddLista('autorizantes', $aa->id_persona);
-			}
-			foreach ($a->accesosUfs as $au) {
-				$raux=$this->actionAddLista('ufs', $au->id_uf);
 			}
 			$ult['motivo_baja']=$raux;
 		} else {
@@ -362,7 +385,7 @@ class AccesosController extends Controller
 
 
 	public function refreshListas() {
-		$response=['personas'=>'','vehiculos'=>'','autorizantes'=>'','ufs'=>''];
+		$response=['personas'=>'','vehiculos'=>'','autorizantes'=>''];
 		foreach ($response as $grupo=>$valor) {
 		
 			// Se recupera de la sesion
@@ -381,13 +404,8 @@ class AccesosController extends Controller
 							$dp[]=Vehiculos::findOne($p);
 							break;							
 						case 'autorizantes':
-							// los autorizantes son personas
-							$dp[]=Personas::findOne($p);
+							$dp[]=Autorizantes::findOne($p);
 							break;	
-						case 'ufs':
-							$dp[]=Uf::findOne($p);
-							break;	
-
 					}	
 				}
 				$dataProvider = new ArrayDataProvider(['allModels'=>$dp]);			
@@ -605,46 +623,15 @@ class AccesosController extends Controller
 														]);			
 										},
 						],
-						'id',
-						'apellido',
-						'nombre',
-						'nombre2',
-						'nro_doc',
+						'persona.apellido',
+						'persona.nombre',
+						'persona.nombre2',
+						'persona.nro_doc',
+						'id_uf',
 					];
 
 					$heading='<i class="fa fa-key"></i>  Autorizantes';						
 					//$heading='Autorizantes';			
-					break;									
-				case 'ufs':
-					$columns=[
-						[
-							'header'=>'<span class="glyphicon glyphicon-trash"></span>',
-							'attribute'=>'Acción',
-							'format' => 'raw',
-							'value' => function ($model, $index, $widget) {
-													$url=Yii::$app->urlManager->createUrl(
-														['accesos/drop-lista',
-														'grupo'=>'ufs', 
-														'id' => isset($model->id)?$model->id:''
-														]);
-													return Html::a('<span class="glyphicon glyphicon-remove"></span>', 
-														$url,
-														['title' => 'Eliminar',
-														 'onclick'=>'$.ajax({
-															type     : "POST",
-															cache    : false,
-															url      : $(this).attr("href"),
-															success  : function(r) {
-																			$("#divlistaufs").html(r["ufs"]);
-																		}
-														});return false;',
-														]);			
-										},
-						],
-						'id',
-					];
-
-					$heading='<i class="glyphicon glyphicon-home"></i>  Unidades';						
 					break;									
 			}			
 			
@@ -688,6 +675,35 @@ class AccesosController extends Controller
 		return ($vto >= $hoy)?false:true;
 	}
 
+    public function actionEgreso()
+    {
+		// chequea que se haya elegido un porton, sino es asi se redirecciona a la eleccion de porton
+		if (!\Yii::$app->session->get('porton')) {
+			// se setea returnUrl para que funcione el goBack en portones/elegir (parecido a lo que hace login())
+			Yii::$app->user->setReturnUrl(Yii::$app->urlManager->createUrl(['accesos/ingreso']));
+			return $this->redirect(['portones/elegir']);
+		}
+		
+		$model = new Accesos();
+		        
+        $searchModel = new AccesosSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        // actualiza los 3 grupos en un array que se va a pasar al render
+		// si se modifica, modificar tambien dentro del if (rechaza)
+		$listas=$this->refreshListas();
+
+
+
+        return $this->render('egreso', [
+			'model'=>$model,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+			'tmpListas'=>$listas,
+        ]);
+		        
+	}
+
     public function actionIngreso()
     {
 		// chequea que se haya elegido un porton, sino es asi se redirecciona a la eleccion de porton
@@ -711,7 +727,6 @@ class AccesosController extends Controller
 			$sessPersonas=\Yii::$app->session->get('personas');	
 			$sessVehiculo=\Yii::$app->session->get('vehiculos');
 			$sessAutorizantes=\Yii::$app->session->get('autorizantes');
-			$sessUFs=\Yii::$app->session->get('ufs');
 
 			// se verifica que estén los 4 grupos cargados
 			$rechaza=false;
@@ -725,10 +740,6 @@ class AccesosController extends Controller
 			}
 			if (!$sessAutorizantes) {
 				\Yii::$app->session->addFlash('danger','Debe especificar al menos un autorizante');
-				$rechaza=true;
-			}
-			if (!$sessUFs) {
-				\Yii::$app->session->addFlash('danger','Debe especificar al menos una UF');
 				$rechaza=true;
 			}
 			
@@ -755,7 +766,7 @@ class AccesosController extends Controller
 			}
 			
 			if ($rechaza) {
-				// actualiza los 4 grupos en variables que se van a pasar al render
+				// actualiza los 3 grupos en variables que se van a pasar al render
 				// si se modifica, modificar tambien antes del render del final de la funcion
 				$listas=$this->refreshListas();
 				return $this->render('ingreso', [
@@ -785,18 +796,14 @@ class AccesosController extends Controller
 						$model->isNewRecord = true;
 						if ($model->save()) {
 							foreach ($sessAutorizantes as $id_autorizante) {
-								$aut=new AccesosAutorizantes();
-								$aut->id_acceso=$model->id;
-								$aut->id_persona=$id_autorizante;
-								$aut->save();
+								$accaut=new AccesosAutorizantes();
+								$accaut->id_acceso=$model->id;
+								$aut=Autorizantes::findOne($id_autorizante);
+								$accaut->id_persona=$aut->id_persona;
+								$accaut->id_uf=$aut->id_uf;
+								$accaut->save();
 							} // foreach autorizantes
-							foreach ($sessUFs as $id_uf) {
-								$auf=new AccesosUf();
-								$auf->id_acceso=$model->id;
-								$auf->id_uf=$id_uf;
-								$auf->save();
-							} // foreach ufs
-						
+				
 
 						}// if model->save()	
 					} //foreach vehiculos
@@ -811,7 +818,6 @@ class AccesosController extends Controller
 				\Yii::$app->session->remove('personas');							
 				\Yii::$app->session->remove('vehiculos');							
 				\Yii::$app->session->remove('autorizantes');							
-				\Yii::$app->session->remove('ufs');	
 				
 				return $this->redirect(['ingreso']);
 				
@@ -825,7 +831,7 @@ class AccesosController extends Controller
 
 		} // if POST		
 		
-        // actualiza los 4 grupos en un array que se va a pasar al render
+        // actualiza los 3 grupos en un array que se va a pasar al render
 		// si se modifica, modificar tambien dentro del if (rechaza)
 		$listas=$this->refreshListas();
 		return $this->render('ingreso', [

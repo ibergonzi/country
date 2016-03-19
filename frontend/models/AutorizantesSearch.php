@@ -18,8 +18,7 @@ class AutorizantesSearch extends Autorizantes
     public function rules()
     {
         return [
-            [['id_persona', 'created_by', 'updated_by', 'estado'], 'integer'],
-            [['created_at', 'updated_at', 'motivo_baja'], 'safe'],
+            [['id', 'id_uf', 'id_persona'], 'integer'],
         ];
     }
 
@@ -56,15 +55,10 @@ class AutorizantesSearch extends Autorizantes
         }
 
         $query->andFilterWhere([
+            'id' => $this->id,
+            'id_uf' => $this->id_uf,
             'id_persona' => $this->id_persona,
-            'created_by' => $this->created_by,
-            'created_at' => $this->created_at,
-            'updated_by' => $this->updated_by,
-            'updated_at' => $this->updated_at,
-            'estado' => $this->estado,
         ]);
-
-        $query->andFilterWhere(['like', 'motivo_baja', $this->motivo_baja]);
 
         return $dataProvider;
     }

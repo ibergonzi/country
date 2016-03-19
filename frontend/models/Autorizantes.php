@@ -7,14 +7,15 @@ use Yii;
 /**
  * This is the model class for table "autorizantes".
  *
+ * @property integer $id
+ * @property integer $id_uf
  * @property integer $id_persona
-
  *
+ * @property Uf $idUf
  * @property Personas $idPersona
  */
 class Autorizantes extends \yii\db\ActiveRecord
 {
-
     /**
      * @inheritdoc
      */
@@ -23,18 +24,14 @@ class Autorizantes extends \yii\db\ActiveRecord
         return 'autorizantes';
     }
 
-
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['id_persona'], 'required'],
-            [['id_persona'], 'integer'],
-            [['id_persona'], 'safe'],
-
-       
+            [['id_uf', 'id_persona'], 'required'],
+            [['id_uf', 'id_persona'], 'integer']
         ];
     }
 
@@ -44,10 +41,12 @@ class Autorizantes extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
+            'id' => Yii::t('app', 'ID'),
+            'id_uf' => Yii::t('app', 'UF'),
             'id_persona' => Yii::t('app', 'Persona'),
         ];
     }
-
+    
 	public static function formateaAutorizanteSelect2($id,$es_por_nro) 
 	{
 		$p=Personas::findOne($id);
@@ -59,11 +58,18 @@ class Autorizantes extends \yii\db\ActiveRecord
 		return $r;
 	}    
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUf()
+    {
+        return $this->hasOne(Uf::className(), ['id' => 'id_uf']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdPersona()
+    public function getPersona()
     {
         return $this->hasOne(Personas::className(), ['id' => 'id_persona']);
     }

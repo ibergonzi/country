@@ -9,7 +9,9 @@ use Yii;
  *
  * @property integer $id_acceso
  * @property integer $id_persona
+ * @property integer $id_uf
  *
+ * @property Uf $idUf
  * @property Accesos $idAcceso
  * @property Personas $idPersona
  */
@@ -29,9 +31,8 @@ class AccesosAutorizantes extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_acceso', 'id_persona'], 'required'],
-            [['id_acceso', 'id_persona'], 'integer'],
-            [['id_acceso', 'id_persona'], 'unique', 'targetAttribute' => ['id_acceso', 'id_persona'], 'message' => 'The combination of Id Acceso and Id Autorizante has already been taken.']
+            [['id_acceso', 'id_persona', 'id_uf'], 'required'],
+            [['id_acceso', 'id_persona', 'id_uf'], 'integer']
         ];
     }
 
@@ -41,9 +42,18 @@ class AccesosAutorizantes extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_acceso' => Yii::t('app', 'ID Acceso'),
-            'id_persona' => Yii::t('app', 'Persona'),
+            'id_acceso' => Yii::t('app', 'Id Acceso'),
+            'id_persona' => Yii::t('app', 'Id Persona'),
+            'id_uf' => Yii::t('app', 'Id Uf'),
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getIdUf()
+    {
+        return $this->hasOne(Uf::className(), ['id' => 'id_uf']);
     }
 
     /**

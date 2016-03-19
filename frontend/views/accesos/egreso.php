@@ -15,6 +15,8 @@ use common\models\User;
 use frontend\models\AccesosConceptos;
 
 use kartik\widgets\Alert;
+use kartik\widgets\SideNav;
+use yii\helpers\Url;
 
 use kartik\grid\GridView;
 
@@ -153,13 +155,13 @@ $this->registerJs($js,yii\web\View::POS_READY);
 									if (seleccion) {
 										$.ajax({
 											type   : "POST",cache  : false,
-											url    : "add-lista?grupo=personas&id=" + seleccion,
+											url    : "add-lista?grupo=egrpersonas&id=" + seleccion,
 											success: function(r) {
-													$("#divlistapersonas").html(r["personas"]);
+													$("#divlistapersonas").html(r["egrpersonas"]);
 													$("#selectorPersonas").select2("val","");
 													$.ajax({
 														type   : "POST", cache  : false,
-														url    : "busca-vehiculos?id_persona=" + seleccion,
+														url    : "busca-vehiculos?grupo=egrpersonas&id_persona=" + seleccion,
 														success: function(r) {
 																if (r != "notFound") {
 																	$("#divvehiculos_persona").html(r);
@@ -225,14 +227,14 @@ $this->registerJs($js,yii\web\View::POS_READY);
 									if (seleccion) {
 										$.ajax({
 											type   : "POST", cache  : false,
-											url    : "add-lista?grupo=vehiculos&id=" + seleccion,
+											url    : "add-lista?grupo=egrvehiculos&id=" + seleccion,
 											success: function(r) {
-												$("#divlistavehiculos").html(r["vehiculos"]);	
+												$("#divlistavehiculos").html(r["egrvehiculos"]);	
 												$("#selectorVehiculos").select2("val","");	
 												if (seleccion > 2) { // si es 1 o 2 es bicicleta o caminando
 													$.ajax({
 														type   : "POST", cache  : false,
-														url    : "busca-personas?id_vehiculo=" + seleccion,
+														url    : "busca-personas?grupo=egrvehiculos&id_vehiculo=" + seleccion,
 														success: function(r) {
 																if (r != "notFound") {
 																	$("#divpersonas_vehiculo").html(r);
@@ -264,46 +266,20 @@ $this->registerJs($js,yii\web\View::POS_READY);
 						
 						
 					?>
-					<br/><br/>	
-					<div class="panel panel-default">
-						<div class="panel-body">	
 				
 					<?php	
-						echo $form->field($model, 'id_concepto')->dropDownList(AccesosConceptos::getListaConceptos(),
-							[
-							'prompt'=>'Elija el concepto',							
-							'onchange'=>'
-									$.ajax({
-										type:"POST",
-										cache:false,
-										url:"refresh-concepto?id_concepto=" + $(this).val(),
-										success: function(r) {
-													$("#divlistapersonas").html(r["personas"]);
-												}
-									});
-							',
-							]);
-						echo $form->field($model,'motivo')->textInput();		
-						
-						echo $form->field($model,'cant_acomp')->textInput();				
-
-						echo Html::submitButton();
+						echo Html::submitButton('Aceptar',['class' => 'btn btn-primary']);
 						ActiveForm::end();			    
 					?>
-						</div><!-- fin div panel body -->
-					</div><!-- fin div panel -->						
 				
 			</div><!-- fin div col1 -->
 
 			<div id="col2" class="col-md-6"><!-- comienzo div col2 -->
 				<div id="divlistapersonas">
-						<?php echo isset($tmpListas['personas'])?$tmpListas['personas']:'' ?>
+						<?php echo isset($tmpListas['egrpersonas'])?$tmpListas['egrpersonas']:'' ?>
 				</div>
 				<div id="divlistavehiculos">
-						<?php echo isset($tmpListas['vehiculos'])?$tmpListas['vehiculos']:'' ?>
-				</div>				
-				<div id="divlistaautorizantes">
-						<?php echo isset($tmpListas['autorizantes'])?$tmpListas['autorizantes']:'' ?>
+						<?php echo isset($tmpListas['egrvehiculos'])?$tmpListas['egrvehiculos']:'' ?>
 				</div>				
 
 			</div><!-- fin div col2 -->
@@ -346,6 +322,16 @@ $this->registerJs($js,yii\web\View::POS_READY);
 					echo '<p><i>Usuario: '. Yii::$app->user->identity->username.'</i></p>';	
 					echo '<h4>Portón: '.\Yii::$app->session->get('porton').'</h4>';		
 					
+					echo SideNav::widget([
+						'type' => 'danger',
+						'encodeLabels' => false,
+						'heading' => '',
+						'items' => [
+							['label' => 'Ingresos', 'icon' => 'arrow-right', 'url' => Url::to(['accesos/ingreso'])],
+							['label' => 'Libro guardia', 'icon' => 'book', 'url' => Url::to(['libro/index']),
+								],
+						],
+					]);  					
 
 										
 							
@@ -357,22 +343,26 @@ $this->registerJs($js,yii\web\View::POS_READY);
 		</div><!-- fin row -->
 		
 		<div class='row'><!-- comienzo row -->
-			<?= GridView::widget([
-				'dataProvider' => $dataProvider,
-				'filterModel' => $searchModel,
-				'columns' => [
-					'id',
-					'id_persona',
-					'ing_id_vehiculo',
-					'ing_fecha',
-					'ing_hora',
-					'ing_id_porton',
-					'id_concepto',
-					'motivo',
+			<?php 
+				/*
+				echo GridView::widget([
+					'dataProvider' => $dataProvider,
+					'filterModel' => $searchModel,
+					'columns' => [
+						'id',
+						'id_persona',
+						'ing_id_vehiculo',
+						'ing_fecha',
+						'ing_hora',
+						'ing_id_porton',
+						'id_concepto',
+						'motivo',
 
-					['class' => 'yii\grid\ActionColumn'],
-				],
-			]); ?>			
+						['class' => 'yii\grid\ActionColumn'],
+					],
+				]);
+				*/ 
+			?>			
 			
 		</div><!-- fin row -->
 		

@@ -35,11 +35,18 @@ class AccesosConceptos extends \yii\db\ActiveRecord
 
 	// devuelve lista de tipos documentos preparada para los dropDownList
 	// se usa:  $form->field($model, 'id_tipo_doc')->dropDownList($model->listaTiposdoc)
-	public static function getListaConceptos()
+	public static function getListaConceptos($todos=true)
 	{
-		$opciones = self::find()->where(['estado'=>self::ESTADO_ACTIVO])->asArray()->all();
+		if ($todos) {
+			$opciones = self::find()->where(['estado'=>self::ESTADO_ACTIVO])->asArray()->all();
+		} else {
+			// se excluye el concepto 0 (sin entrada)
+			$opciones = self::find()->where(['estado'=>self::ESTADO_ACTIVO])->andWhere(['<>','id',0])->asArray()->all();
+		}
 		return ArrayHelper::map($opciones, 'id', 'concepto');
 	}
+	
+	
 
 	// funcion agregada a mano
 	public static function getEstados($key=null)

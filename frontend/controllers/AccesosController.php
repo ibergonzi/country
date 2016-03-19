@@ -95,9 +95,9 @@ class AccesosController extends Controller
         }
     }
     
-    public function actionBuscaVehiculos($id_persona)
+    public function actionBuscaVehiculos($grupo,$id_persona)
     {
-		// recupera los vehiculos utilizados por la persona en ingresos
+		// recupera los vehiculos utilizados por la persona en ingresos/egresos
 		$vehiculos=Accesos::getVehiculosPorPersona($id_persona,false);
 		
 		// Si la persona es nueva o nunca tuvo accesos devuelve una bandera para que no se muestre el modal
@@ -149,14 +149,21 @@ class AccesosController extends Controller
 			}
 		}		
 		
-		return $this->renderAjax('_ingvehiculos', [
-			'vehiculos' => $aux,
-			'seleccion' => $seleccion,
-		]);
+		if ($grupo=='ingpersonas') {
+			return $this->renderAjax('_ingvehiculos', [
+				'vehiculos' => $aux,
+				'seleccion' => $seleccion,
+			]);
+		} else {
+			return $this->renderAjax('_egrvehiculos', [
+				'vehiculos' => $aux,
+				'seleccion' => $seleccion,
+			]);
+		}
 	}
 	
 	
-    public function actionBuscaPersonas($id_vehiculo)
+    public function actionBuscaPersonas($grupo,$id_vehiculo)
     {
 		// recupera las personas que utilizaron el vehiculo alguna vez,
 		// el parametro false se refiere a $ultimasPersonas, es decir, que traiga todas las personas
@@ -185,11 +192,17 @@ class AccesosController extends Controller
 			}
 		}
 
-		
-		return $this->renderAjax('_ingpersonas', [
-			'personas' => $aux,
-			'seleccion'=>$seleccion,
-		]);
+		if ($grupo=='ingvehiculos') {		
+			return $this->renderAjax('_ingpersonas', [
+				'personas' => $aux,
+				'seleccion'=>$seleccion,
+			]);
+		} else {
+			return $this->renderAjax('_egrpersonas', [
+				'personas' => $aux,
+				'seleccion'=>$seleccion,
+			]);
+		}
 	}	
 
 	public function actionPideSeguro($idPersona)
@@ -243,7 +256,7 @@ class AccesosController extends Controller
     
     public function actionAddLista($grupo, $id)
     {
-		// $grupo puede ser 'personas','vehiculos','autorizantes'
+		// $grupo puede ser 'ingpersonas','ingvehiculos','autorizantes','egrpersonas','egrvehiculos'
 		
 		if (empty($id)) {return;}
 		
@@ -253,7 +266,7 @@ class AccesosController extends Controller
 		if (isset($id)) {
 			// se pregunta si está seteado $sess sino la funcion in_array devuelve error
 			if ($sess) {
-				if ($grupo =='vehiculos') {
+				if ($grupo =='ingvehiculos' || $grupo == 'egrvehiculos') {
 					// el grupo vehiculos solo debe tener 1 elemento, si ya existia se reemplaza
 						$sess[0]=$id;
 						\Yii::$app->session[$grupo]=$sess;	
@@ -300,7 +313,7 @@ class AccesosController extends Controller
 	
     public function actionDropLista($grupo, $id)
     {
-		// $grupo puede ser 'personas','vehiculos','autorizantes'
+		// $grupo puede ser 'ingpersonas','ingvehiculos','autorizantes','egrpersonas','egrvehiculos'
 		
 		if (empty($id)) {return;}
 		
@@ -334,12 +347,12 @@ class AccesosController extends Controller
 	
     public function actionBuscaUltIngreso($grupo, $id)
     {
-		// $grupo puede ser 'personas' o 'vehiculos'
+		// $grupo puede ser 'ingpersonas' o 'ingvehiculos'
 		
 		if (empty($id)) {return;}
-		if ($grupo !== 'personas' && $grupo !== 'vehiculos') {return;}
+		if ($grupo !== 'ingpersonas' && $grupo !== 'ingvehiculos') {return;}
 		
-		if ($grupo=='personas') {
+		if ($grupo=='ingpersonas') {
 			$ult=Accesos::find()->where(['id_persona'=>$id])->orderBy(['id' => SORT_DESC])->asArray()->one();
 		} else {
 			$ult=Accesos::find()->where(['ing_id_vehiculo'=>$id])->orderBy(['id' => SORT_DESC])->asArray()->one();			
@@ -347,6 +360,12 @@ class AccesosController extends Controller
 		\Yii::$app->response->format = 'json';
 		
 		$a=Accesos::findOne($ult['id']);
+		
+		if ($ult['id_concepto']==0) {
+			$ult['id_concepto']='';
+			$ult['motivo']='';
+		}
+		
 		
 		if (!empty($a)) {
 			$raux='';
@@ -385,7 +404,7 @@ class AccesosController extends Controller
 
 
 	public function refreshListas() {
-		$response=['personas'=>'','vehiculos'=>'','autorizantes'=>''];
+		$response=['ingpersonas'=>'','ingvehiculos'=>'','autorizantes'=>'','egrpersonas'=>'','egrvehiculos'=>''];
 		foreach ($response as $grupo=>$valor) {
 		
 			// Se recupera de la sesion
@@ -397,15 +416,22 @@ class AccesosController extends Controller
 				// La session solo contiene los IDs, se recorre el array y se completa $dp con el objeto que corresponda
 				foreach ($sess as $p) {
 					switch ($grupo) {
-						case 'personas':
+						case 'ingpersonas':
 							$dp[]=Personas::findOne($p);
 							break;	
-						case 'vehiculos':
+						case 'ingvehiculos':
 							$dp[]=Vehiculos::findOne($p);
 							break;							
 						case 'autorizantes':
 							$dp[]=Autorizantes::findOne($p);
 							break;	
+						case 'egrpersonas':
+							$dp[]=Personas::findOne($p);
+							break;	
+						case 'egrvehiculos':
+							$dp[]=Vehiculos::findOne($p);
+							break;							
+
 					}	
 				}
 				$dataProvider = new ArrayDataProvider(['allModels'=>$dp]);			
@@ -416,7 +442,7 @@ class AccesosController extends Controller
 				continue;
 			} // if !empty $sess
 			switch ($grupo) {
-				case 'personas':
+				case 'ingpersonas':
 					$columns=[
 						[
 							'header'=>'<span class="glyphicon glyphicon-trash"></span>',
@@ -425,7 +451,7 @@ class AccesosController extends Controller
 							'value' => function ($model, $index, $widget) {
 													$url=Yii::$app->urlManager->createUrl(
 														['accesos/drop-lista',
-														'grupo'=>'personas', 
+														'grupo'=>'ingpersonas', 
 														'id' => isset($model->id)?$model->id:''
 														]);
 													return Html::a('<span class="glyphicon glyphicon-remove"></span>', 
@@ -436,7 +462,7 @@ class AccesosController extends Controller
 															cache    : false,
 															url      : $(this).attr("href"),
 															success  : function(r) {
-																			$("#divlistapersonas").html(r["personas"]);
+																			$("#divlistapersonas").html(r["ingpersonas"]);
 																		}
 														});return false;',
 														]);			
@@ -524,10 +550,10 @@ class AccesosController extends Controller
 						'nombre2',
 						'nro_doc',					
 					];
-					$heading='<i class="glyphicon glyphicon-user"></i>  Personas';
+					$heading='<i class="glyphicon glyphicon-user"></i>  Personas (Ingreso)';
 					//$heading='Personas';
 					break;	
-				case 'vehiculos':
+				case 'egrpersonas':
 					$columns=[
 						[
 							'header'=>'<span class="glyphicon glyphicon-trash"></span>',
@@ -536,7 +562,7 @@ class AccesosController extends Controller
 							'value' => function ($model, $index, $widget) {
 													$url=Yii::$app->urlManager->createUrl(
 														['accesos/drop-lista',
-														'grupo'=>'vehiculos', 
+														'grupo'=>'egrpersonas', 
 														'id' => isset($model->id)?$model->id:''
 														]);
 													return Html::a('<span class="glyphicon glyphicon-remove"></span>', 
@@ -547,7 +573,92 @@ class AccesosController extends Controller
 															cache    : false,
 															url      : $(this).attr("href"),
 															success  : function(r) {
-																			$("#divlistavehiculos").html(r["vehiculos"]);
+																			$("#divlistapersonas").html(r["egrpersonas"]);
+																		}
+														});return false;',
+														]);			
+										},
+						],
+						[
+							'header'=>'<span class="glyphicon glyphicon-envelope"></span>',
+							'attribute'=>'Mensajes',
+							'format' => 'raw',
+							'value' => function ($model, $index, $widget) {
+												$c=Mensajes::getMensajesByModelId($model->className(),$model->id);
+
+												if (!empty($c)) {
+													$text='<span class="glyphicon glyphicon-alert" style="color:#FF8000"></span>';
+													$titl='Ver mensaje';
+												} else {
+													$text='<span class="glyphicon glyphicon-envelope"></span>';
+													$titl='Ingresar nuevo mensaje';
+												}								
+												$url=Yii::$app->urlManager->createUrl(
+														['mensajes/create-ajax',
+															'modelName'=>$model->className(),
+															'modelID'=>$model->id]);							
+												return Html::a($text, 
+													$url,
+												['title' => $titl,
+												 'onclick'=>'$.ajax({
+													type     :"POST",
+													cache    : false,
+													url  : $(this).attr("href"),
+													success  : function(response) {
+																$("#divcomentarionuevo").html(response);
+																$("#modalcomentarionuevo").modal("show");
+																}
+												});return false;',
+												]);			
+										},						
+						],					
+						[
+							'header'=>'',
+							'attribute'=>'Sin ingreso',
+							'format' => 'raw',
+							'value' => function ($model, $index, $widget) {
+													$a=Accesos::find()
+														->where(['id_persona'=>$model->id,'egr_fecha'=>null])
+														->orderBy(['id' => SORT_DESC])->one();
+													if (empty($a)) {
+														return '<span class="glyphicon glyphicon-bell" 
+															title="Sin ingreso" style="color:#FF8000">
+															</span>';
+													} else {
+														return '';
+													}		
+										},
+						],
+						'id',
+						'apellido',
+						'nombre',
+						'nombre2',
+						'nro_doc',					
+					];
+					$heading='<i class="glyphicon glyphicon-user"></i>  Personas (Egreso)';
+					//$heading='Personas';
+					break;	
+				case 'ingvehiculos':
+					$columns=[
+						[
+							'header'=>'<span class="glyphicon glyphicon-trash"></span>',
+							'attribute'=>'Acción',
+							'format' => 'raw',
+							'value' => function ($model, $index, $widget) {
+													$url=Yii::$app->urlManager->createUrl(
+														['accesos/drop-lista',
+														'grupo'=>'ingvehiculos', 
+														'id' => isset($model->id)?$model->id:''
+														]);
+													return Html::a('<span class="glyphicon glyphicon-remove"></span>', 
+														$url,
+														['title' => 'Eliminar',
+														 'onclick'=>'$.ajax({
+															type     : "POST",
+															cache    : false,
+															url      : $(this).attr("href"),
+															success  : function(r) {
+																			$("#divlistavehiculos").html(r["ingvehiculos"]);
 																		}
 														});return false;',
 														]);			
@@ -594,7 +705,77 @@ class AccesosController extends Controller
 					
 
 					];
-					$heading='<i class="fa fa-car"></i>  Vehiculos';
+					$heading='<i class="fa fa-car"></i>  Vehiculos (Ingreso)';
+					//$heading='Vehiculos';
+					break;			
+				case 'egrvehiculos':
+					$columns=[
+						[
+							'header'=>'<span class="glyphicon glyphicon-trash"></span>',
+							'attribute'=>'Acción',
+							'format' => 'raw',
+							'value' => function ($model, $index, $widget) {
+													$url=Yii::$app->urlManager->createUrl(
+														['accesos/drop-lista',
+														'grupo'=>'egrvehiculos', 
+														'id' => isset($model->id)?$model->id:''
+														]);
+													return Html::a('<span class="glyphicon glyphicon-remove"></span>', 
+														$url,
+														['title' => 'Eliminar',
+														 'onclick'=>'$.ajax({
+															type     : "POST",
+															cache    : false,
+															url      : $(this).attr("href"),
+															success  : function(r) {
+																			$("#divlistavehiculos").html(r["egrvehiculos"]);
+																		}
+														});return false;',
+														]);			
+										},
+						],
+						[
+							'header'=>'<span class="glyphicon glyphicon-envelope"></span>',
+							'attribute'=>'Mensajes',
+							'format' => 'raw',
+							'value' => function ($model, $index, $widget) {
+												$c=Mensajes::getMensajesByModelId($model->className(),$model->id);
+
+												if (!empty($c)) {
+													$text='<span class="glyphicon glyphicon-alert" style="color:#FF8000"></span>';
+													$titl='Ver mensaje';
+												} else {
+													$text='<span class="glyphicon glyphicon-envelope"></span>';
+													$titl='Ingresar nuevo mensaje';
+												}								
+												$url=Yii::$app->urlManager->createUrl(
+														['mensajes/create-ajax',
+															'modelName'=>$model->className(),
+															'modelID'=>$model->id]);							
+												return Html::a($text, 
+													$url,
+												['title' => $titl,
+												 'onclick'=>'$.ajax({
+													type     :"POST",
+													cache    : false,
+													url  : $(this).attr("href"),
+													success  : function(response) {
+																$("#divcomentarionuevo").html(response);
+																$("#modalcomentarionuevo").modal("show");
+																}
+												});return false;',
+												]);			
+										},						
+						],					
+						'id',
+						'patente',
+						'marca',
+						'modelo',
+						'color',
+					
+
+					];
+					$heading='<i class="fa fa-car"></i>  Vehiculos (Egreso)';
 					//$heading='Vehiculos';
 					break;			
 				case 'autorizantes':
@@ -630,22 +811,28 @@ class AccesosController extends Controller
 						'id_uf',
 					];
 
-					$heading='<i class="fa fa-key"></i>  Autorizantes';						
+					$heading='<i class="fa fa-key"></i>  Autorizantes (Ingreso)';						
 					//$heading='Autorizantes';			
 					break;									
 			}			
 			
-			
+			if ($grupo=='egrpersonas' || $grupo=='egrvehiculos') {
+				$gvType=GridView::TYPE_DANGER;
+			} else {
+				$gvType=GridView::TYPE_INFO;
+			}
+			 
 			 
 			$response[$grupo]=GridView::widget([
 				'dataProvider' => $dataProvider,
+				//'options'=>['id'=>$grupo],
 				'layout'=>'{items}',
 				'columns' => $columns,
 				//'tableOptions' => ['class' => 'table table-striped table-condensed'], esto funciona si es el gridview de yii
 				
 				//opciones validas solo para el gridview de kartik
 				'panel'=>[
-					'type'=>GridView::TYPE_INFO,
+					'type'=>$gvType,
 					'heading'=>$heading,
 					//'headingOptions'=>['class'=>'panel-heading'],
 					'footer'=>false,
@@ -680,27 +867,121 @@ class AccesosController extends Controller
 		// chequea que se haya elegido un porton, sino es asi se redirecciona a la eleccion de porton
 		if (!\Yii::$app->session->get('porton')) {
 			// se setea returnUrl para que funcione el goBack en portones/elegir (parecido a lo que hace login())
-			Yii::$app->user->setReturnUrl(Yii::$app->urlManager->createUrl(['accesos/ingreso']));
+			Yii::$app->user->setReturnUrl(Yii::$app->urlManager->createUrl(['accesos/egreso']));
 			return $this->redirect(['portones/elegir']);
 		}
 		
-		$model = new Accesos();
-		        
-        $searchModel = new AccesosSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+		// inicializa modelo
+        $model = new Accesos();
+ 
+		// si viene por POST, es decir, si se intenta grabar
+		if (isset($_POST['Accesos'])) {
+			$model->attributes = $_POST['Accesos'];
+			// recupera de la sesion los 2 grupos
+			$sessPersonas=\Yii::$app->session->get('egrpersonas');	
+			$sessVehiculo=\Yii::$app->session->get('egrvehiculos');
 
-        // actualiza los 3 grupos en un array que se va a pasar al render
+			// se verifica que estén los 2 grupos cargados
+			$rechaza=false;
+			if (!$sessPersonas) {
+				\Yii::$app->session->addFlash('danger','Debe especificar al menos una persona');
+				$rechaza=true;
+			}
+			if (!$sessVehiculo) {
+				\Yii::$app->session->addFlash('danger','Debe especificar un vehiculo');
+				$rechaza=true;
+			}
+			
+			
+			if ($rechaza) {
+				// actualiza los 2 grupos en variables que se van a pasar al render
+				// si se modifica, modificar tambien antes del render del final de la funcion
+				$listas=$this->refreshListas();
+				return $this->render('egreso', [
+					'model' => $model,
+					'tmpListas'=>$listas,
+				]);   				
+			}			
+
+			// Para que coincidan las fechas y horas en todos los registros se utilizan variables auxiliares antes de grabar
+			$fecAux=date("Y-m-d");
+			$horAux=new Expression('CURRENT_TIMESTAMP');
+			// Comienza Transaccion
+			$transaction = Yii::$app->db->beginTransaction();				
+			try {
+				foreach ($sessPersonas as $id_persona) {
+					$model=Accesos::find()->where(['id_persona'=>$id_persona,'egr_fecha'=>null])
+						->orderBy(['id' => SORT_DESC])->one();
+					if (!empty($model)) {	
+						foreach ($sessVehiculo as $model->egr_id_vehiculo) {
+							// Aunque deberia haber un solo vehiculo
+							
+							// Para que save() no funcione como update sino como insert, 
+							// se debe resetear el id y setear isNewRecord como true
+							//$model->id = null;
+							$model->egr_fecha=$fecAux;
+							$model->egr_hora=$horAux;
+							$model->egr_id_porton=\Yii::$app->session->get('porton');        
+							$model->egr_id_user=\Yii::$app->user->identity->id;					
+							//$model->isNewRecord = true;
+							$model->save();
+						}
+					} else {		
+						$model=new Accesos();
+						foreach ($sessVehiculo as $model->egr_id_vehiculo) {
+							// Aunque deberia haber un solo vehiculo
+							
+							// Para que save() no funcione como update sino como insert, 
+							// se debe resetear el id y setear isNewRecord como true
+							$model->id = null;
+							$model->id_persona=$id_persona;
+							$model->ing_id_vehiculo=$model->egr_id_vehiculo;
+							$model->ing_fecha=$fecAux;
+							$model->ing_hora=$horAux;
+							$model->egr_fecha=$fecAux;
+							$model->egr_hora=$horAux;
+							$model->egr_id_porton=\Yii::$app->session->get('porton');  
+							$model->ing_id_porton=$model->egr_id_porton;      
+							$model->egr_id_user=\Yii::$app->user->identity->id;					
+							$model->ing_id_user=\Yii::$app->user->identity->id;		
+							$model->id_concepto=0;
+							$model->motivo='Sin ingreso';
+										
+							$model->isNewRecord = true;
+							$model->save();
+						}
+
+					} //foreach vehiculos
+					
+				} //foreach personas
+				
+				// Todo bien
+				$transaction->commit();
+				\Yii::$app->session->addFlash('success','Egreso grabado correctamente');
+				
+				// limpia todo
+				\Yii::$app->session->remove('egrpersonas');							
+				\Yii::$app->session->remove('egrvehiculos');							
+				
+				return $this->redirect(['egreso']);
+				
+
+			} catch(\Exception $e) {
+				$transaction->rollBack();
+				Yii::$app->session->addFlash('danger','Hubo un error en la grabación');
+				throw $e;
+			} // try..catch
+			
+
+		} // if POST		
+		
+        // actualiza los 2 grupos en un array que se va a pasar al render
 		// si se modifica, modificar tambien dentro del if (rechaza)
 		$listas=$this->refreshListas();
-
-
-
-        return $this->render('egreso', [
-			'model'=>$model,
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+		return $this->render('egreso', [
+			'model' => $model,
 			'tmpListas'=>$listas,
-        ]);
+		]);        
 		        
 	}
 
@@ -721,14 +1002,13 @@ class AccesosController extends Controller
 		if (isset($_POST['Accesos'])) {
 			$model->attributes = $_POST['Accesos'];
 			// setea la variable req_seguro de la sesion de acuerdo al valor del concepto que viene en el POST
-			//$ac=AccesosConceptos::findOne($model->id_concepto);
 			\Yii::$app->session->set('req_seguro',$model->accesosConcepto->req_seguro);			
-			// recupera de la sesion los 4 grupos
-			$sessPersonas=\Yii::$app->session->get('personas');	
-			$sessVehiculo=\Yii::$app->session->get('vehiculos');
+			// recupera de la sesion los 3 grupos
+			$sessPersonas=\Yii::$app->session->get('ingpersonas');	
+			$sessVehiculo=\Yii::$app->session->get('ingvehiculos');
 			$sessAutorizantes=\Yii::$app->session->get('autorizantes');
 
-			// se verifica que estén los 4 grupos cargados
+			// se verifica que estén los 3 grupos cargados
 			$rechaza=false;
 			if (!$sessPersonas) {
 				\Yii::$app->session->addFlash('danger','Debe especificar al menos una persona');
@@ -815,8 +1095,8 @@ class AccesosController extends Controller
 				\Yii::$app->session->addFlash('success','Ingreso grabado correctamente');
 				
 				// limpia todo
-				\Yii::$app->session->remove('personas');							
-				\Yii::$app->session->remove('vehiculos');							
+				\Yii::$app->session->remove('ingpersonas');							
+				\Yii::$app->session->remove('ingvehiculos');							
 				\Yii::$app->session->remove('autorizantes');							
 				
 				return $this->redirect(['ingreso']);

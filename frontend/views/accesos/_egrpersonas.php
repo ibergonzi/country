@@ -15,7 +15,7 @@ use yii\helpers\ArrayHelper;
 				['class'=>'form-control','tag'=>false,'separator'=>'<br/>']); 
 
 		echo '</div>';
-		$Url=Yii::$app->urlManager->createUrl(['accesos/add-lista-array','grupo'=>'ingpersonas','id'=>'']);
+		$Url=Yii::$app->urlManager->createUrl(['accesos/add-lista-array','grupo'=>'egrpersonas','id'=>'']);
 		echo '<br/>';
 		echo '<div class="form-group">';
 		echo Html::a('<span class="glyphicon glyphicon-plus-sign btn btn-primary"></span>',
@@ -33,7 +33,7 @@ use yii\helpers\ArrayHelper;
 													cache    : false,
 													url      : $(this).attr("href")+selected,
 													success  : function(r) {
-																$("#divlistapersonas").html(r["ingpersonas"]);
+																$("#divlistapersonas").html(r["egrpersonas"]);
 																$("#modalpersonas_vehiculo").modal("hide");
 																}
 													});

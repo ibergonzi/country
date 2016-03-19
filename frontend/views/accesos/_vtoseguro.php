@@ -42,7 +42,7 @@ use kartik\datecontrol\DateControl;
 														cache    : false,
 														url      : $(this).attr("href")+fecs,
 														success  : function(r) {
-																	$("#divlistapersonas").html(r["personas"]);
+																	$("#divlistapersonas").html(r["ingpersonas"]);
 																	$("#modalupdseguro").modal("hide");
 																	}
 														});

@@ -451,3 +451,31 @@ de el o los generadores. Si no se ingresa nada, se asume que los generadores fun
 Carnets
 Impresion de carnets 
 
+
+SSH y VNCSERVER
+sudo apt-get install openssh-server
+ssh localhost
+exit
+
+abrir puerto 22 en el router
+
+desde otra compu: ssh user@192.168.0.12 (cambiar user por country y ip por la que corresponda)
+
+apt-get install tightvncserver
+vncpasswd (aca poner la primer password, la segunda no)
+tightvncserver (crea los archivos de configuracion)
+tightvncserver -kill :1
+reemplazar todo el contenido de ~/.vnc/xstartup con lo siguiente:
+	#!/bin/sh
+	xsetroot -solid grey
+	export XKL_XMODMAP_DISABLE=1
+	#autocutsel -fork
+	openbox &
+	/usr/bin/lxsession -s Lubuntu &
+	
+tightvncserver :1
+fijarse el puerto dentro de ~/.vnc el log (habitualmente es el 5901)
+
+
+ 
+

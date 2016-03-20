@@ -353,19 +353,19 @@ class AccesosController extends Controller
 		if ($grupo !== 'ingpersonas' && $grupo !== 'ingvehiculos') {return;}
 		
 		if ($grupo=='ingpersonas') {
-			$ult=Accesos::find()->where(['id_persona'=>$id])->orderBy(['id' => SORT_DESC])->asArray()->one();
+			$ult=Accesos::find()->where(['id_persona'=>$id])
+				->andWhere(['>','id_concepto',0])
+				->orderBy(['id' => SORT_DESC])->asArray()->one();
 		} else {
-			$ult=Accesos::find()->where(['ing_id_vehiculo'=>$id])->orderBy(['id' => SORT_DESC])->asArray()->one();			
+			$ult=Accesos::find()->where(['ing_id_vehiculo'=>$id])
+				->andWhere(['>','id_concepto',0])
+				->orderBy(['id' => SORT_DESC])->asArray()->one();			
 		}
+		
+		Yii::trace($ult);
 		\Yii::$app->response->format = 'json';
 		
 		$a=Accesos::findOne($ult['id']);
-		
-		if ($ult['id_concepto']==0) {
-			$ult['id_concepto']='';
-			$ult['motivo']='';
-		}
-		
 		
 		if (!empty($a)) {
 			$raux='';
@@ -393,6 +393,24 @@ class AccesosController extends Controller
 		$response=$this->refreshListas();
 		return $response;		
 	}
+	
+	public function actionPideComentario()
+	{
+		// solo se usa para mostrar el formulario que pide el comentario
+		$comentario=\Yii::$app->session->get('comentario');
+		
+		return $this->renderAjax('_comentario', [
+			'comentario' => $comentario,
+		]);
+	}	
+	public function actionSetComentario($comentario=null) 
+	{
+		Yii::trace($comentario);
+		if ($comentario=='null') {return 'Comentario';}
+		\Yii::$app->session->set('comentario',$comentario);
+		
+		return $comentario==''?'Comentario':'<i class="glyphicon glyphicon-eye-open"></i> Comentario';		
+	}	
 	
 	public function actionRefrescaListas() 
 	{
@@ -924,7 +942,16 @@ class AccesosController extends Controller
 							$model->egr_id_porton=\Yii::$app->session->get('porton');        
 							$model->egr_id_user=\Yii::$app->user->identity->id;					
 							//$model->isNewRecord = true;
-							$model->save();
+							if ($model->save()) {
+								$c=\Yii::$app->session->get('comentario');
+								if ($c !== '') {
+									$com = new Comentarios();
+									$com->model=Accesos::className();
+									$com->model_id=$model->id;
+									$com->comentario=$c;
+									$com->save();								
+								}    
+							}
 						}
 					} else {		
 						$model=new Accesos();
@@ -948,7 +975,16 @@ class AccesosController extends Controller
 							$model->motivo='Sin ingreso';
 										
 							$model->isNewRecord = true;
-							$model->save();
+							if ($model->save()) {
+								$c=\Yii::$app->session->get('comentario');
+								if ($c !== '') {
+									$com = new Comentarios();
+									$com->model=Accesos::className();
+									$com->model_id=$model->id;
+									$com->comentario=$c;
+									$com->save();								
+								}    
+							}
 						}
 
 					} //foreach vehiculos
@@ -957,6 +993,7 @@ class AccesosController extends Controller
 				
 				// Todo bien
 				$transaction->commit();
+				\Yii::$app->session->set('comentario','');
 				\Yii::$app->session->addFlash('success','Egreso grabado correctamente');
 				
 				// limpia todo
@@ -996,7 +1033,8 @@ class AccesosController extends Controller
 
 		// inicializa modelo
         $model = new Accesos();
-		\Yii::$app->session->set('req_seguro',0);        
+		\Yii::$app->session->set('req_seguro',0);    
+	    
  
 		// si viene por POST, es decir, si se intenta grabar
 		if (isset($_POST['Accesos'])) {
@@ -1083,7 +1121,15 @@ class AccesosController extends Controller
 								$accaut->id_uf=$aut->id_uf;
 								$accaut->save();
 							} // foreach autorizantes
-				
+							$c=\Yii::$app->session->get('comentario');
+							if ($c !== '') {
+						        $com = new Comentarios();
+								$com->model=Accesos::className();
+								$com->model_id=$model->id;
+								$com->comentario=$c;
+								$com->save();								
+							}    
+
 
 						}// if model->save()	
 					} //foreach vehiculos
@@ -1092,6 +1138,7 @@ class AccesosController extends Controller
 				
 				// Todo bien
 				$transaction->commit();
+				\Yii::$app->session->set('comentario','');
 				\Yii::$app->session->addFlash('success','Ingreso grabado correctamente');
 				
 				// limpia todo

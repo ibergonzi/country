@@ -3,8 +3,15 @@
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 
-
-?>
+$this->registerJs('
+$("#listboxVehiculos").keypress( function (e) {
+		if (e.keyCode==13) {
+			$("#btnAddVehiculo").click();
+		}
+	}
+	);'
+,yii\web\View::POS_READY);
+?>	
 
 <div class="ingvehiculos-form">
 
@@ -17,29 +24,31 @@ use yii\helpers\ArrayHelper;
 		$Url=Yii::$app->urlManager->createUrl(['accesos/add-lista','grupo'=>'egrvehiculos','id'=>'']);
 		echo '<br/>';
 		echo '<div class="form-group">';
-		echo Html::a('<span class="glyphicon glyphicon-plus-sign btn btn-primary"></span>',
-										$Url,
-										['title' => Yii::t('app', 'Aceptar'),
-										 'id'=>'btnAddVehiculo',
-										 'onclick'=>'
-												var idVehic=$("#listboxVehiculos").val();
-												if (idVehic === null) {
-													return false;
-												} else {
-													$.ajax({
-														type     :"POST",
-														cache    : false,
-														url      : $(this).attr("href")+idVehic,
-														success  : function(r) {
-																	$("#divlistavehiculos").html(r["egrvehiculos"]);
-																	$("#modalvehiculos_persona").modal("hide");
-																	}
-														});
+		echo Html::a('Aceptar',
+					$Url,
+					['title' => Yii::t('app', 'Aceptar'),
+					 'id'=>'btnAddVehiculo',
+					 'class' => 'btn btn-primary',
+					 'onclick'=>'
+							var idVehic=$("#listboxVehiculos").val();
+							if (idVehic === null) {
+								return false;
+							} else {
+								$.ajax({
+									type     :"POST",
+									cache    : false,
+									url      : $(this).attr("href")+idVehic,
+									success  : function(r) {
+												$("#divlistavehiculos").html(r["egrvehiculos"]);
+												$("#modalvehiculos_persona").modal("hide");
+												$("#btnSubmit").focus();
 												}
-												return false;
-											'
-											,
-										]);
+									});
+							}
+							return false;
+						'
+						,
+					]);
 		echo '</div>';
 	?>
 

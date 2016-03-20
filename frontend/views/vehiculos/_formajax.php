@@ -37,6 +37,7 @@ $js =
 		});
 JS;
 $this->registerJs($js,yii\web\View::POS_READY);
+
 ?>
 
 			
@@ -51,7 +52,9 @@ $this->registerJs($js,yii\web\View::POS_READY);
 					);  
 				?>
 
-				<?= $form->field($model, 'patente')->textInput(['maxlength' => true,'style' => 'text-transform: uppercase']) ?>
+				<?= $form->field($model, 'patente')->textInput(['maxlength' => true,
+																'style' => 'text-transform: uppercase',
+																'autofocus'=>true]) ?>
 
 				<?= $form->field($model, 'marca')->widget(AutoComplete::className(),[
 						'model' => $model,

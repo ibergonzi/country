@@ -82,7 +82,12 @@ $this->registerCss('.modal-body { max-height: calc(100vh - 210px);overflow-y: au
 	})
 JS;
 $this->registerJs($js,yii\web\View::POS_READY);
-
+// se registra en el document.ready porque no funcionaba con el POS_READY
+$this->registerJs('
+$(document).ready(function() {
+    $("#selectorVehiculos").select2("open");
+});
+');
 ?>
 <div class="accesos-ingreso">
 						
@@ -95,132 +100,6 @@ $this->registerJs($js,yii\web\View::POS_READY);
 				    <?php 
 				   
 						$form = ActiveForm::begin();
-
-						// -------------------Selector de personas c/botón de alta ----------------------------------------
-						//$personaDesc=$model->isNewRecord?'':Personas::formateaPersonaSelect2($model->id_persona,false);
-						$personaDesc='';
-
-						$personasUrl=Yii::$app->urlManager->createUrl(['personas/create-ajax']);
-						$porID=Yii::$app->urlManager->createUrl(['accesos/busca-por-id']);
-						$personasAddon = [
-							'prepend'=>[
-								'content'=>'<span class="glyphicon glyphicon-user" title="Buscar Personas"></span>',
-							],
-							'append' => [
-								'content'=>Html::a('<span class="glyphicon glyphicon-plus-sign btn btn-primary"></span>',
-										$personasUrl,
-										['title' => Yii::t('app', 'Nueva Persona'),
-										 'tabindex'=>-1,										
-										 'onclick'=>'$.ajax({
-											type     :"POST",
-											cache    : false,
-											url  : $(this).attr("href"),
-											success  : function(response) {
-														$("#divpersonanueva").html(response);
-														$("#modalpersonanueva").modal("show");
-														}
-										});
-										return false;',
-										]) 
-										. 
-										Html::a('<span class="glyphicon glyphicon-barcode btn btn-primary"></span>',
-										$porID,
-										['title' => Yii::t('app', 'Ingresa por ID'),
-										 'tabindex'=>-1,										
-										 'onclick'=>'$.ajax({
-											type     :"POST",
-											cache    : false,
-											url  : $(this).attr("href"),
-											success  : function(response) {
-														$("#divporid").html(response);
-														$("#modalporid").modal("show");
-														}
-										});
-										return false;',
-										])										
-										,	
-								'asButton' => true
-							]
-						];
-						echo $form->field($model, 'id_persona')->label(false)->widget(Select2::classname(), [
-							'initValueText' => $personaDesc, 
-							'options' => ['id'=>'selectorPersonas',
-										  'placeholder' => 'Buscar por documento o nombre',
-										  'title'=>'Buscar personas',
-										 ],
-							'addon'=>$personasAddon,
-							'pluginOptions' => [
-								'allowClear' => true,
-								'minimumInputLength' => 3,
-								'ajax' => [
-									'url' => \yii\helpers\Url::to(['personas/apellidoslist']),
-									'dataType' => 'json',
-									'data' => new JsExpression('function(params) { return {q:params.term}; }')
-								],
-								'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-								'templateResult' => new JsExpression('function(idpersona) { return idpersona.text; }'),
-								'templateSelection' => new JsExpression('function (idpersona) { return idpersona.text; }'),
-							],
-							'pluginEvents' => [
-								'change' => 'function(e) { 
-									var seleccion=$("#selectorPersonas:first").val(); 
-									if (seleccion) {
-										$.ajax({
-											type   : "POST",cache  : false,
-											url    : "add-lista?grupo=ingpersonas&id=" + seleccion,
-											success: function(r) {
-													$("#divlistapersonas").html(r["ingpersonas"]);
-													$("#selectorPersonas").select2("val","");
-													$.ajax({
-														type   : "POST", cache  : false,
-														url    : "busca-vehiculos?grupo=ingpersonas&id_persona=" + seleccion,
-														success: function(r) {
-																if (r != "notFound") {
-																	$("#divvehiculos_persona").html(r);
-																	$("#modalvehiculos_persona").modal("show");
-																}
-															}
-													});	
-													
-													$.ajax({
-														type   : "POST", cache  : false,
-														url    : "busca-ult-ingreso?grupo=ingpersonas&id=" + seleccion,
-														success: function(r) {
-																if (r != "notFound") {
-																	$("#accesos-motivo").val(r.motivo);
-																	$("#accesos-id_concepto").val(r.id_concepto);
-																	$("#accesos-id_concepto").trigger("change");
-																	$("#accesos-cant_acomp").val(r.cant_acomp);
-																	$("#divlistaautorizantes").html(r.motivo_baja["autorizantes"]);
-																} else {
-																	$("#accesos-motivo").val("");
-																	$("#accesos-id_concepto").val("");
-																	$("#accesos-cant_acomp").val("");
-																	$("#divlistaautorizantes").html("");
-																}
-															}
-													});													
-																				
-												}
-										});						
-									}			
-								}',
-								'select2:unselecting'=>'function(e) {
-									var seleccion=$("#selectorPersonas:first").val(); 
-									if (seleccion) {
-										$.ajax({
-												type     : "POST",
-												cache    : false,
-												url      : "drop-lista?grupo=personas&id=" + seleccion,
-												success  : function(r) {
-															$("#divlistapersonas").html(r["personas"]);														
-															}
-										});						
-									}			
-								}'
-							]							
-						]);  	
-						
 
 						// -------------------Selector de vehiculos c/botón de alta ----------------------------------------
 						//$vehiculoDesc=$model->isNewRecord?'':Vehiculos::formateaVehiculoSelect2($model->ing_id_vehiculo);
@@ -243,6 +122,7 @@ $this->registerJs($js,yii\web\View::POS_READY);
 											success  : function(response) {
 														$("#divvehiculonuevo").html(response);
 														$("#modalvehiculonuevo").modal("show");
+														$("#vehiculos-patente").focus();
 														}
 										});return false;',
 										]),	
@@ -287,6 +167,7 @@ $this->registerJs($js,yii\web\View::POS_READY);
 																if (r != "notFound") {
 																	$("#divpersonas_vehiculo").html(r);
 																	$("#modalpersonas_vehiculo").modal("show");
+																	$("#listboxPersonas1 :checkbox:first").focus();
 																}
 															}
 													});		
@@ -329,7 +210,134 @@ $this->registerJs($js,yii\web\View::POS_READY);
 							]							
 						]);  	
 						
-						
+						// -------------------Selector de personas c/botón de alta ----------------------------------------
+						//$personaDesc=$model->isNewRecord?'':Personas::formateaPersonaSelect2($model->id_persona,false);
+						$personaDesc='';
+
+						$personasUrl=Yii::$app->urlManager->createUrl(['personas/create-ajax']);
+						$porID=Yii::$app->urlManager->createUrl(['accesos/busca-por-id']);
+						$personasAddon = [
+							'prepend'=>[
+								'content'=>'<span class="glyphicon glyphicon-user" title="Buscar Personas"></span>',
+							],
+							'append' => [
+								'content'=>Html::a('<span class="glyphicon glyphicon-plus-sign btn btn-primary"></span>',
+										$personasUrl,
+										['title' => Yii::t('app', 'Nueva Persona'),
+										 'tabindex'=>-1,										
+										 'onclick'=>'$.ajax({
+											type     :"POST",
+											cache    : false,
+											url  : $(this).attr("href"),
+											success  : function(response) {
+														$("#divpersonanueva").html(response);
+														$("#modalpersonanueva").modal("show");
+														$("#personas-apellido").focus();
+														}
+										});
+										return false;',
+										]) 
+										. 
+										Html::a('<span class="glyphicon glyphicon-barcode btn btn-primary"></span>',
+										$porID,
+										['title' => Yii::t('app', 'Ingresa por ID'),
+										 'tabindex'=>-1,										
+										 'onclick'=>'$.ajax({
+											type     :"POST",
+											cache    : false,
+											url  : $(this).attr("href"),
+											success  : function(response) {
+														$("#divporid").html(response);
+														$("#modalporid").modal("show");
+														$("#idPersonaPorId").focus();
+														}
+										});
+										return false;',
+										])										
+										,	
+								'asButton' => true
+							]
+						];
+						echo $form->field($model, 'id_persona')->label(false)->widget(Select2::classname(), [
+							'initValueText' => $personaDesc, 
+							'options' => ['id'=>'selectorPersonas',
+										  'placeholder' => 'Buscar por documento o nombre',
+										  'title'=>'Buscar personas',
+										 ],
+							'addon'=>$personasAddon,
+							'pluginOptions' => [
+								'allowClear' => true,
+								'minimumInputLength' => 3,
+								'ajax' => [
+									'url' => \yii\helpers\Url::to(['personas/apellidoslist']),
+									'dataType' => 'json',
+									'data' => new JsExpression('function(params) { return {q:params.term}; }')
+								],
+								'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+								'templateResult' => new JsExpression('function(idpersona) { return idpersona.text; }'),
+								'templateSelection' => new JsExpression('function (idpersona) { return idpersona.text; }'),
+							],
+							'pluginEvents' => [
+								'change' => 'function(e) { 
+									var seleccion=$("#selectorPersonas:first").val(); 
+									if (seleccion) {
+										$.ajax({
+											type   : "POST",cache  : false,
+											url    : "add-lista?grupo=ingpersonas&id=" + seleccion,
+											success: function(r) {
+													$("#divlistapersonas").html(r["ingpersonas"]);
+													$("#selectorPersonas").select2("val","");
+													$.ajax({
+														type   : "POST", cache  : false,
+														url    : "busca-vehiculos?grupo=ingpersonas&id_persona=" + seleccion,
+														success: function(r) {
+																if (r != "notFound") {
+																	$("#divvehiculos_persona").html(r);
+																	$("#modalvehiculos_persona").modal("show");
+																	$("#listboxVehiculos").focus();
+																}
+															}
+													});	
+													
+													$.ajax({
+														type   : "POST", cache  : false,
+														url    : "busca-ult-ingreso?grupo=ingpersonas&id=" + seleccion,
+														success: function(r) {
+																if (r != "notFound") {
+																	$("#accesos-motivo").val(r.motivo);
+																	$("#accesos-id_concepto").val(r.id_concepto);
+																	$("#accesos-id_concepto").trigger("change");
+																	$("#accesos-cant_acomp").val(r.cant_acomp);
+																	$("#divlistaautorizantes").html(r.motivo_baja["autorizantes"]);
+																} else {
+																	$("#accesos-motivo").val("");
+																	$("#accesos-id_concepto").val("");
+																	$("#accesos-cant_acomp").val("");
+																	$("#divlistaautorizantes").html("");
+																}
+															}
+													});													
+																				
+												}
+										});						
+									}			
+								}',
+								'select2:unselecting'=>'function(e) {
+									var seleccion=$("#selectorPersonas:first").val(); 
+									if (seleccion) {
+										$.ajax({
+												type     : "POST",
+												cache    : false,
+												url      : "drop-lista?grupo=personas&id=" + seleccion,
+												success  : function(r) {
+															$("#divlistapersonas").html(r["personas"]);														
+															}
+										});						
+									}			
+								}'
+							]							
+						]);  	
+												
 						// -------------------Selector de autorizantes----------------------------------------
 						//$autorizanteDesc=$model->isNewRecord?'':Autorizantes::formateaPersonaSelect2($model->id_persona,false);
 						$autorizanteDesc='';
@@ -412,8 +420,43 @@ $this->registerJs($js,yii\web\View::POS_READY);
 						echo $form->field($model,'motivo')->textInput();		
 						
 						//echo $form->field($model,'cant_acomp')->textInput();				
-
-						echo Html::submitButton('Aceptar',['class' => 'btn btn-primary']);
+						?>
+						<div class='row'>
+							<div class="col-md-7">
+								<?php
+								echo Html::submitButton('Aceptar',['class' => 'btn btn-primary','id'=>'btnSubmit']);
+								?>
+							</div>
+							<div class="col-md-5">
+								<?php
+								$url=Yii::$app->urlManager->createUrl(
+										['accesos/pide-comentario']);
+								$com=\Yii::$app->session->get('comentario');
+								if ($com !== '') {
+									$cartel='<i class="glyphicon glyphicon-eye-open"></i> Comentario';
+								} else {
+									$cartel='Comentario';
+								}									
+								echo Html::a($cartel, 
+									$url,
+									['title' => 'Observación/comentario',
+									 'class' => 'btn btn-default',
+									 'id'=>'btnComentario',
+									 'onclick'=>'$.ajax({
+										type     :"POST",
+										cache    : false,
+										url  : $(this).attr("href"),
+										success  : function(response) {
+													$("#divcomentarionuevo").html(response);
+													$("#modalcomentarionuevo").modal("show");
+													$("#comentario").focus();													
+													}
+									});return false;',
+									]);											
+								?>
+							</div>
+						</div>
+						<?php
 						ActiveForm::end();			    
 					?>
 						</div><!-- fin div panel body -->
@@ -422,12 +465,12 @@ $this->registerJs($js,yii\web\View::POS_READY);
 			</div><!-- fin div col1 -->
 
 			<div id="col2" class="col-md-6"><!-- comienzo div col2 -->
-				<div id="divlistapersonas">
-						<?php echo isset($tmpListas['ingpersonas'])?$tmpListas['ingpersonas']:'' ?>
-				</div>
 				<div id="divlistavehiculos">
 						<?php echo isset($tmpListas['ingvehiculos'])?$tmpListas['ingvehiculos']:'' ?>
 				</div>				
+				<div id="divlistapersonas">
+						<?php echo isset($tmpListas['ingpersonas'])?$tmpListas['ingpersonas']:'' ?>
+				</div>
 				<div id="divlistaautorizantes">
 						<?php echo isset($tmpListas['autorizantes'])?$tmpListas['autorizantes']:'' ?>
 				</div>				
@@ -478,8 +521,7 @@ $this->registerJs($js,yii\web\View::POS_READY);
 						'heading' => '',
 						'items' => [
 							['label' => 'Egresos', 'icon' => 'arrow-left', 'url' => Url::to(['accesos/egreso'])],
-							['label' => 'Libro guardia', 'icon' => 'book', 'url' => Url::to(['libro/index']),
-								],
+							['label' => 'Libro guardia', 'icon' => 'book', 'url' => Url::to(['libro/index']),],
 						],
 					]);        									
 									

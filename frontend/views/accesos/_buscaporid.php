@@ -9,14 +9,20 @@ use yii\widgets\ActiveForm;
 /* @var $model frontend\models\Personas */
 /* @var $form yii\widgets\ActiveForm */
 
-
-?>
-
-			
+// si se presiona enter en el input se dispara el click del botón
+$this->registerJs('
+$("#idPersonaPorId").keypress( function (e) {
+		if (e.keyCode==13) {
+			$("#btnPersonaPorId").click();
+		}
+	}
+	);'
+,yii\web\View::POS_READY);
+?>			
 <div class="personas-form">
 
 	<?php
-		echo Html::input('input','idPersonaPorId','',['id'=>'idPersonaPorId']); 
+		echo Html::input('input','idPersonaPorId','',['id'=>'idPersonaPorId','class'=>'form-control']); 
 		echo '<br/>';
 
 		$Url=Yii::$app->urlManager->createUrl(['accesos/busca-persona-por-id','idPersonaPorId'=>'']);

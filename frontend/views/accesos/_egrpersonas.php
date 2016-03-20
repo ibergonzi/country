@@ -3,8 +3,15 @@
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 
-
-?>
+$this->registerJs('
+$("#listboxPersonas1 :checkbox").keypress( function (e) {
+		if (e.keyCode==13) {
+			$("#btnAddPersona").click();
+		}
+	}
+	);'
+,yii\web\View::POS_READY);
+?>	
 
 <div class="ingpersonas-form">
 
@@ -18,31 +25,33 @@ use yii\helpers\ArrayHelper;
 		$Url=Yii::$app->urlManager->createUrl(['accesos/add-lista-array','grupo'=>'egrpersonas','id'=>'']);
 		echo '<br/>';
 		echo '<div class="form-group">';
-		echo Html::a('<span class="glyphicon glyphicon-plus-sign btn btn-primary"></span>',
-										$Url,
-										['title' => Yii::t('app', 'Aceptar'),
-										 'id'=>'btnAddPersona',
-										 'onclick'=>'
-												var selected = [];
-												$("#listboxPersonas1 :checkbox:checked").each(function() {
-													selected.push($(this).val());
-												});
+		echo Html::a('Aceptar',
+					$Url,
+					['title' => Yii::t('app', 'Aceptar'),
+					 'id'=>'btnAddPersona',
+					 'class' => 'btn btn-primary',
+					 'onclick'=>'
+							var selected = [];
+							$("#listboxPersonas1 :checkbox:checked").each(function() {
+								selected.push($(this).val());
+							});
 
-												$.ajax({
-													type     :"POST",
-													cache    : false,
-													url      : $(this).attr("href")+selected,
-													success  : function(r) {
-																$("#divlistapersonas").html(r["egrpersonas"]);
-																$("#modalpersonas_vehiculo").modal("hide");
-																}
-													});
-											
-										
-												return false;
-											'
-											,
-										]);
+							$.ajax({
+								type     :"POST",
+								cache    : false,
+								url      : $(this).attr("href")+selected,
+								success  : function(r) {
+											$("#divlistapersonas").html(r["egrpersonas"]);
+											$("#modalpersonas_vehiculo").modal("hide");
+											$("#btnSubmit").focus();
+											}
+								});
+						
+					
+							return false;
+						'
+						,
+					]);
 		echo '</div>';
 	?>
 

@@ -88,7 +88,7 @@ AppAsset::register($this);
 			'size' => 'md',
 			'content' => $contenido,
 			'footer' => Html::a('Cerrar sesión &raquo;',['/site/logout'], 
-							['data-method' => 'post','class'=>'btn btn-sm btn-success']),
+							['data-method' => 'post','class'=>'btn btn-sm btn-primary']),
 			'toggleButton' => [
 				'label' => Html::tag('span', '', ['class' => 'glyphicon glyphicon-lock',]),
 				'class'=>'btn btn-sm btn-default'
@@ -131,8 +131,10 @@ AppAsset::register($this);
 </body>
 </html>
 <?php
+/*
 if (!isset($this->params['focus']) ) {
     $this->registerJs('$(":input:not(:button,:hidden):enabled:visible:first").focus();',yii\web\View::POS_READY);
 }
+*/
 ?>
 <?php $this->endPage() ?>

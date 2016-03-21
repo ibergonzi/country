@@ -57,6 +57,7 @@ class AccesosController extends Controller
     public function actionIndex()
     {
         $searchModel = new AccesosSearch();
+        //Yii::trace($searchModel->attributeLabels());
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [

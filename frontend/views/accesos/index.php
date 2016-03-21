@@ -12,18 +12,14 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="accesos-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h3><?= Html::encode($this->title) ?></h3>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <p>
-        <?= Html::a(Yii::t('app', 'Create Accesos'), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
 
             'id',
             'id_persona',
@@ -31,19 +27,30 @@ $this->params['breadcrumbs'][] = $this->title;
             'ing_fecha',
             'ing_hora',
             'ing_id_porton',
-            'ing_id_user',
+            //'ing_id_user',
+
+
+ 		    [
+				'attribute'=>'descUsuarioIng',
+				'value'=>'userIngreso.username',  
+		    ],
+           
             'egr_id_vehiculo',
             'egr_fecha',
             'egr_hora',
             'egr_id_porton',
-            'egr_id_user',
+            //'egr_id_user',
+ 		    [
+				'attribute'=>'descUsuarioEgr',
+				'value'=>'userEgreso.username',  
+		    ],                
             'id_concepto',
             'motivo',
             'cant_acomp',
-            'created_by',
-            'created_at',
-            'updated_by',
-            'updated_at',
+            //'created_by',
+            //'created_at',
+            //'updated_by',
+            //'updated_at',
             'estado',
             'motivo_baja',
 

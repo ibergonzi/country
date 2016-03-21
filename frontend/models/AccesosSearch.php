@@ -12,6 +12,11 @@ use frontend\models\Accesos;
  */
 class AccesosSearch extends Accesos
 {
+	
+	public $descUsuarioIng;
+	public $descUsuarioEgr;	
+	
+	
     /**
      * @inheritdoc
      */
@@ -19,9 +24,17 @@ class AccesosSearch extends Accesos
     {
         return [
             [['id', 'id_persona', 'ing_id_vehiculo', 'ing_id_porton', 'ing_id_user', 'egr_id_vehiculo', 'egr_id_porton', 'egr_id_user', 'id_concepto', 'cant_acomp', 'created_by', 'updated_by', 'estado'], 'integer'],
-            [['ing_fecha', 'ing_hora', 'egr_fecha', 'egr_hora', 'motivo', 'created_at', 'updated_at', 'motivo_baja'], 'safe'],
+            [['ing_fecha', 'ing_hora', 'egr_fecha', 'egr_hora', 'motivo', 'created_at', 'updated_at', 'motivo_baja',
+				'descUsuarioIng','descUsuarioEgr',], 'safe'],
         ];
     }
+    
+    
+    public function attributeLabels() 
+    {
+		return array_merge(parent::attributeLabels(),
+			['descUsuarioIng'=>'U.Ing.','descUsuarioEgr'=>'U.Egr.']);
+	}   
 
     /**
      * @inheritdoc
@@ -41,22 +54,38 @@ class AccesosSearch extends Accesos
      */
     public function search($params)
     {
-        $query = Accesos::find();
-
-        $dataProvider = new ActiveDataProvider([
+									
+        $query = Accesos::find()->joinWith(['userIngreso','userEgreso']);
+        
+         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+			'sort' => ['defaultOrder' => ['created_at' => SORT_DESC,],
+						// esta opcion se usa para que sea el campo que el usuario ordene, luego ordene siempre por el default
+						// es decir, si el usuario ordena por persona, la lista viene ordenada por persona y created_at desc
+					   'enableMultiSort'=>true,
+					  ],             
         ]);
+        
+        // Agregado a mano, para que incluya el ordenamiento por los campos relacionados
+        $dataProvider->sort->attributes['descUsuarioIng'] = [
+            'asc' => ['uing.username' => SORT_ASC],
+            'desc' => ['uing.username' => SORT_DESC],
+        ];        
+        $dataProvider->sort->attributes['descUsuarioEgr'] = [
+            'asc' => ['uegr.username' => SORT_ASC],
+            'desc' => ['uegr.username' => SORT_DESC],
+        ];        
 
         $this->load($params);
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
+            $query->where('0=1');
             return $dataProvider;
         }
 
         $query->andFilterWhere([
-            'id' => $this->id,
+            'accesos.id' => $this->id,
             'id_persona' => $this->id_persona,
             'ing_id_vehiculo' => $this->ing_id_vehiculo,
             'ing_fecha' => $this->ing_fecha,
@@ -78,7 +107,10 @@ class AccesosSearch extends Accesos
         ]);
 
         $query->andFilterWhere(['like', 'motivo', $this->motivo])
-            ->andFilterWhere(['like', 'motivo_baja', $this->motivo_baja]);
+              ->andFilterWhere(['like', 'motivo_baja', $this->motivo_baja])
+			  ->andFilterWhere(['like', 'uing.username', $this->descUsuarioIng])             
+			  ->andFilterWhere(['like', 'uegr.username', $this->descUsuarioEgr])             
+              ;
 
         return $dataProvider;
     }

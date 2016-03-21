@@ -57,7 +57,7 @@ class Accesos extends \yii\db\ActiveRecord
 
     const ESTADO_BAJA = 0;
 	const ESTADO_ACTIVO = 1;
-
+	
 	// funcion agregada a mano
 	public static function getEstados($key=null)
 	{
@@ -152,6 +152,7 @@ class Accesos extends \yii\db\ActiveRecord
 
         ];
     }
+    
 
     /**
      * @return \yii\db\ActiveQuery
@@ -164,7 +165,7 @@ class Accesos extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getEgrIdVehiculo()
+    public function getEgrVehiculo()
     {
         return $this->hasOne(Vehiculos::className(), ['id' => 'egr_id_vehiculo']);
     }
@@ -172,7 +173,7 @@ class Accesos extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIngIdVehiculo()
+    public function getIngVehiculo()
     {
         return $this->hasOne(Vehiculos::className(), ['id' => 'ing_id_vehiculo']);
     }
@@ -180,7 +181,7 @@ class Accesos extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdPersona()
+    public function getPersona()
     {
         return $this->hasOne(Personas::className(), ['id' => 'id_persona']);
     }
@@ -196,19 +197,12 @@ class Accesos extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdAutorizantes()
+    public function getAutorizantes()
     {
-        return $this->hasMany(Personas::className(), ['id' => 'id_autorizante'])->viaTable('accesos_autorizantes', ['id_acceso' => 'id']);
+        return $this->hasMany(Personas::className(), 
+			['id' => 'id_autorizante'])->viaTable('accesos_autorizantes', ['id_acceso' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAccesosUfs()
-    {
-        return $this->hasMany(AccesosUf::className(), ['id_acceso' => 'id']);
-    }
-    
     
     // Devuelve todos los vehiculos utilizados de una determinada persona (y que los vehiculos sigan activos)
     public static function getVehiculosPorPersona($id_persona,$ultimoVehiculo) 
@@ -278,22 +272,27 @@ class Accesos extends \yii\db\ActiveRecord
 	
     public function getUserCreatedBy()
     {
-        return $this->hasOne(\common\models\User::className(), ['id' => 'created_by']);
+        return $this->hasOne(\common\models\User::className(), 
+				['id' => 'created_by'])->from(\common\models\User::tableName() . ' ucre');
     }    
     
     public function getUserUpdatedBy()
     {
-        return $this->hasOne(\common\models\User::className(), ['id' => 'updated_by']);
+        return $this->hasOne(\common\models\User::className(), 
+				['id' => 'updated_by'])->from(\common\models\User::tableName() . ' uupd');
     }    	
 
     public function getUserIngreso()
     {
-        return $this->hasOne(\common\models\User::className(), ['id' => 'ing_id_user']);
+        return $this->hasOne(\common\models\User::className(), 
+				['id' => 'ing_id_user'])->from(\common\models\User::tableName() . ' uing');
     }    
     
     public function getUserEgreso()
     {
-        return $this->hasOne(\common\models\User::className(), ['id' => 'egr_id_user']);
+        return $this->hasOne(\common\models\User::className(), 
+				['id' => 'egr_id_user'])->from(\common\models\User::tableName() . ' uegr');
+				
     }    	
 
 

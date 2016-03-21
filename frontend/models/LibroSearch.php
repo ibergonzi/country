@@ -71,10 +71,9 @@ class LibroSearch extends Libro
             'pagination'=>[
 				'pageSize' => 5,
 			],
-			'sort' => ['defaultOrder' => [
-							  'created_at' => SORT_DESC,
-							  ]
-						  ],            
+			'sort' => ['defaultOrder' => ['created_at' => SORT_DESC,],
+					   'enableMultiSort'=>true,
+					  ],            
         ]);
 
         // Agregado a mano, para que incluya el ordenamiento por descCliente
@@ -101,7 +100,7 @@ class LibroSearch extends Libro
         ]);
 
         $query->andFilterWhere(['like', 'texto', $this->texto])
-			->andFilterWhere(['like', 'user.username', $this->descUsuario]);
+			  ->andFilterWhere(['like', 'user.username', $this->descUsuario]);
 		
 		if (isset($params['resetFechas'])) {
 			\Yii::$app->session->remove('libroFecDesde');

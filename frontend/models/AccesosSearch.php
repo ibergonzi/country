@@ -35,6 +35,7 @@ class AccesosSearch extends Accesos
 		return array_merge(parent::attributeLabels(),
 			['descUsuarioIng'=>'U.Ing.','descUsuarioEgr'=>'U.Egr.']);
 	}   
+	
 
     /**
      * @inheritdoc
@@ -54,8 +55,8 @@ class AccesosSearch extends Accesos
      */
     public function search($params)
     {
-									
-        $query = Accesos::find()->joinWith(['userIngreso','userEgreso']);
+		// OJO uso AccesosSearch para que me tome los attributelabels de las propiedades nuevas (antes tenia Accesos)
+        $query = AccesosSearch::find()->joinWith(['userIngreso','userEgreso']);
         
          $dataProvider = new ActiveDataProvider([
             'query' => $query,

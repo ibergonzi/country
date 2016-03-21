@@ -277,7 +277,7 @@ $(document).ready(function() {
 					<div class='row'>
 						<div class="col-md-7">
 							<?php
-							echo Html::submitButton('Aceptar',['class' => 'btn btn-primary']);
+							echo Html::submitButton('Aceptar',['class' => 'btn btn-primary','id'=>'btnSubmit']);
 							?>
 						</div>
 						<div class="col-md-5">
@@ -285,7 +285,7 @@ $(document).ready(function() {
 							$url=Yii::$app->urlManager->createUrl(
 									['accesos/pide-comentario']);
 							$com=\Yii::$app->session->get('comentario');
-							if ($com !== '') {
+							if (!empty($com) && $com !== '') {
 								$cartel='<i class="glyphicon glyphicon-eye-open"></i> Comentario';
 							} else {
 								$cartel='Comentario';

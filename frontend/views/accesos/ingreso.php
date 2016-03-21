@@ -432,7 +432,8 @@ $(document).ready(function() {
 								$url=Yii::$app->urlManager->createUrl(
 										['accesos/pide-comentario']);
 								$com=\Yii::$app->session->get('comentario');
-								if ($com !== '') {
+								Yii::trace($com);
+								if (!empty($com) && $com !== '') {
 									$cartel='<i class="glyphicon glyphicon-eye-open"></i> Comentario';
 								} else {
 									$cartel='Comentario';

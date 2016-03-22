@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
 				'attribute'=>'descUsuarioIng',
 				'value'=>'userIngreso.username',  
 		    ],
-           
+			'accesosAutorizantes.id_uf',
             'egr_id_vehiculo',
             'egr_fecha',
             'egr_hora',

@@ -18,6 +18,8 @@ use kartik\widgets\Alert;
 use kartik\widgets\SideNav;
 use yii\helpers\Url;
 
+use kartik\popover\PopoverX;
+
 
 
 
@@ -82,10 +84,24 @@ $this->registerCss('.modal-body { max-height: calc(100vh - 210px);overflow-y: au
 	})
 JS;
 $this->registerJs($js,yii\web\View::POS_READY);
+
+$this->registerJs('
+$("#accesos-control").keypress( function (e) {
+		if (e.keyCode==13) {
+			e.preventDefault();
+			$("#btnPop").click();
+		}
+	}
+	);'
+,yii\web\View::POS_READY);
+
 // se registra en el document.ready porque no funcionaba con el POS_READY
 $this->registerJs('
 $(document).ready(function() {
     $("#selectorVehiculos").select2("open");
+    $("#popControl").on("show.bs.modal", function (e) {
+		$("#accesos-control").focus();
+	});
 });
 ');
 ?>
@@ -418,6 +434,7 @@ $(document).ready(function() {
 							',
 							]);
 						echo $form->field($model,'motivo')->textInput();		
+
 						
 						//echo $form->field($model,'cant_acomp')->textInput();				
 						?>
@@ -429,35 +446,38 @@ $(document).ready(function() {
 							</div>
 							<div class="col-md-5">
 								<?php
-								$url=Yii::$app->urlManager->createUrl(
-										['accesos/pide-comentario']);
-								$com=\Yii::$app->session->get('comentario');
-								Yii::trace($com);
-								if (!empty($com) && $com !== '') {
-									$cartel='<i class="glyphicon glyphicon-eye-open"></i> Comentario';
+								if ($model->control) {
+									$cartel='<i class="glyphicon glyphicon-eye-open"></i> Control';
 								} else {
-									$cartel='Comentario';
-								}									
-								echo Html::a($cartel, 
-									$url,
-									['title' => 'Observación/comentario',
-									 'class' => 'btn btn-default',
-									 'id'=>'btnComentario',
-									 'onclick'=>'$.ajax({
-										type     :"POST",
-										cache    : false,
-										url  : $(this).attr("href"),
-										success  : function(response) {
-													$("#divcomentarionuevo").html(response);
-													$("#modalcomentarionuevo").modal("show");
-													$("#comentario").focus();													
-													}
-									});return false;',
-									]);											
+									$cartel='Control';
+								}		
+								PopoverX::begin([
+									'options'=>['id'=>'popControl'],
+									'placement' => PopoverX::ALIGN_TOP,
+									'toggleButton' => ['label'=>$cartel, 'class'=>'btn btn-default'],
+									'header' => '<i class="glyphicon glyphicon-lock"></i> Control de guardia',
+									'footer' => Html::button('Aceptar', 
+												[
+													'id'=>'btnPop',
+													'class'=>'btn btn-sm btn-primary',
+													'onclick'=>'$("#popControl").popoverX("hide")',
+												]),
+									'size'=>'lg',
+														
+								]);
+								echo $form->field($model,'control')->textInput();
+								PopoverX::end();															
+								
 								?>
 							</div>
 						</div>
 						<?php
+						//echo $form->field($model,'control')->textInput()->hiddenInput()->label(false);	
+						
+
+ 	
+						
+							
 						ActiveForm::end();			    
 					?>
 						</div><!-- fin div panel body -->

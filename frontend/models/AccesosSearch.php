@@ -24,7 +24,7 @@ class AccesosSearch extends Accesos
     {
         return [
             [['id', 'id_persona', 'ing_id_vehiculo', 'ing_id_porton', 'ing_id_user', 'egr_id_vehiculo', 'egr_id_porton', 'egr_id_user', 'id_concepto', 'cant_acomp', 'created_by', 'updated_by', 'estado'], 'integer'],
-            [['ing_fecha', 'ing_hora', 'egr_fecha', 'egr_hora', 'motivo', 'created_at', 'updated_at', 'motivo_baja',
+            [['ing_fecha', 'ing_hora', 'egr_fecha', 'egr_hora', 'motivo','control', 'created_at', 'updated_at', 'motivo_baja',
 				'descUsuarioIng','descUsuarioEgr',], 'safe'],
         ];
     }
@@ -56,7 +56,7 @@ class AccesosSearch extends Accesos
     public function search($params)
     {
 		// OJO uso AccesosSearch para que me tome los attributelabels de las propiedades nuevas (antes tenia Accesos)
-        $query = AccesosSearch::find()->joinWith(['userIngreso','userEgreso']);
+        $query = AccesosSearch::find()->joinWith(['userIngreso','userEgreso','accesosAutorizantes']);
         
          $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -108,6 +108,7 @@ class AccesosSearch extends Accesos
         ]);
 
         $query->andFilterWhere(['like', 'motivo', $this->motivo])
+              ->andFilterWhere(['like', 'control', $this->motivo_baja])
               ->andFilterWhere(['like', 'motivo_baja', $this->motivo_baja])
 			  ->andFilterWhere(['like', 'uing.username', $this->descUsuarioIng])             
 			  ->andFilterWhere(['like', 'uegr.username', $this->descUsuarioEgr])             

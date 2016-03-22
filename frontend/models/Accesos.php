@@ -29,6 +29,7 @@ use yii\db\Expression;
  * @property integer $egr_id_user
  * @property integer $id_concepto
  * @property string $motivo
+ * @property integer $control
  * @property integer $cant_acomp
  * @property integer $created_by
  * @property string $created_at
@@ -111,8 +112,9 @@ class Accesos extends \yii\db\ActiveRecord
 				'ing_id_user', 'egr_id_vehiculo', 'egr_id_porton', 'egr_id_user', 
 				'id_concepto', 'cant_acomp', 'created_by', 'updated_by', 'estado'], 'integer'],
             [['ing_fecha', 'ing_hora', 'egr_fecha', 'egr_hora', 
-				'created_by','created_at', 'updated_at','updated_by'], 'safe'],
+				'created_by','created_at', 'updated_at','updated_by','control'], 'safe'],
             [['motivo', 'motivo_baja'], 'string', 'max' => 50],
+            ['control', 'string', 'max' => 100],
             ['cant_acomp','default','value'=>0],
 
         ];
@@ -138,6 +140,7 @@ class Accesos extends \yii\db\ActiveRecord
             'egr_id_user' => Yii::t('app', 'Usuario Egr.'),
             'id_concepto' => Yii::t('app', 'Concepto'),
             'motivo' => Yii::t('app', 'Motivo'),
+            'control' => Yii::t('app', 'Control'),
             'cant_acomp' => Yii::t('app', 'Cant.Acomp.'),
             'created_by' => Yii::t('app', 'Usuario alta'),
             'created_at' => Yii::t('app', 'Fecha alta'),

@@ -271,6 +271,7 @@ $(document).ready(function() {
 							]							
 						]);  	
 						
+						echo $form->field($model,'control')->textInput();		
 						
 					?>
 				

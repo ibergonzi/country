@@ -37,6 +37,7 @@ CREATE TABLE `accesos` (
   `egr_id_user` int(11) DEFAULT NULL,
   `id_concepto` int(11) NOT NULL,
   `motivo` varchar(50) NOT NULL,
+  `control` varchar(100) DEFAULT NULL,
   `cant_acomp` tinyint(4) NOT NULL DEFAULT '0',
   `created_by` int(11) NOT NULL,
   `created_at` datetime NOT NULL,
@@ -50,11 +51,12 @@ CREATE TABLE `accesos` (
   KEY `idx_egr_id_vehiculo` (`egr_id_vehiculo`) USING BTREE,
   KEY `idx_id_concepto` (`id_concepto`) USING BTREE,
   KEY `idx_ing_fecha` (`ing_fecha`) USING BTREE,
+  KEY `control` (`control`),
   CONSTRAINT `fk_concepto` FOREIGN KEY (`id_concepto`) REFERENCES `accesos_conceptos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_egr_vehiculo` FOREIGN KEY (`egr_id_vehiculo`) REFERENCES `vehiculos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_ing_vehiculo` FOREIGN KEY (`ing_id_vehiculo`) REFERENCES `vehiculos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_personas` FOREIGN KEY (`id_persona`) REFERENCES `personas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -63,7 +65,7 @@ CREATE TABLE `accesos` (
 
 LOCK TABLES `accesos` WRITE;
 /*!40000 ALTER TABLE `accesos` DISABLE KEYS */;
-INSERT INTO `accesos` VALUES (38,9,4,'2016-03-19','2016-03-19 15:45:45',1,9,4,'2016-03-19','2016-03-19 15:45:59',1,9,14,'PRUEBA AUTORIZANTES',3,9,'2016-03-19 15:45:45',9,'2016-03-19 15:45:59',1,NULL),(39,10,4,'2016-03-19','2016-03-19 15:45:45',1,9,NULL,NULL,NULL,NULL,NULL,14,'PRUEBA AUTORIZANTES',3,9,'2016-03-19 15:45:45',9,'2016-03-19 15:45:45',1,NULL),(41,236,8,'2016-03-19','2016-03-19 16:28:17',1,9,8,'2016-03-19','2016-03-19 16:28:17',1,9,0,'SIN INGRESO',0,9,'2016-03-19 16:28:17',9,'2016-03-19 16:28:17',1,NULL),(42,9,4,'2016-03-19','2016-03-19 17:13:53',1,9,4,'2016-03-19','2016-03-19 17:14:29',1,9,4,'A LABURAR',0,9,'2016-03-19 17:13:53',9,'2016-03-19 17:14:29',1,NULL),(43,84,4,'2016-03-19','2016-03-19 17:13:53',1,9,4,'2016-03-19','2016-03-19 17:14:29',1,9,4,'A LABURAR',0,9,'2016-03-19 17:13:53',9,'2016-03-19 17:14:29',1,NULL),(44,10,4,'2016-03-19','2016-03-19 17:13:53',1,9,4,'2016-03-19','2016-03-19 17:14:29',1,9,4,'A LABURAR',0,9,'2016-03-19 17:13:53',9,'2016-03-19 17:14:29',1,NULL),(45,236,4,'2016-03-19','2016-03-19 17:13:53',1,9,4,'2016-03-19','2016-03-19 17:14:29',1,9,4,'A LABURAR',0,9,'2016-03-19 17:13:53',9,'2016-03-19 17:14:29',1,NULL),(46,9,4,'2016-03-19','2016-03-19 17:15:18',1,9,4,'2016-03-19','2016-03-19 17:15:33',1,9,4,'A LABURAR',0,9,'2016-03-19 17:15:18',9,'2016-03-19 17:15:33',1,NULL),(47,10,4,'2016-03-19','2016-03-19 17:15:18',1,9,4,'2016-03-19','2016-03-19 17:15:33',1,9,4,'A LABURAR',0,9,'2016-03-19 17:15:18',9,'2016-03-19 17:15:33',1,NULL),(48,84,4,'2016-03-19','2016-03-19 17:15:18',1,9,4,'2016-03-19','2016-03-19 17:15:33',1,9,4,'A LABURAR',0,9,'2016-03-19 17:15:18',9,'2016-03-19 17:15:33',1,NULL),(49,236,4,'2016-03-19','2016-03-19 17:15:18',1,9,4,'2016-03-19','2016-03-19 17:15:33',1,9,4,'A LABURAR',0,9,'2016-03-19 17:15:18',9,'2016-03-19 17:15:33',1,NULL),(50,9,4,'2016-03-19','2016-03-19 17:16:10',1,9,NULL,NULL,NULL,NULL,NULL,4,'A LABURAR',0,9,'2016-03-19 17:16:10',9,'2016-03-19 17:16:10',1,NULL),(51,10,4,'2016-03-19','2016-03-19 17:16:10',1,9,NULL,NULL,NULL,NULL,NULL,4,'A LABURAR',0,9,'2016-03-19 17:16:10',9,'2016-03-19 17:16:10',1,NULL),(52,236,4,'2016-03-19','2016-03-19 17:16:10',1,9,NULL,NULL,NULL,NULL,NULL,4,'A LABURAR',0,9,'2016-03-19 17:16:10',9,'2016-03-19 17:16:10',1,NULL),(53,84,4,'2016-03-19','2016-03-19 17:33:15',1,9,4,'2016-03-19','2016-03-19 17:33:15',1,9,0,'SIN INGRESO',0,9,'2016-03-19 17:33:15',9,'2016-03-19 17:33:15',1,NULL),(54,84,4,'2016-03-19','2016-03-19 17:33:52',1,9,4,'2016-03-19','2016-03-19 17:33:52',1,9,0,'SIN INGRESO',0,9,'2016-03-19 17:33:52',9,'2016-03-19 17:33:52',1,NULL);
+INSERT INTO `accesos` VALUES (38,9,4,'2016-03-19','2016-03-19 15:45:45',1,9,4,'2016-03-19','2016-03-19 15:45:59',1,9,14,'PRUEBA AUTORIZANTES',NULL,3,9,'2016-03-19 15:45:45',9,'2016-03-19 15:45:59',1,NULL),(39,10,4,'2016-03-19','2016-03-19 15:45:45',1,9,NULL,NULL,NULL,NULL,NULL,14,'PRUEBA AUTORIZANTES',NULL,3,9,'2016-03-19 15:45:45',9,'2016-03-19 15:45:45',1,NULL),(41,236,8,'2016-03-19','2016-03-19 16:28:17',1,9,8,'2016-03-19','2016-03-19 16:28:17',1,9,0,'SIN INGRESO',NULL,0,9,'2016-03-19 16:28:17',9,'2016-03-19 16:28:17',1,NULL),(42,9,4,'2016-03-19','2016-03-19 17:13:53',1,9,4,'2016-03-19','2016-03-19 17:14:29',1,9,4,'A LABURAR',NULL,0,9,'2016-03-19 17:13:53',9,'2016-03-19 17:14:29',1,NULL),(43,84,4,'2016-03-19','2016-03-19 17:13:53',1,9,4,'2016-03-19','2016-03-19 17:14:29',1,9,4,'A LABURAR',NULL,0,9,'2016-03-19 17:13:53',9,'2016-03-19 17:14:29',1,NULL),(44,10,4,'2016-03-19','2016-03-19 17:13:53',1,9,4,'2016-03-19','2016-03-19 17:14:29',1,9,4,'A LABURAR',NULL,0,9,'2016-03-19 17:13:53',9,'2016-03-19 17:14:29',1,NULL),(45,236,4,'2016-03-19','2016-03-19 17:13:53',1,9,4,'2016-03-19','2016-03-19 17:14:29',1,9,4,'A LABURAR',NULL,0,9,'2016-03-19 17:13:53',9,'2016-03-19 17:14:29',1,NULL),(46,9,4,'2016-03-19','2016-03-19 17:15:18',1,9,4,'2016-03-19','2016-03-19 17:15:33',1,9,4,'A LABURAR',NULL,0,9,'2016-03-19 17:15:18',9,'2016-03-19 17:15:33',1,NULL),(47,10,4,'2016-03-19','2016-03-19 17:15:18',1,9,4,'2016-03-19','2016-03-19 17:15:33',1,9,4,'A LABURAR',NULL,0,9,'2016-03-19 17:15:18',9,'2016-03-19 17:15:33',1,NULL),(48,84,4,'2016-03-19','2016-03-19 17:15:18',1,9,4,'2016-03-19','2016-03-19 17:15:33',1,9,4,'A LABURAR',NULL,0,9,'2016-03-19 17:15:18',9,'2016-03-19 17:15:33',1,NULL),(49,236,4,'2016-03-19','2016-03-19 17:15:18',1,9,4,'2016-03-19','2016-03-19 17:15:33',1,9,4,'A LABURAR',NULL,0,9,'2016-03-19 17:15:18',9,'2016-03-19 17:15:33',1,NULL),(50,9,4,'2016-03-19','2016-03-19 17:16:10',1,9,NULL,NULL,NULL,NULL,NULL,4,'A LABURAR',NULL,0,9,'2016-03-19 17:16:10',9,'2016-03-19 17:16:10',1,NULL),(51,10,4,'2016-03-19','2016-03-19 17:16:10',1,9,NULL,NULL,NULL,NULL,NULL,4,'A LABURAR',NULL,0,9,'2016-03-19 17:16:10',9,'2016-03-19 17:16:10',1,NULL),(52,236,4,'2016-03-19','2016-03-19 17:16:10',1,9,NULL,NULL,NULL,NULL,NULL,4,'A LABURAR',NULL,0,9,'2016-03-19 17:16:10',9,'2016-03-19 17:16:10',1,NULL),(53,84,4,'2016-03-19','2016-03-19 17:33:15',1,9,4,'2016-03-19','2016-03-19 17:33:15',1,9,0,'SIN INGRESO',NULL,0,9,'2016-03-19 17:33:15',9,'2016-03-19 17:33:15',1,NULL),(54,84,4,'2016-03-19','2016-03-19 17:33:52',1,11,4,'2016-03-19','2016-03-19 17:33:52',1,9,0,'SIN INGRESO',NULL,0,9,'2016-03-19 17:33:52',9,'2016-03-19 17:33:52',1,NULL),(55,30,7,'2016-03-22','2016-03-22 17:45:22',1,9,NULL,NULL,NULL,NULL,NULL,7,'VISITA',NULL,0,9,'2016-03-22 17:45:22',9,'2016-03-22 17:45:22',1,NULL);
 /*!40000 ALTER TABLE `accesos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -86,7 +88,7 @@ CREATE TABLE `accesos_autorizantes` (
   CONSTRAINT `accesos_autorizantes_ibfk_1` FOREIGN KEY (`id_uf`) REFERENCES `uf` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_accesos_aut` FOREIGN KEY (`id_acceso`) REFERENCES `accesos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_personas_aut` FOREIGN KEY (`id_persona`) REFERENCES `personas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -95,7 +97,7 @@ CREATE TABLE `accesos_autorizantes` (
 
 LOCK TABLES `accesos_autorizantes` WRITE;
 /*!40000 ALTER TABLE `accesos_autorizantes` DISABLE KEYS */;
-INSERT INTO `accesos_autorizantes` VALUES (6,38,9,128),(7,38,30,129),(8,39,9,128),(9,39,30,129),(10,42,9,128),(11,42,30,129),(12,43,9,128),(13,43,30,129),(14,44,9,128),(15,44,30,129),(16,45,9,128),(17,45,30,129),(18,46,9,128),(19,46,30,129),(20,47,9,128),(21,47,30,129),(22,48,9,128),(23,48,30,129),(24,49,9,128),(25,49,30,129),(26,50,9,128),(27,50,30,129),(28,51,9,128),(29,51,30,129),(30,52,9,128),(31,52,30,129);
+INSERT INTO `accesos_autorizantes` VALUES (6,38,9,128),(7,38,30,129),(8,39,9,128),(9,39,30,129),(10,42,9,128),(11,42,30,129),(12,43,9,128),(13,43,30,129),(14,44,9,128),(15,44,30,129),(16,45,9,128),(17,45,30,129),(18,46,9,128),(19,46,30,129),(20,47,9,128),(21,47,30,129),(22,48,9,128),(23,48,30,129),(24,49,9,128),(25,49,30,129),(26,50,9,128),(27,50,30,129),(28,51,9,128),(29,51,30,129),(30,52,9,128),(31,52,30,129),(32,55,10,128),(33,55,10,129),(34,55,9,128),(35,55,30,129);
 /*!40000 ALTER TABLE `accesos_autorizantes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -117,7 +119,7 @@ CREATE TABLE `accesos_conceptos` (
   `updated_at` datetime NOT NULL,
   `estado` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -131,30 +133,39 @@ INSERT INTO `accesos_conceptos` VALUES (0,'SIN INGRESO',0,0,9,'2016-03-19 00:00:
 UNLOCK TABLES;
 
 --
--- Table structure for table `accesos_uf`
+-- Temporary view structure for view `accesos_vista`
 --
 
-DROP TABLE IF EXISTS `accesos_uf`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `accesos_uf` (
-  `id_acceso` int(10) unsigned NOT NULL,
-  `id_uf` int(11) NOT NULL,
-  PRIMARY KEY (`id_acceso`,`id_uf`),
-  KEY `id_uf` (`id_uf`),
-  CONSTRAINT `accesos_uf_ibfk_1` FOREIGN KEY (`id_uf`) REFERENCES `uf` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_accesos_uf` FOREIGN KEY (`id_acceso`) REFERENCES `accesos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `accesos_uf`
---
-
-LOCK TABLES `accesos_uf` WRITE;
-/*!40000 ALTER TABLE `accesos_uf` DISABLE KEYS */;
-/*!40000 ALTER TABLE `accesos_uf` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `accesos_vista`;
+/*!50001 DROP VIEW IF EXISTS `accesos_vista`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE VIEW `accesos_vista` AS SELECT 
+ 1 AS `id`,
+ 1 AS `id_persona`,
+ 1 AS `ing_id_vehiculo`,
+ 1 AS `ing_fecha`,
+ 1 AS `ing_hora`,
+ 1 AS `ing_id_porton`,
+ 1 AS `ing_id_user`,
+ 1 AS `egr_id_vehiculo`,
+ 1 AS `egr_fecha`,
+ 1 AS `egr_hora`,
+ 1 AS `egr_id_porton`,
+ 1 AS `egr_id_user`,
+ 1 AS `id_concepto`,
+ 1 AS `motivo`,
+ 1 AS `control`,
+ 1 AS `cant_acomp`,
+ 1 AS `created_by`,
+ 1 AS `created_at`,
+ 1 AS `updated_by`,
+ 1 AS `updated_at`,
+ 1 AS `estado`,
+ 1 AS `motivo_baja`,
+ 1 AS `id_autorizante`,
+ 1 AS `id_uf`*/;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `auth_assignment`
@@ -314,7 +325,7 @@ CREATE TABLE `comentarios` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `model_id` (`model_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -323,7 +334,7 @@ CREATE TABLE `comentarios` (
 
 LOCK TABLES `comentarios` WRITE;
 /*!40000 ALTER TABLE `comentarios` DISABLE KEYS */;
-INSERT INTO `comentarios` VALUES (1,'CUACCCCCC','',0,9,'2016-02-09 17:05:29',9,'2016-02-09 17:05:29'),(2,'otro mas','frontend\\models\\Libro',5,9,'2016-02-09 17:08:20',9,'2016-02-09 17:08:20'),(3,'Para el otro CUACCCCCCCCCCCC','frontend\\models\\Libro',4,9,'2016-02-09 17:10:56',9,'2016-02-09 17:10:56'),(4,'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod vehicula eros pellentesque lacinia. Nulla suscipit metus ut enim iaculis, vitae sollicitudin velit vehicula. Nunc et elit sagittis, venenatis arcu vitae, pretium purus. Praesent venenatis libero vel lobortis consectetur. Nulla ut feugiat tortor. Quisque vestibulum, nisi sit amet luctus lobortis, diam diam dignissim tellus, a dignissim nibh massa ac magna. Nullam in nisi risus','frontend\\models\\Libro',4,9,'2016-02-11 10:43:42',9,'2016-02-11 10:43:42'),(5,'Comentario 1','frontend\\models\\Personas',9,9,'2016-03-07 16:09:45',9,'2016-03-07 16:09:45'),(6,'Comentario 2','frontend\\models\\Personas',9,9,'2016-03-07 16:09:56',9,'2016-03-07 16:09:56'),(7,'Comentario 3\r\n','frontend\\models\\Personas',9,9,'2016-03-07 16:10:08',9,'2016-03-07 16:10:08'),(8,'Comentario 4','frontend\\models\\Personas',9,9,'2016-03-07 16:10:26',9,'2016-03-07 16:10:26');
+INSERT INTO `comentarios` VALUES (1,'CUACCCCCC','',0,9,'2016-02-09 17:05:29',9,'2016-02-09 17:05:29'),(2,'otro mas','frontend\\models\\Libro',5,9,'2016-02-09 17:08:20',9,'2016-02-09 17:08:20'),(3,'Para el otro CUACCCCCCCCCCCC','frontend\\models\\Libro',4,9,'2016-02-09 17:10:56',9,'2016-02-09 17:10:56'),(4,'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod vehicula eros pellentesque lacinia. Nulla suscipit metus ut enim iaculis, vitae sollicitudin velit vehicula. Nunc et elit sagittis, venenatis arcu vitae, pretium purus. Praesent venenatis libero vel lobortis consectetur. Nulla ut feugiat tortor. Quisque vestibulum, nisi sit amet luctus lobortis, diam diam dignissim tellus, a dignissim nibh massa ac magna. Nullam in nisi risus','frontend\\models\\Libro',4,9,'2016-02-11 10:43:42',9,'2016-02-11 10:43:42'),(5,'Comentario 1','frontend\\models\\Personas',9,9,'2016-03-07 16:09:45',9,'2016-03-07 16:09:45'),(6,'Comentario 2','frontend\\models\\Personas',9,9,'2016-03-07 16:09:56',9,'2016-03-07 16:09:56'),(7,'Comentario 3\r\n','frontend\\models\\Personas',9,9,'2016-03-07 16:10:08',9,'2016-03-07 16:10:08'),(8,'Comentario 4','frontend\\models\\Personas',9,9,'2016-03-07 16:10:26',9,'2016-03-07 16:10:26'),(9,'Lleva una bicicleta en el baul','frontend\\models\\Accesos',55,9,'2016-03-22 17:45:22',9,'2016-03-22 17:45:22');
 /*!40000 ALTER TABLE `comentarios` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -769,6 +780,24 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+
+--
+-- Final view structure for view `accesos_vista`
+--
+
+/*!50001 DROP VIEW IF EXISTS `accesos_vista`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_unicode_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `accesos_vista` AS select `accesos`.`id` AS `id`,`accesos`.`id_persona` AS `id_persona`,`accesos`.`ing_id_vehiculo` AS `ing_id_vehiculo`,`accesos`.`ing_fecha` AS `ing_fecha`,`accesos`.`ing_hora` AS `ing_hora`,`accesos`.`ing_id_porton` AS `ing_id_porton`,`accesos`.`ing_id_user` AS `ing_id_user`,`accesos`.`egr_id_vehiculo` AS `egr_id_vehiculo`,`accesos`.`egr_fecha` AS `egr_fecha`,`accesos`.`egr_hora` AS `egr_hora`,`accesos`.`egr_id_porton` AS `egr_id_porton`,`accesos`.`egr_id_user` AS `egr_id_user`,`accesos`.`id_concepto` AS `id_concepto`,`accesos`.`motivo` AS `motivo`,`accesos`.`control` AS `control`,`accesos`.`cant_acomp` AS `cant_acomp`,`accesos`.`created_by` AS `created_by`,`accesos`.`created_at` AS `created_at`,`accesos`.`updated_by` AS `updated_by`,`accesos`.`updated_at` AS `updated_at`,`accesos`.`estado` AS `estado`,`accesos`.`motivo_baja` AS `motivo_baja`,`aa`.`id_persona` AS `id_autorizante`,`aa`.`id_uf` AS `id_uf` from (`accesos` join `accesos_autorizantes` `aa` on((`accesos`.`id` = `aa`.`id_acceso`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -779,4 +808,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-03-19 18:27:10
+-- Dump completed on 2016-03-22 20:17:08

@@ -44,7 +44,7 @@ class AccesosAutorizantes extends \yii\db\ActiveRecord
         return [
             'id_acceso' => Yii::t('app', 'Id Acceso'),
             'id_persona' => Yii::t('app', 'Id Persona'),
-            'id_uf' => Yii::t('app', 'Id Uf'),
+            'id_uf' => Yii::t('app', 'U.F.'),
         ];
     }
 

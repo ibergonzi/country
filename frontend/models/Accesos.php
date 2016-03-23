@@ -74,6 +74,7 @@ class Accesos extends \yii\db\ActiveRecord
     public function beforeSave($insert)
     {
 			$this->motivo=mb_strtoupper($this->motivo);
+			$this->control=mb_strtoupper($this->control);
  
             parent::beforeSave($insert);
             return true;
@@ -114,7 +115,7 @@ class Accesos extends \yii\db\ActiveRecord
             [['ing_fecha', 'ing_hora', 'egr_fecha', 'egr_hora', 
 				'created_by','created_at', 'updated_at','updated_by','control'], 'safe'],
             [['motivo', 'motivo_baja'], 'string', 'max' => 50],
-            ['control', 'string', 'max' => 100],
+            ['control', 'string', 'max' => 200],
             ['cant_acomp','default','value'=>0],
 
         ];
@@ -171,7 +172,8 @@ class Accesos extends \yii\db\ActiveRecord
      */
     public function getEgrVehiculo()
     {
-        return $this->hasOne(Vehiculos::className(), ['id' => 'egr_id_vehiculo']);
+        return $this->hasOne(Vehiculos::className(), 
+			['id' => 'egr_id_vehiculo'])->from(Vehiculos::tableName() . ' vegr');
     }
 
     /**
@@ -179,7 +181,8 @@ class Accesos extends \yii\db\ActiveRecord
      */
     public function getIngVehiculo()
     {
-        return $this->hasOne(Vehiculos::className(), ['id' => 'ing_id_vehiculo']);
+        return $this->hasOne(Vehiculos::className(), 
+			['id' => 'ing_id_vehiculo'])->from(Vehiculos::tableName() . ' ving');
     }
 
     /**

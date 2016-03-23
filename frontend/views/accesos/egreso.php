@@ -20,6 +20,7 @@ use yii\helpers\Url;
 
 use kartik\grid\GridView;
 
+use kartik\popover\PopoverX;
 
 
 
@@ -85,10 +86,29 @@ $this->registerCss('.modal-body { max-height: calc(100vh - 210px);overflow-y: au
 	})
 JS;
 $this->registerJs($js,yii\web\View::POS_READY);
-// se registra en el document.ready porque no funcionaba con el POS_READY
+
+// para que cuando se oprima ENTER en el campo "control" se cierre el popover
+$this->registerJs('
+$("#accesos-control").keypress( function (e) {
+		if (e.keyCode==13) {
+			e.preventDefault();
+			$("#btnPop").click();
+		}
+	}
+	);'
+,yii\web\View::POS_READY);
+
+// el foco en selectorVehiculos se registra en el document.ready porque no funcionaba con el POS_READY
+// tambien se debe hacer aqui para que cuando se abra el popover el foco se haga en el campo "control"
 $this->registerJs('
 $(document).ready(function() {
     $("#selectorVehiculos").select2("open");
+    $("#popControl").on("show.bs.modal", function (e) {
+		$("#accesos-control").focus();
+	});    
+    $("#popControl").on("hide.bs.modal", function (e) {
+		$("#btnSubmit").focus();
+	});	
 });
 ');
 ?>
@@ -177,6 +197,8 @@ $(document).ready(function() {
 								}'
 							]							
 						]);  	
+						
+						echo '<br/><br/>';
 						
 						// -------------------Selector de personas c/botón de alta ----------------------------------------
 						//$personaDesc=$model->isNewRecord?'':Personas::formateaPersonaSelect2($model->id_persona,false);
@@ -270,44 +292,42 @@ $(document).ready(function() {
 								}'
 							]							
 						]);  	
-						
-						echo $form->field($model,'control')->textInput();		
-						
+	
 					?>
 				
 					<div class='row'>
-						<div class="col-md-7">
+						<div class="col-md-6">
 							<?php
 							echo Html::submitButton('Aceptar',['class' => 'btn btn-primary','id'=>'btnSubmit']);
 							?>
 						</div>
-						<div class="col-md-5">
+						<div class="col-md-6">
+							<div class="pull-right">
 							<?php
-							$url=Yii::$app->urlManager->createUrl(
-									['accesos/pide-comentario']);
-							$com=\Yii::$app->session->get('comentario');
-							if (!empty($com) && $com !== '') {
-								$cartel='<i class="glyphicon glyphicon-eye-open"></i> Comentario';
+							if ($model->control) {
+								$cartel='<i class="glyphicon glyphicon-eye-open"></i> Control';
 							} else {
-								$cartel='Comentario';
-							}									
-							echo Html::a($cartel, 
-								$url,
-								['title' => 'Observación/comentario',
-								 'class' => 'btn btn-default',
-								 'id'=>'btnComentario',
-								 'onclick'=>'$.ajax({
-									type     :"POST",
-									cache    : false,
-									url  : $(this).attr("href"),
-									success  : function(response) {
-												$("#divcomentarionuevo").html(response);
-												$("#modalcomentarionuevo").modal("show");
-												$("#comentario").focus();
-												}
-								});return false;',
-								]);											
+								$cartel='Control';
+							}		
+							PopoverX::begin([
+								'options'=>['id'=>'popControl'],
+								'placement' => PopoverX::ALIGN_RIGHT_BOTTOM,
+								'toggleButton' => ['label'=>$cartel, 'class'=>'btn btn-default'],
+								'header' => '<i class="glyphicon glyphicon-eye-open"></i> Control de guardia',
+								'footer' => Html::button('Aceptar', 
+											[
+												'id'=>'btnPop',
+												'class'=>'btn btn-sm btn-primary',
+												'onclick'=>'$("#popControl").popoverX("hide")',
+											]),
+								'size'=>'lg',
+													
+							]);
+							echo $form->field($model,'control')->textInput(['maxlength' => true,'style' => 'text-transform: uppercase']);
+							PopoverX::end();															
+									
 							?>
+							</div>
 						</div>
 					</div>
 					<?php

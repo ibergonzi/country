@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
+use kartik\grid\GridView;
 
 /* @var $this yii\web\View */
 /* @var $searchModel frontend\models\AccesosSearch */
@@ -19,38 +19,53 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+ 
         'columns' => [
-
-            'id',
+            'id_acceso',
             'id_persona',
+ 		    [
+				'attribute'=>'r_apellido',
+				'value'=>'persona.apellido',
+			],
+			[
+				'attribute'=>'r_nombre',
+				'value'=>'persona.nombre',
+			],
+			[
+				'attribute'=>'r_nombre2',
+				'value'=>'persona.nombre2',
+			],			
+			[
+				'attribute'=>'r_desc_tipo_doc',
+				'value'=>'persona.tipoDoc.desc_tipo_doc_abr',
+			],			
+            //'persona.tipoDoc.desc_tipo_doc_abr',
+            'persona.nro_doc',
             'ing_id_vehiculo',
+            'ingVehiculo.patente',
+            'ingVehiculo.marca',
+            'ingVehiculo.modelo',
+            'ingVehiculo.color',
             'ing_fecha',
             'ing_hora',
             'ing_id_porton',
-            //'ing_id_user',
-
-
  		    [
-				'attribute'=>'descUsuarioIng',
+				'attribute'=>'r_ing_usuario',
 				'value'=>'userIngreso.username',  
 		    ],
-			'accesosAutorizantes.id_uf',
             'egr_id_vehiculo',
             'egr_fecha',
             'egr_hora',
             'egr_id_porton',
-            //'egr_id_user',
  		    [
-				'attribute'=>'descUsuarioEgr',
+				'attribute'=>'r_egr_usuario',
 				'value'=>'userEgreso.username',  
 		    ],                
             'id_concepto',
             'motivo',
-            'cant_acomp',
-            //'created_by',
-            //'created_at',
-            //'updated_by',
-            //'updated_at',
+            'control',
+            'id_autorizante',
+            'id_uf',
             'estado',
             'motivo_baja',
 

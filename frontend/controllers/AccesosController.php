@@ -395,23 +395,6 @@ class AccesosController extends Controller
 		return $response;		
 	}
 	
-	public function actionPideComentario()
-	{
-		// solo se usa para mostrar el formulario que pide el comentario
-		$comentario=\Yii::$app->session->get('comentario');
-		
-		return $this->renderAjax('_comentario', [
-			'comentario' => $comentario,
-		]);
-	}	
-	public function actionSetComentario($comentario=null) 
-	{
-		Yii::trace($comentario);
-		if ($comentario=='null') {return 'Comentario';}
-		\Yii::$app->session->set('comentario',$comentario);
-		
-		return $comentario==''?'Comentario':'<i class="glyphicon glyphicon-eye-open"></i> Comentario';		
-	}	
 	
 	public function actionRefrescaListas() 
 	{
@@ -928,6 +911,7 @@ class AccesosController extends Controller
 			// Comienza Transaccion
 			$transaction = Yii::$app->db->beginTransaction();				
 			try {
+				$controlEgreso=$model->control;
 				foreach ($sessPersonas as $id_persona) {
 					$model=Accesos::find()->where(['id_persona'=>$id_persona,'egr_fecha'=>null])
 						->orderBy(['id' => SORT_DESC])->one();
@@ -941,18 +925,15 @@ class AccesosController extends Controller
 							$model->egr_fecha=$fecAux;
 							$model->egr_hora=$horAux;
 							$model->egr_id_porton=\Yii::$app->session->get('porton');        
-							$model->egr_id_user=\Yii::$app->user->identity->id;					
-							//$model->isNewRecord = true;
-							if ($model->save()) {
-								$c=\Yii::$app->session->get('comentario');
-								if ($c !== '') {
-									$com = new Comentarios();
-									$com->model=Accesos::className();
-									$com->model_id=$model->id;
-									$com->comentario=$c;
-									$com->save();								
-								}    
-							}
+							$model->egr_id_user=\Yii::$app->user->identity->id;
+							if ($controlEgreso) {
+								if ($model->control) {
+									$model->control=$model->control.'.- '.$controlEgreso;
+								} else {
+									$model->control=$controlEgreso;
+								}
+							}					
+							$model->save();
 						}
 					} else {		
 						$model=new Accesos();
@@ -976,16 +957,7 @@ class AccesosController extends Controller
 							$model->motivo='Sin ingreso';
 										
 							$model->isNewRecord = true;
-							if ($model->save()) {
-								$c=\Yii::$app->session->get('comentario');
-								if ($c !== '') {
-									$com = new Comentarios();
-									$com->model=Accesos::className();
-									$com->model_id=$model->id;
-									$com->comentario=$c;
-									$com->save();								
-								}    
-							}
+							$model->save();
 						}
 
 					} //foreach vehiculos
@@ -994,7 +966,6 @@ class AccesosController extends Controller
 				
 				// Todo bien
 				$transaction->commit();
-				\Yii::$app->session->set('comentario','');
 				\Yii::$app->session->addFlash('success','Egreso grabado correctamente');
 				
 				// limpia todo
@@ -1122,15 +1093,6 @@ class AccesosController extends Controller
 								$accaut->id_uf=$aut->id_uf;
 								$accaut->save();
 							} // foreach autorizantes
-							$c=\Yii::$app->session->get('comentario');
-							if ($c !== '') {
-						        $com = new Comentarios();
-								$com->model=Accesos::className();
-								$com->model_id=$model->id;
-								$com->comentario=$c;
-								$com->save();								
-							}    
-
 
 						}// if model->save()	
 					} //foreach vehiculos
@@ -1139,7 +1101,6 @@ class AccesosController extends Controller
 				
 				// Todo bien
 				$transaction->commit();
-				\Yii::$app->session->set('comentario','');
 				\Yii::$app->session->addFlash('success','Ingreso grabado correctamente');
 				
 				// limpia todo

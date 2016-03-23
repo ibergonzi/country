@@ -85,6 +85,7 @@ $this->registerCss('.modal-body { max-height: calc(100vh - 210px);overflow-y: au
 JS;
 $this->registerJs($js,yii\web\View::POS_READY);
 
+// para que cuando se oprima ENTER en el campo "control" se cierre el popover
 $this->registerJs('
 $("#accesos-control").keypress( function (e) {
 		if (e.keyCode==13) {
@@ -95,12 +96,16 @@ $("#accesos-control").keypress( function (e) {
 	);'
 ,yii\web\View::POS_READY);
 
-// se registra en el document.ready porque no funcionaba con el POS_READY
+// el foco en selectorVehiculos se registra en el document.ready porque no funcionaba con el POS_READY
+// tambien se debe hacer aqui para que cuando se abra el popover el foco se haga en el campo "control"
 $this->registerJs('
 $(document).ready(function() {
     $("#selectorVehiculos").select2("open");
     $("#popControl").on("show.bs.modal", function (e) {
 		$("#accesos-control").focus();
+	});
+    $("#popControl").on("hide.bs.modal", function (e) {
+		$("#btnSubmit").focus();
 	});
 });
 ');
@@ -433,18 +438,19 @@ $(document).ready(function() {
 									});
 							',
 							]);
-						echo $form->field($model,'motivo')->textInput();		
+						echo $form->field($model,'motivo')->textInput(['maxlength' => true,'style' => 'text-transform: uppercase']);		
 
 						
 						//echo $form->field($model,'cant_acomp')->textInput();				
 						?>
 						<div class='row'>
-							<div class="col-md-7">
+							<div class="col-md-6">
 								<?php
 								echo Html::submitButton('Aceptar',['class' => 'btn btn-primary','id'=>'btnSubmit']);
 								?>
 							</div>
-							<div class="col-md-5">
+							<div class="col-md-6">
+								<div class="pull-right">
 								<?php
 								if ($model->control) {
 									$cartel='<i class="glyphicon glyphicon-eye-open"></i> Control';
@@ -453,9 +459,9 @@ $(document).ready(function() {
 								}		
 								PopoverX::begin([
 									'options'=>['id'=>'popControl'],
-									'placement' => PopoverX::ALIGN_TOP,
+									'placement' => PopoverX::ALIGN_RIGHT_BOTTOM,
 									'toggleButton' => ['label'=>$cartel, 'class'=>'btn btn-default'],
-									'header' => '<i class="glyphicon glyphicon-lock"></i> Control de guardia',
+									'header' => '<i class="glyphicon glyphicon-eye-open"></i> Control de guardia',
 									'footer' => Html::button('Aceptar', 
 												[
 													'id'=>'btnPop',
@@ -465,10 +471,11 @@ $(document).ready(function() {
 									'size'=>'lg',
 														
 								]);
-								echo $form->field($model,'control')->textInput();
+								echo $form->field($model,'control')->textInput(['maxlength' => true,'style' => 'text-transform: uppercase']);
 								PopoverX::end();															
 								
 								?>
+								</div>
 							</div>
 						</div>
 						<?php

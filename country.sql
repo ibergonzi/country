@@ -37,7 +37,7 @@ CREATE TABLE `accesos` (
   `egr_id_user` int(11) DEFAULT NULL,
   `id_concepto` int(11) NOT NULL,
   `motivo` varchar(50) NOT NULL,
-  `control` varchar(100) DEFAULT NULL,
+  `control` varchar(200) DEFAULT NULL,
   `cant_acomp` tinyint(4) NOT NULL DEFAULT '0',
   `created_by` int(11) NOT NULL,
   `created_at` datetime NOT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE `accesos` (
   CONSTRAINT `fk_egr_vehiculo` FOREIGN KEY (`egr_id_vehiculo`) REFERENCES `vehiculos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_ing_vehiculo` FOREIGN KEY (`ing_id_vehiculo`) REFERENCES `vehiculos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_personas` FOREIGN KEY (`id_persona`) REFERENCES `personas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -65,7 +65,7 @@ CREATE TABLE `accesos` (
 
 LOCK TABLES `accesos` WRITE;
 /*!40000 ALTER TABLE `accesos` DISABLE KEYS */;
-INSERT INTO `accesos` VALUES (38,9,4,'2016-03-19','2016-03-19 15:45:45',1,9,4,'2016-03-19','2016-03-19 15:45:59',1,9,14,'PRUEBA AUTORIZANTES',NULL,3,9,'2016-03-19 15:45:45',9,'2016-03-19 15:45:59',1,NULL),(39,10,4,'2016-03-19','2016-03-19 15:45:45',1,9,NULL,NULL,NULL,NULL,NULL,14,'PRUEBA AUTORIZANTES',NULL,3,9,'2016-03-19 15:45:45',9,'2016-03-19 15:45:45',1,NULL),(41,236,8,'2016-03-19','2016-03-19 16:28:17',1,9,8,'2016-03-19','2016-03-19 16:28:17',1,9,0,'SIN INGRESO',NULL,0,9,'2016-03-19 16:28:17',9,'2016-03-19 16:28:17',1,NULL),(42,9,4,'2016-03-19','2016-03-19 17:13:53',1,9,4,'2016-03-19','2016-03-19 17:14:29',1,9,4,'A LABURAR',NULL,0,9,'2016-03-19 17:13:53',9,'2016-03-19 17:14:29',1,NULL),(43,84,4,'2016-03-19','2016-03-19 17:13:53',1,9,4,'2016-03-19','2016-03-19 17:14:29',1,9,4,'A LABURAR',NULL,0,9,'2016-03-19 17:13:53',9,'2016-03-19 17:14:29',1,NULL),(44,10,4,'2016-03-19','2016-03-19 17:13:53',1,9,4,'2016-03-19','2016-03-19 17:14:29',1,9,4,'A LABURAR',NULL,0,9,'2016-03-19 17:13:53',9,'2016-03-19 17:14:29',1,NULL),(45,236,4,'2016-03-19','2016-03-19 17:13:53',1,9,4,'2016-03-19','2016-03-19 17:14:29',1,9,4,'A LABURAR',NULL,0,9,'2016-03-19 17:13:53',9,'2016-03-19 17:14:29',1,NULL),(46,9,4,'2016-03-19','2016-03-19 17:15:18',1,9,4,'2016-03-19','2016-03-19 17:15:33',1,9,4,'A LABURAR',NULL,0,9,'2016-03-19 17:15:18',9,'2016-03-19 17:15:33',1,NULL),(47,10,4,'2016-03-19','2016-03-19 17:15:18',1,9,4,'2016-03-19','2016-03-19 17:15:33',1,9,4,'A LABURAR',NULL,0,9,'2016-03-19 17:15:18',9,'2016-03-19 17:15:33',1,NULL),(48,84,4,'2016-03-19','2016-03-19 17:15:18',1,9,4,'2016-03-19','2016-03-19 17:15:33',1,9,4,'A LABURAR',NULL,0,9,'2016-03-19 17:15:18',9,'2016-03-19 17:15:33',1,NULL),(49,236,4,'2016-03-19','2016-03-19 17:15:18',1,9,4,'2016-03-19','2016-03-19 17:15:33',1,9,4,'A LABURAR',NULL,0,9,'2016-03-19 17:15:18',9,'2016-03-19 17:15:33',1,NULL),(50,9,4,'2016-03-19','2016-03-19 17:16:10',1,9,NULL,NULL,NULL,NULL,NULL,4,'A LABURAR',NULL,0,9,'2016-03-19 17:16:10',9,'2016-03-19 17:16:10',1,NULL),(51,10,4,'2016-03-19','2016-03-19 17:16:10',1,9,NULL,NULL,NULL,NULL,NULL,4,'A LABURAR',NULL,0,9,'2016-03-19 17:16:10',9,'2016-03-19 17:16:10',1,NULL),(52,236,4,'2016-03-19','2016-03-19 17:16:10',1,9,NULL,NULL,NULL,NULL,NULL,4,'A LABURAR',NULL,0,9,'2016-03-19 17:16:10',9,'2016-03-19 17:16:10',1,NULL),(53,84,4,'2016-03-19','2016-03-19 17:33:15',1,9,4,'2016-03-19','2016-03-19 17:33:15',1,9,0,'SIN INGRESO',NULL,0,9,'2016-03-19 17:33:15',9,'2016-03-19 17:33:15',1,NULL),(54,84,4,'2016-03-19','2016-03-19 17:33:52',1,11,4,'2016-03-19','2016-03-19 17:33:52',1,9,0,'SIN INGRESO',NULL,0,9,'2016-03-19 17:33:52',9,'2016-03-19 17:33:52',1,NULL),(55,30,7,'2016-03-22','2016-03-22 17:45:22',1,9,NULL,NULL,NULL,NULL,NULL,7,'VISITA',NULL,0,9,'2016-03-22 17:45:22',9,'2016-03-22 17:45:22',1,NULL);
+INSERT INTO `accesos` VALUES (38,9,4,'2016-03-19','2016-03-19 15:45:45',1,9,4,'2016-03-19','2016-03-19 15:45:59',1,9,14,'PRUEBA AUTORIZANTES',NULL,3,9,'2016-03-19 15:45:45',9,'2016-03-19 15:45:59',1,NULL),(39,10,4,'2016-03-19','2016-03-19 15:45:45',1,9,NULL,NULL,NULL,NULL,NULL,14,'PRUEBA AUTORIZANTES',NULL,3,9,'2016-03-19 15:45:45',9,'2016-03-19 15:45:45',1,NULL),(41,236,8,'2016-03-19','2016-03-19 16:28:17',1,9,8,'2016-03-19','2016-03-19 16:28:17',1,9,0,'SIN INGRESO',NULL,0,9,'2016-03-19 16:28:17',9,'2016-03-19 16:28:17',1,NULL),(42,9,4,'2016-03-19','2016-03-19 17:13:53',1,9,4,'2016-03-19','2016-03-19 17:14:29',1,9,4,'A LABURAR',NULL,0,9,'2016-03-19 17:13:53',9,'2016-03-19 17:14:29',1,NULL),(43,84,4,'2016-03-19','2016-03-19 17:13:53',1,9,4,'2016-03-19','2016-03-19 17:14:29',1,9,4,'A LABURAR',NULL,0,9,'2016-03-19 17:13:53',9,'2016-03-19 17:14:29',1,NULL),(44,10,4,'2016-03-19','2016-03-19 17:13:53',1,9,4,'2016-03-19','2016-03-19 17:14:29',1,9,4,'A LABURAR',NULL,0,9,'2016-03-19 17:13:53',9,'2016-03-19 17:14:29',1,NULL),(45,236,4,'2016-03-19','2016-03-19 17:13:53',1,9,4,'2016-03-19','2016-03-19 17:14:29',1,9,4,'A LABURAR',NULL,0,9,'2016-03-19 17:13:53',9,'2016-03-19 17:14:29',1,NULL),(46,9,4,'2016-03-19','2016-03-19 17:15:18',1,9,4,'2016-03-19','2016-03-19 17:15:33',1,9,4,'A LABURAR',NULL,0,9,'2016-03-19 17:15:18',9,'2016-03-19 17:15:33',1,NULL),(47,10,4,'2016-03-19','2016-03-19 17:15:18',1,9,4,'2016-03-19','2016-03-19 17:15:33',1,9,4,'A LABURAR',NULL,0,9,'2016-03-19 17:15:18',9,'2016-03-19 17:15:33',1,NULL),(48,84,4,'2016-03-19','2016-03-19 17:15:18',1,9,4,'2016-03-19','2016-03-19 17:15:33',1,9,4,'A LABURAR',NULL,0,9,'2016-03-19 17:15:18',9,'2016-03-19 17:15:33',1,NULL),(49,236,4,'2016-03-19','2016-03-19 17:15:18',1,9,4,'2016-03-19','2016-03-19 17:15:33',1,9,4,'A LABURAR',NULL,0,9,'2016-03-19 17:15:18',9,'2016-03-19 17:15:33',1,NULL),(50,9,4,'2016-03-19','2016-03-19 17:16:10',1,9,NULL,NULL,NULL,NULL,NULL,4,'A LABURAR',NULL,0,9,'2016-03-19 17:16:10',9,'2016-03-19 17:16:10',1,NULL),(51,10,4,'2016-03-19','2016-03-19 17:16:10',1,9,NULL,NULL,NULL,NULL,NULL,4,'A LABURAR',NULL,0,9,'2016-03-19 17:16:10',9,'2016-03-19 17:16:10',1,NULL),(52,236,4,'2016-03-19','2016-03-19 17:16:10',1,9,NULL,NULL,NULL,NULL,NULL,4,'A LABURAR',NULL,0,9,'2016-03-19 17:16:10',9,'2016-03-19 17:16:10',1,NULL),(53,84,4,'2016-03-19','2016-03-19 17:33:15',1,9,4,'2016-03-19','2016-03-19 17:33:15',1,9,0,'SIN INGRESO',NULL,0,9,'2016-03-19 17:33:15',9,'2016-03-19 17:33:15',1,NULL),(54,84,4,'2016-03-19','2016-03-19 17:33:52',1,11,4,'2016-03-19','2016-03-19 17:33:52',1,9,0,'SIN INGRESO',NULL,0,9,'2016-03-19 17:33:52',9,'2016-03-19 17:33:52',1,NULL),(55,30,7,'2016-03-22','2016-03-22 17:45:22',1,9,NULL,NULL,NULL,NULL,NULL,7,'VISITA',NULL,0,9,'2016-03-22 17:45:22',9,'2016-03-22 17:45:22',1,NULL),(56,84,4,'2016-03-23','2016-03-23 14:49:37',1,9,4,'2016-03-23','2016-03-23 15:12:52',1,9,1,'A LABURAR','ENTRAN CON UN CARRO VACIO.- EL CARRO SE VA LLENO',0,9,'2016-03-23 14:49:37',9,'2016-03-23 15:12:52',1,NULL),(57,9,4,'2016-03-23','2016-03-23 14:49:37',1,9,4,'2016-03-23','2016-03-23 15:12:52',1,9,1,'A LABURAR','ENTRAN CON UN CARRO VACIO.- EL CARRO SE VA LLENO',0,9,'2016-03-23 14:49:37',9,'2016-03-23 15:12:52',1,NULL),(58,9,4,'2016-03-23','2016-03-23 15:14:30',1,9,4,'2016-03-23','2016-03-23 15:14:51',1,9,1,'A LABURAR','SE LLEVAN UNA BICI',0,9,'2016-03-23 15:14:30',9,'2016-03-23 15:14:51',1,NULL),(59,84,4,'2016-03-23','2016-03-23 15:14:30',1,9,4,'2016-03-23','2016-03-23 15:14:51',1,9,1,'A LABURAR','SE LLEVAN UNA BICI',0,9,'2016-03-23 15:14:30',9,'2016-03-23 15:14:51',1,NULL);
 /*!40000 ALTER TABLE `accesos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -88,7 +88,7 @@ CREATE TABLE `accesos_autorizantes` (
   CONSTRAINT `accesos_autorizantes_ibfk_1` FOREIGN KEY (`id_uf`) REFERENCES `uf` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_accesos_aut` FOREIGN KEY (`id_acceso`) REFERENCES `accesos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_personas_aut` FOREIGN KEY (`id_persona`) REFERENCES `personas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -97,7 +97,7 @@ CREATE TABLE `accesos_autorizantes` (
 
 LOCK TABLES `accesos_autorizantes` WRITE;
 /*!40000 ALTER TABLE `accesos_autorizantes` DISABLE KEYS */;
-INSERT INTO `accesos_autorizantes` VALUES (6,38,9,128),(7,38,30,129),(8,39,9,128),(9,39,30,129),(10,42,9,128),(11,42,30,129),(12,43,9,128),(13,43,30,129),(14,44,9,128),(15,44,30,129),(16,45,9,128),(17,45,30,129),(18,46,9,128),(19,46,30,129),(20,47,9,128),(21,47,30,129),(22,48,9,128),(23,48,30,129),(24,49,9,128),(25,49,30,129),(26,50,9,128),(27,50,30,129),(28,51,9,128),(29,51,30,129),(30,52,9,128),(31,52,30,129),(32,55,10,128),(33,55,10,129),(34,55,9,128),(35,55,30,129);
+INSERT INTO `accesos_autorizantes` VALUES (6,38,9,128),(7,38,30,129),(8,39,9,128),(9,39,30,129),(10,42,9,128),(11,42,30,129),(12,43,9,128),(13,43,30,129),(14,44,9,128),(15,44,30,129),(16,45,9,128),(17,45,30,129),(18,46,9,128),(19,46,30,129),(20,47,9,128),(21,47,30,129),(22,48,9,128),(23,48,30,129),(24,49,9,128),(25,49,30,129),(26,50,9,128),(27,50,30,129),(28,51,9,128),(29,51,30,129),(30,52,9,128),(31,52,30,129),(32,55,10,128),(33,55,10,129),(34,55,9,128),(35,55,30,129),(36,56,9,128),(37,56,30,129),(38,57,9,128),(39,57,30,129),(40,58,9,128),(41,58,30,129),(42,59,9,128),(43,59,30,129);
 /*!40000 ALTER TABLE `accesos_autorizantes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -142,6 +142,7 @@ SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE VIEW `accesos_vista` AS SELECT 
  1 AS `id`,
+ 1 AS `id_acceso`,
  1 AS `id_persona`,
  1 AS `ing_id_vehiculo`,
  1 AS `ing_fecha`,
@@ -794,7 +795,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8mb4_unicode_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `accesos_vista` AS select `accesos`.`id` AS `id`,`accesos`.`id_persona` AS `id_persona`,`accesos`.`ing_id_vehiculo` AS `ing_id_vehiculo`,`accesos`.`ing_fecha` AS `ing_fecha`,`accesos`.`ing_hora` AS `ing_hora`,`accesos`.`ing_id_porton` AS `ing_id_porton`,`accesos`.`ing_id_user` AS `ing_id_user`,`accesos`.`egr_id_vehiculo` AS `egr_id_vehiculo`,`accesos`.`egr_fecha` AS `egr_fecha`,`accesos`.`egr_hora` AS `egr_hora`,`accesos`.`egr_id_porton` AS `egr_id_porton`,`accesos`.`egr_id_user` AS `egr_id_user`,`accesos`.`id_concepto` AS `id_concepto`,`accesos`.`motivo` AS `motivo`,`accesos`.`control` AS `control`,`accesos`.`cant_acomp` AS `cant_acomp`,`accesos`.`created_by` AS `created_by`,`accesos`.`created_at` AS `created_at`,`accesos`.`updated_by` AS `updated_by`,`accesos`.`updated_at` AS `updated_at`,`accesos`.`estado` AS `estado`,`accesos`.`motivo_baja` AS `motivo_baja`,`aa`.`id_persona` AS `id_autorizante`,`aa`.`id_uf` AS `id_uf` from (`accesos` join `accesos_autorizantes` `aa` on((`accesos`.`id` = `aa`.`id_acceso`))) */;
+/*!50001 VIEW `accesos_vista` AS select NULL AS `id`,`accesos`.`id` AS `id_acceso`,`accesos`.`id_persona` AS `id_persona`,`accesos`.`ing_id_vehiculo` AS `ing_id_vehiculo`,`accesos`.`ing_fecha` AS `ing_fecha`,`accesos`.`ing_hora` AS `ing_hora`,`accesos`.`ing_id_porton` AS `ing_id_porton`,`accesos`.`ing_id_user` AS `ing_id_user`,`accesos`.`egr_id_vehiculo` AS `egr_id_vehiculo`,`accesos`.`egr_fecha` AS `egr_fecha`,`accesos`.`egr_hora` AS `egr_hora`,`accesos`.`egr_id_porton` AS `egr_id_porton`,`accesos`.`egr_id_user` AS `egr_id_user`,`accesos`.`id_concepto` AS `id_concepto`,`accesos`.`motivo` AS `motivo`,`accesos`.`control` AS `control`,`accesos`.`cant_acomp` AS `cant_acomp`,`accesos`.`created_by` AS `created_by`,`accesos`.`created_at` AS `created_at`,`accesos`.`updated_by` AS `updated_by`,`accesos`.`updated_at` AS `updated_at`,`accesos`.`estado` AS `estado`,`accesos`.`motivo_baja` AS `motivo_baja`,`aa`.`id_persona` AS `id_autorizante`,`aa`.`id_uf` AS `id_uf` from (`accesos` join `accesos_autorizantes` `aa` on((`accesos`.`id` = `aa`.`id_acceso`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -808,4 +809,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-03-22 20:17:08
+-- Dump completed on 2016-03-23 18:33:55

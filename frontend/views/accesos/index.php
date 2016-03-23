@@ -19,7 +19,12 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
- 
+ 				//'striped'=>true,
+				//'condensed'=>true,
+				//'responsive'=>true,
+				//'hover'=>false,
+				//'bootstrap'=>false,
+				'bordered'=>false,
         'columns' => [
             'id_acceso',
             'id_persona',
@@ -68,6 +73,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'id_uf',
             'estado',
             'motivo_baja',
+            
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

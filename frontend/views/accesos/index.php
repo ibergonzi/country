@@ -19,12 +19,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
- 				//'striped'=>true,
-				//'condensed'=>true,
-				//'responsive'=>true,
-				//'hover'=>false,
-				//'bootstrap'=>false,
-				'bordered'=>false,
+        // Para que muestre todo el gridview, solo aplicable a kartik, el de yii anda bien
+        'containerOptions' => ['style'=>'overflow: visible'], 
         'columns' => [
             'id_acceso',
             'id_persona',

@@ -130,7 +130,7 @@ class Accesos extends \yii\db\ActiveRecord
             'id' => Yii::t('app', 'ID'),
             'id_persona' => Yii::t('app', 'Persona'),
             'ing_id_vehiculo' => Yii::t('app', 'Vehic.Ing.'),
-            'ing_fecha' => Yii::t('app', 'Fec.Ing.'),
+            'ing_fecha' => Yii::t('app', 'Fecha.Ing.'),
             'ing_hora' => Yii::t('app', 'H.Ing.'),
             'ing_id_porton' => Yii::t('app', 'Porton Ing.'),
             'ing_id_user' => Yii::t('app', 'Usuario Ing.'),

@@ -65,7 +65,7 @@ class AccesosController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
-
+    
     /**
      * Displays a single Accesos model.
      * @param integer $id

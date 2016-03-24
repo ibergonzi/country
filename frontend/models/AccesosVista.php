@@ -73,7 +73,7 @@ class AccesosVista extends \yii\db\ActiveRecord
             'id_acceso' => Yii::t('app', 'ID'),
             'id_persona' => Yii::t('app', 'Persona'),
             'ing_id_vehiculo' => Yii::t('app', 'Vehic.Ing.'),
-            'ing_fecha' => Yii::t('app', 'Fec.Ing.'),
+            'ing_fecha' => Yii::t('app', 'Fecha Ing.'),
             'ing_hora' => Yii::t('app', 'H.Ing.'),
             'ing_id_porton' => Yii::t('app', 'Porton Ing.'),
             'ing_id_user' => Yii::t('app', 'Usuario Ing.'),
@@ -112,7 +112,7 @@ class AccesosVista extends \yii\db\ActiveRecord
      */
     public function getEgrVehiculo()
     {
-        return $this->hasOne(Vehiculos::className(), ['id' => 'egr_id_vehiculo']);
+        return $this->hasOne(Vehiculos::className(), ['id' => 'egr_id_vehiculo'])->from(Vehiculos::tableName() . ' vegr');
     }
 
     /**
@@ -120,7 +120,7 @@ class AccesosVista extends \yii\db\ActiveRecord
      */
     public function getIngVehiculo()
     {
-        return $this->hasOne(Vehiculos::className(), ['id' => 'ing_id_vehiculo']);
+        return $this->hasOne(Vehiculos::className(), ['id' => 'ing_id_vehiculo'])->from(Vehiculos::tableName() . ' ving');
     }
 
     /**
@@ -130,6 +130,11 @@ class AccesosVista extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Personas::className(), ['id' => 'id_persona']);
     }    
+    
+    public function getPersonaAutorizante()
+    {
+        return $this->hasOne(Personas::className(), ['id' => 'id_autorizante'])->from(Personas::tableName() . ' pautoriz');
+    }     
 
     public function getUserCreatedBy()
     {

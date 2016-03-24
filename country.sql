@@ -1,4 +1,4 @@
--- MySQL dump 10.13  Distrib 5.6.28, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.13  Distrib 5.6.28, for debian-linux-gnu (i686)
 --
 -- Host: localhost    Database: country
 -- ------------------------------------------------------
@@ -133,6 +133,32 @@ INSERT INTO `accesos_conceptos` VALUES (0,'SIN INGRESO',0,0,9,'2016-03-19 00:00:
 UNLOCK TABLES;
 
 --
+-- Table structure for table `accesos_uf`
+--
+
+DROP TABLE IF EXISTS `accesos_uf`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `accesos_uf` (
+  `id_acceso` int(10) unsigned NOT NULL,
+  `id_uf` int(11) NOT NULL,
+  PRIMARY KEY (`id_acceso`,`id_uf`),
+  KEY `id_uf` (`id_uf`),
+  CONSTRAINT `accesos_uf_ibfk_1` FOREIGN KEY (`id_uf`) REFERENCES `uf` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_accesos_uf` FOREIGN KEY (`id_acceso`) REFERENCES `accesos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `accesos_uf`
+--
+
+LOCK TABLES `accesos_uf` WRITE;
+/*!40000 ALTER TABLE `accesos_uf` DISABLE KEYS */;
+/*!40000 ALTER TABLE `accesos_uf` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Temporary view structure for view `accesos_vista`
 --
 
@@ -166,6 +192,61 @@ SET character_set_client = utf8;
  1 AS `motivo_baja`,
  1 AS `id_autorizante`,
  1 AS `id_uf`*/;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary view structure for view `accesos_vista_f`
+--
+
+DROP TABLE IF EXISTS `accesos_vista_f`;
+/*!50001 DROP VIEW IF EXISTS `accesos_vista_f`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE VIEW `accesos_vista_f` AS SELECT 
+ 1 AS `id`,
+ 1 AS `id_acceso`,
+ 1 AS `id_persona`,
+ 1 AS `ing_id_vehiculo`,
+ 1 AS `ing_fecha`,
+ 1 AS `ing_hora`,
+ 1 AS `ing_id_porton`,
+ 1 AS `ing_id_user`,
+ 1 AS `egr_id_vehiculo`,
+ 1 AS `egr_fecha`,
+ 1 AS `egr_hora`,
+ 1 AS `egr_id_porton`,
+ 1 AS `egr_id_user`,
+ 1 AS `id_concepto`,
+ 1 AS `motivo`,
+ 1 AS `control`,
+ 1 AS `cant_acomp`,
+ 1 AS `created_by`,
+ 1 AS `created_at`,
+ 1 AS `updated_by`,
+ 1 AS `updated_at`,
+ 1 AS `estado`,
+ 1 AS `motivo_baja`,
+ 1 AS `id_autorizante`,
+ 1 AS `id_uf`,
+ 1 AS `r_ing_usuario`,
+ 1 AS `r_egr_usuario`,
+ 1 AS `r_apellido`,
+ 1 AS `r_nombre`,
+ 1 AS `r_nombre2`,
+ 1 AS `r_nro_doc`,
+ 1 AS `r_aut_apellido`,
+ 1 AS `r_aut_nombre`,
+ 1 AS `r_aut_nombre2`,
+ 1 AS `r_aut_nro_doc`,
+ 1 AS `r_ing_patente`,
+ 1 AS `r_ing_marca`,
+ 1 AS `r_ing_modelo`,
+ 1 AS `r_ing_color`,
+ 1 AS `r_egr_patente`,
+ 1 AS `r_egr_marca`,
+ 1 AS `r_egr_modelo`,
+ 1 AS `r_egr_color`,
+ 1 AS `desc_concepto`*/;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -681,6 +762,30 @@ INSERT INTO `vehiculos` VALUES (1,'8888','BICICLETA','','',9,'2016-02-22 00:00:0
 UNLOCK TABLES;
 
 --
+-- Table structure for table `vehiculos_marcas`
+--
+
+DROP TABLE IF EXISTS `vehiculos_marcas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `vehiculos_marcas` (
+  `id` tinyint(4) NOT NULL AUTO_INCREMENT,
+  `desc_marca` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vehiculos_marcas`
+--
+
+LOCK TABLES `vehiculos_marcas` WRITE;
+/*!40000 ALTER TABLE `vehiculos_marcas` DISABLE KEYS */;
+INSERT INTO `vehiculos_marcas` VALUES (1,'FORD'),(2,'RENAULT');
+/*!40000 ALTER TABLE `vehiculos_marcas` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Dumping routines for database 'country'
 --
 /*!50003 DROP PROCEDURE IF EXISTS `autorizantes_busca_nombres` */;
@@ -799,6 +904,24 @@ DELIMITER ;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `accesos_vista_f`
+--
+
+/*!50001 DROP VIEW IF EXISTS `accesos_vista_f`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_unicode_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `accesos_vista_f` AS select NULL AS `id`,`accesos`.`id` AS `id_acceso`,`accesos`.`id_persona` AS `id_persona`,`accesos`.`ing_id_vehiculo` AS `ing_id_vehiculo`,`accesos`.`ing_fecha` AS `ing_fecha`,`accesos`.`ing_hora` AS `ing_hora`,`accesos`.`ing_id_porton` AS `ing_id_porton`,`accesos`.`ing_id_user` AS `ing_id_user`,`accesos`.`egr_id_vehiculo` AS `egr_id_vehiculo`,`accesos`.`egr_fecha` AS `egr_fecha`,`accesos`.`egr_hora` AS `egr_hora`,`accesos`.`egr_id_porton` AS `egr_id_porton`,`accesos`.`egr_id_user` AS `egr_id_user`,`accesos`.`id_concepto` AS `id_concepto`,`accesos`.`motivo` AS `motivo`,`accesos`.`control` AS `control`,`accesos`.`cant_acomp` AS `cant_acomp`,`accesos`.`created_by` AS `created_by`,`accesos`.`created_at` AS `created_at`,`accesos`.`updated_by` AS `updated_by`,`accesos`.`updated_at` AS `updated_at`,`accesos`.`estado` AS `estado`,`accesos`.`motivo_baja` AS `motivo_baja`,`aa`.`id_persona` AS `id_autorizante`,`aa`.`id_uf` AS `id_uf`,`uing`.`username` AS `r_ing_usuario`,`uegr`.`username` AS `r_egr_usuario`,`personas`.`apellido` AS `r_apellido`,`personas`.`nombre` AS `r_nombre`,`personas`.`nombre2` AS `r_nombre2`,`personas`.`nro_doc` AS `r_nro_doc`,`pautoriz`.`apellido` AS `r_aut_apellido`,`pautoriz`.`nombre` AS `r_aut_nombre`,`pautoriz`.`nombre2` AS `r_aut_nombre2`,`pautoriz`.`nro_doc` AS `r_aut_nro_doc`,`ving`.`patente` AS `r_ing_patente`,`ving`.`marca` AS `r_ing_marca`,`ving`.`modelo` AS `r_ing_modelo`,`ving`.`color` AS `r_ing_color`,`vegr`.`patente` AS `r_egr_patente`,`vegr`.`marca` AS `r_egr_marca`,`vegr`.`modelo` AS `r_egr_modelo`,`vegr`.`color` AS `r_egr_color`,`accesos_conceptos`.`concepto` AS `desc_concepto` from ((((((((`accesos` join `accesos_autorizantes` `aa` on((`accesos`.`id` = `aa`.`id_acceso`))) left join `user` `uing` on((`accesos`.`ing_id_user` = `uing`.`id`))) left join `user` `uegr` on((`accesos`.`egr_id_user` = `uegr`.`id`))) left join `personas` on((`accesos`.`id_persona` = `personas`.`id`))) left join `vehiculos` `ving` on((`accesos`.`ing_id_vehiculo` = `ving`.`id`))) left join `vehiculos` `vegr` on((`accesos`.`egr_id_vehiculo` = `vegr`.`id`))) left join `personas` `pautoriz` on((`aa`.`id_persona` = `pautoriz`.`id`))) left join `accesos_conceptos` on((`accesos`.`id_concepto` = `accesos_conceptos`.`id`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -809,4 +932,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-03-23 18:33:55
+-- Dump completed on 2016-03-24 18:41:04

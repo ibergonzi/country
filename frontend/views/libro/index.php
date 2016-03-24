@@ -11,6 +11,7 @@ use yii\bootstrap\Modal;
 
 use frontend\models\Comentarios;
 
+use kartik\popover\PopoverX;
 
 /* @var $this yii\web\View */
 /* @var $searchModel frontend\models\LibroSearch */
@@ -53,43 +54,39 @@ ExportSelectorAsset::register($this);
 					]
 				]
 			]);
-		
-		
-    ?>
 
-
-	<?php
-	
+		
 		// para evitar que la pagina se cuelgue cuando se le saca la paginación y hay muchos registros a mostrar
 		//if ($dataProvider->totalCount <= 200) {
-			$toolbar=['{export}','{toggleData}'];
+			$toolbar=[
+				'{export}',
+				'{toggleData}'
+			];
 		//} else {
 		//	$toolbar=['{export}'];
 		//}
 		
-	?>
-	
-	<?php
+		
 		// tiene que estar fuera del Pjax
-		echo Html::checkboxButtonGroup(
-			'exportColumns',[0,1,2,3],
-			[0=>'Portón', 1=>'Usuario',2=>'Fecha',3=>'Texto'],
-			['class'=>'pull-right btn-group-sm',
-			'title' => 'Elija las columnas a exportar',
-			]
-			);	
+		echo PopoverX::widget([
+			'options'=>['id'=>'popControl'],
+			'placement' => PopoverX::ALIGN_LEFT_BOTTOM,
+			'toggleButton' => ['label'=>'<i class="glyphicon glyphicon-list"></i> Cols.a exportar', 
+								'class'=>'btn btn-default pull-right'],
+			'header'=>'Elija las columnas a exportar',
+			'size'=>'lg',
+			'content'=>Html::checkboxList('exportColumns', [0,1,2,3], [0=>'Portón', 1=>'Usuario',2=>'Fecha',3=>'Texto'],
+				['class'=>'form-control','tag'=>false,//'separator'=>'<br/>'
+				])											
+		]);
 		// para que no se encime con el summary del gridview	
 		echo '<div class="clearfix"></div>';
-	?>	
-	
-	<?php 
+		
+
 		Pjax::begin(['id' => 'grilla', 'timeout' => false ,
 		'enablePushState' => false,
 		'clientOptions' => ['method' => 'GET'] ]); 
-	?>	
 
-
-    <?php
 	if (\Yii::$app->session->get('libroFecDesde')) {
 		$lbl2=' ('.Yii::$app->formatter->asDate(\Yii::$app->session->get('libroFecDesde')) .
 					'-' . Yii::$app->formatter->asDate(\Yii::$app->session->get('libroFecHasta')) . ')';

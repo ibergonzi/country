@@ -60,7 +60,7 @@ use kartik\widgets\DatePicker;
     <?php ActiveForm::end(); ?>
     
         <?php
-			if (\Yii::$app->session->get('accesosFecDesde')) {			
+			if (\Yii::$app->session->get('accesosFecDesdeF')) {			
 				echo Html::a('<span class="glyphicon glyphicon-remove"></span>',['index'],[
 										'class'=>'btn btn-danger',
 										'title'=>'Eliminar Filtro',

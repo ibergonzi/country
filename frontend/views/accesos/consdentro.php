@@ -23,7 +23,7 @@ $this->registerCss('.modal-body { max-height: calc(100vh - 210px);overflow-y: au
 /* @var $searchModel frontend\models\AccesosSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Accesos');
+$this->title = Yii::t('app', 'Personas adentro');
 $this->params['breadcrumbs'][] = $this->title;
 /*
 $this->registerCss('
@@ -45,27 +45,7 @@ ExportSelectorAsset::register($this);
 
     
     <?php 
-
-		if (\Yii::$app->session->get('accesosFecDesdeF')) {
-			$lbl=Html::tag('span','',['class'=>'glyphicon glyphicon-warning-sign','style'=>'color:#FF8000']).
-				'  '.
-				'Filtro por fecha desde el ' . Yii::$app->formatter->asDate(\Yii::$app->session->get('accesosFecDesdeF')) .
-				' hasta el ' . Yii::$app->formatter->asDate(\Yii::$app->session->get('accesosFecHastaF'));
-
-		} else {
-			$lbl='Filtrar por rango de fechas';
-		}
-
-		echo Collapse::widget([
-		'encodeLabels'=>false,
-		'items'=>[
-				[
-				'label'=> $lbl,
-				'content'=>$this->render('_searchfec', ['model' => $searchModel]),
-				]
-			]
-		]);
-		
+	
 		// para evitar que la pagina se cuelgue cuando se le saca la paginación y hay muchos registros a mostrar
 		//if ($dataProvider->totalCount <= 200) {
 			$toolbar=[
@@ -75,17 +55,9 @@ ExportSelectorAsset::register($this);
 		//} else {
 		//	$toolbar=['{export}'];
 		//}
-		
-		
-
 	
-		
-		if (\Yii::$app->session->get('accesosFecDesdeF')) {
-			$lbl2=' ('.Yii::$app->formatter->asDate(\Yii::$app->session->get('accesosFecDesdeF')) .
-						'-' . Yii::$app->formatter->asDate(\Yii::$app->session->get('accesosFecHastaF')) . ')';
-		} else {
-			$lbl2='';
-		}	
+
+		$lbl2='';
 		$pdfHeader=[
 					'L'=>['content'=>'Barrio Miraflores'],
 					'C'=>['content'=>$this->title . $lbl2,
@@ -104,15 +76,41 @@ ExportSelectorAsset::register($this);
 		
 		// las columnas se definen fuera del gridview para poder extraer las etiquetas para el 
 		// popover que define las columnas a exportar	
+		
+		if ($consulta) { 
+			$header='';
+		} else {
+			$header=Html::button('<span class="glyphicon glyphicon-plus-sign"></span>',
+							
+							['class' => 'btn btn-sm btn-primary',
+							 'title' => 'Efectuar egreso',
+							 'data-pjax'=>'0',
+							 'onclick'=>'var keys = $("#w0").yiiGridView("getSelectedRows");
+										$.post({
+										   url: "egreso-grupal", 
+										   dataType: "json",
+										   data: {keylist: keys},
+										   success: function(data) {
+												if (data.status === "success") {
+													$.pjax.reload({container:"#w0"});
+												} else {	
+													alert("Hubo un error, intente de nuevo");  
+												}
+											}
+										});'
+							]
+						 );
+		}
+		
 		$columns=[
        		['class' => 'kartik\grid\ActionColumn',
-				 'header'=>'',
+				 'header'=>$header,
 				 'headerOptions'=>['style'=>'text-align:center'],   
 				 'options'=>['style'=>'width:70px'],   
 				 'template' => '{comentario}',  
 				 'buttons' => [
 					'comentario' => function ($url, $model) {
-						$c=Comentarios::getComentariosByModelId('frontend\models\Accesos',$model->id_acceso);
+						$c=Comentarios::getComentariosByModelId('frontend\models\Accesos',$model->id);
 
 						$text='<span class="glyphicon glyphicon-copyright-mark"';
 						if (!empty($c)) {
@@ -154,13 +152,13 @@ ExportSelectorAsset::register($this);
 							$url=Yii::$app->urlManager->createUrl(
 									['comentarios/create-ajax',
 										'modelName'=>'frontend\models\Accesos',
-										'modelID'=>$model->id_acceso]);
+										'modelID'=>$model->id]);
 						return $url;
 					 }
 					 if ($action === 'view') {
 						$url=Yii::$app->urlManager->createUrl(
 								['accesos/view', 
-								 'id' => $model->id_acceso
+								 'id' => $model->id
 								]);
 						return $url;
 					 }						 
@@ -168,14 +166,18 @@ ExportSelectorAsset::register($this);
 				  }
 		  
 			], 		
+			[
+				'class' => '\kartik\grid\CheckboxColumn',
+				'visible'=>!$consulta
+			],			
             [
-				'attribute'=>'id_acceso',
+				'attribute'=>'id',
 				'format' => 'raw',
 				'value' => function ($model, $index, $widget) {
-					return Html::a($model->id_acceso, 
+					return Html::a($model->id, 
 								Yii::$app->urlManager->createUrl(
 										['accesos/view', 
-										 'id' => $model->id_acceso
+										 'id' => $model->id
 										]),
 										['title' => 'Ver detalle',
 										 // para que se abra el link en nueva pestaña hay que setear ademas pjax="0"
@@ -241,84 +243,14 @@ ExportSelectorAsset::register($this);
             'r_ing_marca',
             'r_ing_modelo',
             'r_ing_color',
-            'ing_id_porton',
-            'r_ing_usuario',
-  		    [
+   		    [
 				'attribute'=>'id_concepto',
 				'value'=>'desc_concepto', 
-				'filter'=>AccesosConceptos::getListaConceptos(true),
+				'filter'=>AccesosConceptos::getListaConceptos(false),
 		    ],
             'motivo',		 
-               
-            [
-				'attribute'=>'id_autorizante',
-				'format' => 'raw',
-				'value' => function ($model, $index, $widget) {
-					return Html::a($model->id_autorizante, 
-								Yii::$app->urlManager->createUrl(
-										['personas/view', 
-										 'id' => $model->id_autorizante
-										]),
-										['title' => 'Ver detalle de autorizante',
-										 // para que se abra el link en nueva pestaña hay que setear ademas pjax="0"
-										 'target' => '_blank',
-										 'data-pjax'=>'0'
-										]);
-					},
-            ],
-            'r_aut_apellido',
-            'r_aut_nombre',
-            'r_aut_nombre2',
 
-			/*		
-			'r_aut_nro_doc',
-
-			*/                     
-            'id_uf',
-		    [
-				 'attribute'=>'egr_fecha',
-				 //'options'=>['style'=>'width:420px',],             
-				 'format'=>['date'],
-				 'filter'=>MaskedInput::widget([
-						'model' => $searchModel,
-						'attribute'=>'egr_fecha',
-						'mask' => '99/99/9999',
-					]),				 
-			],     
-		    [
-				 'attribute'=>'egr_hora',
-				 //'options'=>['style'=>'width:420px',],             
-				 'format'=>['time'],	
-			],			    
-            [
-				'attribute'=>'egr_id_vehiculo',
-				'format' => 'raw',
-				'value' => function ($model, $index, $widget) {
-					return Html::a($model->egr_id_vehiculo, 
-								Yii::$app->urlManager->createUrl(
-										['vehiculos/view', 
-										 'id' => $model->egr_id_vehiculo
-										]),
-										['title' => 'Ver detalle del vehiculo',
-										 // para que se abra el link en nueva pestaña hay que setear ademas pjax="0"
-										 'target' => '_blank',
-										 'data-pjax'=>'0'
-										]);
-					},
-            ],
-            'r_egr_patente',
-            'r_egr_marca',
-            'r_egr_modelo',
-            'r_egr_color',
-            'egr_id_porton',
-            'r_egr_usuario',
             'control',
-            [
-				'attribute'=>'estado',
-                'value'=>function($data) {return Accesos::getEstados($data->estado);},
-                'filter'=>Accesos::getEstados(),
-            ],
-            'motivo_baja',
 
         ];	
         
@@ -346,6 +278,8 @@ ExportSelectorAsset::register($this);
 			}
 		}
 
+		//echo '<div class="clearfix"></div>';
+
 		// tiene que estar fuera del Pjax
 		echo PopoverX::widget([
 			'options'=>['id'=>'popControl'],
@@ -363,6 +297,7 @@ ExportSelectorAsset::register($this);
 		//echo '<div class="clearfix"></div>';	
 
 
+
 	Pjax::begin(['id' => 'grilla', 'timeout' => false ,
 		'enablePushState' => false,
 		'clientOptions' => ['method' => 'GET'] ]);    
@@ -372,7 +307,7 @@ ExportSelectorAsset::register($this);
         'filterModel' => $searchModel,
         // Para que muestre todo el gridview, solo aplicable a kartik, el de yii anda bien
         'containerOptions' => ['style'=>'overflow: visible'], 
-		'condensed'=>false,
+		'condensed'=>true,
 		'resizableColumns'=>false,
 		//'floatHeader'=>true,	
 		//'bordered'=>false,

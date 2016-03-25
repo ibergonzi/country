@@ -151,8 +151,8 @@ class Accesos extends \yii\db\ActiveRecord
             'motivo_baja' => Yii::t('app', 'Motivo Baja'),
             'userCreatedBy.username'=>'Usuario alta',
             'userUpdatedBy.username'=>'Usuario modif.',             
-            //'userIngreso.username'=>'Usuario Ing.',
-            //'userEgreso.username'=>'Usuario Egr.',      
+            'userIngreso.username'=>'Usuario Ing.',
+            'userEgreso.username'=>'Usuario Egr.',      
             //'descUsuarioIng'=>'U.Ing.','descUsuarioEgr'=>'U.Egr.'       
 
         ];

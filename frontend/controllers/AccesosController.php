@@ -16,6 +16,8 @@ use kartik\grid\GridView;
 use yii\helpers\Html;
 
 use frontend\models\Accesos;
+use frontend\models\AccesosVista;
+use frontend\models\AccesosSearchAut;
 use frontend\models\AccesosSearch;
 use frontend\models\Personas;
 use frontend\models\Vehiculos;
@@ -38,6 +40,8 @@ use yii\db\Expression;
  */
 class AccesosController extends Controller
 {
+	/*
+	// se anula porque no se puede eliminar desde el index, sino desde el view (se llama por GET y no por POST)	
     public function behaviors()
     {
         return [
@@ -49,6 +53,7 @@ class AccesosController extends Controller
             ],
         ];
     }
+    */
 
     /**
      * Lists all Accesos models.
@@ -56,15 +61,82 @@ class AccesosController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new AccesosSearch();
+        $searchModel = new AccesosSearchAut();
         //Yii::trace($searchModel->attributeLabels());
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams,false);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
+    
+    public function actionEgresoGrupal()
+    {
+		// chequea que se haya elegido un porton, sino es asi se redirecciona a la eleccion de porton
+		if (!\Yii::$app->session->get('porton')) {
+			// se setea returnUrl para que funcione el goBack en portones/elegir (parecido a lo que hace login())
+			Yii::$app->user->setReturnUrl(Yii::$app->urlManager->createUrl(['accesos/egreso']));
+			return $this->redirect(['portones/elegir']);
+		}		
+		
+        $searchModel = new AccesosSearch();
+		if (isset($_POST['keylist'])) {
+			$keys=$_POST['keylist'];
+			
+			\Yii::$app->response->format = 'json';	
+			if (!is_array($keys)) {
+				return ['status' => 'error'];
+			}
+			if (count($keys)==0) { return ['status' => 'error'];}
+			
+
+			// Para que coincidan las fechas y horas en todos los registros se utilizan variables auxiliares antes de grabar
+			$fecAux=date("Y-m-d");
+			$horAux=new Expression('CURRENT_TIMESTAMP');
+			$transaction = Yii::$app->db->beginTransaction();				
+			try {			
+				foreach ($keys as $m) {
+					$model=Accesos::findOne($m);
+					$model->egr_id_vehiculo=$model->ing_id_vehiculo;
+					$model->egr_fecha=$fecAux;
+					$model->egr_hora=$horAux;
+					$model->egr_id_porton=\Yii::$app->session->get('porton');  
+					$model->egr_id_user=\Yii::$app->user->identity->id;					
+					$model->save();				
+				}	
+				$transaction->commit();
+			} catch(\Exception $e) {
+				$transaction->rollBack();
+				throw $e;
+			} // try..catch			
+			return ['status' => 'success'];			
+		}
+		
+
+        
+        //Yii::trace($searchModel->attributeLabels());
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams,true);
+
+        return $this->render('consdentro', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'consulta'=>false
+        ]);
+    }    
+    
+    public function actionConsDentro()
+    {
+        $searchModel = new AccesosSearch();
+        //Yii::trace($searchModel->attributeLabels());
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams,true);
+
+        return $this->render('consdentro', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'consulta'=>true
+        ]);
+    }        
     
     /**
      * Displays a single Accesos model.
@@ -1158,9 +1230,23 @@ class AccesosController extends Controller
      */
     public function actionDelete($id)
     {
+		/*
         $this->findModel($id)->delete();
-
         return $this->redirect(['index']);
+        */
+        
+        $model = $this->findModel($id);
+        
+        if ($model->load(Yii::$app->request->post())) {
+			$model->estado=Accesos::ESTADO_BAJA;
+			if ($model->save()) {
+				return $this->redirect(['view', 'id' => $model->id]);
+			}
+        } else {
+            return $this->render('delete', [
+                'model' => $model,
+            ]);
+        }               
     }
 
     /**

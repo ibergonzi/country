@@ -10,9 +10,9 @@ use frontend\models\Accesos;
 /**
  * AccesosSearch represents the model behind the search form about `\frontend\models\Accesos`.
  */
-
-// OJO aca, extiende AccesosVista y no Accesos (a dif de AccesosVistaF esta no trae los autorizantes)
-class AccesosSearch extends AccesosVista
+ 
+// OJO aca, extiende AccesosVistaF y no Accesos 
+class AccesosSearchAut extends AccesosVistaF
 {
 	public $fecdesde;
 	public $fechasta;	
@@ -28,7 +28,7 @@ class AccesosSearch extends AccesosVista
         return [
             [['id', 'id_persona', 'ing_id_vehiculo', 'ing_id_porton', 'ing_id_user', 
 				'egr_id_vehiculo', 'egr_id_porton', 'egr_id_user', 'id_concepto', 
-				'cant_acomp', 'created_by', 'updated_by', 'estado',], 'integer'],
+				'cant_acomp', 'created_by', 'updated_by', 'estado','id_autorizante','id_uf'], 'integer'],
             [['ing_fecha', 
 				//'ing_hora', 
 				'egr_fecha', 
@@ -49,6 +49,11 @@ class AccesosSearch extends AccesosVista
 				'r_egr_marca',
 				'r_egr_modelo',
 				'r_egr_color',	
+				'r_aut_apellido',
+				'r_aut_nombre',
+				'r_aut_nombre2',
+				//'r_desc_tipo_doc',
+				'r_aut_nro_doc',	
 				'desc_concepto',					
 				], 'safe'],
             [['fecdesde','fechasta',],'safe'],
@@ -87,21 +92,19 @@ class AccesosSearch extends AccesosVista
      *
      * @return ActiveDataProvider
      */
-    public function search($params,$consDentro=null)
+    public function search($params)
     {
 		// OJO uso AccesosSearch para que me tome los attributelabels de las propiedades nuevas (antes tenia Accesos)
-		if ($consDentro) {
-			$query = AccesosSearch::find()->andWhere(['egr_fecha'=>null,'estado'=>1]);	
-		} else {
-			$query = AccesosSearch::find();
-		}
+
+		$query = AccesosSearchAut::find();
+
         
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination'=>[
 				'pageSize' => 10,
 			],
-			'sort' => ['defaultOrder' => ['id' => SORT_DESC,],
+			'sort' => ['defaultOrder' => ['id_acceso' => SORT_DESC,],
 						// esta opcion se usa para que sea el campo que el usuario ordene, luego ordene siempre por el default
 						// es decir, si el usuario ordena por persona, la lista viene ordenada por persona y created_at desc
 					   'enableMultiSort'=>true,
@@ -118,7 +121,7 @@ class AccesosSearch extends AccesosVista
         }
 
 		$query->andFilterWhere([
-            'id' => $this->id,
+            'id_acceso' => $this->id_acceso,
             'id_persona' => $this->id_persona,
             'ing_id_vehiculo' => $this->ing_id_vehiculo,
             'ing_fecha' => $this->fecSP2EN($this->ing_fecha),
@@ -137,7 +140,8 @@ class AccesosSearch extends AccesosVista
             'updated_by' => $this->updated_by,
             'updated_at' => $this->updated_at,
             'estado' => $this->estado,
-
+            'id_autorizante' => $this->id_autorizante,
+            'id_uf' => $this->id_uf,
         ]);
 
         $query->andFilterWhere(['like', 'id', $this->id])
@@ -150,6 +154,10 @@ class AccesosSearch extends AccesosVista
             ->andFilterWhere(['like', 'r_nombre', $this->r_nombre])
             ->andFilterWhere(['like', 'r_nombre2', $this->r_nombre2])
             ->andFilterWhere(['like', 'r_nro_doc', $this->r_nro_doc])
+            ->andFilterWhere(['like', 'r_aut_apellido', $this->r_aut_apellido])
+            ->andFilterWhere(['like', 'r_aut_nombre', $this->r_aut_nombre])
+            ->andFilterWhere(['like', 'r_aut_nombre2', $this->r_aut_nombre2])
+            ->andFilterWhere(['like', 'r_aut_nro_doc', $this->r_aut_nro_doc])
             ->andFilterWhere(['like', 'r_ing_patente', $this->r_ing_patente])
             ->andFilterWhere(['like', 'r_ing_marca', $this->r_ing_marca])
             ->andFilterWhere(['like', 'r_ing_modelo', $this->r_ing_modelo])
@@ -161,8 +169,8 @@ class AccesosSearch extends AccesosVista
             ->andFilterWhere(['like', 'desc_concepto', $this->desc_concepto]);
 
 		if (isset($params['resetFechas'])) {
-			\Yii::$app->session->remove('accesosFecDesde');
-			\Yii::$app->session->remove('accesosFecHasta');
+			\Yii::$app->session->remove('accesosFecDesdeF');
+			\Yii::$app->session->remove('accesosFecHastaF');
 			$this->fecdesde=null;
 			$this->fechasta=null;
 			unset($params['resetFechas']);
@@ -171,8 +179,8 @@ class AccesosSearch extends AccesosVista
 
         if (!empty($this->fecdesde) && !empty($this->fechasta)) {
 			// cada vez que se envia el form con el rango de fechas se guardan las fechas en sesion
-			\Yii::$app->session->set('accesosFecDesde',$this->fecdesde);			
-			\Yii::$app->session->set('accesosFecHasta',$this->fechasta);					
+			\Yii::$app->session->set('accesosFecDesdeF',$this->fecdesde);			
+			\Yii::$app->session->set('accesosFecHastaF',$this->fechasta);					
 			
 			// para el between entre datetimes se debe agregar un dia mas a la fecha hasta
 			$f=new \DateTime($this->fechasta);
@@ -180,15 +188,15 @@ class AccesosSearch extends AccesosVista
 			$query->andFilterWhere(['between', 'ing_fecha', $this->fecdesde, $f->format('Y-m-d')]);
 			
 		} else {
-			$sfd=\Yii::$app->session->get('accesosFecDesde')?\Yii::$app->session->get('accesosFecDesde'):'';
-			$sfh=\Yii::$app->session->get('accesosFecHasta')?\Yii::$app->session->get('accesosFecHasta'):'';
+			$sfd=\Yii::$app->session->get('accesosFecDesdeF')?\Yii::$app->session->get('accesosFecDesdeF'):'';
+			$sfh=\Yii::$app->session->get('accesosFecHastaF')?\Yii::$app->session->get('accesosFecHastaF'):'';
 			
 			// si todavia están en sesion las variables del rango de fechas se hace el between y se elimina created_at
 			if ($sfd && $sfh) {
 				// para el between entre datetimes se debe agregar un dia mas a la fecha hasta
-				$f=new \DateTime(\Yii::$app->session->get('accesosFecHasta'));
+				$f=new \DateTime(\Yii::$app->session->get('accesosFecHastaF'));
 				//$f->add(new \DateInterval('P1D'));
-				$query->andFilterWhere(['between', 'ing_fecha', \Yii::$app->session->get('accesosFecDesde'), 
+				$query->andFilterWhere(['between', 'ing_fecha', \Yii::$app->session->get('accesosFecDesdeF'), 
 						$f->format('Y-m-d')]);
 				$this->created_at='';		
 			}				

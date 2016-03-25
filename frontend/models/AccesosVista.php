@@ -7,8 +7,7 @@ use Yii;
 /**
  * This is the model class for table "accesos_vista".
  *
- * @property integer $id
- * @property integer $id_acceso
+ * @property string $id
  * @property integer $id_persona
  * @property integer $ing_id_vehiculo
  * @property string $ing_fecha
@@ -30,8 +29,21 @@ use Yii;
  * @property string $updated_at
  * @property integer $estado
  * @property string $motivo_baja
- * @property integer $id_autorizante
- * @property integer $id_uf
+ * @property string $r_ing_usuario
+ * @property string $r_egr_usuario
+ * @property string $r_apellido
+ * @property string $r_nombre
+ * @property string $r_nombre2
+ * @property string $r_nro_doc
+ * @property string $r_ing_patente
+ * @property string $r_ing_marca
+ * @property string $r_ing_modelo
+ * @property string $r_ing_color
+ * @property string $r_egr_patente
+ * @property string $r_egr_marca
+ * @property string $r_egr_modelo
+ * @property string $r_egr_color
+ * @property string $desc_concepto
  */
 class AccesosVista extends \yii\db\ActiveRecord
 {
@@ -43,11 +55,11 @@ class AccesosVista extends \yii\db\ActiveRecord
         return 'accesos_vista';
     }
     
-	// creado a mano para que gii pueda crear controller y views
+    	// creado a mano para que gii pueda crear controller y views
 	public static function primaryKey()
     {     
         return ['id'];   
-    }    
+    }  
 
     /**
      * @inheritdoc
@@ -55,11 +67,18 @@ class AccesosVista extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id','id_acceso', 'id_persona', 'ing_id_vehiculo', 'ing_id_porton', 'ing_id_user', 'egr_id_vehiculo', 'egr_id_porton', 'egr_id_user', 'id_concepto', 'cant_acomp', 'created_by', 'updated_by', 'estado', 'id_autorizante', 'id_uf'], 'integer'],
-            [['id_persona', 'ing_id_vehiculo', 'ing_fecha', 'ing_hora', 'ing_id_porton', 'ing_id_user', 'id_concepto', 'motivo', 'created_by', 'created_at', 'updated_by', 'updated_at', 'id_autorizante', 'id_uf'], 'required'],
+            [['id'], 'string'],
+            [['id_persona', 'ing_id_vehiculo', 'ing_id_porton', 'ing_id_user', 'egr_id_vehiculo', 'egr_id_porton', 'egr_id_user', 'id_concepto', 'cant_acomp', 'created_by', 'updated_by', 'estado',  ], 'integer'],
+            [['id_persona', 'ing_id_vehiculo', 'ing_fecha', 'ing_hora', 'ing_id_porton', 'ing_id_user', 'id_concepto', 'motivo', 'created_by', 'created_at', 'updated_by', 'updated_at', ], 'required'],
             [['ing_fecha', 'ing_hora', 'egr_fecha', 'egr_hora', 'created_at', 'updated_at'], 'safe'],
-            [['motivo', 'motivo_baja'], 'string', 'max' => 50],
+            [['motivo', 'motivo_baja', 'desc_concepto'], 'string', 'max' => 50],
             [['control'], 'string', 'max' => 200],
+            [['r_ing_usuario', 'r_egr_usuario'], 'string', 'max' => 255],
+            [['r_apellido', 'r_nombre', 'r_nombre2', ], 'string', 'max' => 45],
+            [['r_nro_doc',], 'string', 'max' => 15],
+            [['r_ing_patente', 'r_ing_color', 'r_egr_patente', 'r_egr_color'], 'string', 'max' => 10],
+            [['r_ing_marca', 'r_egr_marca'], 'string', 'max' => 20],
+            [['r_ing_modelo', 'r_egr_modelo'], 'string', 'max' => 30],
         ];
     }
 
@@ -69,95 +88,81 @@ class AccesosVista extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('app', 'id'),
-            'id_acceso' => Yii::t('app', 'ID'),
-            'id_persona' => Yii::t('app', 'Persona'),
-            'ing_id_vehiculo' => Yii::t('app', 'Vehic.Ing.'),
-            'ing_fecha' => Yii::t('app', 'Fecha Ing.'),
-            'ing_hora' => Yii::t('app', 'H.Ing.'),
-            'ing_id_porton' => Yii::t('app', 'Porton Ing.'),
-            'ing_id_user' => Yii::t('app', 'Usuario Ing.'),
-            'egr_id_vehiculo' => Yii::t('app', 'Vehic.Egr.'),
-            'egr_fecha' => Yii::t('app', 'Fec.Egr.'),
-            'egr_hora' => Yii::t('app', 'H.Egr.'),
-            'egr_id_porton' => Yii::t('app', 'Porton Egr.'),
-            'egr_id_user' => Yii::t('app', 'Usuario Egr.'),
-            'id_concepto' => Yii::t('app', 'Concepto'),
-            'motivo' => Yii::t('app', 'Motivo'),
-            'control' => Yii::t('app', 'Control'),
-            'cant_acomp' => Yii::t('app', 'Cant.Acomp.'),
-            'created_by' => Yii::t('app', 'Usuario alta'),
-            'created_at' => Yii::t('app', 'Fecha alta'),
-            'updated_by' => Yii::t('app', 'Usuario modif.'),
-            'updated_at' => Yii::t('app', 'Fecha modif.'),
-            'estado' => Yii::t('app', 'Estado'),            
-            'motivo_baja' => Yii::t('app', 'Motivo Baja'),
-            'userCreatedBy.username'=>'Usuario alta',
-            'userUpdatedBy.username'=>'Usuario modif.', 
-            'id_autorizante' => Yii::t('app', 'Id Autorizante'),
-            'id_uf' => Yii::t('app', 'Id Uf'),
+            'id' => 'id',
+            'id_persona' => 'Persona',
+            'ing_id_vehiculo' => 'Vehic.Ing.',
+            'ing_fecha' => 'Fecha Ing.',
+            'ing_hora' => 'H.Ing.',
+            'ing_id_porton' => 'Porton Ing.',
+            'ing_id_user' => 'Usuario Ing.',
+            'egr_id_vehiculo' => 'Vehic.Egr.',
+            'egr_fecha' => 'Fec.Egr.',
+            'egr_hora' => 'H.Egr.',
+            'egr_id_porton' => 'Porton Egr.',
+            'egr_id_user' => 'Usuario Egr.',
+            'id_concepto' => 'Concepto',
+            'motivo' => 'Motivo',
+            'control' => 'Control',
+            'cant_acomp' => 'Cant.Acomp.',
+            'created_by' => 'Usuario alta',
+            'created_at' => 'Fecha alta',
+            'updated_by' => 'Usuario modif.',
+            'updated_at' => 'Fecha modif.',
+            'estado' => 'Estado',
+            'motivo_baja' => 'Motivo Baja',
+            'r_ing_usuario' => 'Usuario Ing.',
+            'r_egr_usuario' => 'Usuario Egr.',
+            'r_apellido' => 'Apellido',
+            'r_nombre' => 'Nombre',
+            'r_nombre2' => 'Nombre2',
+            'r_nro_doc' => 'Nro Doc',
+            'r_ing_patente' => 'Patente',
+            'r_ing_marca' => 'Marca',
+            'r_ing_modelo' => 'Modelo',
+            'r_ing_color' => 'Color',
+            'r_egr_patente' => 'Patente',
+            'r_egr_marca' => 'Marca',
+            'r_egr_modelo' => 'Modelo',
+            'r_egr_color' => 'Color',
+            'desc_concepto' => 'Concepto',
         ];
     }
-    
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAccesosConcepto()
-    {
-        return $this->hasOne(AccesosConceptos::className(), ['id' => 'id_concepto']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getEgrVehiculo()
-    {
-        return $this->hasOne(Vehiculos::className(), ['id' => 'egr_id_vehiculo'])->from(Vehiculos::tableName() . ' vegr');
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getIngVehiculo()
-    {
-        return $this->hasOne(Vehiculos::className(), ['id' => 'ing_id_vehiculo'])->from(Vehiculos::tableName() . ' ving');
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPersona()
-    {
-        return $this->hasOne(Personas::className(), ['id' => 'id_persona']);
-    }    
-    
-    public function getPersonaAutorizante()
-    {
-        return $this->hasOne(Personas::className(), ['id' => 'id_autorizante'])->from(Personas::tableName() . ' pautoriz');
-    }     
-
-    public function getUserCreatedBy()
-    {
-        return $this->hasOne(\common\models\User::className(), 
-				['id' => 'created_by'])->from(\common\models\User::tableName() . ' ucre');
-    }    
-    
-    public function getUserUpdatedBy()
-    {
-        return $this->hasOne(\common\models\User::className(), 
-				['id' => 'updated_by'])->from(\common\models\User::tableName() . ' uupd');
-    }    	
-
-    public function getUserIngreso()
-    {
-        return $this->hasOne(\common\models\User::className(), 
-				['id' => 'ing_id_user'])->from(\common\models\User::tableName() . ' uing');
-    }    
-    
-    public function getUserEgreso()
-    {
-        return $this->hasOne(\common\models\User::className(), 
-				['id' => 'egr_id_user'])->from(\common\models\User::tableName() . ' uegr');
-				
-    }    	    
 }
+/*
+select `country`.`accesos`.`id` AS `id`,`country`.`accesos`.`id_persona` AS `id_persona`,
+`country`.`accesos`.`ing_id_vehiculo` AS `ing_id_vehiculo`,
+`country`.`accesos`.`ing_fecha` AS `ing_fecha`,`country`.`accesos`.`ing_hora` AS `ing_hora`,
+`country`.`accesos`.`ing_id_porton` AS `ing_id_porton`,`country`.`accesos`.`ing_id_user` AS `ing_id_user`,
+`country`.`accesos`.`egr_id_vehiculo` AS `egr_id_vehiculo`,`country`.`accesos`.`egr_fecha` AS `egr_fecha`,
+`country`.`accesos`.`egr_hora` AS `egr_hora`,`country`.`accesos`.`egr_id_porton` AS `egr_id_porton`,
+`country`.`accesos`.`egr_id_user` AS `egr_id_user`,`country`.`accesos`.`id_concepto` AS `id_concepto`,
+`country`.`accesos`.`motivo` AS `motivo`,`country`.`accesos`.`control` AS `control`,
+`country`.`accesos`.`cant_acomp` AS `cant_acomp`,`country`.`accesos`.`created_by` AS `created_by`,
+`country`.`accesos`.`created_at` AS `created_at`,`country`.`accesos`.`updated_by` AS `updated_by`,
+`country`.`accesos`.`updated_at` AS `updated_at`,`country`.`accesos`.`estado` AS `estado`,
+`country`.`accesos`.`motivo_baja` AS `motivo_baja`,
+`uing`.`username` as r_ing_usuario,
+`uegr`.`username` as r_egr_usuario,
+`personas`.apellido as r_apellido,
+`personas`.nombre as r_nombre,
+`personas`.nombre2 as r_nombre2,
+`personas`.nro_doc as r_nro_doc,
+`ving`.patente as r_ing_patente,
+`ving`.marca as r_ing_marca,
+`ving`.modelo as r_ing_modelo,
+`ving`.color as r_ing_color,
+`vegr`.patente as r_egr_patente,
+`vegr`.marca as r_egr_marca,
+`vegr`.modelo as r_egr_modelo,
+`vegr`.color as r_egr_color,
+`accesos_conceptos`.concepto as desc_concepto
+from `country`.`accesos` 
+LEFT JOIN `user` `uing` ON `ing_id_user` = `uing`.`id` 
+LEFT JOIN `user` `uegr` ON `egr_id_user` = `uegr`.`id` 
+LEFT JOIN `personas` ON accesos.id_persona = `personas`.`id` 
+LEFT JOIN `vehiculos` `ving` ON `ing_id_vehiculo` = `ving`.`id` 
+LEFT JOIN `vehiculos` `vegr` ON `egr_id_vehiculo` = `vegr`.`id` 
+LEFT JOIN `accesos_conceptos` ON `id_concepto` = `accesos_conceptos`.`id`
+*/
+
+

@@ -42,8 +42,8 @@ class AccesosAutorizantes extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_acceso' => Yii::t('app', 'Id Acceso'),
-            'id_persona' => Yii::t('app', 'Id Persona'),
+            'id_acceso' => Yii::t('app', 'Acceso'),
+            'id_persona' => Yii::t('app', 'Persona'),
             'id_uf' => Yii::t('app', 'U.F.'),
         ];
     }
@@ -67,7 +67,7 @@ class AccesosAutorizantes extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdPersona()
+    public function getPersona()
     {
         return $this->hasOne(Personas::className(), ['id' => 'id_persona']);
     }

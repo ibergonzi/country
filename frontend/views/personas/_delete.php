@@ -8,6 +8,8 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Personas */
 /* @var $form yii\widgets\ActiveForm */
+$this->registerJs('$("#personas-motivo_baja").focus();',yii\web\View::POS_READY);
+
 ?>
 <div class='container'>
 	

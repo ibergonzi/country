@@ -22,8 +22,11 @@ $this->registerCss('.modal-body { max-height: calc(100vh - 210px);overflow-y: au
 /* @var $this yii\web\View */
 /* @var $searchModel frontend\models\AccesosSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
-
-$this->title = Yii::t('app', 'Personas adentro');
+if ($consulta) {
+	$this->title = 'Personas adentro';
+} else {
+	$this->title = 'Egreso grupal';	
+}
 $this->params['breadcrumbs'][] = $this->title;
 /*
 $this->registerCss('

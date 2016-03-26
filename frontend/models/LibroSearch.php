@@ -94,7 +94,7 @@ class LibroSearch extends Libro
             'libro.id' => $this->id,
             'idporton' => $this->idporton,
             //'created_by' => $this->created_by,
-            //'created_at' => $this->created_at,
+            //'created_at' => $this->fecSP2EN($this->created_at),
             //'updated_by' => $this->updated_by,
             //'updated_at' => $this->updated_at,
         ]);
@@ -136,10 +136,18 @@ class LibroSearch extends Libro
 			}				
 			else
 			{	
-				$query->andFilterWhere(['like', 'libro.created_at', $this->created_at]);
+				$query->andFilterWhere(['like', 'libro.created_at', $this->fecSP2EN($this->created_at)]);
 			}	
 		}			
 
         return $dataProvider;
     }
+    
+    public function fecSP2EN($fec) {
+		if ($fec ==null) return null;
+		$a=explode('/',$fec);
+		$r=array_reverse($a);
+		$f=implode('-',$r);		
+		return $f;
+    }    
 }

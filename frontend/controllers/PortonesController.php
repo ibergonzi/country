@@ -27,7 +27,7 @@ class PortonesController extends Controller
     }
 
 
-    public function actionElegir()
+    public function actionElegir($backUrl=null)
     {
 
 		$model = Portones::find()->where(['habilitado' => true])->all();
@@ -38,7 +38,9 @@ class PortonesController extends Controller
 		if (isset(Yii::$app->request->post()['eligeporton'])) {
 			\Yii::$app->session->set('porton',Yii::$app->request->post()['eligeporton']);
 			// para que funcione goBack hay que setear Yii::$app->user->setReturnUrl 
-			$this->goBack();
+			if ($backUrl) {
+				return $this->redirect([$backUrl]);
+			}
 		}
 		
         return $this->render('elegir', [

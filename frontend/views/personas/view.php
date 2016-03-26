@@ -8,7 +8,10 @@ use frontend\models\Personas;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Personas */
 
+
+
 $this->title = 'Detalle de Persona';
+
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Personas'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

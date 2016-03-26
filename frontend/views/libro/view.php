@@ -13,7 +13,17 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="libro-view">
 
     <h3><?= Html::encode($this->title) ?></h3>
+	<?php
+		if (!$pdf) {
+			echo '<p>';
+			echo Html::a('<i class="glyphicon glyphicon-print"></i> PDF', ['pdf', 'id' => $model->id], [
+				'class' => 'btn btn-default',//'target'=>'_blank',
+				]);					
+			echo '</p>';	
 
+		}	
+	?>
+	
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [

@@ -9,6 +9,7 @@ use yii\bootstrap\ActiveForm;
 
 $this->title = 'Registro';
 $this->params['breadcrumbs'][] = $this->title;
+$this->registerJs('$("#signupform-username").focus()', yii\web\View::POS_READY);
 ?>
 <div class="site-signup">
     <h1><?= Html::encode($this->title) ?></h1>

@@ -549,7 +549,13 @@ $(document).ready(function() {
 						'heading' => '',
 						'items' => [
 							['label' => 'Egresos', 'icon' => 'arrow-left', 'url' => Url::to(['accesos/egreso'])],
-							['label' => 'Libro guardia', 'icon' => 'book', 'url' => Url::to(['libro/index']),],
+							['label' => 'Libro guardia', 'icon' => 'book', 'url' => Url::to(['libro/index']),
+								'template'=> '<a href="{url}" target="_blank">{icon}{label}</a>'
+							],
+							
+
+							
+							
 						],
 					]);        									
 									

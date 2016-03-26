@@ -6,6 +6,8 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Libro */
 /* @var $form yii\widgets\ActiveForm */
+
+$this->registerJs('$("#libro-texto").focus()', yii\web\View::POS_READY);
 ?>
 
 <div class="libro-form">

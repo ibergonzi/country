@@ -10,12 +10,16 @@ use common\widgets\Alert;
 
 $this->title = 'Solicitar cambio de clave de acceso';
 $this->params['breadcrumbs'][] = $this->title;
+$this->registerJs('$("#passwordresetrequestform-email").focus()', yii\web\View::POS_READY);
 ?>
 <div class="site-request-password-reset">
 	<?php echo Alert::widget() ?>	
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>Especifique su dirección de correo. Se le enviará una página para cambiar su clave de acceso.</p>
+    <p><i>Importante:</i> es posible que su servidor de correo identifique a este mail como "no seguro", por favor, 
+    además de su casilla de entradas, revise también en "Spam".
+    </p>
 
     <div class="row">
         <div class="col-lg-5">

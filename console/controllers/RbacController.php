@@ -86,7 +86,8 @@ class RbacController extends Controller
 		$auth->addChild($consejo, $accederConsAccesos);
 		$auth->addChild($administrador, $accederConsAccesos);		
 		$auth->addChild($intendente, $accederConsAccesos);	
-		$auth->addChild($opIntendencia, $accederConsAccesos);			
+		$auth->addChild($opIntendencia, $accederConsAccesos);
+		$auth->addChild($portero, $accederConsAccesos);					
 		
 		$accederConsDentro=$auth->createPermission('accederConsDentro');
 		$accederConsDentro->description='Acceso: consulta personas adentro';
@@ -94,7 +95,58 @@ class RbacController extends Controller
 		$auth->addChild($consejo, $accederConsDentro);
 		$auth->addChild($administrador, $accederConsDentro);		
 		$auth->addChild($intendente, $accederConsDentro);
-		$auth->addChild($opIntendencia, $accederConsDentro);								
+		$auth->addChild($opIntendencia, $accederConsDentro);	
+		$auth->addChild($portero, $accederConsDentro);	
+		
+		$borrarAcceso=$auth->createPermission('borrarAcceso');
+		$borrarAcceso->description='Eliminar: acceso';
+		$auth->add($borrarAcceso);	
+		$auth->addChild($intendente, $borrarAcceso);
+		$auth->addChild($opIntendencia, $borrarAcceso);	
+		
+		$accederListaPersonas=$auth->createPermission('accederListaPersonas');
+		$accederListaPersonas->description='Acceso: lista de personas';
+		$auth->add($accederListaPersonas);	
+		$auth->addChild($consejo, $accederListaPersonas);
+		$auth->addChild($administrador, $accederListaPersonas);		
+		$auth->addChild($intendente, $accederListaPersonas);
+		$auth->addChild($opIntendencia, $accederListaPersonas);	
+		$auth->addChild($portero, $accederListaPersonas);	
+
+		$borrarPersona=$auth->createPermission('borrarPersona');
+		$borrarPersona->description='Eliminar: persona';
+		$auth->add($borrarPersona);	
+		$auth->addChild($intendente, $borrarPersona);
+		$auth->addChild($opIntendencia, $borrarPersona);	
+		
+		$altaModificarPersona=$auth->createPermission('altaModificarPersona');
+		$altaModificarPersona->description='Alta/modif.: persona';
+		$auth->add($altaModificarPersona);	
+		$auth->addChild($intendente, $altaModificarPersona);
+		$auth->addChild($opIntendencia, $altaModificarPersona);	
+		
+		$altaPersonaIngEgr=$auth->createPermission('altaPersonaIngEgr');
+		$altaPersonaIngEgr->description='Alta: persona (desde accesos)';
+		$auth->add($altaPersonaIngEgr);	
+		$auth->addChild($intendente, $altaPersonaIngEgr);
+		$auth->addChild($opIntendencia, $altaPersonaIngEgr);	
+		$auth->addChild($portero, $altaPersonaIngEgr);	
+		
+		$accederLibro=$auth->createPermission('accederLibro');
+		$accederLibro->description='Acceso: libro de guardia';
+		$auth->add($accederLibro);	
+		$auth->addChild($intendente, $accederLibro);
+		$auth->addChild($opIntendencia, $accederLibro);	
+		$auth->addChild($portero, $accederLibro);	
+		$auth->addChild($consejo, $accederLibro);
+		$auth->addChild($administrador, $accederLibro);	
+		
+		$altaLibro=$auth->createPermission('altaLibro');
+		$altaLibro->description='Alta: libro de guardia';
+		$auth->add($altaLibro);	
+		$auth->addChild($portero, $altaLibro);	
+											
+									
 
 			
 		// Asignaciones de roles a usuarios OJO con el id de user
@@ -102,6 +154,9 @@ class RbacController extends Controller
 		$auth->assign($administrador, 8);
         $auth->assign($consejo, 7);
         $auth->assign($intendente, 9);
+        
+        $auth->assign($portero,11);
+        $auth->assign($sinrol,13);
 		
     }
 }

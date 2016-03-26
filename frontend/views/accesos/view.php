@@ -24,14 +24,21 @@ $this->registerCss('table.detail-view th {width: 25%;} table.detail-view td {wid
 
    
 	<?php
-		
-		if ($model->estado==Accesos::ESTADO_ACTIVO) {
+		if (!$pdf) {
 			echo '<p>';
-			echo Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
-				'class' => 'btn btn-danger',
-				]);
+			if ($model->estado==Accesos::ESTADO_ACTIVO ) {
+				if (\Yii::$app->user->can('borrarAcceso')) {
+					echo Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
+						'class' => 'btn btn-danger',
+						]).'&nbsp;';
+				}
+			}
+			echo Html::a('<i class="glyphicon glyphicon-print"></i> PDF', ['pdf', 'id' => $model->id], [
+				'class' => 'btn btn-default',//'target'=>'_blank',
+				]);					
 			echo '</p>';	
-		}
+
+		}			
 
 	?>
 
@@ -120,6 +127,7 @@ $this->registerCss('table.detail-view th {width: 25%;} table.detail-view td {wid
     ]) ?>
  
     <?php
+    
 		$aut=AccesosAutorizantes::findAll(['id_acceso'=>$model->id]);
 		$primeraVez=true;			
 		foreach ($aut as $a) {
@@ -181,5 +189,6 @@ $this->registerCss('table.detail-view th {width: 25%;} table.detail-view td {wid
 			]);
 			echo '<hr/>';
 		}
+		
     ?>
 </div>

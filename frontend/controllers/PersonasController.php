@@ -8,6 +8,7 @@ use frontend\models\PersonasSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 use yii\db\Query;
 use yii\helpers\Json;
@@ -22,20 +23,54 @@ use yii\web\UploadedFile;
  */
 class PersonasController extends Controller
 {
-	/*
-	// se anula porque no se puede eliminar desde el index, sino desde el view (se llama por GET y no por POST)
+	
+
     public function behaviors()
     {
         return [
+			/* 	// se anula porque no se puede eliminar desde el index, sino desde el view (se llama por GET y no por POST)
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['post'],
                 ],
             ],
+            */
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['delete'],
+                        'allow' => true,
+                        'roles' => ['borrarPersona'], 
+                    ],                
+                    [
+                        'actions' => ['index','view'],
+                        'allow' => true,
+                        'roles' => ['accederListaPersonas'], 
+                    ],
+                    [
+                        'actions' => ['create','update'],
+                        'allow' => true,
+                        'roles' => ['altaModificarPersona'], 
+                    ],
+                    [
+                        'actions' => ['create-ajax'],
+                        'allow' => true,
+                        'roles' => ['altaPersonaIngEgr'], 
+                    ],                    
+                    [ 
+                        'actions' => ['apellidoslist'],
+						'allow' => true,
+						'roles' => ['accederIngreso','accederEgreso'],  
+					],
+ 		
+                 ], // fin rules
+             ], // fin access            
+            
         ];
     }
-    */
+    
 
     /**
      * Lists all Personas models.

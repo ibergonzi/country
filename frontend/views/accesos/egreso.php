@@ -391,7 +391,8 @@ $(document).ready(function() {
 						'items' => [
 							['label' => 'Ingresos', 'icon' => 'arrow-right', 'url' => Url::to(['accesos/ingreso'])],
 							['label' => 'Libro guardia', 'icon' => 'book', 'url' => Url::to(['libro/index']),
-								],
+								'template'=> '<a href="{url}" target="_blank">{icon}{label}</a>'
+							],
 						],
 					]);  					
 

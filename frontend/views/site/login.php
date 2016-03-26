@@ -9,6 +9,7 @@ use yii\bootstrap\ActiveForm;
 
 $this->title = 'Acceso';
 $this->params['breadcrumbs'][] = $this->title;
+$this->registerJs('$("#loginform-username").focus()', yii\web\View::POS_READY);
 ?>
 <div class="site-login">
     <h1><?= Html::encode($this->title) ?></h1>

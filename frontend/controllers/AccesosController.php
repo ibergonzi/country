@@ -6,6 +6,7 @@ use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 use yii\base\Model;
 
@@ -29,7 +30,8 @@ use frontend\models\AccesosUf;
 use frontend\models\AccesosConceptos;
 use frontend\models\Uf;
 
-use yii\filters\AccessControl;
+use kartik\mpdf\Pdf;
+
 
 use yii\db\Expression;
 
@@ -58,18 +60,46 @@ class AccesosController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['index'],'allow' => true,'roles' => ['accederConsAccesos'], 
-                        'actions' => ['cons-dentro'],'allow' => true,'roles' => ['accederConsDentro'],     
-                        'actions' => ['egreso-grupal'],'allow' => true,'roles' => ['accederEgresoGrupal'],  
+                        'actions' => ['delete'],
+                        'allow' => true,
+                        'roles' => ['borrarAcceso'], 
+                    ],                
+                    [
+                        'actions' => ['index','view','pdf'],
+                        'allow' => true,
+                        'roles' => ['accederConsAccesos'], 
+                    ],
+                    [
+                        'actions' => ['cons-dentro','view'],
+                        'allow' => true,
+                        'roles' => ['accederConsDentro'], 
+                    ],
+                    [   
+                        'actions' => ['egreso-grupal','view'],
+                        'allow' => true,
+                        'roles' => ['accederEgresoGrupal'], 
+                    ],
+                    [ 
                         'actions' => ['ingreso','add-lista','busca-personas','busca-vehiculos',
 									  'drop-lista','add-lista-array','busca-ult-ingreso','pide-seguro',
 									  'update-vto-seguro','busca-persona-por-id','busca-por-id',
-									  'refresh-concepto','refresca-listas',
-									 ],'allow' => true,'roles' => ['accederIngreso'],                        
-                                                                 
-                    ],
-                 ],
-            ],            
+									  'refresh-concepto','refresca-listas','view',
+									 ],
+						'allow' => true,
+						'roles' => ['accederIngreso'],  
+					],
+                    [ 
+                        'actions' => ['egreso','add-lista','busca-personas','busca-vehiculos',
+									  'drop-lista','add-lista-array',
+									  'busca-persona-por-id','busca-por-id',
+									  'refresca-listas','view',
+									 ],
+						'allow' => true,
+						'roles' => ['accederEgreso'],  
+					],					
+                 ], // fin rules
+             ], // fin access
+                      
         ];
     }
 
@@ -95,8 +125,8 @@ class AccesosController extends Controller
 		// chequea que se haya elegido un porton, sino es asi se redirecciona a la eleccion de porton
 		if (!\Yii::$app->session->get('porton')) {
 			// se setea returnUrl para que funcione el goBack en portones/elegir (parecido a lo que hace login())
-			Yii::$app->user->setReturnUrl(Yii::$app->urlManager->createUrl(['accesos/egreso']));
-			return $this->redirect(['portones/elegir']);
+			//Yii::$app->user->setReturnUrl(Yii::$app->urlManager->createUrl(['accesos/egreso']));
+			return $this->redirect(['portones/elegir','backUrl'=>'accesos/egreso-grupal']);
 		}		
 		
         $searchModel = new AccesosSearch();
@@ -132,9 +162,6 @@ class AccesosController extends Controller
 			return ['status' => 'success'];			
 		}
 		
-
-        
-        //Yii::trace($searchModel->attributeLabels());
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams,true);
 
         return $this->render('consdentro', [
@@ -166,8 +193,42 @@ class AccesosController extends Controller
     {
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'pdf'=>false
         ]);
     }
+
+    public function actionPdf($id)
+    {
+		
+	   $r=$this->renderPartial('view', [
+				'model' => $this->findModel($id),
+				'pdf'=>true
+			]);		
+	
+		$pdf = new Pdf([
+			'filename'=>'Detalle Acceso '.$id.'.pdf',
+			'mode' => Pdf::MODE_CORE, 
+			'format' => Pdf::FORMAT_A4, 
+			// Pdf::ORIENT_LANDSCAPE
+			'orientation' => Pdf::ORIENT_PORTRAIT, 
+			//'destination' => Pdf::DEST_BROWSER, // no funciona con firefox
+			'destination' => Pdf::DEST_DOWNLOAD, 
+			'content' => $r,  
+			'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
+			// any css to be embedded if required
+			//'cssInline' => '.kv-heading-1{font-size:18px}', 
+			// aca pongo el estilo que uso en el view para que los detailview salgan parejitos
+			'cssInline' => 'table.detail-view th {width: 25%;} table.detail-view td {width: 75%;}',
+			'options' => ['title' => 'Detalle de acceso'],
+			'methods' => [ 
+				'SetHeader'=>['Detalle de Acceso - Miraflores'], 
+				'SetFooter'=>['{PAGENO}'],
+			]
+		]);
+		return $pdf->render(); 		
+	
+    }
+
 
     /**
      * Creates a new Accesos model.
@@ -960,8 +1021,9 @@ class AccesosController extends Controller
 		// chequea que se haya elegido un porton, sino es asi se redirecciona a la eleccion de porton
 		if (!\Yii::$app->session->get('porton')) {
 			// se setea returnUrl para que funcione el goBack en portones/elegir (parecido a lo que hace login())
-			Yii::$app->user->setReturnUrl(Yii::$app->urlManager->createUrl(['accesos/egreso']));
-			return $this->redirect(['portones/elegir']);
+			//Yii::$app->user->setReturnUrl(Yii::$app->urlManager->createUrl(['accesos/egreso']));
+			return $this->redirect(['portones/elegir','backUrl'=>'accesos/egreso']);			
+
 		}
 		
 		// inicializa modelo
@@ -1090,8 +1152,8 @@ class AccesosController extends Controller
 		// chequea que se haya elegido un porton, sino es asi se redirecciona a la eleccion de porton
 		if (!\Yii::$app->session->get('porton')) {
 			// se setea returnUrl para que funcione el goBack en portones/elegir (parecido a lo que hace login())
-			Yii::$app->user->setReturnUrl(Yii::$app->urlManager->createUrl(['accesos/ingreso']));
-			return $this->redirect(['portones/elegir']);
+			//Yii::$app->user->setReturnUrl(Yii::$app->urlManager->createUrl(['accesos/ingreso']));
+			return $this->redirect(['portones/elegir','backUrl'=>'accesos/ingreso']);
 		}		
 
 		// inicializa modelo

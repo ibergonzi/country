@@ -10,6 +10,7 @@ use common\widgets\Alert;
 
 $this->title = 'Cambio de clave de acceso';
 $this->params['breadcrumbs'][] = $this->title;
+$this->registerJs('$("#resetpasswordform-password").focus()', yii\web\View::POS_READY);
 ?>
 <div class="site-reset-password">
 	<?php echo Alert::widget() ?>	

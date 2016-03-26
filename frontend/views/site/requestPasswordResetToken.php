@@ -6,11 +6,13 @@
 
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
+use common\widgets\Alert;
 
 $this->title = 'Solicitar cambio de clave de acceso';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="site-request-password-reset">
+	<?php echo Alert::widget() ?>	
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>Especifique su dirección de correo. Se le enviará una página para cambiar su clave de acceso.</p>

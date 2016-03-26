@@ -385,6 +385,7 @@ ExportSelectorAsset::register($this);
 			'fontAwesome' => false,
 		    'showConfirmAlert'=>false,	
 		    'target'=>GridView::TARGET_BLANK,	
+		    
 		    //'target'=>GridView::TARGET_SELF,	
 		    		
 		],

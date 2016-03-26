@@ -20,10 +20,6 @@ use yii\helpers\Url;
 
 use kartik\popover\PopoverX;
 
-
-
-
-
 use kartik\icons\Icon;
 // ver iconos en http://fortawesome.github.io/Font-Awesome/icons/
 Icon::map($this, Icon::FA);
@@ -32,6 +28,9 @@ Icon::map($this, Icon::FA);
 /* @var $model frontend\models\Accesos */
 
 $this->title = Yii::t('app', 'Ingresos');
+
+// para que el layout no use los alerts como en todas las paginas
+$this->params['noAlerts'] = true;
 
 // Hace que la transición de los modals sea mas rapida
 $this->registerCss('

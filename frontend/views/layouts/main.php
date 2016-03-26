@@ -8,11 +8,14 @@ use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use frontend\assets\AppAsset;
-//use common\widgets\Alert;
+use common\widgets\Alert;
+//use kartik\widgets\Alert;
 
 use kartik\popover\PopoverX;
 use common\models\User;
 
+use kartik\icons\Icon;
+Icon::map($this, Icon::FA);
 
 AppAsset::register($this);
 ?>
@@ -46,26 +49,39 @@ AppAsset::register($this);
         $menuItems[] = ['label' => 'Registrarse', 'url' => ['/site/signup']];
         $menuItems[] = ['label' => 'Ingresar', 'url' => ['/site/login']];
     } else {
-		if (\Yii::$app->user->can('accederIngreso')) {
-			if (\Yii::$app->session->get('porton')) {	
-				$menuItems[] = ['label' => 'Ingreso', 'url' => ['/accesos/ingreso']];
-			}
-		}
-		if (\Yii::$app->user->can('accederEgreso')) {
-			if (\Yii::$app->session->get('porton')) {	
-				$menuItems[] = ['label' => 'Egreso', 'url' => ['/accesos/egreso']];
-			}
-		}		
-		
-		//$menuItems[] = ['label' => 'Personas', 'url' => ['/personas']];	
-			
-		if (\Yii::$app->user->can('accederPorton')) {
-			if (\Yii::$app->session->get('porton')) {	
-				$menuItems[] = ['label' => 'Portón '.\Yii::$app->session->get('porton'), 
-															'url' => ['/portones/elegir']];					
-			} else {
-				$menuItems[] = ['label' => 'Elegir portón', 'url' => ['/portones/elegir']];
-			}
+		$menuItems[] = ['label' => 'Accesos', 
+						'items' => [
+							['label' => '<span class="glyphicon glyphicon-arrow-right"></span>&nbsp;Ingreso', 
+								'url' => ['/accesos/ingreso'], 
+								'visible'=>\Yii::$app->user->can('accederIngreso')],
+							['label' => '<span class="glyphicon glyphicon-arrow-left"></span>&nbsp;Egreso', 
+								'url' => ['/accesos/egreso'], 
+								'visible'=>\Yii::$app->user->can('accederEgreso')],
+							['label' => '<span class="fa fa-users"></span>&nbsp;Egreso Grupal', 
+								'url' => ['/accesos/egreso-grupal'], 
+								'visible'=>\Yii::$app->user->can('accederEgresoGrupal')],
+							['label' => '<span class="glyphicon glyphicon-book"></span>&nbsp;Libro', 
+								'url' => ['/libro/index'], 
+								'visible'=>\Yii::$app->user->can('accederLibro')],
+							'<li class="divider"></li>',
+							'<li class="dropdown-header">Consultas</li>',
+							['label' => 'Accesos', 
+								'url' => ['/accesos/index'], 
+								'visible'=>\Yii::$app->user->can('accederConsAccesos')],
+							['label' => 'Personas adentro', 
+								'url' => ['/accesos/cons-dentro'], 
+								'visible'=>\Yii::$app->user->can('accederConsDentro')],
+							['label' => 'Lista de Personas', 
+								'url' => ['/personas/index'], 
+								'visible'=>\Yii::$app->user->can('accederListaPersonas')],
+			] // fin items;
+		 ]; // fin menuItems[]
+		$menuItems[] = ['label' => 'Usuarios', 'url' => ['/user/index'], 'visible'=>\Yii::$app->user->can('accederUser')];
+		if (\Yii::$app->session->get('porton')) {	
+			$menuItems[] = ['label' => 'Portón '.\Yii::$app->session->get('porton'), 
+														'url' => ['/portones/elegir'], 'visible'=>\Yii::$app->user->can('accederPorton')];					
+		} else {
+			$menuItems[] = ['label' => 'Elegir portón', 'url' => ['/portones/elegir'], 'visible'=>\Yii::$app->user->can('accederPorton')];
 		}
 		/* Opcion de salir por defecto de yii2
         $menuItems[] = [
@@ -119,7 +135,13 @@ AppAsset::register($this);
 			 
         ?>		
 
-        <?php //echo Alert::widget() ?>
+        <?php 
+        // el alert se deberia aplicar en todas las paginas, excepto las que definen el parametro noAlerts, 
+        // en principio son las paginas de ingresos y egresos
+        if (!isset($this->params['noAlerts'])) {
+			echo Alert::widget();
+		} 
+        ?>
         <?= $content ?>
     </div>
 </div>

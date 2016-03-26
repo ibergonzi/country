@@ -13,7 +13,6 @@ $this->params['breadcrumbs'][] = $this->title;
 $this->registerJs('$("#resetpasswordform-password").focus()', yii\web\View::POS_READY);
 ?>
 <div class="site-reset-password">
-	<?php echo Alert::widget() ?>	
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>Elija su nueva clave de acceso:</p>

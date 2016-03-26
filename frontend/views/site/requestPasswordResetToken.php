@@ -13,7 +13,6 @@ $this->params['breadcrumbs'][] = $this->title;
 $this->registerJs('$("#passwordresetrequestform-email").focus()', yii\web\View::POS_READY);
 ?>
 <div class="site-request-password-reset">
-	<?php echo Alert::widget() ?>	
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>Especifique su dirección de correo. Se le enviará una página para cambiar su clave de acceso.</p>

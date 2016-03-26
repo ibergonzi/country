@@ -7,6 +7,9 @@ use frontend\models\Accesos;
 use frontend\models\AccesosAutorizantes;
 use frontend\models\Comentarios;
 
+use kartik\icons\Icon;
+Icon::map($this, Icon::FA);
+
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Accesos */
 
@@ -33,7 +36,7 @@ $this->registerCss('table.detail-view th {width: 25%;} table.detail-view td {wid
 						]).'&nbsp;';
 				}
 			}
-			echo Html::a('<i class="glyphicon glyphicon-print"></i> PDF', ['pdf', 'id' => $model->id], [
+			echo Html::a('<i class="fa fa-file-pdf-o"></i> PDF', ['pdf', 'id' => $model->id], [
 				'class' => 'btn btn-default',//'target'=>'_blank',
 				]);					
 			echo '</p>';	

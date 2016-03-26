@@ -6,22 +6,19 @@
 /* @var $exception Exception */
 
 use yii\helpers\Html;
+// puesto a mano para que no aparezca el mensaje en ingles
+if ($name=='Forbidden (#403)') {$name='Acceso no permitido';}
+if ($name=='Not Found (#404)') {$name='Página inexistente';}
+
 
 $this->title = $name;
 ?>
 <div class="site-error">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h2><?= Html::encode($this->title) ?></h2>
 
     <div class="alert alert-danger">
         <?= nl2br(Html::encode($message)) ?>
     </div>
-
-    <p>
-        The above error occurred while the Web server was processing your request.
-    </p>
-    <p>
-        Please contact us if you think this is a server error. Thank you.
-    </p>
 
 </div>

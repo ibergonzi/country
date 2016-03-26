@@ -10,6 +10,7 @@ use \kartik\datecontrol\Module;
 date_default_timezone_set('America/Argentina');
 return [
     'id' => 'app-frontend',
+    'name'=>'Miraflores',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',

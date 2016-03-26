@@ -50,19 +50,17 @@ class UserSearch extends User
 		$rol=User::getRol(Yii::$app->user->getId());
 
 		switch($rol->name) {
-			case (string)"intendente": 
-				$query->andFilterWhere(['not in','item_name','intendente'])
-								->andWhere(['not in','item_name','administrador'])
-								->andWhere(['not in','item_name','consejo']);
-				break;
 			case (string)"administrador": 
 				$query->andFilterWhere(['not in','item_name','administrador'])
 								->andWhere(['not in','item_name','consejo']);
 				break;
 			case (string)"consejo": 
 				$query->andFilterWhere(['not in','item_name','consejo']);
-
 				break;
+			default:
+				$query->andFilterWhere(['not in','item_name','intendente'])
+								->andWhere(['not in','item_name','administrador'])
+								->andWhere(['not in','item_name','consejo']);				
 		}
 		$query->andFilterWhere(['status' => User::STATUS_ACTIVE]);
 

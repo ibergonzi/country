@@ -29,6 +29,7 @@ use frontend\models\AccesosUf;
 use frontend\models\AccesosConceptos;
 use frontend\models\Uf;
 
+use yii\filters\AccessControl;
 
 use yii\db\Expression;
 
@@ -40,20 +41,38 @@ use yii\db\Expression;
  */
 class AccesosController extends Controller
 {
-	/*
-	// se anula porque no se puede eliminar desde el index, sino desde el view (se llama por GET y no por POST)	
+	
+
     public function behaviors()
     {
         return [
+			/* 	// se anula porque no se puede eliminar desde el index, sino desde el view (se llama por GET y no por POST)	
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['post'],
                 ],
             ],
+            */
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['index'],'allow' => true,'roles' => ['accederConsAccesos'], 
+                        'actions' => ['cons-dentro'],'allow' => true,'roles' => ['accederConsDentro'],     
+                        'actions' => ['egreso-grupal'],'allow' => true,'roles' => ['accederEgresoGrupal'],  
+                        'actions' => ['ingreso','add-lista','busca-personas','busca-vehiculos',
+									  'drop-lista','add-lista-array','busca-ult-ingreso','pide-seguro',
+									  'update-vto-seguro','busca-persona-por-id','busca-por-id',
+									  'refresh-concepto','refresca-listas',
+									 ],'allow' => true,'roles' => ['accederIngreso'],                        
+                                                                 
+                    ],
+                 ],
+            ],            
         ];
     }
-    */
+
 
     /**
      * Lists all Accesos models.

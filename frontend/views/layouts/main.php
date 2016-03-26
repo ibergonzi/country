@@ -46,13 +46,18 @@ AppAsset::register($this);
         $menuItems[] = ['label' => 'Registrarse', 'url' => ['/site/signup']];
         $menuItems[] = ['label' => 'Ingresar', 'url' => ['/site/login']];
     } else {
-		if (\Yii::$app->user->can('accederEntradas')) {
+		if (\Yii::$app->user->can('accederIngreso')) {
 			if (\Yii::$app->session->get('porton')) {	
-				$menuItems[] = ['label' => 'Entradas', 'url' => ['/entradas']];
+				$menuItems[] = ['label' => 'Ingreso', 'url' => ['/accesos/ingreso']];
 			}
 		}
+		if (\Yii::$app->user->can('accederEgreso')) {
+			if (\Yii::$app->session->get('porton')) {	
+				$menuItems[] = ['label' => 'Egreso', 'url' => ['/accesos/egreso']];
+			}
+		}		
 		
-		$menuItems[] = ['label' => 'Personas', 'url' => ['/persona']];	
+		//$menuItems[] = ['label' => 'Personas', 'url' => ['/personas']];	
 			
 		if (\Yii::$app->user->can('accederPorton')) {
 			if (\Yii::$app->session->get('porton')) {	

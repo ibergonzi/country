@@ -32,12 +32,11 @@ class UserController extends Controller
                     [
                         'actions' => ['index','view','delete','update'],
                         'allow' => true,
-                        'roles' => ['administrador','consejo','intendente'], 
+                        //'roles' => ['administrador','consejo','intendente'],
+                        'roles' => ['accederUser'], 
                     ],
-
                  ],
             ],
-            
         ];
     }
 

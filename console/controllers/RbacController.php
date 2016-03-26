@@ -8,6 +8,8 @@ class RbacController extends Controller
 {
     public function actionInit()
     {
+		// desde country: ./yii rbac/init
+		
         $auth = Yii::$app->authManager;
 		
 		// Creacion de roles
@@ -45,33 +47,56 @@ class RbacController extends Controller
 		$accederUser=$auth->createPermission('accederUser');
 		$accederUser->description='Acceso: usuarios';
 		$auth->add($accederUser);
-		
-		$accederUserRol=$auth->createPermission('accederUserRol');
-		$accederUserRol->description='Acceso: rol de usuarios';
-		$auth->add($accederUserRol);
-		
+		$auth->addChild($consejo, $accederUser);
+		$auth->addChild($administrador, $accederUser);	
+		$auth->addChild($intendente, $accederUser);		
+		$auth->addChild($opIntendencia, $accederUser);			
+
 		$accederPorton=$auth->createPermission('accederPorton');
 		$accederPorton->description='Acceso: elección de portón';
 		$auth->add($accederPorton);
+		$auth->addChild($intendente, $accederPorton);
+		$auth->addChild($portero, $accederPorton);	
+		$auth->addChild($opIntendencia, $accederPorton);						
 
-		$accederEntradas=$auth->createPermission('accederEntradas');
-		$accederEntradas->description='Acceso: Entradas';
-		$auth->add($accederEntradas);
+		$accederIngreso=$auth->createPermission('accederIngreso');
+		$accederIngreso->description='Acceso: ingreso';
+		$auth->add($accederIngreso);
+		$auth->addChild($intendente, $accederIngreso);
+		$auth->addChild($portero, $accederIngreso);		
+		$auth->addChild($opIntendencia, $accederIngreso);			
+		
+		$accederEgreso=$auth->createPermission('accederEgreso');
+		$accederEgreso->description='Acceso: egreso';
+		$auth->add($accederEgreso);	
+		$auth->addChild($intendente, $accederEgreso);
+		$auth->addChild($portero, $accederEgreso);	
+		$auth->addChild($opIntendencia, $accederEgreso);						
+	
+		$accederEgresoGrupal=$auth->createPermission('accederEgresoGrupal');
+		$accederEgresoGrupal->description='Acceso: egreso grupal';
+		$auth->add($accederEgresoGrupal);	
+		$auth->addChild($intendente, $accederEgresoGrupal);
+		$auth->addChild($portero, $accederEgresoGrupal);
+		$auth->addChild($opIntendencia, $accederEgresoGrupal);							
 
+		$accederConsAccesos=$auth->createPermission('accederConsAccesos');
+		$accederConsAccesos->description='Acceso: consulta accesos';
+		$auth->add($accederConsAccesos);	
+		$auth->addChild($consejo, $accederConsAccesos);
+		$auth->addChild($administrador, $accederConsAccesos);		
+		$auth->addChild($intendente, $accederConsAccesos);	
+		$auth->addChild($opIntendencia, $accederConsAccesos);			
 		
-		// Asignaciones de permisos a roles
-		
-		$auth->addChild($consejo, $accederUser);
-		$auth->addChild($administrador, $accederUser);	
-		$auth->addChild($intendente, $accederUser);	
-		
-		$auth->addChild($consejo, $accederUserRol);
-		$auth->addChild($administrador, $accederUserRol);	
-		$auth->addChild($intendente, $accederUserRol);	
-		
-		$auth->addChild($intendente, $accederPorton);		
-		$auth->addChild($intendente, $accederEntradas);
-				
+		$accederConsDentro=$auth->createPermission('accederConsDentro');
+		$accederConsDentro->description='Acceso: consulta personas adentro';
+		$auth->add($accederConsDentro);	
+		$auth->addChild($consejo, $accederConsDentro);
+		$auth->addChild($administrador, $accederConsDentro);		
+		$auth->addChild($intendente, $accederConsDentro);
+		$auth->addChild($opIntendencia, $accederConsDentro);								
+
+			
 		// Asignaciones de roles a usuarios OJO con el id de user
 		
 		$auth->assign($administrador, 8);

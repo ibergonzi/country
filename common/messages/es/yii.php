@@ -55,6 +55,7 @@ return [
     'View' => 'Ver',
     'Yes' => 'Sí',
     'You are not allowed to perform this action.' => 'No tiene permitido ejecutar esta acción.',
+	//'You are not allowed to perform this action.' => 'No tiene permitido ejecutar esta acción.',    
     'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.' => 'Puedes subir como máximo {limit, number} {limit, plural, one{archivo} other{archivos}}.',
     'in {delta, plural, =1{a day} other{# days}}' => 'en {delta, plural, =1{un día} other{# días}}',
     'in {delta, plural, =1{a minute} other{# minutes}}' => 'en {delta, plural, =1{un minuto} other{# minutos}}',

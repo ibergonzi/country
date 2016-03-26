@@ -23,9 +23,16 @@ class PasswordResetRequestForm extends Model
             ['email', 'exist',
                 'targetClass' => '\common\models\User',
                 'filter' => ['status' => User::STATUS_ACTIVE],
-                'message' => 'There is no user with such email.'
+                'message' => 'La dirección de correo no coincide con la de ningún usuario registrado.'
             ],
         ];
+    }
+  
+   public function attributeLabels()
+    {
+        return [
+             'email' => 'Dirección de correo',
+         ];
     }
 
     /**
@@ -50,7 +57,7 @@ class PasswordResetRequestForm extends Model
                 return \Yii::$app->mailer->compose(['html' => 'passwordResetToken-html', 'text' => 'passwordResetToken-text'], ['user' => $user])
                     ->setFrom([\Yii::$app->params['supportEmail'] => \Yii::$app->name . ' robot'])
                     ->setTo($this->email)
-                    ->setSubject('Password reset for ' . \Yii::$app->name)
+                    ->setSubject('Cambio de clave de acceso para ' . \Yii::$app->name)
                     ->send();
             }
         }

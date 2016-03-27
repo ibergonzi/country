@@ -55,9 +55,11 @@ $(document).ready(function() {
 		$("#mensajes-avisar_a").focus();
 	});
     $("#modalmensaje").on("hidden.bs.modal", function (e) {
-		//$.pjax.reload({container:"#w0"});
 		$("#gridAccesos").yiiGridView("applyFilter");
-	});			
+	});		
+    $("#modalcomentarionuevo").on("hidden.bs.modal", function (e) {
+		$("#gridAccesos").yiiGridView("applyFilter");
+	});		
 });
 ');
 

@@ -7,6 +7,7 @@ use yii\widgets\Pjax;
 
 use frontend\models\Personas;
 use yii\bootstrap\Modal;
+use frontend\models\Mensajes;
 use frontend\models\Comentarios;
 
 use kartik\popover\PopoverX;
@@ -29,6 +30,15 @@ $(document).ready(function() {
     $("#modalcomentarionuevo").on("shown.bs.modal", function (e) {
 		$("#comentarios-comentario").focus();
 	});	
+    $("#modalmensaje").on("shown.bs.modal", function (e) {
+		$("#mensajes-avisar_a").focus();
+	});
+    $("#modalmensaje").on("hidden.bs.modal", function (e) {
+		$("#gridPersonas").yiiGridView("applyFilter");
+	});	
+    $("#modalcomentarionuevo").on("hidden.bs.modal", function (e) {
+		$("#gridPersonas").yiiGridView("applyFilter");
+	});		
 });
 ');
 
@@ -100,7 +110,7 @@ $(document).ready(function() {
                                     ['create'], 
                                 ['class' => 'btn-sm btn-primary',
                                  'title' => Yii::t('app', 'Alta de persona'),]),
- 			 'template' => '{view} {comentario}',      
+ 			 'template' => '{view} {comentario} {mensajeP}',      
 			 'buttons' => [
 				'comentario' => function ($url, $model) {
 					$c=Comentarios::getComentariosByModelId($model->className(),$model->id);
@@ -128,7 +138,31 @@ $(document).ready(function() {
 						});return false;',
 						]);							
 					},
-						
+					'mensajeP' => function ($url, $model) {	
+							$c=Mensajes::getMensajesByModelId($model->className(),$model->id);
+
+							if (!empty($c)) {
+								$text='<span class="glyphicon glyphicon-envelope" style="color:#FF8000"></span>';
+								$titl='Ver mensaje sobre la persona';
+							} else {
+								$text='<span class="glyphicon glyphicon-envelope"></span>';
+								$titl='Ingresar nuevo mensaje sobre la persona';
+							}								
+							
+							return Html::a($text, 
+								$url,
+							['title' => $titl,
+							 'onclick'=>'$.ajax({
+								type     :"POST",
+								cache    : false,
+								url  : $(this).attr("href"),
+								success  : function(response) {
+											$("#divmensaje").html(response);
+											$("#modalmensaje").modal("show");
+											}
+							});return false;',
+							]);							
+					},								
 				],	 				
 				
 			'urlCreator' => function ($action, $model, $key, $index) {
@@ -141,6 +175,13 @@ $(document).ready(function() {
 									'modelID'=>$model->id]);
 					return $url;
 				 }
+				 if ($action === 'mensajeP') {
+						$url=Yii::$app->urlManager->createUrl(
+								['mensajes/create-ajax',
+									'modelName'=>$model->className(),
+									'modelID'=>$model->id]);	
+						return $url;								 
+				 }					 
 				 if ($action === 'view') {
 					$url=Yii::$app->urlManager->createUrl(
 							['libro/view', 
@@ -202,6 +243,7 @@ $(document).ready(function() {
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'options'=>['id'=>'gridPersonas'],
         'columns' => $columns,
 		'condensed'=>true, 
 
@@ -331,5 +373,12 @@ $(document).ready(function() {
 		'header'=>'<span class="btn-warning">&nbsp;Comentarios&nbsp;</span>']);
 		echo '<div id="divcomentarionuevo"></div>';
 	Modal::end();    
+	// modal para los mensajes
+	Modal::begin(['id'=>'modalmensaje',
+		'header'=>'<span class="btn-warning">&nbsp;Mensajes&nbsp;</span>',
+		'options'=>['class'=>'nofade'],		
+		]);
+		echo '<div id="divmensaje"></div>';
+	Modal::end();		
 ?>
 </div>

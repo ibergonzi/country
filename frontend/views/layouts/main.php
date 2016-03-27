@@ -43,7 +43,7 @@ AppAsset::register($this);
     ]);
     $menuItems=[];
     if (Yii::$app->user->isGuest) {
-		$menuItems[] = ['label' => 'Inicio', 'url' => ['/site/index']];		
+		//$menuItems[] = ['label' => 'Inicio', 'url' => ['/site/index']];		
 		//$menuItems[] = ['label' => 'Acerca de', 'url' => ['/site/about']];
 		$menuItems[] = ['label' => 'Contacto', 'url' => ['/site/contact']];
         $menuItems[] = ['label' => 'Registrarse', 'url' => ['/site/signup']];
@@ -51,10 +51,10 @@ AppAsset::register($this);
     } else {
 		$menuItems[] = ['label' => 'Accesos', 
 						'items' => [
-							['label' => '<span class="glyphicon glyphicon-arrow-right"></span>&nbsp;Ingreso', 
+							['label' => '<span class="glyphicon glyphicon-arrow-right"></span>&nbsp;Ingresos', 
 								'url' => ['/accesos/ingreso'], 
 								'visible'=>\Yii::$app->user->can('accederIngreso')],
-							['label' => '<span class="glyphicon glyphicon-arrow-left"></span>&nbsp;Egreso', 
+							['label' => '<span class="glyphicon glyphicon-arrow-left"></span>&nbsp;Egresos', 
 								'url' => ['/accesos/egreso'], 
 								'visible'=>\Yii::$app->user->can('accederEgreso')],
 							['label' => '<span class="fa fa-users"></span>&nbsp;Egreso Grupal', 

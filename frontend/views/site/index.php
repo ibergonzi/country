@@ -4,12 +4,14 @@
 
 $this->title = 'Barrio Miraflores';
 ?>
-<div class="site-index">
+<div class="site-index" style="background-image:url(images/miraflores.jpg);
+	background-repeat: no-repeat;background-position: center;
+    background-size: cover;">
 
-    <div class="jumbotron">
+    <div class="jumbotron" style="color:#FFF;">
         <h1>Barrio Miraflores, Funes Hills</h1>
 
-        <p class="lead">Sistema de administración</p>
+        <p class="lead">gestión administrativa</p>
 
         
     </div>

@@ -648,8 +648,8 @@ class AccesosController extends Controller
 													cache    : false,
 													url  : $(this).attr("href"),
 													success  : function(response) {
-																$("#divcomentarionuevo").html(response);
-																$("#modalcomentarionuevo").modal("show");
+																$("#divmensaje").html(response);
+																$("#modalmensaje").modal("show");
 																}
 												});return false;',
 												]);			
@@ -759,8 +759,8 @@ class AccesosController extends Controller
 													cache    : false,
 													url  : $(this).attr("href"),
 													success  : function(response) {
-																$("#divcomentarionuevo").html(response);
-																$("#modalcomentarionuevo").modal("show");
+																$("#divmensaje").html(response);
+																$("#modalmensaje").modal("show");
 																}
 												});return false;',
 												]);			
@@ -844,8 +844,8 @@ class AccesosController extends Controller
 													cache    : false,
 													url  : $(this).attr("href"),
 													success  : function(response) {
-																$("#divcomentarionuevo").html(response);
-																$("#modalcomentarionuevo").modal("show");
+																$("#divmensaje").html(response);
+																$("#modalmensaje").modal("show");
 																}
 												});return false;',
 												]);			
@@ -914,8 +914,8 @@ class AccesosController extends Controller
 													cache    : false,
 													url  : $(this).attr("href"),
 													success  : function(response) {
-																$("#divcomentarionuevo").html(response);
-																$("#modalcomentarionuevo").modal("show");
+																$("#divmensaje").html(response);
+																$("#modalmensaje").modal("show");
 																}
 												});return false;',
 												]);			

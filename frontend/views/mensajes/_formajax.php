@@ -19,7 +19,7 @@ use yii\widgets\DetailView;
 				form.attr('action'),
 				form.serialize()
 			).done(function(result) {
-				$('#modalcomentarionuevo').modal('hide');
+				$('#modalmensaje').modal('hide');
 				//location.reload();
 			});
 			return false;

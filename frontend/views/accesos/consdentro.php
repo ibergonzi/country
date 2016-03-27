@@ -16,12 +16,19 @@ use kartik\popover\PopoverX;
 use yii\widgets\MaskedInput;
 
 use yii\bootstrap\Modal;
+
+use frontend\models\Mensajes;
 use frontend\models\Comentarios;
 $this->registerCss('.modal-body { max-height: calc(100vh - 210px);overflow-y: auto;}');
 
 /* @var $this yii\web\View */
 /* @var $searchModel frontend\models\AccesosSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
+
+use kartik\icons\Icon;
+// ver iconos en http://fortawesome.github.io/Font-Awesome/icons/
+Icon::map($this, Icon::FA);
+
 if ($consulta) {
 	$this->title = 'Personas adentro';
 } else {
@@ -43,6 +50,20 @@ $this->registerCss('
 use app\assets\ExportSelectorAsset;
 ExportSelectorAsset::register($this);
 
+$this->registerJs('
+$(document).ready(function() {
+    $("#modalcomentarionuevo").on("shown.bs.modal", function (e) {
+		$("#comentarios-comentario").focus();
+	});	
+    $("#modalmensaje").on("shown.bs.modal", function (e) {
+		$("#mensajes-avisar_a").focus();
+	});
+    $("#modalmensaje").on("hidden.bs.modal", function (e) {
+		//$.pjax.reload({container:"#w0"});
+		$("#gridAccesos").yiiGridView("applyFilter");
+	});		
+});
+');
 ?>
 <div class="accesos-index">
 
@@ -50,19 +71,21 @@ ExportSelectorAsset::register($this);
     <?php 
 	
 		// para evitar que la pagina se cuelgue cuando se le saca la paginación y hay muchos registros a mostrar
-		//if ($dataProvider->totalCount <= 200) {
-			$toolbar=[
-				'{export}',
-				'{toggleData}'
-			];
-		//} else {
-		//	$toolbar=['{export}'];
-		//}
+		$cant=$dataProvider->totalCount;
+		if ( $cant <= \Yii::$app->params['max-rows-gridview'] ) {
+			if ($cant <= $dataProvider->pagination->pageSize) {
+				$toolbar=['{export}'];
+			} else {
+				$toolbar=['{export}','{toggleData}'];
+			}
+		} else {
+			$toolbar=['{export}'];
+		}
 	
 
 		$lbl2='';
 		$pdfHeader=[
-					'L'=>['content'=>'Barrio Miraflores'],
+					'L'=>['content'=>\Yii::$app->params['lblName']],
 					'C'=>['content'=>$this->title . $lbl2,
 						  //'font-size' => 80,
 						  'font-style'=>'B'
@@ -72,7 +95,7 @@ ExportSelectorAsset::register($this);
 				
 			];
 		$pdfFooter=[
-			'L'=>['content'=>'Funes Hills'],
+			'L'=>['content'=>\Yii::$app->params['lblName2']],
 			'C'=>['content'=>'página {PAGENO} de {nb}'],
 			'R'=>['content'=>'Fecha:{DATE d/m/Y}'],
 			]; 
@@ -81,21 +104,22 @@ ExportSelectorAsset::register($this);
 		// popover que define las columnas a exportar	
 		
 		if ($consulta) { 
-			$header='';
+			$header='Acciones';
 		} else {
 			$header=Html::button('<span class="glyphicon glyphicon-plus-sign"></span>',
 							
-							['class' => 'btn btn-sm btn-primary',
+							['class' => 'btn btn-lg btn-primary',
 							 'title' => 'Efectuar egreso',
 							 'data-pjax'=>'0',
-							 'onclick'=>'var keys = $("#w0").yiiGridView("getSelectedRows");
+							 'onclick'=>'var keys = $("#gridAccesos").yiiGridView("getSelectedRows");
 										$.post({
 										   url: "egreso-grupal", 
 										   dataType: "json",
 										   data: {keylist: keys},
 										   success: function(data) {
 												if (data.status === "success") {
-													$.pjax.reload({container:"#w0"});
+													//$.pjax.reload({container:"#w0"});
+													$("#gridAccesos").yiiGridView("applyFilter");
 												} else {	
 													alert("Hubo un error, intente de nuevo");  
 												}
@@ -110,7 +134,7 @@ ExportSelectorAsset::register($this);
 				 'header'=>$header,
 				 'headerOptions'=>['style'=>'text-align:center'],   
 				 'options'=>['style'=>'width:70px'],   
-				 'template' => '{comentario}',  
+				 'template' => '{comentario} {mensajeP} {mensajeV}',  
 				 'buttons' => [
 					'comentario' => function ($url, $model) {
 						$c=Comentarios::getComentariosByModelId('frontend\models\Accesos',$model->id);
@@ -137,6 +161,56 @@ ExportSelectorAsset::register($this);
 							});return false;',
 							]);							
 						},
+					'mensajeP' => function ($url, $model) {	
+							$c=Mensajes::getMensajesByModelId('frontend\models\Personas',$model->id_persona);
+
+							if (!empty($c)) {
+								$text='<span class="glyphicon glyphicon-user" style="color:#FF8000"></span>';
+								$titl='Ver mensaje sobre la persona';
+							} else {
+								$text='<span class="glyphicon glyphicon-user"></span>';
+								$titl='Ingresar nuevo mensaje sobre la persona';
+							}								
+							
+							return Html::a($text, 
+								$url,
+							['title' => $titl,
+							 'onclick'=>'$.ajax({
+								type     :"POST",
+								cache    : false,
+								url  : $(this).attr("href"),
+								success  : function(response) {
+											$("#divmensaje").html(response);
+											$("#modalmensaje").modal("show");
+											}
+							});return false;',
+							]);							
+					},		
+					'mensajeV' => function ($url, $model) {	
+							$c=Mensajes::getMensajesByModelId('frontend\models\Vehiculos',$model->ing_id_vehiculo);
+
+							if (!empty($c)) {
+								$text='<i class="fa fa-car" style="color:#FF8000"></i>';
+								$titl='Ver mensaje sobre el vehiculo';
+							} else {
+								$text='<i class="fa fa-car"></i>';
+								$titl='Ingresar nuevo mensaje sobre el vehiculo';
+							}								
+							
+							return Html::a($text, 
+								$url,
+							['title' => $titl,
+							 'onclick'=>'$.ajax({
+								type     :"POST",
+								cache    : false,
+								url  : $(this).attr("href"),
+								success  : function(response) {
+											$("#divmensaje").html(response);
+											$("#modalmensaje").modal("show");
+											}
+							});return false;',
+							]);									
+					},								
 					'view' => function ($url, $model) {	
 						return Html::a('<span class="glyphicon glyphicon-eye-open"',
 							$url,
@@ -158,6 +232,20 @@ ExportSelectorAsset::register($this);
 										'modelID'=>$model->id]);
 						return $url;
 					 }
+					 if ($action === 'mensajeP') {
+							$url=Yii::$app->urlManager->createUrl(
+									['mensajes/create-ajax',
+										'modelName'=>'frontend\models\Personas',
+										'modelID'=>$model->id_persona]);	
+							return $url;								 
+					 }	
+					 if ($action === 'mensajeV') {
+							$url=Yii::$app->urlManager->createUrl(
+									['mensajes/create-ajax',
+										'modelName'=>'frontend\models\Vehiculos',
+										'modelID'=>$model->ing_id_vehiculo]);	
+							return $url;							 
+					 }											 
 					 if ($action === 'view') {
 						$url=Yii::$app->urlManager->createUrl(
 								['accesos/view', 
@@ -308,6 +396,7 @@ ExportSelectorAsset::register($this);
     echo GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'options'=>['id'=>'gridAccesos'],
         // Para que muestre todo el gridview, solo aplicable a kartik, el de yii anda bien
         'containerOptions' => ['style'=>'overflow: visible'], 
 		'condensed'=>true,
@@ -319,7 +408,7 @@ ExportSelectorAsset::register($this);
 		'layout'=>'&nbsp;{toolbar}{summary}{items}{pager}',
 		'export' => [
 			'label' => 'Exportar',
-			'fontAwesome' => false,
+			'fontAwesome' => true,
 		    'showConfirmAlert'=>false,	
 		    'target'=>GridView::TARGET_BLANK,			
 		],
@@ -429,6 +518,13 @@ ExportSelectorAsset::register($this);
 	Modal::begin(['id'=>'modalcomentarionuevo',
 		'header'=>'<span class="btn-warning">&nbsp;Comentarios&nbsp;</span>']);
 		echo '<div id="divcomentarionuevo"></div>';
-	Modal::end();    
+	Modal::end();  
+	// modal para los mensajes
+	Modal::begin(['id'=>'modalmensaje',
+		'header'=>'<span class="btn-warning">&nbsp;Mensajes&nbsp;</span>',
+		'options'=>['class'=>'nofade'],		
+		]);
+		echo '<div id="divmensaje"></div>';
+	Modal::end();		  
 	?>
 </div>

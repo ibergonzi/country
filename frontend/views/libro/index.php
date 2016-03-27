@@ -28,6 +28,13 @@ $this->registerCss('.modal-body { max-height: calc(100vh - 210px);overflow-y: au
 use app\assets\ExportSelectorAsset;
 ExportSelectorAsset::register($this);
 
+$this->registerJs('
+$(document).ready(function() {
+    $("#modalcomentarionuevo").on("shown.bs.modal", function (e) {
+		$("#comentarios-comentario").focus();
+	});	
+});
+');
 	
 ?>
 
@@ -59,14 +66,16 @@ ExportSelectorAsset::register($this);
 
 		
 		// para evitar que la pagina se cuelgue cuando se le saca la paginación y hay muchos registros a mostrar
-		//if ($dataProvider->totalCount <= 200) {
-			$toolbar=[
-				'{export}',
-				'{toggleData}'
-			];
-		//} else {
-		//	$toolbar=['{export}'];
-		//}
+		$cant=$dataProvider->totalCount;
+		if ( $cant <= \Yii::$app->params['max-rows-gridview'] ) {
+			if ($cant <= $dataProvider->pagination->pageSize) {
+				$toolbar=['{export}'];
+			} else {
+				$toolbar=['{export}','{toggleData}'];
+			}
+		} else {
+			$toolbar=['{export}'];
+		}
 		
 		
 
@@ -77,7 +86,7 @@ ExportSelectorAsset::register($this);
 		$lbl2='';
 	}	
     $pdfHeader=[
-				'L'=>['content'=>'Barrio Miraflores'],
+				'L'=>['content'=>\Yii::$app->params['lblName']],
 				'C'=>['content'=>$this->title . $lbl2,
 					  //'font-size' => 80,
 					  'font-style'=>'B'
@@ -87,7 +96,7 @@ ExportSelectorAsset::register($this);
 			
 		];
     $pdfFooter=[
-		'L'=>['content'=>'Funes Hills'],
+		'L'=>['content'=>\Yii::$app->params['lblName2']],
 		'C'=>['content'=>'página {PAGENO} de {nb}'],
 		'R'=>['content'=>'Fecha:{DATE d/m/Y}'],
 		]; 
@@ -242,7 +251,7 @@ ExportSelectorAsset::register($this);
 	
 		'export' => [
 			'label' => 'Exportar',
-			'fontAwesome' => false,
+			'fontAwesome' => true,
 		    'showConfirmAlert'=>false,	
 		    'target'=>GridView::TARGET_BLANK,			
 		],
@@ -359,6 +368,13 @@ ExportSelectorAsset::register($this);
 	use yii\bootstrap\Modal;
 	use frontend\models\Comentarios;
 	$this->registerCss('.modal-body { max-height: calc(100vh - 210px);overflow-y: auto;}');
+	$this->registerJs('
+	$(document).ready(function() {
+		$("#modalcomentarionuevo").on("shown.bs.modal", function (e) {
+			$("#comentarios-comentario").focus();
+		});	
+	});
+	');
 	*/
 	Modal::begin(['id'=>'modalcomentarionuevo',
 		'header'=>'<span class="btn-warning">&nbsp;Comentarios&nbsp;</span>']);

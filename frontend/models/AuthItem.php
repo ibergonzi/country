@@ -51,7 +51,7 @@ class AuthItem extends \yii\db\ActiveRecord
         return [
             'name' => Yii::t('app', 'Name'),
             'type' => Yii::t('app', 'Type'),
-            'description' => Yii::t('app', 'Description'),
+            'description' => Yii::t('app', 'Rol'),
             'rule_name' => Yii::t('app', 'Rule Name'),
             'data' => Yii::t('app', 'Data'),
             'created_at' => Yii::t('app', 'Created At'),

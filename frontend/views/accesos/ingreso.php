@@ -67,16 +67,16 @@ $this->registerCss('
 // Agrega scrollbars a los modals que se exceden de tamaño
 $this->registerCss('.modal-body { max-height: calc(100vh - 210px);overflow-y: auto;}');
 
-// refresca los gridviews luego de que se cierra el modal de comentarios
+// refresca los gridviews luego de que se cierra el modal de mensajes
 	$js = 
 <<<JS
-	$('#modalcomentarionuevo').on('hidden.bs.modal', function (e) {
+	$('#modalmensaje').on('hidden.bs.modal', function (e) {
 		$.ajax({
 			type   : "POST",cache  : false,
 			url    : "refresca-listas",
 			success: function(r) {
-					$("#divlistapersonas").html(r["personas"]);
-					$("#divlistavehiculos").html(r["vehiculos"]);
+					$("#divlistapersonas").html(r["ingpersonas"]);
+					$("#divlistavehiculos").html(r["ingvehiculos"]);
 				}
 		});		
 
@@ -100,12 +100,18 @@ $("#accesos-control").keypress( function (e) {
 $this->registerJs('
 $(document).ready(function() {
     $("#selectorVehiculos").select2("open");
-    $("#popControl").on("show.bs.modal", function (e) {
+    $("#popControl").on("shown.bs.modal", function (e) {
 		$("#accesos-control").focus();
 	});
-    $("#popControl").on("hide.bs.modal", function (e) {
+    $("#popControl").on("hidden.bs.modal", function (e) {
 		$("#btnSubmit").focus();
 	});
+    $("#modalcomentarionuevo").on("shown.bs.modal", function (e) {
+		$("#comentarios-comentario").focus();
+	});	
+    $("#modalmensaje").on("shown.bs.modal", function (e) {
+		$("#mensajes-avisar_a").focus();
+	});	
 });
 ');
 ?>
@@ -551,10 +557,7 @@ $(document).ready(function() {
 							['label' => 'Libro guardia', 'icon' => 'book', 'url' => Url::to(['libro/index']),
 								'template'=> '<a href="{url}" target="_blank">{icon}{label}</a>'
 							],
-							
-
-							
-							
+				
 						],
 					]);        									
 									
@@ -598,12 +601,19 @@ $(document).ready(function() {
 		]);
 		echo '<div id="divpersonas_vehiculo"></div>';
 	Modal::end();  		
-	// modal para los comentarios o mensajes
+	// modal para los comentarios
 	Modal::begin(['id'=>'modalcomentarionuevo',
-		'header'=>'<span class="btn-warning">&nbsp;Mensajes/Comentarios&nbsp;</span>',
+		'header'=>'<span class="btn-warning">&nbsp;Comentarios&nbsp;</span>',
 		'options'=>['class'=>'nofade'],		
 		]);
 		echo '<div id="divcomentarionuevo"></div>';
+	Modal::end();  	
+	// modal para los mensajes
+	Modal::begin(['id'=>'modalmensaje',
+		'header'=>'<span class="btn-warning">&nbsp;Mensajes&nbsp;</span>',
+		'options'=>['class'=>'nofade'],		
+		]);
+		echo '<div id="divmensaje"></div>';
 	Modal::end();  	
 	// modal que se abre cuando se agrega un vehiculo a la lista de vehiculos (trae las personas que utilizaron el vehiculo)	
 	Modal::begin(['id'=>'modalupdseguro',

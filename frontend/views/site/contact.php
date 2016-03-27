@@ -11,6 +11,7 @@ use common\widgets\Alert;
 
 $this->title = 'Contacto';
 $this->params['breadcrumbs'][] = $this->title;
+$this->registerJs('$("#contactform-name").focus()', yii\web\View::POS_READY);
 ?>
 <div class="site-contact">
 	<?php echo Alert::widget() ?>

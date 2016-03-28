@@ -8,6 +8,7 @@ use frontend\models\VehiculosSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 use kartik\widgets\ActiveForm;
 
@@ -16,20 +17,54 @@ use kartik\widgets\ActiveForm;
  */
 class VehiculosController extends Controller
 {
-	/*
-	// se anula porque no se puede eliminar desde el index, sino desde el view (se llama por GET y no por POST)	
+
     public function behaviors()
     {
+		
         return [
+			/*
+			// se anula porque no se puede eliminar desde el index, sino desde el view (se llama por GET y no por POST)	        
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['post'],
                 ],
             ],
+            */ 
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['delete'],
+                        'allow' => true,
+                        'roles' => ['borrarVehiculo'], 
+                    ],                
+                    [
+                        'actions' => ['index','view'],
+                        'allow' => true,
+                        'roles' => ['accederListaVehiculos'], 
+                    ],
+                    [
+                        'actions' => ['create','update'],
+                        'allow' => true,
+                        'roles' => ['altaModificarVehiculo'], 
+                    ],
+                    [
+                        'actions' => ['create-ajax'],
+                        'allow' => true,
+                        'roles' => ['altaVehiculoIngEgr'], 
+                    ],                    
+                    [ 
+                        'actions' => ['vehiculoslist'],
+						'allow' => true,
+						'roles' => ['accederIngreso','accederEgreso'],  
+					],
+ 		
+                 ], // fin rules
+             ], // fin access              
         ];
     }
-    */
+
 
     /**
      * Lists all Vehiculos models.

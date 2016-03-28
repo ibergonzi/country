@@ -87,7 +87,15 @@ class RbacController extends Controller
 		$auth->addChild($administrador, $accederConsAccesos);		
 		$auth->addChild($intendente, $accederConsAccesos);	
 		$auth->addChild($opIntendencia, $accederConsAccesos);
-		$auth->addChild($portero, $accederConsAccesos);					
+		$auth->addChild($portero, $accederConsAccesos);	
+		
+		$exportarConsAccesos=$auth->createPermission('exportarConsAccesos');
+		$exportarConsAccesos->description='Acceso: exportar accesos';
+		$auth->add($exportarConsAccesos);	
+		$auth->addChild($consejo, $exportarConsAccesos);
+		$auth->addChild($administrador, $exportarConsAccesos);		
+		$auth->addChild($intendente, $exportarConsAccesos);	
+		$auth->addChild($opIntendencia, $exportarConsAccesos);
 		
 		$accederConsDentro=$auth->createPermission('accederConsDentro');
 		$accederConsDentro->description='Acceso: consulta personas adentro';
@@ -97,6 +105,15 @@ class RbacController extends Controller
 		$auth->addChild($intendente, $accederConsDentro);
 		$auth->addChild($opIntendencia, $accederConsDentro);	
 		$auth->addChild($portero, $accederConsDentro);	
+
+		$exportarConsDentro=$auth->createPermission('exportarConsDentro');
+		$exportarConsDentro->description='Acceso: exportar personas adentro';
+		$auth->add($exportarConsDentro);	
+		$auth->addChild($consejo, $exportarConsDentro);
+		$auth->addChild($administrador, $exportarConsDentro);		
+		$auth->addChild($intendente, $exportarConsDentro);
+		$auth->addChild($opIntendencia, $exportarConsDentro);	
+	
 		
 		$borrarAcceso=$auth->createPermission('borrarAcceso');
 		$borrarAcceso->description='Eliminar: acceso';
@@ -112,6 +129,14 @@ class RbacController extends Controller
 		$auth->addChild($intendente, $accederListaPersonas);
 		$auth->addChild($opIntendencia, $accederListaPersonas);	
 		$auth->addChild($portero, $accederListaPersonas);	
+
+		$exportarListaPersonas=$auth->createPermission('exportarListaPersonas');
+		$exportarListaPersonas->description='Acceso: exportar lista de personas';
+		$auth->add($exportarListaPersonas);	
+		$auth->addChild($consejo, $exportarListaPersonas);
+		$auth->addChild($administrador, $exportarListaPersonas);		
+		$auth->addChild($intendente, $exportarListaPersonas);
+		$auth->addChild($opIntendencia, $exportarListaPersonas);	
 
 		$borrarPersona=$auth->createPermission('borrarPersona');
 		$borrarPersona->description='Eliminar: persona';
@@ -132,6 +157,42 @@ class RbacController extends Controller
 		$auth->addChild($opIntendencia, $altaPersonaIngEgr);	
 		$auth->addChild($portero, $altaPersonaIngEgr);	
 		
+		$accederListaVehiculos=$auth->createPermission('accederListaVehiculos');
+		$accederListaVehiculos->description='Acceso: lista de vehiculos';
+		$auth->add($accederListaVehiculos);	
+		$auth->addChild($consejo, $accederListaVehiculos);
+		$auth->addChild($administrador, $accederListaVehiculos);		
+		$auth->addChild($intendente, $accederListaVehiculos);
+		$auth->addChild($opIntendencia, $accederListaVehiculos);	
+		$auth->addChild($portero, $accederListaVehiculos);	
+		
+		$exportarListaVehiculos=$auth->createPermission('exportarListaVehiculos');
+		$exportarListaVehiculos->description='Acceso: exportar lista de vehiculos';
+		$auth->add($exportarListaVehiculos);	
+		$auth->addChild($consejo, $exportarListaVehiculos);
+		$auth->addChild($administrador, $exportarListaVehiculos);		
+		$auth->addChild($intendente, $exportarListaVehiculos);
+		$auth->addChild($opIntendencia, $exportarListaVehiculos);	
+
+		$borrarVehiculo=$auth->createPermission('borrarVehiculo');
+		$borrarVehiculo->description='Eliminar: vehiculo';
+		$auth->add($borrarVehiculo);	
+		$auth->addChild($intendente, $borrarVehiculo);
+		$auth->addChild($opIntendencia, $borrarVehiculo);	
+		
+		$altaModificarVehiculo=$auth->createPermission('altaModificarVehiculo');
+		$altaModificarVehiculo->description='Alta/modif.: persona';
+		$auth->add($altaModificarVehiculo);	
+		$auth->addChild($intendente, $altaModificarVehiculo);
+		$auth->addChild($opIntendencia, $altaModificarVehiculo);	
+		
+		$altaVehiculoIngEgr=$auth->createPermission('altaVehiculoIngEgr');
+		$altaVehiculoIngEgr->description='Alta: vehiculo (desde accesos)';
+		$auth->add($altaVehiculoIngEgr);	
+		$auth->addChild($intendente, $altaVehiculoIngEgr);
+		$auth->addChild($opIntendencia, $altaVehiculoIngEgr);	
+		$auth->addChild($portero, $altaVehiculoIngEgr);		
+		
 		$accederLibro=$auth->createPermission('accederLibro');
 		$accederLibro->description='Acceso: libro de guardia';
 		$auth->add($accederLibro);	
@@ -140,6 +201,14 @@ class RbacController extends Controller
 		$auth->addChild($portero, $accederLibro);	
 		$auth->addChild($consejo, $accederLibro);
 		$auth->addChild($administrador, $accederLibro);	
+		
+		$exportarLibro=$auth->createPermission('exportarLibro');
+		$exportarLibro->description='Acceso: exportar libro de guardia';
+		$auth->add($exportarLibro);	
+		$auth->addChild($intendente, $exportarLibro);
+		$auth->addChild($opIntendencia, $exportarLibro);	
+		$auth->addChild($consejo, $exportarLibro);
+		$auth->addChild($administrador, $exportarLibro);		
 		
 		$altaLibro=$auth->createPermission('altaLibro');
 		$altaLibro->description='Alta: libro de guardia';
@@ -157,6 +226,7 @@ class RbacController extends Controller
         
         $auth->assign($portero,11);
         $auth->assign($sinrol,13);
+        $auth->assign($sinrol,14);        
 		
     }
 }

@@ -49,17 +49,21 @@ $(document).ready(function() {
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
 	<?php 
-		// para evitar que la pagina se cuelgue cuando se le saca la paginación y hay muchos registros a mostrar
-		$cant=$dataProvider->totalCount;
-		if ( $cant <= \Yii::$app->params['max-rows-gridview'] ) {
-			if ($cant <= $dataProvider->pagination->pageSize) {
-				$toolbar=['{export}'];
+		if (\Yii::$app->user->can('exportarListaPersonas')) {	
+			// para evitar que la pagina se cuelgue cuando se le saca la paginación y hay muchos registros a mostrar
+			$cant=$dataProvider->totalCount;
+			if ( $cant <= \Yii::$app->params['max-rows-gridview'] ) {
+				if ($cant <= $dataProvider->pagination->pageSize) {
+					$toolbar=['{export}'];
+				} else {
+					$toolbar=['{export}','{toggleData}'];
+				}
 			} else {
-				$toolbar=['{export}','{toggleData}'];
+				$toolbar=['{export}'];
 			}
 		} else {
-			$toolbar=['{export}'];
-		}
+			$toolbar='';
+		}	
 		$lbl2='';
 		$pdfHeader=[
 					'L'=>['content'=>\Yii::$app->params['lblName']],
@@ -184,7 +188,7 @@ $(document).ready(function() {
 				 }					 
 				 if ($action === 'view') {
 					$url=Yii::$app->urlManager->createUrl(
-							['libro/view', 
+							['personas/view', 
 							 'id' => $model->id
 							]);
 					return $url;
@@ -195,45 +199,47 @@ $(document).ready(function() {
 	  
             ],
         ];
-        // contiene la selección inicial de columnas, es decir, todas
-        // por ejemplo [0,1,2,3]
-        $poSel=[];
-        // contiene las descripciones de las columnas
-        // por ejemplo [0=>'Portón', 1=>'Usuario',2=>'Fecha',3=>'Texto']
-        $poItems=[];
-		$i=-1;
-        foreach ($columns as $c) {
-			$i++;
-			// si es un array busca la clave "attribute"
-			if (is_array($c)) {
-				foreach ($c as $key=>$value) {
-					if ($key=='attribute') {
-						$poSel[]=$i;
-						$poItems[$i]=$searchModel->getAttributeLabel($value);
-						break;
+		if (\Yii::$app->user->can('exportarListaPersonas')) {        
+			// contiene la selección inicial de columnas, es decir, todas
+			// por ejemplo [0,1,2,3]
+			$poSel=[];
+			// contiene las descripciones de las columnas
+			// por ejemplo [0=>'Portón', 1=>'Usuario',2=>'Fecha',3=>'Texto']
+			$poItems=[];
+			$i=-1;
+			foreach ($columns as $c) {
+				$i++;
+				// si es un array busca la clave "attribute"
+				if (is_array($c)) {
+					foreach ($c as $key=>$value) {
+						if ($key=='attribute') {
+							$poSel[]=$i;
+							$poItems[$i]=$searchModel->getAttributeLabel($value);
+							break;
+						}
 					}
+				} else {
+					$poSel[]=$i;
+					$poItems[$i]=$searchModel->getAttributeLabel($c);
 				}
-			} else {
-				$poSel[]=$i;
-				$poItems[$i]=$searchModel->getAttributeLabel($c);
 			}
-		}
 
-		// tiene que estar fuera del Pjax
-		echo PopoverX::widget([
-			'options'=>['id'=>'popControl'],
-			'placement' => PopoverX::ALIGN_RIGHT,
-			'toggleButton' => ['label'=>'<i class="glyphicon glyphicon-list"></i> Cols.a exportar', 
-								'class'=>'btn btn-default pull-left'],
-			'header'=>'Elija las columnas a exportar',
-			'size'=>'lg',
-			//'content'=>Html::checkboxList('exportColumns', [0,1,2,3], [0=>'Portón', 1=>'Usuario',2=>'Fecha',3=>'Texto'],
-			'content'=>Html::checkboxList('exportColumns', $poSel, $poItems,
-				['class'=>'form-control','tag'=>false,//'separator'=>'<br/>'
-				])											
-		]);
-		// para que no se encime con el summary del gridview	
-		//echo '<div class="clearfix"></div>';			
+			// tiene que estar fuera del Pjax
+			echo PopoverX::widget([
+				'options'=>['id'=>'popControl'],
+				'placement' => PopoverX::ALIGN_RIGHT,
+				'toggleButton' => ['label'=>'<i class="glyphicon glyphicon-list"></i> Cols.a exportar', 
+									'class'=>'btn btn-default pull-left'],
+				'header'=>'Elija las columnas a exportar',
+				'size'=>'lg',
+				//'content'=>Html::checkboxList('exportColumns', [0,1,2,3], [0=>'Portón', 1=>'Usuario',2=>'Fecha',3=>'Texto'],
+				'content'=>Html::checkboxList('exportColumns', $poSel, $poItems,
+					['class'=>'form-control','tag'=>false,//'separator'=>'<br/>'
+					])											
+			]);
+			// para que no se encime con el summary del gridview	
+			//echo '<div class="clearfix"></div>';	
+		}		
 	
 	
 	

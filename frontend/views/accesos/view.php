@@ -36,9 +36,11 @@ $this->registerCss('table.detail-view th {width: 25%;} table.detail-view td {wid
 						]).'&nbsp;';
 				}
 			}
-			echo Html::a('<i class="fa fa-file-pdf-o"></i> PDF', ['pdf', 'id' => $model->id], [
-				'class' => 'btn btn-default',//'target'=>'_blank',
-				]);					
+			if (\Yii::$app->user->can('exportarConsAccesos')) {			
+				echo Html::a('<i class="fa fa-file-pdf-o"></i> PDF', ['pdf', 'id' => $model->id], [
+					'class' => 'btn btn-default',//'target'=>'_blank',
+					]);		
+			} 				
 			echo '</p>';	
 
 		}			

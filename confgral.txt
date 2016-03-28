@@ -1,4 +1,5 @@
 Linux
+0) e2fsck -c /dev/sda1
 1) instalar LAMP server (ojo el caret al final)
    sudo apt-get install lamp-server^
 2) instalar desde el gestor de paquetes synaptic: phpmyadmin, mysql-workbench, geany, git, curl

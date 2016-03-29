@@ -425,6 +425,7 @@ class AccesosController extends Controller
 						\Yii::$app->session[$grupo]=$sess;	
 					
 				} else {
+					/*
 					if ($grupo == 'autorizantes') {
 						$aut=Autorizantes::find()->where(['id_persona'=>$id])->all();
 						foreach ($aut as $a) {
@@ -436,13 +437,15 @@ class AccesosController extends Controller
 						}
 					} else {
 						//Chequea que no se duplique el id en la lista
+					*/
 						if (!in_array($id, $sess)) {
 							$sess[]=$id;
 							\Yii::$app->session[$grupo]=$sess;			
 						} 
-					}
+					//}
 				} 
 			} else {
+				/*
 				if ($grupo == 'autorizantes') {
 					$aut=Autorizantes::find()->where(['id_persona'=>$id])->all();
 					foreach ($aut as $a) {
@@ -451,9 +454,10 @@ class AccesosController extends Controller
 					}
 					
 				} else {
+				*/
 					$sess[]=$id;
 					\Yii::$app->session[$grupo]=$sess;
-				}
+				//}
 			}
 		
 			
@@ -522,11 +526,12 @@ class AccesosController extends Controller
 		
 		if (!empty($a)) {
 			$raux='';
-			// cuando se llama a actionAddLista se están cargando TODAS las uf de cada persona
-			// está hecho a proposito, es decir, no se muestran las ufs del ultimo acceso, sino que se muestran
-			// las personas del ultimo acceso y se cargan TODAS sus uf
 			foreach ($a->accesosAutorizantes as $aa) {
-				$raux=$this->actionAddLista('autorizantes', $aa->id_persona);
+				// se debe controlar que los autorizantes del ultimo ingreso sigan siendo autorizantes
+				$aut=Autorizantes::find()->where(['id_uf'=>$aa->id_uf,'id_persona'=>$aa->id_persona])->one();
+				if (!empty($aut)) {
+					$raux=$this->actionAddLista('autorizantes', $aut->id);
+				}
 			}
 			$ult['motivo_baja']=$raux;
 		} else {
@@ -966,7 +971,6 @@ class AccesosController extends Controller
 					];
 
 					$heading='<i class="fa fa-key"></i>  Autorizantes (Ingreso)';						
-					//$heading='Autorizantes';			
 					break;									
 			}			
 			

@@ -49,11 +49,12 @@ class Autorizantes extends \yii\db\ActiveRecord
     
 	public static function formateaAutorizanteSelect2($id,$es_por_nro) 
 	{
-		$p=Personas::findOne($id);
+		$aut=Autorizantes::findOne($id);
+		//$p=Personas::findOne($id);
 		if ($es_por_nro) {
-			$r=$p->nro_doc . ' ' . $p->apellido.' '.$p->nombre.' '.$p->nombre2.  ' ('. $id . ')';
+			$r=$aut->id_uf . ' ' . $aut->persona->apellido.' '.$aut->persona->nombre.' '.$aut->persona->nombre2;
 		} else {
-			$r=$p->apellido.' '.$p->nombre.' '.$p->nombre2. ' D:' . $p->nro_doc . ' ('. $id . ')';			
+			$r=$aut->persona->apellido.' '.$aut->persona->nombre.' '.$aut->persona->nombre2. ' ' . $aut->id_uf;			
 		}
 		return $r;
 	}    

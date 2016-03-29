@@ -378,13 +378,13 @@ $(document).ready(function() {
 							'initValueText' => $autorizanteDesc, 
 							'options' => [
 											'id'=>'selectorAutorizantes',
-											'placeholder' => 'Buscar por documento o nombre',
+											'placeholder' => 'Buscar por UF o nombre',
 										    'title'=>'Buscar autorizantes',												
 										 ],
 							'addon'=>$autorizantesAddon,
 							'pluginOptions' => [
 								'allowClear' => true,
-								'minimumInputLength' => 3,
+								'minimumInputLength' => 1,
 								'ajax' => [
 									'url' => \yii\helpers\Url::to(['autorizantes/apellidoslist']),
 									'dataType' => 'json',

@@ -78,6 +78,11 @@ class PersonasController extends Controller
      */
     public function actionIndex()
     {
+		/*
+		exec('cd ..;pwd',$out,$status);
+		Yii::trace($out);
+		Yii::trace($status);
+		*/
         $searchModel = new PersonasSearch();
 
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);

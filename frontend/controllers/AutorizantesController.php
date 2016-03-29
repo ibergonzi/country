@@ -33,7 +33,8 @@ class AutorizantesController extends Controller
 	
 		if (!is_null($q)) {
 			if (is_numeric($q)) {
-				$sp='CALL autorizantes_busca_nrosdoc(:query)' ;				
+				//$sp='CALL autorizantes_busca_nrosdoc(:query)' ;	
+				$sp='CALL autorizantes_busca_uf(:query)' ;			
 			} else {	
 				$q=str_replace(' ','%',$q);
 				$sp='CALL autorizantes_busca_nombres(:query)' ;

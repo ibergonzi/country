@@ -10,6 +10,15 @@ class RbacController extends Controller
     {
 		// desde country: ./yii rbac/init
 		
+		//exec('cd ..;pwd',$out,$status);
+		
+		/*
+		exec('id -u -n',$out,$status);
+		echo $out[0];
+		echo $status;return 1;	
+		*/
+			
+		
         $auth = Yii::$app->authManager;
 		
 		// Creacion de roles

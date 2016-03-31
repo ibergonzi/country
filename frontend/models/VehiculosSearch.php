@@ -42,6 +42,7 @@ class VehiculosSearch extends Vehiculos
      */
     public function search($params)
     {
+		
         $query = Vehiculos::find();
 
         $dataProvider = new ActiveDataProvider([

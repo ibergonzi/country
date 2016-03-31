@@ -87,11 +87,12 @@ class Vehiculos extends \yii\db\ActiveRecord
 
 
 	public static function getMarcasVehiculos() {
-       $sql = "SELECT DISTINCT marca FROM vehiculos WHERE id NOT IN (:pie,:bici) ORDER BY marca";
+       $sql = "SELECT DISTINCT marca FROM vehiculos WHERE id NOT IN (:pie,:bici,:generico) ORDER BY marca";
 
        $command = \Yii::$app->db->createCommand($sql);
        $command->bindParam(":pie", \Yii::$app->params['sinVehiculo.id']);
        $command->bindParam(":bici", \Yii::$app->params['bicicleta.id']);
+       $command->bindParam(":generico", \Yii::$app->params['generico.id']);       
 
        $result=$command->queryAll();
        
@@ -168,7 +169,11 @@ class Vehiculos extends \yii\db\ActiveRecord
         return $this->hasMany(Accesos::className(), ['ing_id_vehiculo' => 'id']);
     }
 
-   
+    public function getUltIngreso()
+    {
+        return $this->hasOne(Accesos::className(), ['ing_id_vehiculo' => 'id'])
+        	->orderBy(['id' => SORT_DESC])->limit(1)->one();			
+    }  
     
     public function getUserCreatedBy()
     {

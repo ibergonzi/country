@@ -336,6 +336,7 @@ $(document).ready(function() {
 				'value'=>'desc_concepto', 
 				'filter'=>AccesosConceptos::getListaConceptos(true),
 		    ],
+		    'ing_id_llave',
             'motivo',		 
                
             [
@@ -400,6 +401,7 @@ $(document).ready(function() {
             'r_egr_color',
             'egr_id_porton',
             'r_egr_usuario',
+            'egr_id_llave',
             'control',
             [
 				'attribute'=>'estado',

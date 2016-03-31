@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 use frontend\models\Personas;
+use yii\bootstrap\Modal;
 
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Personas */
@@ -31,17 +32,36 @@ $this->params['breadcrumbs'][] = $this->title;
 						<?php 
 						echo '<p>';
 						if ($model->estado==Personas::ESTADO_ACTIVO) {
-
-							echo Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary'])
-							.'  '. Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
-								'class' => 'btn btn-danger',
-								]).'  ';
+							if (\Yii::$app->user->can('altaModificarPersona')) {
+								echo Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']);
+							}
+							if (\Yii::$app->user->can('borrarPersona')) {	
+								echo ' '. Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], ['class' => 'btn btn-danger',]);
+							}
 						}
-						if (isset($model->ultIngreso->id)) {
-							echo Html::a('Ult.Ingreso', ['accesos/view', 
-								'id' => $model->ultIngreso->id], 
-								['class' => 'btn btn-default']);
+						if (\Yii::$app->user->can('accederConsAccesos')) {	
+							if (isset($model->ultIngreso->id)) {
+								echo ' '.Html::a('Ult.Ingreso', ['accesos/view', 
+									'id' => $model->ultIngreso->id], 
+									['class' => 'btn btn-default','title'=>'Ver último ingreso']);
+							}
 						}
+						echo ' '.Html::a('Vehiculos',['lista-vehiculos','id_persona'=>$model->id],[
+							'class'=>'btn btn-default',
+							'title'=>'Vehiculos utilizados',
+							'onclick'=>'$.ajax({
+								type     :"POST",
+								cache    : false,
+								url  : $(this).attr("href"),
+								success  : function(response) {
+											if (response=="notFound") {return false;}
+											$("#divvehiculos").html(response);
+											$("#modalvehiculos").modal("show");
+											}
+							});
+							return false;'							
+						]
+						);
 						echo '</p>';	
 						?>
 					
@@ -89,4 +109,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
 		</div>	
 	</div>
+	<?php
+	Modal::begin(['id'=>'modalvehiculos',
+		'header'=>'<span class="btn-warning">&nbsp;Vehiculos utilizados&nbsp;</span>',
+		]);
+		echo '<div id="divvehiculos"></div>';
+	Modal::end();	
+	?>
 </div>						

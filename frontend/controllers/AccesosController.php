@@ -251,7 +251,7 @@ class AccesosController extends Controller
     public function actionBuscaVehiculos($grupo,$id_persona)
     {
 		// recupera los vehiculos utilizados por la persona en ingresos/egresos
-		$vehiculos=Accesos::getVehiculosPorPersona($id_persona,false);
+		$vehiculos=Accesos::getVehiculosPorPersona($id_persona,false,false);
 		
 		// Si la persona es nueva o nunca tuvo accesos devuelve una bandera para que no se muestre el modal
 		if (count($vehiculos)==0) {
@@ -292,7 +292,7 @@ class AccesosController extends Controller
 		
 		// el parametro true se refiere a $ultimoVehiculo, es decir, que traiga el vehiculo del último ingreso de la persona
 		// esto se hace para armar la seleccion
-		$ultVehiculo=Accesos::getVehiculosPorPersona($id_persona,true);
+		$ultVehiculo=Accesos::getVehiculosPorPersona($id_persona,true,false);
 
 		// ultVehiculo es un array de arrays [idVehiculo=>valor]
 		$seleccion=[];
@@ -420,9 +420,12 @@ class AccesosController extends Controller
 			// se pregunta si está seteado $sess sino la funcion in_array devuelve error
 			if ($sess) {
 				if ($grupo =='ingvehiculos' || $grupo == 'egrvehiculos') {
-					// el grupo vehiculos solo debe tener 1 elemento, si ya existia se reemplaza
-						$sess[0]=$id;
-						\Yii::$app->session[$grupo]=$sess;	
+					// el grupo vehiculos solo debe tener 1 elemento, si ya existia se reemplaza,
+					// y evita que se ingrese manualmente un vehiculo generico
+						if ($id != \Yii::$app->params['generico.id']) {
+							$sess[0]=$id;
+							\Yii::$app->session[$grupo]=$sess;
+						}	
 					
 				} else {
 					/*
@@ -455,8 +458,16 @@ class AccesosController extends Controller
 					
 				} else {
 				*/
-					$sess[]=$id;
-					\Yii::$app->session[$grupo]=$sess;
+					if ($grupo =='ingvehiculos' || $grupo == 'egrvehiculos') {
+						// evita que se ingrese manualmente un vehiculo generico
+						if ($id != \Yii::$app->params['generico.id']) {
+							$sess[]=$id;
+							\Yii::$app->session[$grupo]=$sess;							
+						}
+					} else {	
+						$sess[]=$id;
+						\Yii::$app->session[$grupo]=$sess;
+					}
 				//}
 			}
 		

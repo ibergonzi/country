@@ -22,11 +22,13 @@ use yii\db\Expression;
  * @property string $ing_hora
  * @property integer $ing_id_porton
  * @property integer $ing_id_user
+ * @property integer $ing_id_llave
  * @property integer $egr_id_vehiculo
  * @property string $egr_fecha
  * @property string $egr_hora
  * @property integer $egr_id_porton
  * @property integer $egr_id_user
+ * @property integer $egr_id_llave
  * @property integer $id_concepto
  * @property string $motivo
  * @property integer $control
@@ -113,7 +115,7 @@ class Accesos extends \yii\db\ActiveRecord
 				'ing_id_user', 'egr_id_vehiculo', 'egr_id_porton', 'egr_id_user', 
 				'id_concepto', 'cant_acomp', 'created_by', 'updated_by', 'estado'], 'integer'],
             [['ing_fecha', 'ing_hora', 'egr_fecha', 'egr_hora', 
-				'created_by','created_at', 'updated_at','updated_by','control'], 'safe'],
+				'created_by','created_at', 'updated_at','updated_by','control','ing_id_llave','egr_id_llave'], 'safe'],
             [['motivo', 'motivo_baja'], 'string', 'max' => 50],
             ['control', 'string', 'max' => 200],
             ['cant_acomp','default','value'=>0],
@@ -152,14 +154,96 @@ class Accesos extends \yii\db\ActiveRecord
             'userCreatedBy.username'=>'Usuario alta',
             'userUpdatedBy.username'=>'Usuario modif.',             
             'userIngreso.username'=>'Usuario Ing.',
-            'userEgreso.username'=>'Usuario Egr.',      
+            'userEgreso.username'=>'Usuario Egr.',  
+            'ing_id_llave'=>'Llave Ing.',
+            'egr_id_llave'=>'Llave Egr.',            
+                
             //'descUsuarioIng'=>'U.Ing.','descUsuarioEgr'=>'U.Egr.'       
 
         ];
     }
+ 
     
+    // Devuelve todos los vehiculos utilizados de una determinada persona (y que los vehiculos sigan activos)
+    public static function getVehiculosPorPersona($id_persona,$ultimoVehiculo,$conVehicGenerico) 
+    {
+		// se hace para verificar que exista el parametro pasado a esta funcion
+		$p=Personas::findOne($id_persona);
+		if (!$ultimoVehiculo) {
+			// trae todos los vehiculos que uso alguna vez la persona, ordenados por ultimo uso
+			$q='SELECT ing_id_vehiculo AS id_vehiculo,MAX(ing_hora) AS ult  
+				FROM accesos LEFT JOIN vehiculos ON ing_id_vehiculo=vehiculos.id
+				WHERE id_persona=:persona 
+				AND vehiculos.estado=1';
+			if (!$conVehicGenerico) {
+				$q.=' AND ing_id_vehiculo != :generico';
+			}	
+			$q.=' GROUP BY ing_id_vehiculo
+				 ORDER BY ult DESC';
+		} else {
+			$q='SELECT ing_id_vehiculo AS id_vehiculo 
+				FROM accesos LEFT JOIN vehiculos ON ing_id_vehiculo=vehiculos.id
+				WHERE id_persona=:persona 
+				AND vehiculos.estado=1';	
+			if (!$conVehicGenerico) {
+				$q.=' AND ing_id_vehiculo != :generico';
+			}
+			$q.=' AND ing_hora IN (SELECT MAX(ing_hora) 
+				 FROM accesos WHERE id_persona=:persona';
+			if (!$conVehicGenerico) {
+				$q.=' AND ing_id_vehiculo != :generico';
+			}																																						
+			$q.=')';			
+		}
+		$command=\Yii::$app->db->createCommand($q);	
+		$command->bindParam(':persona', $id_persona);			
+		if (!$conVehicGenerico) {
+			$command->bindParam(':generico', \Yii::$app->params['generico.id']);
+		}		
+		$vehiculos=$command->queryAll();
+		/*	
+		foreach ($vehiculos as $vehiculo){
+			echo $vehiculo['id_vehiculo'];
+		}
+		*/ 
 
-    /**
+		return $vehiculos;
+	}
+	
+    // Devuelve todos las personas que utilizaron un determinado vehiculo (y que las personas sigan activas)
+    public static function getPersonasPorVehiculo($id_vehiculo,$ultimasPersonas) 
+    {
+		// se hace para verificar que exista el parametro pasado a esta funcion
+		$p=Vehiculos::findOne($id_vehiculo);
+		if (!$ultimasPersonas) {
+			// trae todas las personas que usaron alguna vez el vehiculo, ordenadas por ultimo uso
+			$command=\Yii::$app->db->createCommand('SELECT id_persona AS id_persona,MAX(ing_hora) AS ult 
+													FROM accesos LEFT JOIN personas ON id_persona=personas.id
+													WHERE ing_id_vehiculo=:vehiculo
+													AND personas.estado=1
+													GROUP BY id_persona
+													ORDER BY ult DESC');			
+		} else {
+			// trae las personas que usaron el vehiculo por ultima vez
+			$command=\Yii::$app->db->createCommand('SELECT id_persona AS id_persona 
+													FROM accesos LEFT JOIN personas ON id_persona=personas.id
+													WHERE ing_id_vehiculo=:vehiculo 
+													AND personas.estado=1													
+													AND ing_hora IN (SELECT MAX(ing_hora) 
+																		FROM accesos WHERE ing_id_vehiculo=:vehiculo)');			
+		}											
+		$command->bindParam(':vehiculo', $id_vehiculo);
+		$personas=$command->queryAll();
+		/*	
+		foreach ($vehiculos as $vehiculo){
+			echo $vehiculo['id_vehiculo'];
+		}
+		*/ 
+
+		return $personas;
+	}	
+	
+   /**
      * @return \yii\db\ActiveQuery
      */
     public function getAccesosConcepto()
@@ -209,73 +293,6 @@ class Accesos extends \yii\db\ActiveRecord
         return $this->hasMany(Personas::className(), 
 			['id' => 'id_autorizante'])->viaTable('accesos_autorizantes', ['id_acceso' => 'id']);
     }
-
-    
-    // Devuelve todos los vehiculos utilizados de una determinada persona (y que los vehiculos sigan activos)
-    public static function getVehiculosPorPersona($id_persona,$ultimoVehiculo) 
-    {
-		// se hace para verificar que exista el parametro pasado a esta funcion
-		$p=Personas::findOne($id_persona);
-		if (!$ultimoVehiculo) {
-			// trae todos los vehiculos que uso alguna vez la persona, ordenados por ultimo uso
-			$command=\Yii::$app->db->createCommand('SELECT ing_id_vehiculo AS id_vehiculo,MAX(ing_hora) AS ult  
-													FROM accesos LEFT JOIN vehiculos ON ing_id_vehiculo=vehiculos.id
-													WHERE id_persona=:persona 
-													AND vehiculos.estado=1 
-													GROUP BY ing_id_vehiculo
-													ORDER BY ult DESC');
-		} else {
-			$command=\Yii::$app->db->createCommand('SELECT ing_id_vehiculo AS id_vehiculo 
-													FROM accesos LEFT JOIN vehiculos ON ing_id_vehiculo=vehiculos.id
-													WHERE id_persona=:persona 
-													AND vehiculos.estado=1													
-													AND ing_hora IN (SELECT MAX(ing_hora) 
-																		FROM accesos WHERE id_persona=:persona)');			
-		}
-		$command->bindParam(':persona', $id_persona);
-		$vehiculos=$command->queryAll();
-		/*	
-		foreach ($vehiculos as $vehiculo){
-			echo $vehiculo['id_vehiculo'];
-		}
-		*/ 
-
-		return $vehiculos;
-	}
-	
-    // Devuelve todos los vehiculos utilizados de una determinada persona (y que los vehiculos sigan activos)
-    public static function getPersonasPorVehiculo($id_vehiculo,$ultimasPersonas) 
-    {
-		// se hace para verificar que exista el parametro pasado a esta funcion
-		$p=Vehiculos::findOne($id_vehiculo);
-		if (!$ultimasPersonas) {
-			// trae todas las personas que usaron alguna vez el vehiculo, ordenadas por ultimo uso
-			$command=\Yii::$app->db->createCommand('SELECT id_persona AS id_persona,MAX(ing_hora) AS ult 
-													FROM accesos LEFT JOIN personas ON id_persona=personas.id
-													WHERE ing_id_vehiculo=:vehiculo
-													AND personas.estado=1
-													GROUP BY id_persona
-													ORDER BY ult DESC');			
-		} else {
-			// trae las personas que usaron el vehiculo por ultima vez
-			$command=\Yii::$app->db->createCommand('SELECT id_persona AS id_persona 
-													FROM accesos LEFT JOIN personas ON id_persona=personas.id
-													WHERE ing_id_vehiculo=:vehiculo 
-													AND personas.estado=1													
-													AND ing_hora IN (SELECT MAX(ing_hora) 
-																		FROM accesos WHERE ing_id_vehiculo=:vehiculo)');			
-		}											
-		$command->bindParam(':vehiculo', $id_vehiculo);
-		$personas=$command->queryAll();
-		/*	
-		foreach ($vehiculos as $vehiculo){
-			echo $vehiculo['id_vehiculo'];
-		}
-		*/ 
-
-		return $personas;
-	}	
-	
 	
     public function getUserCreatedBy()
     {
@@ -299,8 +316,19 @@ class Accesos extends \yii\db\ActiveRecord
     {
         return $this->hasOne(\common\models\User::className(), 
 				['id' => 'egr_id_user'])->from(\common\models\User::tableName() . ' uegr');
-				
-    }    	
+    }    
+    
+    public function getLlaveIngreso()
+    {
+        return $this->hasOne(\common\models\Llaves::className(), 
+				['id' => 'ing_id_llave'])->from(\common\models\Llaves::tableName() . ' king');
+    }    
+    
+    public function getLlaveEgreso()
+    {
+        return $this->hasOne(\common\models\Llaves::className(), 
+				['id' => 'egr_id_llave'])->from(\common\models\Llaves::tableName() . ' kegr');
+    }        	
 
 
     /**

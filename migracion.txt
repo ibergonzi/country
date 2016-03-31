@@ -40,15 +40,25 @@ old.autos.numero 2
 old.autos.marca 54 
 old.autos.patente=9999
 
+Hay 17 registros en old.accesos que hacen referencia a old.autos.numero=3, 
+
 Habria que usar solamente estos 2 vehiculos en old.accesos y eliminar todos los duplicados en old.autos
 en new.vehiculos habria que reemplazar patente por "BICICLETA" y "CAMINANDO" respectivamente 
 En la tabla nueva NO se van a admitir duplicados en patente
 
+Hay 17 registros en old.accesos que hacen referencia a old.autos.numero=3, en la migración se deberian vincular a
+new.vehiculos.id=2
+
 Hay que pasar todos los campos a mayúsculas y ver que pasa con old.autos.color que hay vacíos y null (
 se tendrian que pasar a null)
 
+En la tabla new.vehiculos se deben crear 3 registros especiales:
+id=1 => equivalente a old.autos.numero=1
+id=2 => equivalente a old.autos.numero=2
+id=3 => vehiculo genérico va a ser el default de las llaves de barreras
+
 TABLA OLD.MARCAS
-Pasarla como está a new.vehiculos_marcas
+Se elimina la tabla, la marca es un campo varchar en la new.vehiculos (marca)
 
 TABLA OLD.CONCEPTO
 Pasarla como está a new.accesos_conceptos, en esta tabla se agregará un campo "req_seguro" donde será "true" para los
@@ -77,3 +87,9 @@ Pasarla a new.infracciones
 En el campo foto, si tiene algun valor, es decir, si tiene foto, colocar numero+'.jpg'
 Los campos Monto, CantidadPersonas, ImportePersonas, ImportePersonasTotal, MontoTotal reciben el mismo tratamiento
 que old.tip_inf.ImportePersona
+
+TABLA OLD.DOCU y OLD.DOCUMENTOS
+Se resumen en una sola tabla new.tiposdoc, es decir, a OLD.DOCU se agregan los codigos 80 y 85 y se insertan en new.tiposdoc
+
+
+

@@ -19,7 +19,7 @@ class TiposdocSearch extends Tiposdoc
     {
         return [
             [['id'], 'integer'],
-            [['desc_tipo_doc', 'desc_tipo_doc_abr'], 'safe'],
+            [['desc_tipo_doc', 'desc_tipo_doc_abr','persona_fisica'], 'safe'],
         ];
     }
 
@@ -57,6 +57,7 @@ class TiposdocSearch extends Tiposdoc
 
         $query->andFilterWhere([
             'id' => $this->id,
+            'persona_fisica'=>$this->persona_fisica
         ]);
 
         $query->andFilterWhere(['like', 'desc_tipo_doc', $this->desc_tipo_doc])

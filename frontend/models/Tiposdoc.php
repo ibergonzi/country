@@ -12,6 +12,8 @@ use Yii;
  * @property integer $id
  * @property string $desc_tipo_doc
  * @property string $desc_tipo_doc_abr
+ * @property string $persona_fisica
+ * 
  *
  * @property Personas[] $personas
  */
@@ -35,7 +37,7 @@ class Tiposdoc extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'desc_tipo_doc', 'desc_tipo_doc_abr'], 'required'],
+            [['id', 'desc_tipo_doc', 'desc_tipo_doc_abr','persona_fisica'], 'required'],
             [['id'], 'integer'],
             [['desc_tipo_doc'], 'string', 'max' => 50],
             [['desc_tipo_doc_abr'], 'string', 'max' => 4]
@@ -51,6 +53,7 @@ class Tiposdoc extends \yii\db\ActiveRecord
             'id' => Yii::t('app', 'ID'),
             'desc_tipo_doc' => Yii::t('app', 'Descripción'),
             'desc_tipo_doc_abr' => Yii::t('app', 'T.Doc.'),
+            'persona_fisica' => Yii::t('app', 'Pers.Física'),
         ];
     }
 

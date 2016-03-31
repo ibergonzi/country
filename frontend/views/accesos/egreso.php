@@ -169,7 +169,7 @@ $(document).ready(function() {
 											success: function(r) {
 												$("#divlistavehiculos").html(r["egrvehiculos"]);	
 												$("#selectorVehiculos").select2("val","");	
-												if (seleccion > 2) { // si es 1 o 2 es bicicleta o caminando
+												if (seleccion > 3) { // si es 1,2 o 3 es bicicleta, caminando o generico
 													$.ajax({
 														type   : "POST", cache  : false,
 														url    : "busca-personas?grupo=egrvehiculos&id_vehiculo=" + seleccion,

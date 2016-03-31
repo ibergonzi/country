@@ -17,6 +17,9 @@ use kartik\widgets\ActiveForm;
 
 use yii\web\UploadedFile;
 
+use frontend\models\Accesos;
+use frontend\models\Vehiculos;
+use yii\data\ArrayDataProvider;
 
 /**
  * PersonasController implements the CRUD actions for Personas model.
@@ -45,7 +48,7 @@ class PersonasController extends Controller
                         'roles' => ['borrarPersona'], 
                     ],                
                     [
-                        'actions' => ['index','view'],
+                        'actions' => ['index','view','lista-vehiculos'],
                         'allow' => true,
                         'roles' => ['accederListaPersonas'], 
                     ],
@@ -92,6 +95,28 @@ class PersonasController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
+    
+    public function actionListaVehiculos($id_persona)    
+    {
+		// recupera los vehiculos utilizados por la persona en ingresos/egresos
+		$vehiculos=Accesos::getVehiculosPorPersona($id_persona,true,true);
+		
+		// Si la persona es nueva o nunca tuvo accesos devuelve una bandera para que no se muestre el modal
+		if (count($vehiculos)==0) {
+			return 'notFound';
+		}			
+		$dp=[];				
+		foreach ($vehiculos as $veh) {
+			foreach ($veh as $k=>$v) {
+				//Yii::trace($vehiculos);die;
+				$dp[]=Vehiculos::findOne($v);
+			}
+		}	
+		$dataProvider = new ArrayDataProvider(['allModels'=>$dp]);				
+        return $this->renderAjax('vehiculoslist', [
+            'dataProvider' => $dataProvider,
+        ]);					
+	}
 
     /**
      * Displays a single Personas model.

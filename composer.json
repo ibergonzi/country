@@ -25,7 +25,8 @@
         "kartik-v/yii2-mpdf": "dev-master",
         "kartik-v/yii2-icons": "@dev",
         "kartik-v/yii2-popover-x": "dev-master",
-        "kartik-v/yii2-editable": "*"
+        "kartik-v/yii2-editable": "*",
+		"vova07/yii2-console-runner-extension": "*"        
         
     },
     "require-dev": {

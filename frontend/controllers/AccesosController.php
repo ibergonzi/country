@@ -12,6 +12,7 @@ use yii\base\Model;
 
 use yii\data\ArrayDataProvider;
 
+
 use kartik\grid\GridView;
 
 use yii\helpers\Html;
@@ -29,6 +30,8 @@ use frontend\models\AccesosAutorizantes;
 use frontend\models\AccesosUf;
 use frontend\models\AccesosConceptos;
 use frontend\models\Uf;
+use frontend\models\RangoFechas;
+
 
 use kartik\mpdf\Pdf;
 
@@ -65,7 +68,7 @@ class AccesosController extends Controller
                         'roles' => ['borrarAcceso'], 
                     ],                
                     [
-                        'actions' => ['index','view','pdf'],
+                        'actions' => ['index','view','pdf','stats'],
                         'allow' => true,
                         'roles' => ['accederConsAccesos'], 
                     ],
@@ -119,6 +122,45 @@ class AccesosController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
+    
+    public function actionStats()
+    {
+		$model=new RangoFechas();
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+			$q='SELECT WEEKDAY(ing_fecha) AS dia,concepto,0 AS porc,COUNT(*) AS cant 
+				FROM accesos JOIN accesos_conceptos on accesos.id_concepto=accesos_conceptos.id 
+				WHERE ing_fecha BETWEEN :fecdesde AND :fechasta
+				GROUP BY dia,concepto,porc 
+				ORDER BY dia,concepto';
+			$command=\Yii::$app->db->createCommand($q);	
+			$command->bindParam(':fecdesde', $model->fecdesde);	
+			$command->bindParam(':fechasta', $model->fechasta);	
+			$rows=$command->queryAll();				
+			$totCant=0;
+			foreach ($rows as $r) {
+				$totCant+=$r['cant'];
+			}	
+			$semana=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+			if ($totCant > 0) {	
+				foreach ($rows as &$r) {
+					$r['dia']=$semana[$r['dia']];
+					$r['porc']=$r['cant']/$totCant*100;
+				}					
+			}
+			$dataProvider = new ArrayDataProvider([
+				'allModels' => $rows,
+				'pagination' => ['pageSize' => -1,],
+
+			]);			
+		} else {
+			$dataProvider=null;   
+        }
+		return $this->render('stats', [
+			'model' => $model,
+			'dataProvider'=>$dataProvider,
+		]);
+        		
+	}
     
     public function actionEgresoGrupal()
     {

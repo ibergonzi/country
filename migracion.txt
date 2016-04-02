@@ -1,12 +1,12 @@
 TABLA OLD.VISITAS
-En principio las tablas de destino son new.personas y new.autorizantes.
+En principio las tablas de destino son new.personas 
 old.visitas.autoriza toma 2 valores, 0 y 1 donde 1 indica que es autorizante, es decir copropietario
 Hay que pasar estas personas a una tabla new.autorizantes (id, idpersona, etc.)
 
 SOLO hay 2 duplicaciones exactas por tipo_doc y nro_doc: old.visitas.numero in (16089,16764) WTF?
 Hay duplicaciones por nro_doc (distintos tipo_doc), en la mayoria de los casos los datos son casi iguales, 
 dejar 1 solo (a criterio)
-Hay registros con tipo_doc que no están referenciados ni en 
+
 
 En new.personas va a haber 3 campos para nombres: apellido, nombre y nombre2. Hay que separar old.visitas.nombre 
 en dos, teniendo cuidado con nombres como: Del Carmen (es un solo nombre y va al campo new.personas.nombre)
@@ -14,12 +14,34 @@ Hay que pasar todos los nombres en mayusculas y sin espacios en ningún lado (tr
 
 Hay 3 o 4 registros con fechas nulas, descartarlos completamente
 
-Campos old.visitas.avisar_a y old.visitas.mensaje: se deben pasar a new.personas.mensajes
+Campos old.visitas.avisar_a y old.visitas.mensaje: se deben pasar a new.mensajes. En new.mensajes.model se coloca:
+'frontend\models\Personas' y en new.mensajes.model_id se coloca el id de la persona
 
-Campos old.visitas.tarjeta y old.visitas.vtotarj: se deben pasar a new.personas.seguros
+
+Campos old.visitas.tarjeta y old.visitas.vtotarj: tarjeta se ignora y vtotarj se coloca en new.personas.vto_seguro (si, 
+me dio paja hacer una tabla nueva)
 
 
 TABLA OLD.ACCESOS
+La tabla destino es new.accesos
+Los campos ing_fecha y egr_fecha son DATE, pero ing_hora y egr_hora son DATETIME e incluyen fecha y hora, 
+Por ejemplo, si en OLD.ACCESOS FECHA y HORA_ING son '2015-04-22 00:00:00' y '19:32' en new.accesos debe quedar:
+'2015-04-22' y '2015-04-22 19:32:00'
+
+
+Para determinar los autorizantes hay que hamacarse. En principio son los propietarios, para esto tengo un excel con las
+unidades funcionales y sus titulares. Pero esto es un listado actualizado, hacia atras no estoy seguro como hacer.
+En la base nueva hay que llenar la tabla accesos_autorizantes, que tiene los dos campos id_persona e id_uf.
+Tanto en la tabla old.accesos como old.visitas estan los campos id_autor, pero la unidad solo se encuentra en old.visitas,
+yo tomaria esa unidad. 
+
+La titularidad se va a manejar con las new.uf, new.uf_titularidad, new.uf_titularidad_personas y new.uf_titularidad_cesionarios
+La información de la unidad (que no deberia cambiar nunca) esta en new.uf.
+En new.uf_titularidad se registran movimientos de titularidad, con la migración vamos a utilizar el tipo de movimiento 0 (inicial)
+Si el movimiento es una cesion de derechos (como por ejemplo un alquiler) se utiliza la new.uf_titularidad_cesionarios con todos
+las personas que alquilan la propiedad y a la vez en new.uf_titularidad_personas siguen registrados los propietarios.
+Cualquier movimiento nuevo origina la base para new.autorizantes, es decir, se eliminan todos los registros relacionados con la uf
+y se crean desde cero con los nuevos propietarios (o con los nuevos cesionarios). 
 
 
 
@@ -40,7 +62,8 @@ old.autos.numero 2
 old.autos.marca 54 
 old.autos.patente=9999
 
-Hay 17 registros en old.accesos que hacen referencia a old.autos.numero=3, 
+Hay 17 registros en old.accesos que hacen referencia a old.autos.numero=3, deben utilizar el id 2
+El vehiculo numero 3 se debe crear en new.vehiculos como "vehiculo generico", solo se va a usar con el sistema nuevo
 
 Habria que usar solamente estos 2 vehiculos en old.accesos y eliminar todos los duplicados en old.autos
 en new.vehiculos habria que reemplazar patente por "BICICLETA" y "CAMINANDO" respectivamente 
@@ -87,9 +110,27 @@ Pasarla a new.infracciones
 En el campo foto, si tiene algun valor, es decir, si tiene foto, colocar numero+'.jpg'
 Los campos Monto, CantidadPersonas, ImportePersonas, ImportePersonasTotal, MontoTotal reciben el mismo tratamiento
 que old.tip_inf.ImportePersona
+Hay registros que no tienen unidad null, pero la unidad está especificada en lugar
 
 TABLA OLD.DOCU y OLD.DOCUMENTOS
 Se resumen en una sola tabla new.tiposdoc, es decir, a OLD.DOCU se agregan los codigos 80 y 85 y se insertan en new.tiposdoc
 
+TABLA OLD.USUARIOS
+OLD.NUMERO no sirve para nada, hasta hay duplicados
+Los campos new.created_at y updated_at se les coloca '1453571317'
+En new.auth_key se coloca ''
+En new.password_hash colocar OLD.PW, despues a mano lo actualizo con el hash correspondiente, si OLD.PW es null, colocar "miraflores"
+En new.status colocar 10
+En new.email colocar null
+A los usuarios existentes hay que agregar 3 usuarios especiales:
+   username=consejo
+   email=miraflores.adm.consejo@gmail.com
+   
+   username=administracion
+   email=miraflores.adm.adm@gmail.com
+   
+El id con que se generan es importante y hay que anotarlos (se usa en el script de permisos)
+ 
+   
 
 

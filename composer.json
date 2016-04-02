@@ -26,7 +26,8 @@
         "kartik-v/yii2-icons": "@dev",
         "kartik-v/yii2-popover-x": "dev-master",
         "kartik-v/yii2-editable": "*",
-		"vova07/yii2-console-runner-extension": "*"        
+		"vova07/yii2-console-runner-extension": "*",
+        "miloschuman/yii2-highcharts-widget": "*"        
         
     },
     "require-dev": {

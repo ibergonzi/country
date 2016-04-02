@@ -71,9 +71,15 @@ AppAsset::register($this);
 							['label' => 'Personas adentro', 
 								'url' => ['/accesos/cons-dentro'], 
 								'visible'=>\Yii::$app->user->can('accederConsDentro')],
+							['label' => 'Estadisticas', 
+								'url' => ['/accesos/stats'], 
+								'visible'=>\Yii::$app->user->can('accederStatsAccesos')],									
 							['label' => 'Lista de Personas', 
 								'url' => ['/personas/index'], 
 								'visible'=>\Yii::$app->user->can('accederListaPersonas')],
+							['label' => 'Lista de Vehiculos', 
+								'url' => ['/vehiculos/index'], 
+								'visible'=>\Yii::$app->user->can('accederListaVehiculos')],								
 			] // fin items;
 		 ]; // fin menuItems[]
 		$menuItems[] = ['label' => 'Usuarios', 'url' => ['/user/index'], 'visible'=>\Yii::$app->user->can('accederUser')];

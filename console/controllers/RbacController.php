@@ -98,6 +98,14 @@ class RbacController extends Controller
 		$auth->addChild($opIntendencia, $accederConsAccesos);
 		$auth->addChild($portero, $accederConsAccesos);	
 		
+		$accederStatsAccesos=$auth->createPermission('accederStatsAccesos');
+		$accederStatsAccesos->description='Acceso: estadistica accesos';
+		$auth->add($accederStatsAccesos);	
+		$auth->addChild($consejo, $accederStatsAccesos);
+		$auth->addChild($administrador, $accederStatsAccesos);		
+		$auth->addChild($intendente, $accederStatsAccesos);	
+		$auth->addChild($opIntendencia, $accederStatsAccesos);
+		
 		$exportarConsAccesos=$auth->createPermission('exportarConsAccesos');
 		$exportarConsAccesos->description='Acceso: exportar accesos';
 		$auth->add($exportarConsAccesos);	
@@ -234,8 +242,8 @@ class RbacController extends Controller
         $auth->assign($intendente, 9);
         
         $auth->assign($portero,11);
-        $auth->assign($sinrol,13);
-        $auth->assign($sinrol,14);        
+        $auth->assign($sinrol,15);
+     
 		
     }
 }

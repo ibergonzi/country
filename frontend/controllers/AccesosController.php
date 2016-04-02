@@ -16,6 +16,7 @@ use yii\data\ArrayDataProvider;
 use kartik\grid\GridView;
 
 use yii\helpers\Html;
+use yii\web\JsExpression;
 
 use frontend\models\Accesos;
 use frontend\models\AccesosVista;
@@ -68,10 +69,15 @@ class AccesosController extends Controller
                         'roles' => ['borrarAcceso'], 
                     ],                
                     [
-                        'actions' => ['index','view','pdf','stats'],
+                        'actions' => ['index','view','pdf'],
                         'allow' => true,
                         'roles' => ['accederConsAccesos'], 
                     ],
+                    [
+                        'actions' => ['stats'],
+                        'allow' => true,
+                        'roles' => ['accederStatsAccesos'], 
+                    ],                    
                     [
                         'actions' => ['cons-dentro','view'],
                         'allow' => true,
@@ -127,7 +133,7 @@ class AccesosController extends Controller
     {
 		$model=new RangoFechas();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-			$q='SELECT WEEKDAY(ing_fecha) AS dia,concepto,0 AS porc,COUNT(*) AS cant 
+			$q='SELECT WEEKDAY(ing_fecha) AS dia,"" AS desc_dia,concepto,0 AS porc,COUNT(*) AS cant 
 				FROM accesos JOIN accesos_conceptos on accesos.id_concepto=accesos_conceptos.id 
 				WHERE ing_fecha BETWEEN :fecdesde AND :fechasta
 				GROUP BY dia,concepto,porc 
@@ -141,12 +147,76 @@ class AccesosController extends Controller
 				$totCant+=$r['cant'];
 			}	
 			$semana=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+
 			if ($totCant > 0) {	
+				$categ=[];
+				$categNum=[];
+				$nameSeries=[];
 				foreach ($rows as &$r) {
-					$r['dia']=$semana[$r['dia']];
+					$r['desc_dia']=$semana[$r['dia']];
 					$r['porc']=$r['cant']/$totCant*100;
-				}					
+					if (!in_array($r['desc_dia'], $categ)) {
+							$categ[]=$r['desc_dia'];
+							$categNum[]=$r['dia'];		
+					}	
+					if (!in_array($r['concepto'], $nameSeries)) {
+							$nameSeries[]=$r['concepto'];		
+					}					
+				}	
+				/*	
+				  'series' => [
+					 ['name' => 'Visitas', 'data' => [1, 0, 4,3,3,4,2]],
+					 ['name' => 'John', 'data' => [5, 7, 3,2,4,0,1]]
+				  ]
+				*/
+				$series=[];
+				foreach ($nameSeries as $ns) {
+					$cants=[];
+					
+					foreach ($categNum as $cn) {
+						$q='SELECT COUNT(*) AS cant 
+							FROM accesos JOIN accesos_conceptos on accesos.id_concepto=accesos_conceptos.id 
+							WHERE ing_fecha BETWEEN :fecdesde AND :fechasta
+							AND WEEKDAY(ing_fecha)=:dia
+							AND concepto=:concepto'
+							;
+						$command=\Yii::$app->db->createCommand($q);	
+						$command->bindParam(':fecdesde', $model->fecdesde);	
+						$command->bindParam(':fechasta', $model->fechasta);	
+						$command->bindParam(':dia', $cn);
+						$command->bindParam(':concepto', $ns);												
+						$cant=$command->queryOne();	
+						$cants[]=(int)$cant['cant'];
+					}
+					$series[]=['type'=>'column','name'=>$ns,'data'=>$cants];	
+				}	
+				$cantsPie=[];
+				foreach ($categNum as $cn) {
+					$q='SELECT COUNT(*) AS cant 
+						FROM accesos JOIN accesos_conceptos on accesos.id_concepto=accesos_conceptos.id 
+						WHERE ing_fecha BETWEEN :fecdesde AND :fechasta
+						AND WEEKDAY(ing_fecha)=:dia'
+						;
+					$command=\Yii::$app->db->createCommand($q);	
+					$command->bindParam(':fecdesde', $model->fecdesde);	
+					$command->bindParam(':fechasta', $model->fechasta);	
+					$command->bindParam(':dia', $cn);
+					$cant=$command->queryOne();	
+
+					$cantsPie[]=[$semana[$cn],(int)$cant['cant']];
+				}		
+				Yii::trace($cantsPie);
+				$pie=[		
+
+							'type' => 'pie',
+							'name' => 'Accesos',
+							'data' => 
+								$cantsPie
+							
+					];
+							
 			}
+			//Yii::trace($series);
 			$dataProvider = new ArrayDataProvider([
 				'allModels' => $rows,
 				'pagination' => ['pageSize' => -1,],
@@ -154,11 +224,19 @@ class AccesosController extends Controller
 			]);			
 		} else {
 			$dataProvider=null;   
+			$series=null;
+			$categ=null;
+			$pie=null;
         }
-		return $this->render('stats', [
-			'model' => $model,
-			'dataProvider'=>$dataProvider,
-		]);
+
+			return $this->render('stats', [
+				'model' => $model,
+				'dataProvider'=>$dataProvider,
+				'series'=>$series,
+				'categ'=>$categ,
+				'pie'=>$pie,
+			]);
+
         		
 	}
     

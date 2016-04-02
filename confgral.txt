@@ -370,7 +370,14 @@ Se crearon 3 direcciones de mail:
    
 A excepcion de los usuarios "consejo" y "administrador", que se crean como si fuesen parametros del sistema, el resto de los usuarios
 debe usar el propio sitio.
-Cuando un usuario se da de alta, este queda en stand-by hasta que la intendencia le asigne el rol correspondiente   
+Cuando un usuario se da de alta, este queda en stand-by hasta que la intendencia le asigne el rol correspondiente 
+
+En el momento de la instalación hay que ejecutar dos comandos de consola (desde country):
+    ./yii pwd/init
+    ./yii rbac/init
+    
+en console/controllers/RbacController.php hay que modificar las ultimas lineas con id de usuarios que se generaron en la migracion
+(los usuarios administracion, consejo e intendencia)    
 
 Libro de guardia
 Cualquiera de los porteros puede ingresar al libro de guardia y registrar una entrada al libro, no puede eliminar ni modificar nada.

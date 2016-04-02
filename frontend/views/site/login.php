@@ -24,7 +24,7 @@ $this->registerJs('$("#loginform-username").focus()', yii\web\View::POS_READY);
 
                 <?= $form->field($model, 'password')->passwordInput() ?>
 
-                <?= $form->field($model, 'rememberMe')->checkbox() ?>
+                <?php //$form->field($model, 'rememberMe')->checkbox() ?>
 
                 <div style="color:#999;margin:1em 0">
                     Si olvidó su clave puede <?= Html::a('cambiarla aquí', ['site/request-password-reset']) ?>.

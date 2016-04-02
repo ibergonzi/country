@@ -9,13 +9,15 @@ use kartik\widgets\DatePicker;
 
 use kartik\grid\GridView;
 
+use miloschuman\highcharts\Highcharts;
+
 $this->title='Estadistica de accesos';
 
 /* @var $this yii\web\View */
 /* @var $model frontend\models\PersonaSearch */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-
+<h4><?= Html::encode($this->title) ?></h4>
 <div class="stats-search">
 
     <?php 
@@ -66,31 +68,103 @@ $this->title='Estadistica de accesos';
     <div>
 	<?php
 		if (!empty($dataProvider)) {
-
+			
+			$toolbar=['{export}'];
+			$lbl2='';
+			$pdfHeader=[
+						'L'=>['content'=>\Yii::$app->params['lblName']],
+						'C'=>['content'=>$this->title . $lbl2,
+							  //'font-size' => 80,
+							  'font-style'=>'B'
+							  //'color'=> '#333333'
+							],
+						'R'=>['content'=>''],
+					
+				];
+			$pdfFooter=[
+				'L'=>['content'=>\Yii::$app->params['lblName2']],
+				'C'=>['content'=>'página {PAGENO} de {nb}'],
+				'R'=>['content'=>'Fecha:{DATE d/m/Y}'],
+				];	
+			echo '<br/>';			
 			echo GridView::widget([
 				'dataProvider' => $dataProvider,
 				'options'=>['id'=>'gridStats'],
 				'condensed'=>true,
-				'showPageSummary'=>true,				
+				'showPageSummary'=>true,	
+				
+				'layout'=>'{toolbar}{items}{pager}',
+				
+				'export' => [
+					'label' => 'Exportar',
+					'fontAwesome' => true,
+					'showConfirmAlert'=>false,	
+					'target'=>GridView::TARGET_BLANK,	
+					
+					//'target'=>GridView::TARGET_SELF,	
+							
+				],
+				
+				'toolbar' => $toolbar,
+				
+				'exportConfig' => [
+					GridView::PDF => [
+							'filename' => $this->title,
+							'config' => [
+									'destination' => 'D',
+									'methods' => [
+										'SetHeader' => [
+											['odd' => $pdfHeader, 'even' => $pdfHeader]
+										],
+										'SetFooter' => [
+											['odd' => $pdfFooter, 'even' => $pdfFooter]
+										],
+									],
+									
+									'options' => [
+										'title' => $this->title,
+										'subject' => '',
+										'keywords' => '',
+									],
+									'contentBefore'=>'',
+									'contentAfter'=>''
+							]			
+					],
+					GridView::EXCEL => [
+							'filename' => $this->title,
+							'config' => [
+								'worksheet' => $this->title,
+								'cssFile' => ''
+									]
+					],
+					GridView::CSV => [
+							'filename' => $this->title,
+							'config' => [
+								'colDelimiter' => ";",
+								'rowDelimiter' => "\r\n",
+							]
+					],
+				],						
+							
 				'columns'=>[
 					[
-					'attribute'=>'dia',
+					'attribute'=>'desc_dia',
 					'group'=>true,
 					'groupFooter'=>function ($model, $key, $index, $widget) {
 						return [
-							'mergeColumns'=>[[0,1]], // columns to merge in summary
-							'content'=>[             // content to show in each summary cell
-								0=>'Subtotal (' . $model['dia'] . ')',
+							'mergeColumns'=>[[0,1]], 
+							'content'=>[             
+								0=>'Subtotal (' . $model['desc_dia'] . ')',
 								2=>GridView::F_SUM,
 								3=>GridView::F_SUM,
 
 							],
-							'contentFormats'=>[      // content reformatting for each summary cell
+							'contentFormats'=>[      
 								2=>['format'=>'number', 'decimals'=>0],
 								3=>['format'=>'number', 'decimals'=>2],
 
 							],
-							'contentOptions'=>[      // content html attributes for each summary cell
+							'contentOptions'=>[     
 								0=>['style'=>'font-variant:small-caps;text-align:right'],
 								2=>['style'=>'text-align:right'],
 								3=>['style'=>'text-align:right'],
@@ -108,14 +182,62 @@ $this->title='Estadistica de accesos';
 					],
 					[
 					'attribute'=>'porc',
-					//'contentOptions'=>['style'=>'text-align:right;'],
-					//'value'=>function ($model, $key, $index, $column) { Yii::trace($model);return number_format($model['porc'],2);},
 					'hAlign'=>'right',
 					'format'=>['decimal', 2],	
 					'pageSummary'=>true				
 					],
 				],	
 			]);
+
+			echo '<div>';
+			echo Highcharts::widget([
+		   		'scripts' => [
+						'modules/exporting',
+				 ],
+			    'options' => [
+					  'title' => ['text' => 'Estadistica de accesos (cantidades por Concepto)'],
+					  'xAxis' => [
+						 'categories' => $categ,					 
+					  ],
+					  'yAxis' => [
+						 'title' => ['text' => 'Accesos']
+					  ],
+					  'series'=>$series,
+					  'lang' => [
+							'printChart' => 'Imprimir gráfico',
+							'downloadPNG' => 'Descargar imagen PNG',
+							'downloadJPEG' => 'Descargar imagen JPEG',
+							'downloadPDF' => 'Descargar documento PDF',
+							'downloadSVG' => 'Descargar imagen vectorial SVG',
+							'contextButtonTitle' => 'Acciones'
+					  ]
+			   ]			
+			]);
+			echo '</div><div>';
+			echo Highcharts::widget([
+		   		'scripts' => [
+						'modules/exporting',
+				 ],
+			    'options' => [
+					'plotOptions' => [
+						'pie' => [
+							'cursor' => 'pointer',
+						],
+					],
+					'title' => ['text' => 'Estadistica de accesos (% por dia)'],
+					'series' => [$pie],
+					'lang' => [
+							'printChart' => 'Imprimir gráfico',
+							'downloadPNG' => 'Descargar imagen PNG',
+							'downloadJPEG' => 'Descargar imagen JPEG',
+							'downloadPDF' => 'Descargar documento PDF',
+							'downloadSVG' => 'Descargar imagen vectorial SVG',
+							'contextButtonTitle' => 'Acciones'
+					 ]					 
+
+			   ]			
+			]);		
+			echo '</div>';	
 		}
 	?>
 	</div>

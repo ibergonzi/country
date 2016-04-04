@@ -192,7 +192,7 @@ con exportaciones muy grandes:
     y
     mysqlbinlog mysqld-bin.000007 mysqld-bin.000008 | mysql
     
-   
+
    
    
 GIT
@@ -490,6 +490,8 @@ reemplazar todo el contenido de ~/.vnc/xstartup con lo siguiente:
 tightvncserver :1
 fijarse el puerto dentro de ~/.vnc el log (habitualmente es el 5901)
 
-
+FIREWALL
+Instalar gufw (interfaz grafica del firewall), habilitar los puertos 22 y 5901 (para ssh y vnc)
+Habilitar HTTP (puerto 80) para entrantes    
  
 

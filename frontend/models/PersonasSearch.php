@@ -45,6 +45,11 @@ class PersonasSearch extends Personas
      */
     public function search($params)
     {
+/*		
+ Yii::trace($params);
+ Yii::trace($params['_tog8aa5d80b']);
+ if ($params['_tog8aa5d80b'] == 'all') { $params['_tog8aa5d80b']='page';}
+*/		
         $query = Personas::find()->joinWith('tipoDoc'); // se usa el nombre de la relación en Personas
 
         $dataProvider = new ActiveDataProvider([

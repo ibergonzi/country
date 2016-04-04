@@ -100,6 +100,7 @@ class AccesosSearchAut extends AccesosVistaF
 
 		$query = AccesosSearchAut::find();
 
+
         
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

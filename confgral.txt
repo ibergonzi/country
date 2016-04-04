@@ -234,7 +234,7 @@ Con 2 instalaciones de YII
 2) despues de setear git hay que ejecutar composer update 
 3) git init
 4) git remote add origin https://github.com/ibergonzi/country.git
-5) git pull remote master
+5) git pull remote master (ahora uso git pull origin)
 6) 
 
 

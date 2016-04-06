@@ -59,9 +59,8 @@ class PersonasSearch extends Personas
             'pagination'=>[
 				'pageSize' => $pageSize,
 			],            
-            'sort' => ['defaultOrder' => [
-                          'id' => SORT_DESC, 
-                          ]
+            'sort' => ['defaultOrder' => ['id' => SORT_DESC,],
+						'enableMultiSort'=>true,            
                       ],            
         ]);
         

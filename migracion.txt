@@ -110,7 +110,24 @@ Pasarla a new.infracciones
 En el campo foto, si tiene algun valor, es decir, si tiene foto, colocar numero+'.jpg'
 Los campos Monto, CantidadPersonas, ImportePersonas, ImportePersonasTotal, MontoTotal reciben el mismo tratamiento
 que old.tip_inf.ImportePersona
-Hay registros que no tienen unidad null, pero la unidad está especificada en lugar
+Hay registros que no tienen unidad (null), pero la unidad está especificada en el campo lugar
+
+EMITO 06/04/2016
+Las especificaciones para la tabla old.tip_inf están bien, amplio lo de old.infrac:
+Las infracciones se distinguen de las multas porque no tienen importe, pero vamos a usar un campo new.infracciones.tipo que va a
+tener 2 valores: M y I
+En los 2 casos, siempre hay que especificar un id de persona y el campo id_vehiculo es opcional. Para el caso de las multas SIEMPRE
+tienen que estar asignadas una Unidad, en las infracciones no necesariamente.
+En la tabla nueva va a existir un campo nuevo que es 'nro_acta varchar(15)', tenes que tomar en el campo old.infrac.infracc (que
+es la descripción de la infracción) lo que aparece bajo la forma '(A.nnnn)' y poner nnnn en este campo nuevo
+El campo old.infrac.infrac pasa como esté, tenga o no tenga el acta en el string (lo que abunda no daña)
+En el campo old.infrac.lugar vas a encontrar cualquier verdura, las unidades funcionales aparecen como 'uf', 'UF', 'lote', 'unidad' y 
+todas las combinaciones que se te ocurran
+Esto no termina aca, tengo muchas dudas, estoy pensando en que esta pija se guarde en un histórico y arrancar de cero, pero
+tengo que consultarlo con la gente de miraflores.
+
+
+
 
 TABLA OLD.DOCU y OLD.DOCUMENTOS
 Se resumen en una sola tabla new.tiposdoc, es decir, a OLD.DOCU se agregan los codigos 80 y 85 y se insertan en new.tiposdoc

@@ -94,14 +94,16 @@ class AccesosSearch extends AccesosVista
 		// OJO uso AccesosSearch para que me tome los attributelabels de las propiedades nuevas (antes tenia Accesos)
 		if ($consDentro) {
 			$query = AccesosSearch::find()->andWhere(['egr_fecha'=>null,'estado'=>1]);	
+			$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['accesos.defaultPageSize'];			
 		} else {
 			$query = AccesosSearch::find();
+			$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['accesosEgr.defaultPageSize'];			
 		}
         
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination'=>[
-				'pageSize' => 10,
+				'pageSize' => $pageSize,
 			],
 			'sort' => ['defaultOrder' => ['id' => SORT_DESC,],
 						// esta opcion se usa para que sea el campo que el usuario ordene, luego ordene siempre por el default

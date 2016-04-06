@@ -38,7 +38,13 @@ $(document).ready(function() {
 	});		
 });
 ');
-	
+// se cambio el gif (está en web/images) y el center center por top center
+$this->registerCss('
+.kv-grid-loading {
+    opacity: 0.5;
+    background: #ffffff url("../images/loading.gif") top center no-repeat !important;
+}
+');	
 ?>
 
 <div class="libro-index">
@@ -67,20 +73,30 @@ $(document).ready(function() {
 				]
 			]);
 
+		$contentToolbar=\nterms\pagesize\PageSize::widget([
+			'defaultPageSize'=>\Yii::$app->params['libro.defaultPageSize'],
+			'sizes'=>\Yii::$app->params['libro.sizes'],
+			'label'=>'',
+			'options'=>[
+					'class'=>'btn btn-default',
+					'title'=>'Cantidad de elementos por página',
+				],
+			]);
 		if (\Yii::$app->user->can('exportarLibro')) {		
 			// para evitar que la pagina se cuelgue cuando se le saca la paginación y hay muchos registros a mostrar
-			$cant=$dataProvider->totalCount;
-			if ( $cant <= \Yii::$app->params['max-rows-gridview'] ) {
-				if ($cant <= $dataProvider->pagination->pageSize) {
-					$toolbar=['{export}'];
-				} else {
-					$toolbar=['{export}','{toggleData}'];
-				}
-			} else {
-				$toolbar=['{export}'];
-			}
+			//$cant=$dataProvider->totalCount;
+			//if ( $cant <= \Yii::$app->params['max-rows-gridview'] ) {
+				//if ($cant <= $dataProvider->pagination->pageSize) {
+				//	$toolbar=['{export}',['content'=>$contentToolbar],];
+				//} else {
+					//$toolbar=[['content'=>$contentToolbar],'{export}','{toggleData}'];
+					$toolbar=['{export} ',['content'=>$contentToolbar],];					
+				//}
+			//} else {
+			//	$toolbar=[['content'=>$contentToolbar],'{export}'];
+			//}
 		} else {
-			$toolbar='';
+			$toolbar=[['content'=>$contentToolbar]];
 		}
 		
 		
@@ -201,6 +217,9 @@ $(document).ready(function() {
 				], 
         
         ]; //fin columns
+        
+
+        
 		if (\Yii::$app->user->can('exportarLibro')) {
 			// contiene la selección inicial de columnas, es decir, todas
 			// por ejemplo [0,1,2,3]
@@ -243,16 +262,25 @@ $(document).ready(function() {
 			//echo '<div class="clearfix"></div>';		
 		}
 	
-		
+	
+	/*		
 	Pjax::begin(['id' => 'grilla', 'timeout' => false ,
 		'enablePushState' => false,
-		'clientOptions' => ['method' => 'GET'] ]); 		
-		
+		'clientOptions' => ['method' => 'GET'] ]); 
+	*/
+				
+        //echo \nterms\pagesize\PageSize::widget(['defaultPageSize'=>5,'label'=>'']);	
+        			//echo '<div class="clearfix"></div>';	
+        	
     echo GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'options'=>['id'=>'gridLibro'],	 	
 		'condensed'=>true, 
+
+        'filterSelector' => 'select[name="per-page"]',
+		'pjax'=>true,
+		'pjaxSettings'=>['neverTimeout'=>true,],          
 
 		'layout'=>'&nbsp;{toolbar}{summary}{items}{pager}',
 	
@@ -366,7 +394,7 @@ $(document).ready(function() {
     ?>
 
 <?php 
-	Pjax::end(); 
+	//Pjax::end(); 
 ?>
 
 <?php	

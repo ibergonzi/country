@@ -45,8 +45,13 @@ class VehiculosSearch extends Vehiculos
 		
         $query = Vehiculos::find();
 
+		$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['vehiculos.defaultPageSize'];
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination'=>[
+				'pageSize' => $pageSize,
+			],                
             'sort' => ['defaultOrder' => [
                           'id' => SORT_DESC, 
                           ]

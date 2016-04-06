@@ -100,12 +100,12 @@ class AccesosSearchAut extends AccesosVistaF
 
 		$query = AccesosSearchAut::find();
 
-
+		$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['accesosAut.defaultPageSize'];
         
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination'=>[
-				'pageSize' => 10,
+				'pageSize' => $pageSize,
 			],
 			'sort' => ['defaultOrder' => ['id_acceso' => SORT_DESC,],
 						// esta opcion se usa para que sea el campo que el usuario ordene, luego ordene siempre por el default

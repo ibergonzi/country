@@ -44,6 +44,8 @@ class UserSearch extends User
     public function search($params)
     {
         $query = User::find()->joinWith('authAssignment.authItem');
+        
+		$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['user.defaultPageSize'];        
 		
 		// Aca se cocina lo que deberia ver el usuario segun su rol
 
@@ -67,6 +69,14 @@ class UserSearch extends User
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination'=>[
+				'pageSize' => $pageSize,
+			 ],
+			 'sort' => ['defaultOrder' => ['id' => SORT_DESC,],
+						// esta opcion se usa para que sea el campo que el usuario ordene, luego ordene siempre por el default
+						// es decir, si el usuario ordena por persona, la lista viene ordenada por persona y created_at desc
+					   'enableMultiSort'=>true,
+					  ],                    
         ]);
         
         // Agregado a mano, para que incluya el ordenamiento por descCliente

@@ -52,8 +52,13 @@ class PersonasSearch extends Personas
 */		
         $query = Personas::find()->joinWith('tipoDoc'); // se usa el nombre de la relación en Personas
 
+		$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['personas.defaultPageSize'];
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination'=>[
+				'pageSize' => $pageSize,
+			],            
             'sort' => ['defaultOrder' => [
                           'id' => SORT_DESC, 
                           ]

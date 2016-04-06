@@ -66,28 +66,17 @@ $(document).ready(function() {
 	});		
 });
 ');
+$this->registerCss('
+.kv-grid-loading {
+    opacity: 0.5;
+    background: #ffffff url("../images/loading.gif") top center no-repeat !important;
+}
+');
 ?>
 <div class="accesos-index">
 
     
     <?php 
-		if (\Yii::$app->user->can('exportarConsDentro')) {	
-			// para evitar que la pagina se cuelgue cuando se le saca la paginación y hay muchos registros a mostrar
-			$cant=$dataProvider->totalCount;
-			if ( $cant <= \Yii::$app->params['max-rows-gridview'] ) {
-				if ($cant <= $dataProvider->pagination->pageSize) {
-					$toolbar=['{export}'];
-				} else {
-					$toolbar=['{export}','{toggleData}'];
-				}
-			} else {
-				$toolbar=['{export}'];
-			}
-		} else {
-			$toolbar='';
-		}
-	
-
 		$lbl2='';
 		$pdfHeader=[
 					'L'=>['content'=>\Yii::$app->params['lblName']],
@@ -392,16 +381,41 @@ $(document).ready(function() {
 			// para que no se encime con el summary del gridview	
 			//echo '<div class="clearfix"></div>';	
 		}
+		
+		
+		if ($consulta) {
+			$dps=\Yii::$app->params['accesos.defaultPageSize'];
+			$sz=\Yii::$app->params['accesos.sizes'];
+		} else {
+			$dps=\Yii::$app->params['accesosEgr.defaultPageSize'];
+			$sz=\Yii::$app->params['accesosEgr.sizes'];						
+		}
+		
+		$contentToolbar=\nterms\pagesize\PageSize::widget([
+			'defaultPageSize'=>$dps,
+			'sizes'=>$sz,
+			'label'=>'',
+			'options'=>[
+					'class'=>'btn btn-default',
+					'title'=>'Cantidad de elementos por página',
+				],
+			]);		
+		if (\Yii::$app->user->can('exportarConsDentro')) {			
+			$toolbar=['{export} ',['content'=>$contentToolbar],];
+		} else {
+			$toolbar=[['content'=>$contentToolbar]];
+		}				
 
-
-	Pjax::begin(['id' => 'grilla', 'timeout' => false ,
-		'enablePushState' => false,
-		'clientOptions' => ['method' => 'GET'] ]);    
-		 
+	 
     echo GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'options'=>['id'=>'gridAccesos'],
+        
+        'filterSelector' => 'select[name="per-page"]',  
+		'pjax'=>true,
+		'pjaxSettings'=>['neverTimeout'=>true,],          
+        
         // Para que muestre todo el gridview, solo aplicable a kartik, el de yii anda bien
         'containerOptions' => ['style'=>'overflow: visible'], 
 		'condensed'=>true,
@@ -519,8 +533,7 @@ $(document).ready(function() {
             
  
     ]); 
-    Pjax::end();
-	Modal::begin(['id'=>'modalcomentarionuevo',
+ 	Modal::begin(['id'=>'modalcomentarionuevo',
 		'header'=>'<span class="btn-warning">&nbsp;Comentarios&nbsp;</span>']);
 		echo '<div id="divcomentarionuevo"></div>';
 	Modal::end();  

@@ -19,6 +19,28 @@ return [
     
     // ojo con este valor, si es muy grande hay que tocar en los php.ini los max_execution_time
     'max-rows-gridview'=>400,
+    
+    // defaults de paginación de grillas
+    'libro.defaultPageSize'=>5,
+    'libro.sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50],
+    
+    'accesosAut.defaultPageSize'=>10,
+    'accesosAut.sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50, 100=>100, 200=>200, 300=>300],  
+    
+    'accesos.defaultPageSize'=>10,
+    'accesos.sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50, 100=>100, 200=>200, 300=>300],  
+    
+    'accesosEgr.defaultPageSize'=>5,
+    'accesosEgr.sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50],   
+    
+    'personas.defaultPageSize'=>15,
+    'personas.sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50, 100=>100],
+
+    'vehiculos.defaultPageSize'=>15,
+    'vehiculos.sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50, 100=>100], 
+    
+    'user.defaultPageSize'=>15,
+    'user.sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50, 100=>100],                   
  
 
 

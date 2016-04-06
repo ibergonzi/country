@@ -41,7 +41,12 @@ $(document).ready(function() {
 	});		
 });
 ');
-
+$this->registerCss('
+.kv-grid-loading {
+    opacity: 0.5;
+    background: #ffffff url("../images/loading.gif") top center no-repeat !important;
+}
+');
 ?>
 <div class="personas-index">
 
@@ -49,21 +54,6 @@ $(document).ready(function() {
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
 	<?php 
-		if (\Yii::$app->user->can('exportarListaPersonas')) {	
-			// para evitar que la pagina se cuelgue cuando se le saca la paginación y hay muchos registros a mostrar
-			$cant=$dataProvider->totalCount;
-			if ( $cant <= \Yii::$app->params['max-rows-gridview'] ) {
-				if ($cant <= $dataProvider->pagination->pageSize) {
-					$toolbar=['{export}'];
-				} else {
-					$toolbar=['{export}','{toggleData}'];
-				}
-			} else {
-				$toolbar=['{export}'];
-			}
-		} else {
-			$toolbar='';
-		}	
 		$lbl2='';
 		$pdfHeader=[
 					'L'=>['content'=>\Yii::$app->params['lblName']],
@@ -240,15 +230,32 @@ $(document).ready(function() {
 			// para que no se encime con el summary del gridview	
 			//echo '<div class="clearfix"></div>';	
 		}		
+
+		
+		$contentToolbar=\nterms\pagesize\PageSize::widget([
+			'defaultPageSize'=>\Yii::$app->params['personas.defaultPageSize'],
+			'sizes'=>\Yii::$app->params['personas.sizes'],
+			'label'=>'',
+			'options'=>[
+					'class'=>'btn btn-default',
+					'title'=>'Cantidad de elementos por página',
+				],
+			]);		
+		if (\Yii::$app->user->can('exportarListaPersonas')) {			
+			$toolbar=['{export} ',['content'=>$contentToolbar],];
+		} else {
+			$toolbar=[['content'=>$contentToolbar]];
+		}					
 	
-	
-	
-		Pjax::begin();
-		//Yii::trace($searchModel);
 	?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        
+        'filterSelector' => 'select[name="per-page"]',  
+		'pjax'=>true,
+		'pjaxSettings'=>['neverTimeout'=>true,],  
+		        
         'options'=>['id'=>'gridPersonas'],
         'columns' => $columns,
 		'condensed'=>true, 
@@ -360,7 +367,6 @@ $(document).ready(function() {
     ]); 
     ?>
 
-<?php Pjax::end(); ?>
 <?php	
 	// para usar los comentarios en cualquier vista se incluyen:
 	/*

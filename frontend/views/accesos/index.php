@@ -31,18 +31,7 @@ Icon::map($this, Icon::FA);
 
 $this->title = Yii::t('app', 'Accesos');
 $this->params['breadcrumbs'][] = $this->title;
-/*
-$this->registerCss('
-.table-condensed > thead > tr > th,
-.table-condensed > tbody > tr > th,
-.table-condensed > tfoot > tr > th,
-.table-condensed > thead > tr > td,
-.table-condensed > tbody > tr > td,
-.table-condensed > tfoot > tr > td {
-  padding: 2px;
-}
-');
-*/
+
 use app\assets\ExportSelectorAsset;
 ExportSelectorAsset::register($this);
 
@@ -62,7 +51,12 @@ $(document).ready(function() {
 	});		
 });
 ');
-
+$this->registerCss('
+.kv-grid-loading {
+    opacity: 0.5;
+    background: #ffffff url("../images/loading.gif") top center no-repeat !important;
+}
+');
 ?>
 <div class="accesos-index">
 
@@ -88,21 +82,7 @@ $(document).ready(function() {
 				]
 			]
 		]);
-		if (\Yii::$app->user->can('exportarConsAccesos')) {			
-			// para evitar que la pagina se cuelgue cuando se le saca la paginación y hay muchos registros a mostrar
-			$cant=$dataProvider->totalCount;
-			if ( $cant <= \Yii::$app->params['max-rows-gridview'] ) {
-				if ($cant <= $dataProvider->pagination->pageSize) {
-					$toolbar=['{export}'];
-				} else {
-					$toolbar=['{export}','{toggleData}'];
-				}
-			} else {
-				$toolbar=['{export}'];
-			}
-		} else {
-			$toolbar='';
-		}
+
 		
 		if (\Yii::$app->session->get('accesosFecDesdeF')) {
 			$lbl2=' ('.Yii::$app->formatter->asDate(\Yii::$app->session->get('accesosFecDesdeF')) .
@@ -149,6 +129,7 @@ $(document).ready(function() {
 							return Html::a($text, 
 								$url,
 								['title' => $titl,
+								
 								 'onclick'=>'$.ajax({
 									type     :"POST",
 									cache    : false,
@@ -437,6 +418,7 @@ $(document).ready(function() {
 			}
 
 			// tiene que estar fuera del Pjax
+			
 			echo PopoverX::widget([
 				'options'=>['id'=>'popControl'],
 				'placement' => PopoverX::ALIGN_RIGHT,
@@ -449,17 +431,35 @@ $(document).ready(function() {
 					['class'=>'form-control','tag'=>false,//'separator'=>'<br/>'
 					])											
 			]);
+			
 			// para que no se encime con el summary del gridview	
 			//echo '<div class="clearfix"></div>';	
 		}
 
-	Pjax::begin(['id' => 'grilla', 'timeout' => false ,
-		'enablePushState' => false,
-		'clientOptions' => ['method' => 'GET'] ]);    
-		 
+		$contentToolbar=\nterms\pagesize\PageSize::widget([
+			'defaultPageSize'=>\Yii::$app->params['accesosAut.defaultPageSize'],
+			'sizes'=>\Yii::$app->params['accesosAut.sizes'],
+			'label'=>'',
+			'options'=>[
+					'class'=>'btn btn-default',
+					'title'=>'Cantidad de elementos por página',
+				],
+			]);		
+		if (\Yii::$app->user->can('exportarConsAccesos')) {			
+			$toolbar=['{export} ',['content'=>$contentToolbar],];
+		} else {
+			$toolbar=[['content'=>$contentToolbar]];
+		}		
+
+	 
     echo GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        
+        'filterSelector' => 'select[name="per-page"]',  
+		'pjax'=>true,
+		'pjaxSettings'=>['neverTimeout'=>true,],              
+        
         'options'=>['id'=>'gridAccesos'],
         // Para que muestre todo el gridview, solo aplicable a kartik, el de yii anda bien
         'containerOptions' => ['style'=>'overflow: visible'], 
@@ -467,6 +467,7 @@ $(document).ready(function() {
 		'resizableColumns'=>false,
 		//'floatHeader'=>true,	
 		//'bordered'=>false,
+
 
 		
 		'layout'=>'&nbsp;{toolbar}{summary}{items}{pager}',
@@ -580,8 +581,9 @@ $(document).ready(function() {
 		
         'columns' => $columns,
  
-    ]); 
-    Pjax::end();
+    ]);
+     
+    
 	Modal::begin(['id'=>'modalcomentarionuevo',
 		'header'=>'<span class="btn-warning">&nbsp;Comentarios&nbsp;</span>']);
 		echo '<div id="divcomentarionuevo"></div>';

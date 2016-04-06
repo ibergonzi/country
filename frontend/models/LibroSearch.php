@@ -66,10 +66,12 @@ class LibroSearch extends Libro
     {
         $query = Libro::find()->joinWith('userCreatedBy');
 
+		$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['libro.defaultPageSize'];
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination'=>[
-				'pageSize' => 5,
+				'pageSize' => $pageSize,
 			],
 			'sort' => ['defaultOrder' => ['created_at' => SORT_DESC,],
 					   'enableMultiSort'=>true,

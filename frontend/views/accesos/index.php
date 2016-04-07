@@ -25,10 +25,6 @@ $this->registerCss('.modal-body { max-height: calc(100vh - 210px);overflow-y: au
 /* @var $searchModel frontend\models\AccesosSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-use kartik\icons\Icon;
-// ver iconos en http://fortawesome.github.io/Font-Awesome/icons/
-Icon::map($this, Icon::FA);
-
 $this->title = Yii::t('app', 'Accesos');
 $this->params['breadcrumbs'][] = $this->title;
 

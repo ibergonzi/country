@@ -3,50 +3,39 @@
 namespace frontend\controllers;
 
 use Yii;
-use frontend\models\Portones;
-use frontend\models\PortonesSearch;
+use frontend\models\Generadores;
+use frontend\models\GeneradoresSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * PortonesController implements the CRUD actions for Portones model.
+ * GeneradoresController implements the CRUD actions for Generadores model.
  */
-class PortonesController extends Controller
+class GeneradoresController extends Controller
 {
+    /**
+     * @inheritdoc
+     */
     public function behaviors()
     {
         return [
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['post'],
+                    'delete' => ['POST'],
                 ],
             ],
         ];
     }
 
-
-    public function actionElegir($backUrl=null)
-    {
-		$model = Portones::find()->where(['habilitado' => true])->all();
-		if (empty($model)) {return $this->render('deshabilitado');}
-		
-		if (isset(Yii::$app->request->post()['eligeporton'])) {
-			\Yii::$app->session->set('porton',Yii::$app->request->post()['eligeporton']);
-			if ($backUrl) {return $this->redirect([$backUrl]);}
-		}
-		
-        return $this->render('elegir', ['model' => $model,]);
-     }
-
     /**
-     * Lists all Portones models.
+     * Lists all Generadores models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new PortonesSearch();
+        $searchModel = new GeneradoresSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -56,7 +45,7 @@ class PortonesController extends Controller
     }
 
     /**
-     * Displays a single Portones model.
+     * Displays a single Generadores model.
      * @param integer $id
      * @return mixed
      */
@@ -68,13 +57,13 @@ class PortonesController extends Controller
     }
 
     /**
-     * Creates a new Portones model.
+     * Creates a new Generadores model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Portones();
+        $model = new Generadores();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -86,7 +75,7 @@ class PortonesController extends Controller
     }
 
     /**
-     * Updates an existing Portones model.
+     * Updates an existing Generadores model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -105,7 +94,7 @@ class PortonesController extends Controller
     }
 
     /**
-     * Deletes an existing Portones model.
+     * Deletes an existing Generadores model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -118,15 +107,15 @@ class PortonesController extends Controller
     }
 
     /**
-     * Finds the Portones model based on its primary key value.
+     * Finds the Generadores model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Portones the loaded model
+     * @return Generadores the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Portones::findOne($id)) !== null) {
+        if (($model = Generadores::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

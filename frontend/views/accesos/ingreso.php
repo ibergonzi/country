@@ -21,8 +21,7 @@ use yii\helpers\Url;
 use kartik\popover\PopoverX;
 
 use kartik\icons\Icon;
-// ver iconos en http://fortawesome.github.io/Font-Awesome/icons/
-Icon::map($this, Icon::FA);
+
 
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Accesos */

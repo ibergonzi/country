@@ -3,50 +3,61 @@
 namespace frontend\controllers;
 
 use Yii;
-use frontend\models\Portones;
-use frontend\models\PortonesSearch;
+use frontend\models\CortesEnergia;
+use frontend\models\CortesEnergiaSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
+use yii\db\Expression;
+
 /**
- * PortonesController implements the CRUD actions for Portones model.
+ * CortesEnergiaController implements the CRUD actions for CortesEnergia model.
  */
-class PortonesController extends Controller
+class CortesEnergiaController extends Controller
 {
+    /**
+     * @inheritdoc
+     */
     public function behaviors()
     {
         return [
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['post'],
+                    'delete' => ['POST'],
                 ],
             ],
         ];
     }
 
-
-    public function actionElegir($backUrl=null)
-    {
-		$model = Portones::find()->where(['habilitado' => true])->all();
-		if (empty($model)) {return $this->render('deshabilitado');}
+	public function actionStartStop()
+	{
+		$model=CortesEnergia::corteActivo();
+		if (!$model) {$model = new CortesEnergia();}
 		
-		if (isset(Yii::$app->request->post()['eligeporton'])) {
-			\Yii::$app->session->set('porton',Yii::$app->request->post()['eligeporton']);
-			if ($backUrl) {return $this->redirect([$backUrl]);}
-		}
+	
+		if (isset(Yii::$app->request->post()['accion'])) {
+			if ($model->isNewRecord) {
+				$model->hora_desde=new Expression('CURRENT_TIMESTAMP');
+			} else {
+				$model->hora_hasta=new Expression('CURRENT_TIMESTAMP');				
+			}
+			$model->estado=CortesEnergia::ESTADO_ACTIVO;
+			$model->save();	
+			return $this->redirect(['index']);		
+		}		
+        return $this->render('startstop', ['model' => $model,]);
 		
-        return $this->render('elegir', ['model' => $model,]);
-     }
+	}
 
     /**
-     * Lists all Portones models.
+     * Lists all CortesEnergia models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new PortonesSearch();
+        $searchModel = new CortesEnergiaSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -54,9 +65,11 @@ class PortonesController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
+    
+
 
     /**
-     * Displays a single Portones model.
+     * Displays a single CortesEnergia model.
      * @param integer $id
      * @return mixed
      */
@@ -68,13 +81,13 @@ class PortonesController extends Controller
     }
 
     /**
-     * Creates a new Portones model.
+     * Creates a new CortesEnergia model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Portones();
+        $model = new CortesEnergia();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -86,7 +99,7 @@ class PortonesController extends Controller
     }
 
     /**
-     * Updates an existing Portones model.
+     * Updates an existing CortesEnergia model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -105,7 +118,7 @@ class PortonesController extends Controller
     }
 
     /**
-     * Deletes an existing Portones model.
+     * Deletes an existing CortesEnergia model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -118,15 +131,15 @@ class PortonesController extends Controller
     }
 
     /**
-     * Finds the Portones model based on its primary key value.
+     * Finds the CortesEnergia model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Portones the loaded model
+     * @return CortesEnergia the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Portones::findOne($id)) !== null) {
+        if (($model = CortesEnergia::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

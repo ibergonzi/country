@@ -13,6 +13,7 @@ use common\widgets\Alert;
 
 use kartik\popover\PopoverX;
 use common\models\User;
+use frontend\models\CortesEnergia;
 
 use kartik\icons\Icon;
 Icon::map($this, Icon::FA);
@@ -49,6 +50,18 @@ AppAsset::register($this);
         $menuItems[] = ['label' => 'Registrarse', 'url' => ['/site/signup']];
         $menuItems[] = ['label' => 'Ingresar', 'url' => ['/site/login']];
     } else {
+		// Generador
+		$corteActivo=CortesEnergia::corteActivo();
+		if ($corteActivo) { 
+			$menuItems[]=['label' => Html::tag('i', '', ['class' => 'fa fa-lg fa-cog fa-spin',]), 
+						'url' => ['/cortes-energia/start-stop'], 'visible'=>\Yii::$app->user->can('accederPorton'),
+						'options'=>['title'=>'El corte comenzó el '.Yii::$app->formatter->asDatetime($corteActivo->hora_desde)]];
+			$itemCorte=	['label' => '<span class="fa fa-lg fa-cog fa-spin"></span>&nbsp; Terminar Corte', 
+						'url' => ['/cortes-energia/start-stop'], 'visible'=>\Yii::$app->user->can('accederPorton')];			
+		} else {		
+			$itemCorte=	['label' => '<span class="fa fa-cog"></span>&nbsp;Empezar Corte', 
+						'url' => ['/cortes-energia/start-stop'], 'visible'=>\Yii::$app->user->can('accederPorton')];					
+		}	 		
 		$menuItems[] = ['label' => 'Accesos', 
 						'items' => [
 							['label' => '<span class="glyphicon glyphicon-arrow-right"></span>&nbsp;Ingresos', 
@@ -81,7 +94,17 @@ AppAsset::register($this);
 								'url' => ['/vehiculos/index'], 
 								'visible'=>\Yii::$app->user->can('accederListaVehiculos')],								
 			] // fin items;
-		 ]; // fin menuItems[]
+		]; // fin menuItems[]
+		$menuItems[] = ['label' => 'Energia', 
+						'items' => [
+							['label' => 'Consulta de cortes', 
+								'url' => ['/cortes-energia/index'], 
+								'visible'=>\Yii::$app->user->can('accederEgreso')],
+							$itemCorte,								
+								
+			] // fin items;
+		]; // fin menuItems[]		
+
 		$menuItems[] = ['label' => 'Usuarios', 'url' => ['/user/index'], 'visible'=>\Yii::$app->user->can('accederUser')];
 		if (\Yii::$app->session->get('porton')) {	
 			$menuItems[] = ['label' => 'Portón '.\Yii::$app->session->get('porton'), 
@@ -89,6 +112,7 @@ AppAsset::register($this);
 		} else {
 			$menuItems[] = ['label' => 'Elegir portón', 'url' => ['/portones/elegir'], 'visible'=>\Yii::$app->user->can('accederPorton')];
 		}
+
 		/* Opcion de salir por defecto de yii2
         $menuItems[] = [
             'label' => 'Salir (' . Yii::$app->user->identity->username . ')',

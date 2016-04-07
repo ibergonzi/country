@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="portones-index">
 
     <div class="jumbotron">
-		<H2>
+		<h2>
 		<?php 
 			if (\Yii::$app->session->get('porton')) {
 				echo 'Activado: ' .  \Yii::$app->session->get('porton');
@@ -30,7 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
 				$cartel='';
 			}
 		?>
-		</H2>		
+		</h2>		
 		<p class="lead"><?= $cartel ?></p>		
 	</div>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>

@@ -91,6 +91,8 @@ class CortesEnergia extends \yii\db\ActiveRecord
             'updated_at' => 'Fecha modif.',
             'estado' => 'Estado',
             'motivo_baja' => 'Motivo Baja',
+            'userCreatedBy.username'=>'Usuario alta',
+            'userUpdatedBy.username'=>'Usuario modif.',             
         ];
     }
     

@@ -4,6 +4,8 @@ namespace frontend\models;
 
 use Yii;
 
+use yii\helpers\ArrayHelper;
+
 /**
  * This is the model class for table "generadores".
  *
@@ -22,6 +24,12 @@ class Generadores extends \yii\db\ActiveRecord
     {
         return 'generadores';
     }
+
+	public static function getGeneradoresActivos()
+	{
+		$opciones = self::find()->where(['activo'=>1])->asArray()->all();
+		return ArrayHelper::map($opciones, 'id', 'descripcion');
+	}  
 
     /**
      * @inheritdoc
@@ -42,7 +50,7 @@ class Generadores extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'descripcion' => 'Descripcion',
+            'descripcion' => 'Descripción',
             'activo' => 'Activo',
         ];
     }

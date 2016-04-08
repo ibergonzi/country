@@ -12,6 +12,8 @@ use frontend\models\CortesEnergiaGen;
  */
 class CortesEnergiaGenSearch extends CortesEnergiaGen
 {
+	public $descripcion;
+	
     /**
      * @inheritdoc
      */
@@ -19,7 +21,7 @@ class CortesEnergiaGenSearch extends CortesEnergiaGen
     {
         return [
             [['id', 'id_cortes_energia', 'id_generador', 'created_by', 'updated_by', 'estado'], 'integer'],
-            [['hora_desde', 'hora_hasta', 'created_at', 'updated_at', 'motivo_baja'], 'safe'],
+            [['hora_desde', 'hora_hasta', 'created_at', 'updated_at', 'motivo_baja','observaciones','descripcion'], 'safe'],
         ];
     }
 
@@ -41,13 +43,21 @@ class CortesEnergiaGenSearch extends CortesEnergiaGen
      */
     public function search($params)
     {
-        $query = CortesEnergiaGen::find();
+        $query = CortesEnergiaGen::find()->joinWith('generador');
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => ['defaultOrder' => ['id' => SORT_DESC,],
+						'enableMultiSort'=>true,            
+                      ],              
         ]);
+        
+        $dataProvider->sort->attributes['descripcion'] = [
+            'asc' => ['generadores.descripcion' => SORT_ASC],
+            'desc' => ['generadores.descripcion' => SORT_DESC],
+        ];        
 
         $this->load($params);
 
@@ -60,7 +70,7 @@ class CortesEnergiaGenSearch extends CortesEnergiaGen
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'id_cortes_energia' => $this->id_cortes_energia,
+            'id_cortes_energia' => $this->descripcion, //$this->id_cortes_energia,
             'id_generador' => $this->id_generador,
             'hora_desde' => $this->hora_desde,
             'hora_hasta' => $this->hora_hasta,
@@ -71,7 +81,8 @@ class CortesEnergiaGenSearch extends CortesEnergiaGen
             'estado' => $this->estado,
         ]);
 
-        $query->andFilterWhere(['like', 'motivo_baja', $this->motivo_baja]);
+        $query->andFilterWhere(['like', 'motivo_baja', $this->motivo_baja])
+			  ->andFilterWhere(['like', 'observaciones', $this->observaciones]);        
 
         return $dataProvider;
     }

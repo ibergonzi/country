@@ -5,14 +5,17 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\CortesEnergiaGen */
 
-$this->title = 'Update Cortes Energia Gen: ' . $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Cortes Energia Gens', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = 'Modificación de novedad';
+$this->params['breadcrumbs'][] = ['label' => 'Cortes de energía', 'url' => ['cortes-energia/index']];
+$this->params['breadcrumbs'][] = ['label' => 'Novedades de generadores', 'url' => ['cortes-energia-gen/index','idParent'=>$parent->id]];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="cortes-energia-gen-update">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h3><?= Html::encode($this->title . ' ' . 
+		Yii::$app->formatter->asDatetime($parent->hora_desde) .
+		' - '. 
+		Yii::$app->formatter->asTime($parent->hora_hasta)) ?></h3>
 
     <?= $this->render('_form', [
         'model' => $model,

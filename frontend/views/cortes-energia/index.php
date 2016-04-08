@@ -73,7 +73,7 @@ $this->registerCss('
 							'mask' => '99/99/9999',
 						]),
 				],     				
-				'userCreatedBy.username',            
+				//'userCreatedBy.username',            
 				[
 					 'attribute'=>'hora_hasta',
  					 'format'=>['datetime'],
@@ -83,7 +83,7 @@ $this->registerCss('
 							'mask' => '99/99/9999',
 						]),
 				],    
-				'userUpdatedBy.username',            
+				//'userUpdatedBy.username',            
 				[
 					'attribute'=>'estado',
 					'value'=>function($data) {return CortesEnergia::getEstados($data->estado);},
@@ -120,6 +120,8 @@ $this->registerCss('
 							]);							
 						},
 						'generadores' => function ($url, $model) {	
+								if (empty($model->hora_hasta)) {return null;};
+
 								$c=$model->cortesEnergiaGen;
 
 								if (!empty($c)) {

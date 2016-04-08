@@ -66,8 +66,11 @@ class CortesEnergiaGenController extends Controller
      */
     public function actionView($id)
     {
+		$model=$this->findModel($id);
+		$parent= CortesEnergia::findOne($model->id_cortes_energia);			
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+            'parent'=> $parent
         ]);
     }
 
@@ -76,15 +79,19 @@ class CortesEnergiaGenController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($idParent)
     {
         $model = new CortesEnergiaGen();
+        $model->id_cortes_energia=$idParent;
+        // obtengo los datos de la cabecera    
+   		$parent= CortesEnergia::findOne($idParent);	        
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
+                'parent'=>$parent
             ]);
         }
     }
@@ -98,12 +105,14 @@ class CortesEnergiaGenController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+		$parent= CortesEnergia::findOne($model->id_cortes_energia);	        
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
                 'model' => $model,
+                'parent'=> $parent
             ]);
         }
     }

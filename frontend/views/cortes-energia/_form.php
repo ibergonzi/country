@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use kartik\datecontrol\DateControl;
 
 /* @var $this yii\web\View */
 /* @var $model frontend\models\CortesEnergia */
@@ -12,24 +13,18 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'hora_desde')->textInput() ?>
+    <?= $form->field($model, 'hora_desde')->widget(DateControl::classname(), [
+		'type'=>DateControl::FORMAT_DATETIME,
+		//'displayFormat'=>'php:d/m/Y H:i'
+	]) ?>
 
-    <?= $form->field($model, 'hora_hasta')->textInput() ?>
-
-    <?= $form->field($model, 'created_by')->textInput() ?>
-
-    <?= $form->field($model, 'created_at')->textInput() ?>
-
-    <?= $form->field($model, 'updated_by')->textInput() ?>
-
-    <?= $form->field($model, 'updated_at')->textInput() ?>
-
-    <?= $form->field($model, 'estado')->textInput() ?>
-
-    <?= $form->field($model, 'motivo_baja')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'hora_hasta')->widget(DateControl::classname(), [
+		'type'=>DateControl::FORMAT_DATETIME,
+		//'displayFormat'=>'php:d/m/Y H:i'		
+	]) ?>
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? 'Aceptar' : 'Modificar', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

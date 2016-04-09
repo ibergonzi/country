@@ -121,9 +121,9 @@ $this->registerCss('
 						},
 						'generadores' => function ($url, $model) {	
 								if (empty($model->hora_hasta)) {return null;};
-
+								if ($model->estado==CortesEnergia::ESTADO_BAJA) {return null;};
+								
 								$c=$model->cortesEnergiaGen;
-
 								if (!empty($c)) {
 									$text='<span class="glyphicon glyphicon-flash" style="color:#FF8000"></span>';
 									$titl='Consultar novedades con generadores';
@@ -131,7 +131,6 @@ $this->registerCss('
 									$text='<span class="glyphicon glyphicon-flash"></span>';
 									$titl='Ingresar novedades con generadores';
 								}								
-								
 								return Html::a($text, $url, ['title' => $titl,]);							
 						},								
 					],	 				
@@ -243,6 +242,11 @@ $this->registerCss('
 		],
 		
 		'toolbar' => $toolbar,
+		
+		'pager' => [
+			'firstPageLabel' => true,
+			'lastPageLabel' => true,
+		],		
 		
 		'exportConfig' => [
 			GridView::PDF => [

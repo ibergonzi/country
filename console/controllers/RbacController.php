@@ -122,6 +122,22 @@ class RbacController extends Controller
 		$auth->addChild($intendente, $accederConsDentro);
 		$auth->addChild($opIntendencia, $accederConsDentro);	
 		$auth->addChild($portero, $accederConsDentro);	
+		
+		$accederCortesStartStop=$auth->createPermission('accederCortesStartStop');
+		$accederCortesStartStop->description='Acceso: Comenzar/finalizar corte energía';
+		$auth->add($accederCortesStartStop);	
+		$auth->addChild($intendente, $accederCortesStartStop);
+		$auth->addChild($opIntendencia, $accederCortesStartStop);	
+		$auth->addChild($portero, $accederCortesStartStop);		
+		
+		$accederConsCortes=$auth->createPermission('accederConsCortes');
+		$accederConsCortes->description='Acceso: Consulta cortes energía';
+		$auth->add($accederConsCortes);	
+		$auth->addChild($consejo, $accederConsCortes);
+		$auth->addChild($administrador, $accederConsCortes);		
+		$auth->addChild($intendente, $accederConsCortes);
+		$auth->addChild($opIntendencia, $accederConsCortes);	
+		$auth->addChild($portero, $accederConsCortes);			
 
 		$exportarConsDentro=$auth->createPermission('exportarConsDentro');
 		$exportarConsDentro->description='Acceso: exportar personas adentro';
@@ -130,13 +146,25 @@ class RbacController extends Controller
 		$auth->addChild($administrador, $exportarConsDentro);		
 		$auth->addChild($intendente, $exportarConsDentro);
 		$auth->addChild($opIntendencia, $exportarConsDentro);	
-	
 		
 		$borrarAcceso=$auth->createPermission('borrarAcceso');
 		$borrarAcceso->description='Eliminar: acceso';
 		$auth->add($borrarAcceso);	
 		$auth->addChild($intendente, $borrarAcceso);
 		$auth->addChild($opIntendencia, $borrarAcceso);	
+		
+		$borrarCorte=$auth->createPermission('borrarCorte');
+		$borrarCorte->description='Eliminar: corte de energía';
+		$auth->add($borrarCorte);	
+		$auth->addChild($intendente, $borrarCorte);
+		$auth->addChild($opIntendencia, $borrarCorte);	
+		
+		$modificarCorte=$auth->createPermission('modificarCorte');
+		$modificarCorte->description='Modificar: corte de energía';
+		$auth->add($modificarCorte);	
+		$auth->addChild($intendente, $modificarCorte);
+		$auth->addChild($opIntendencia, $modificarCorte);
+		$auth->addChild($portero, $modificarCorte);							
 		
 		$accederListaPersonas=$auth->createPermission('accederListaPersonas');
 		$accederListaPersonas->description='Acceso: lista de personas';

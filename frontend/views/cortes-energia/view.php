@@ -16,12 +16,18 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h3><?= Html::encode($this->title) ?></h3>
 
-    <p>
-        <?= Html::a('Modificar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Eliminar', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-         ]) ?>
-    </p>
+	<?php
+	if ($model->estado==CortesEnergia::ESTADO_ACTIVO) {
+		echo '<p>';
+		if (\Yii::$app->user->can('modificarCorte')) {
+			echo Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']);
+		}
+		if (\Yii::$app->user->can('borrarCorte')) {				
+			echo ' '.Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], ['class' => 'btn btn-danger',	]);
+		}
+		echo '</p>';
+	}	
+	?>
 
     <?= DetailView::widget([
         'model' => $model,

@@ -8,6 +8,7 @@ use frontend\models\CortesEnergiaSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 use yii\db\Expression;
 
@@ -22,12 +23,40 @@ class CortesEnergiaController extends Controller
     public function behaviors()
     {
         return [
+			/*
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
                 ],
             ],
+            */
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['delete'],
+                        'allow' => true,
+                        'roles' => ['borrarAcceso'], 
+                    ],    
+                    [
+                        'actions' => ['update'],
+                        'allow' => true,
+                        'roles' => ['modificarCorte'], 
+                    ],                                  
+                    [
+                        'actions' => ['index','view'],
+                        'allow' => true,
+                        'roles' => ['accederConsCortes'], 
+                    ],
+                    [
+                        'actions' => ['start-stop'],
+                        'allow' => true,
+                        'roles' => ['accederCortesStartStop'], 
+                    ],
+
+                 ], // fin rules
+             ], // fin access            
         ];
     }
 
@@ -125,9 +154,19 @@ class CortesEnergiaController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
+        
+        $model = $this->findModel($id);
+        
+        if ($model->load(Yii::$app->request->post())) {
+			$model->estado=CortesEnergia::ESTADO_BAJA;
+			if ($model->save()) {
+				return $this->redirect(['view', 'id' => $model->id]);
+			}
+        } else {
+            return $this->render('delete', [
+                'model' => $model,
+            ]);
+        }          
     }
 
     /**

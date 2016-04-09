@@ -3,6 +3,8 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 
+use frontend\models\CortesEnergiaGen;
+
 /* @var $this yii\web\View */
 /* @var $searchModel frontend\models\CortesEnergiaGenSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -56,7 +58,12 @@ $this->registerCss('
 			[
 				 'attribute'=>'hora_hasta',
 				 'format'=>['datetime'],
-			],     	
+			],     
+			[
+				'attribute'=>'estado',
+				'value'=>function($data) {return CortesEnergiaGen::getEstados($data->estado);},
+			],   
+			'motivo_baja',			
             // 'created_by',
             // 'created_at',
             // 'updated_by',

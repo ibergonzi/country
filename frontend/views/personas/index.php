@@ -271,6 +271,11 @@ $this->registerCss('
 		
 		'toolbar' => $toolbar,
 		
+		'pager' => [
+			'firstPageLabel' => true,
+			'lastPageLabel' => true,
+		],			
+		
 		'exportConfig' => [
 			GridView::PDF => [
 					//'label' => Yii::t('kvgrid', 'PDF'),

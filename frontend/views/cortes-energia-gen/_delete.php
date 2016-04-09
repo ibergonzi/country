@@ -8,7 +8,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Personas */
 /* @var $form yii\widgets\ActiveForm */
-$this->registerJs('$("#cortesenergia-motivo_baja").focus();',yii\web\View::POS_READY);
+$this->registerJs('$("#cortesenergiagen-motivo_baja").focus();',yii\web\View::POS_READY);
 
 ?>
 			

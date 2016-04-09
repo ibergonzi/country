@@ -1,24 +1,32 @@
 <?php
 
 use yii\helpers\Html;
+use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model frontend\models\CortesEnergiaGen */
+/* @var $model frontend\models\Personas */
 
-$this->title = 'Modificación de novedad';
+$this->title = 'Eliminar novedad de generador';
 $this->params['breadcrumbs'][] = ['label' => 'Cortes de energía', 'url' => ['cortes-energia/index']];
 $this->params['breadcrumbs'][] = ['label' => 'Novedades de generadores', 'url' => ['cortes-energia-gen/index','idParent'=>$parent->id]];
 $this->params['breadcrumbs'][] = ['label' => 'Novedad de generador', 'url' => ['cortes-energia-gen/view','id'=>$model->id]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="cortes-energia-gen-update">
+<div class="personas-update">
 
-    <h3><?= Html::encode($this->title . ' ' . 
-		Yii::$app->formatter->asDatetime($parent->hora_desde) .
-		' - '. 
-		Yii::$app->formatter->asTime($parent->hora_hasta)) ?></h3>
+    <h3><?= Html::encode($this->title) ?></h3>
 
-    <?= $this->render('_form', [
+    <?= DetailView::widget([
+        'model' => $model,
+        'attributes' => [
+            //'id',
+            'generador.descripcion',            
+            'hora_desde:datetime',
+			'hora_hasta:datetime',
+        ],
+    ]) ?>
+
+    <?= $this->render('_delete', [
         'model' => $model,
     ]) ?>
 

@@ -54,13 +54,13 @@ AppAsset::register($this);
 		$corteActivo=CortesEnergia::corteActivo();
 		if ($corteActivo) { 
 			$menuItems[]=['label' => Html::tag('i', '', ['class' => 'fa fa-lg fa-cog fa-spin',]), 
-						'url' => ['/cortes-energia/start-stop'], 'visible'=>\Yii::$app->user->can('accederPorton'),
+						'url' => ['/cortes-energia/start-stop'], //'visible'=>\Yii::$app->user->can('accederPorton'),
 						'options'=>['title'=>'El corte comenzó el '.Yii::$app->formatter->asDatetime($corteActivo->hora_desde)]];
 			$itemCorte=	['label' => '<span class="fa fa-lg fa-cog fa-spin"></span>&nbsp; Terminar Corte', 
-						'url' => ['/cortes-energia/start-stop'], 'visible'=>\Yii::$app->user->can('accederPorton')];			
+						'url' => ['/cortes-energia/start-stop'], 'visible'=>\Yii::$app->user->can('accederCortesStartStop')];			
 		} else {		
 			$itemCorte=	['label' => '<span class="fa fa-cog"></span>&nbsp;Empezar Corte', 
-						'url' => ['/cortes-energia/start-stop'], 'visible'=>\Yii::$app->user->can('accederPorton')];					
+						'url' => ['/cortes-energia/start-stop'], 'visible'=>\Yii::$app->user->can('accederCortesStartStop')];					
 		}	 		
 		$menuItems[] = ['label' => 'Accesos', 
 						'items' => [
@@ -99,7 +99,7 @@ AppAsset::register($this);
 						'items' => [
 							['label' => 'Consulta de cortes', 
 								'url' => ['/cortes-energia/index'], 
-								'visible'=>\Yii::$app->user->can('accederEgreso')],
+								'visible'=>\Yii::$app->user->can('accederConsCortes')],
 							$itemCorte,								
 								
 			] // fin items;

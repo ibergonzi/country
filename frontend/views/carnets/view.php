@@ -47,7 +47,8 @@ if ($sessPersonas) {
 					echo '<barcode code="*'. $p->id .'*" type="C39" size="0.5" height="2.0"/>';
 					echo '</div>';
 			} else {
-				echo '<p>colocar imagen</p>';
+				echo Html::img(Yii::$app->urlManager->createUrl('images/dorso.png'),
+							['style'=>'width: 40mm;height:auto;']);
 			}			
 		
 			echo '</td>';

@@ -137,7 +137,14 @@ class RbacController extends Controller
 		$auth->addChild($administrador, $accederConsCortes);		
 		$auth->addChild($intendente, $accederConsCortes);
 		$auth->addChild($opIntendencia, $accederConsCortes);	
-		$auth->addChild($portero, $accederConsCortes);			
+		$auth->addChild($portero, $accederConsCortes);	
+		
+		$accederCarnets=$auth->createPermission('accederCarnets');
+		$accederCarnets->description='Acceso: Generación de carnets';
+		$auth->add($accederCarnets);	
+		$auth->addChild($intendente, $accederCarnets);
+		$auth->addChild($opIntendencia, $accederCarnets);	
+				
 
 		$exportarConsDentro=$auth->createPermission('exportarConsDentro');
 		$exportarConsDentro->description='Acceso: exportar personas adentro';

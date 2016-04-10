@@ -7,6 +7,7 @@ use frontend\models\Accesos;
 use frontend\models\AccesosAutorizantes;
 use frontend\models\Comentarios;
 
+
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Accesos */
 
@@ -127,10 +128,9 @@ $this->registerCss('table.detail-view th {width: 25%;} table.detail-view td {wid
             'motivo_baja',
         ],
     ]) ?>
- 
+
     <?php
-    
-		$aut=AccesosAutorizantes::findAll(['id_acceso'=>$model->id]);
+    		$aut=AccesosAutorizantes::findAll(['id_acceso'=>$model->id]);
 		$primeraVez=true;			
 		foreach ($aut as $a) {
 			if ($primeraVez) {

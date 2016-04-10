@@ -105,7 +105,14 @@ AppAsset::register($this);
 			] // fin items;
 		]; // fin menuItems[]		
 
-		$menuItems[] = ['label' => 'Usuarios', 'url' => ['/user/index'], 'visible'=>\Yii::$app->user->can('accederUser')];
+
+		$menuItems[] = ['label' => 'Intendencia', 
+						'items' => [
+							['label' => 'Usuarios', 'url' => ['/user/index'], 'visible'=>\Yii::$app->user->can('accederUser')],
+							['label' => 'Carnets', 'url' => ['/carnets/index'], 'visible'=>\Yii::$app->user->can('accederCarnets')],
+							
+			] // fin items;
+		]; // fin menuItems[]		
 		if (\Yii::$app->session->get('porton')) {	
 			$menuItems[] = ['label' => 'Portón '.\Yii::$app->session->get('porton'), 
 														'url' => ['/portones/elegir'], 'visible'=>\Yii::$app->user->can('accederPorton')];					

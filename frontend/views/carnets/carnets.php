@@ -64,7 +64,7 @@ $this->registerCss('
 
 ?>
 <h3>Generación de carnets</h3>
-<div class="accesos-egreso">
+<div class="carnets-index">
 						
 	<div class='container'> 
 	

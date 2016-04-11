@@ -60,7 +60,8 @@ class CarnetsController extends Controller
     public function actionIndex($pdf=false,$lado='frente')
     {
 		$model=new Personas();
-		if (isset($_POST['Personas'])) {
+		//if (isset($_POST['Personas'])) {
+		if (Yii::$app->request->post()) {
 			return $this->render('view',['pdf'=>false,'lado'=>'frente']);
 		}
 		if ($pdf) {	

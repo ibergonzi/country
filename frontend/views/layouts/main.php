@@ -97,10 +97,13 @@ AppAsset::register($this);
 		]; // fin menuItems[]
 		$menuItems[] = ['label' => 'Energia', 
 						'items' => [
-							['label' => 'Consulta de cortes', 
+							$itemCorte,
+							'<li class="divider"></li>',
+							'<li class="dropdown-header">Consultas</li>',							
+							['label' => 'Cortes de energía', 
 								'url' => ['/cortes-energia/index'], 
 								'visible'=>\Yii::$app->user->can('accederConsCortes')],
-							$itemCorte,								
+								
 								
 			] // fin items;
 		]; // fin menuItems[]		

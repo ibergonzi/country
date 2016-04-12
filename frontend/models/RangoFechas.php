@@ -18,7 +18,7 @@ class RangoFechas extends Model
     {
         return [
              [['fecdesde','fechasta',],'safe'],
-             [['fecdesde','fechasta',],'validaRangoFechas','skipOnEmpty' => true], 
+             [['fecdesde','fechasta',],'validaRangoFechas','skipOnEmpty' => false], 
         ];
     }
 

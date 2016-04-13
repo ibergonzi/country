@@ -17,8 +17,8 @@ use Yii;
  * @property integer $estado
  * @property string $motivo_baja
  *
- * @property AccesosUf[] $accesosUfs
- * @property Accesos[] $idAccesos
+ * @property AccesosAutorizantes[] $accesosAutorizantes
+ * @property Autorizantes[] $autorizantes
  * @property UfTitularidad[] $ufTitularidads
  */
 class Uf extends \yii\db\ActiveRecord
@@ -30,6 +30,23 @@ class Uf extends \yii\db\ActiveRecord
     {
         return 'uf';
     }
+    
+    const ESTADO_BAJA = 0;
+	const ESTADO_OCUPADO = 1;
+	const ESTADO_VACIO = 2;
+	const ESTADO_FOREST = 3;
+    
+
+
+	// funcion agregada a mano
+	public static function getEstados($key=null)
+	{
+		$estados=[self::ESTADO_OCUPADO=>'Ocupado',self::ESTADO_VACIO=>'Vacío',self::ESTADO_FOREST=>'Forestación',self::ESTADO_BAJA=>'Baja'];
+	    if ($key !== null) {
+			return $estados[$key];
+		}
+		return $estados;
+	}	    
 
     /**
      * @inheritdoc
@@ -37,10 +54,11 @@ class Uf extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'loteo', 'manzana', 'created_by', 'created_at', 'updated_by', 'updated_at'], 'required'],
+            [['id', 'loteo', 'manzana', ], 'required'],
             [['id', 'loteo', 'manzana', 'created_by', 'updated_by', 'estado'], 'integer'],
-            [['created_at', 'updated_at'], 'safe'],
-            [['motivo_baja'], 'string', 'max' => 50]
+            [['created_by', 'created_at', 'updated_by', 'updated_at'], 'safe'],
+			[['superficie', 'coeficiente'], 'number'],            
+            [['motivo_baja'], 'string', 'max' => 50],
         ];
     }
 
@@ -50,32 +68,55 @@ class Uf extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('app', 'ID'),
-            'loteo' => Yii::t('app', 'Loteo'),
-            'manzana' => Yii::t('app', 'Manzana'),
-            'created_by' => Yii::t('app', 'Created By'),
-            'created_at' => Yii::t('app', 'Created At'),
-            'updated_by' => Yii::t('app', 'Updated By'),
-            'updated_at' => Yii::t('app', 'Updated At'),
-            'estado' => Yii::t('app', 'Estado'),
+            'id' => 'ID',
+            'loteo' => 'Loteo',
+            'manzana' => 'Manzana',
+            'superficie' => 'Superficie',
+            'coeficiente' => 'Coeficiente',            
+            'created_by' => Yii::t('app', 'Usuario alta'),
+            'created_at' => Yii::t('app', 'Fecha alta'),
+            'updated_by' => Yii::t('app', 'Usuario modif.'),
+            'updated_at' => Yii::t('app', 'Fecha modif.'),
+            'estado' => Yii::t('app', 'Estado'),            
             'motivo_baja' => Yii::t('app', 'Motivo Baja'),
+            'userCreatedBy.username'=>'Usuario alta',
+            'userUpdatedBy.username'=>'Usuario modif.',              
         ];
     }
+    
+    // extiende los comportamientos de la clase Personas para grabar datos de auditoría
+    public function behaviors()
+    {
+	  return [
+		  [
+			  'class' => BlameableBehavior::className(),
+			  'createdByAttribute' => 'created_by',
+			  'updatedByAttribute' => 'updated_by',
+		  ],
+		  [
+			  'class' => TimestampBehavior::className(),
+			  'createdAtAttribute' => 'created_at',
+			  'updatedAtAttribute' => 'updated_at',                 
+			  'value' => new Expression('CURRENT_TIMESTAMP')
+		  ],
+
+	  ];
+    }    
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAccesosUfs()
+    public function getAccesosAutorizantes()
     {
-        return $this->hasMany(AccesosUf::className(), ['id_uf' => 'id']);
+        return $this->hasMany(AccesosAutorizantes::className(), ['id_uf' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAccesos()
+    public function getAutorizantes()
     {
-        return $this->hasMany(Accesos::className(), ['id' => 'id_acceso'])->viaTable('accesos_uf', ['id_uf' => 'id']);
+        return $this->hasMany(Autorizantes::className(), ['id_uf' => 'id']);
     }
 
     /**
@@ -85,4 +126,19 @@ class Uf extends \yii\db\ActiveRecord
     {
         return $this->hasMany(UfTitularidad::className(), ['id_uf' => 'id']);
     }
+    
+    public function getUltUfTitularidad()
+    {
+        return $this->hasOne(UfTitularidad::className(), ['id_uf' => 'id','ultima'=>1]);
+    }    
+    
+    public function getUserCreatedBy()
+    {
+        return $this->hasOne(\common\models\User::className(), ['id' => 'created_by']);
+    }    
+    
+    public function getUserUpdatedBy()
+    {
+        return $this->hasOne(\common\models\User::className(), ['id' => 'updated_by']);
+    }        
 }

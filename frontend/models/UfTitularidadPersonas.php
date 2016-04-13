@@ -10,6 +10,12 @@ use Yii;
  * @property integer $id
  * @property integer $uf_titularidad_id
  * @property integer $id_persona
+ * @property string $tipo
+ * @property string $observaciones
+ * @property integer $created_by
+ * @property string $created_at
+ * @property integer $updated_by
+ * @property string $updated_at
  *
  * @property Personas $idPersona
  * @property UfTitularidad $ufTitularidad
@@ -30,9 +36,14 @@ class UfTitularidadPersonas extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['uf_titularidad_id', 'id_persona'], 'required'],
-            [['uf_titularidad_id', 'id_persona'], 'integer'],
-            [['id_persona', 'uf_titularidad_id'], 'unique', 'targetAttribute' => ['id_persona', 'uf_titularidad_id'], 'message' => 'The combination of Uf Titularidad ID and Id Persona has already been taken.']
+            [['uf_titularidad_id', 'id_persona', 'tipo', 'created_by', 'created_at', 'updated_by', 'updated_at'], 'required'],
+            [['uf_titularidad_id', 'id_persona', 'created_by', 'updated_by'], 'integer'],
+            [['created_at', 'updated_at'], 'safe'],
+            [['tipo'], 'string', 'max' => 1],
+            [['observaciones'], 'string', 'max' => 60],
+            [['id_persona', 'uf_titularidad_id'], 'unique', 'targetAttribute' => ['id_persona', 'uf_titularidad_id'], 'message' => 'The combination of Uf Titularidad ID and Id Persona has already been taken.'],
+            [['id_persona'], 'exist', 'skipOnError' => true, 'targetClass' => Personas::className(), 'targetAttribute' => ['id_persona' => 'id']],
+            [['uf_titularidad_id'], 'exist', 'skipOnError' => true, 'targetClass' => UfTitularidad::className(), 'targetAttribute' => ['uf_titularidad_id' => 'id']],
         ];
     }
 
@@ -42,16 +53,22 @@ class UfTitularidadPersonas extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('app', 'ID'),
-            'uf_titularidad_id' => Yii::t('app', 'Uf Titularidad ID'),
-            'id_persona' => Yii::t('app', 'Id Persona'),
+            'id' => 'ID',
+            'uf_titularidad_id' => 'Uf Titularidad ID',
+            'id_persona' => 'Id Persona',
+            'tipo' => 'Tipo',
+            'observaciones' => 'Observaciones',
+            'created_by' => 'Created By',
+            'created_at' => 'Created At',
+            'updated_by' => 'Updated By',
+            'updated_at' => 'Updated At',
         ];
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPersona()
+    public function getIdPersona()
     {
         return $this->hasOne(Personas::className(), ['id' => 'id_persona']);
     }

@@ -3,6 +3,9 @@
 namespace frontend\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\behaviors\BlameableBehavior;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "uf".
@@ -103,6 +106,7 @@ class Uf extends \yii\db\ActiveRecord
 	  ];
     }    
 
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -127,10 +131,13 @@ class Uf extends \yii\db\ActiveRecord
         return $this->hasMany(UfTitularidad::className(), ['id_uf' => 'id']);
     }
     
+
+
     public function getUltUfTitularidad()
     {
-        return $this->hasOne(UfTitularidad::className(), ['id_uf' => 'id','ultima'=>1]);
-    }    
+        return $this->hasOne(UfTitularidad::className(), ['id_uf' => 'id'])->where(['ultima'=>1]);
+    } 
+
     
     public function getUserCreatedBy()
     {
@@ -140,5 +147,6 @@ class Uf extends \yii\db\ActiveRecord
     public function getUserUpdatedBy()
     {
         return $this->hasOne(\common\models\User::className(), ['id' => 'updated_by']);
-    }        
+    }      
+
 }

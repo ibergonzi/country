@@ -40,14 +40,24 @@ class TitularidadVistaSearch extends TitularidadVista
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($ultima=true,$params)
     {
-        $query = TitularidadVista::find();
 
-        // add conditions that should always apply here
+		if ($ultima) {
+			$query = TitularidadVista::find()->where(['ultima'=>true]);			
+		} else {
+			$query = TitularidadVista::find();
+		}		
+		$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['uftitularidad.defaultPageSize'];
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination'=>[
+				'pageSize' => $pageSize,
+			],            
+            'sort' => ['defaultOrder' => ['id' => SORT_ASC,],
+						'enableMultiSort'=>true,            
+                      ],             
         ]);
 
         $this->load($params);

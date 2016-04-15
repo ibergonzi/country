@@ -4,6 +4,11 @@ namespace frontend\models;
 
 use Yii;
 
+use yii\helpers\ArrayHelper;
+use yii\behaviors\TimestampBehavior;
+use yii\behaviors\BlameableBehavior;
+use yii\db\Expression;
+
 /**
  * This is the model class for table "uf_titularidad".
  *
@@ -38,6 +43,19 @@ class UfTitularidad extends \yii\db\ActiveRecord
     {
         return 'uf_titularidad';
     }
+    
+	// devuelve lista de tipos documentos preparada para los dropDownList
+	// se usa:  $form->field($model, 'id_tipo_doc')->dropDownList($model->listaMovimientos)
+	public static function getListaMovimientos($todos=false)
+	{
+		if ($todos) {
+			$opciones = MovimUf::find()->asArray()->all();
+		} else {
+			$opciones = MovimUf::find()->andWhere(['<>','migracion',1])->asArray()->all();			
+		}
+
+		return ArrayHelper::map($opciones, 'id', 'desc_movim_uf');
+	}    
 
     /**
      * @inheritdoc
@@ -45,9 +63,9 @@ class UfTitularidad extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_uf', 'tipo_movim', 'fec_desde', 'created_by', 'created_at', 'updated_by', 'updated_at'], 'required'],
+            [['id_uf', 'tipo_movim', 'fec_desde', ], 'required'],
             [['id_uf', 'tipo_movim', 'created_by', 'updated_by', 'estado', 'ultima'], 'integer'],
-            [['fec_desde', 'fec_hasta', 'created_at', 'updated_at'], 'safe'],
+            [['fec_desde', 'fec_hasta', 'created_by', 'created_at', 'updated_by', 'updated_at'], 'safe'],
             [['exp_telefono'], 'string', 'max' => 30],
             [['exp_direccion', 'exp_localidad'], 'string', 'max' => 60],
             [['exp_email'], 'string', 'max' => 255],
@@ -56,6 +74,25 @@ class UfTitularidad extends \yii\db\ActiveRecord
             [['tipo_movim'], 'exist', 'skipOnError' => true, 'targetClass' => MovimUf::className(), 'targetAttribute' => ['tipo_movim' => 'id']],
         ];
     }
+    
+    // extiende los comportamientos de la clase Personas para grabar datos de auditoría
+    public function behaviors()
+    {
+	  return [
+		  [
+			  'class' => BlameableBehavior::className(),
+			  'createdByAttribute' => 'created_by',
+			  'updatedByAttribute' => 'updated_by',
+		  ],
+		  [
+			  'class' => TimestampBehavior::className(),
+			  'createdAtAttribute' => 'created_at',
+			  'updatedAtAttribute' => 'updated_at',                 
+			  'value' => new Expression('CURRENT_TIMESTAMP')
+		  ],
+
+	  ];
+    }    
 
     /**
      * @inheritdoc
@@ -65,13 +102,13 @@ class UfTitularidad extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'id_uf' => 'Id Uf',
-            'tipo_movim' => 'Tipo Movim',
-            'fec_desde' => 'Fec Desde',
-            'fec_hasta' => 'Fec Hasta',
-            'exp_telefono' => 'Exp Telefono',
-            'exp_direccion' => 'Exp Direccion',
-            'exp_localidad' => 'Exp Localidad',
-            'exp_email' => 'Exp Email',
+            'tipo_movim' => 'Movimiento',
+            'fec_desde' => 'Fec.Desde',
+            'fec_hasta' => 'Fec.Hasta',
+            'exp_telefono' => 'Teléf.(expensas)',
+            'exp_direccion' => 'Direc.(expensas)',
+            'exp_localidad' => 'Localidad (expensas)',
+            'exp_email' => 'Mail (expensas)',
             'created_by' => 'Created By',
             'created_at' => 'Created At',
             'updated_by' => 'Updated By',

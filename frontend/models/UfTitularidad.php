@@ -44,6 +44,21 @@ class UfTitularidad extends \yii\db\ActiveRecord
         return 'uf_titularidad';
     }
     
+    const ESTADO_BAJA = 0;
+	const ESTADO_ACTIVO = 1;
+    
+
+		
+	// funcion agregada a mano
+	public static function getEstados($key=null)
+	{
+		$estados=[self::ESTADO_ACTIVO=>'Activo',self::ESTADO_BAJA=>'Baja'];
+	    if ($key !== null) {
+			return $estados[$key];
+		}
+		return $estados;
+	}	    
+    
 	// devuelve lista de tipos documentos preparada para los dropDownList
 	// se usa:  $form->field($model, 'id_tipo_doc')->dropDownList($model->listaMovimientos)
 	public static function getListaMovimientos($todos=false)
@@ -55,7 +70,8 @@ class UfTitularidad extends \yii\db\ActiveRecord
 		}
 
 		return ArrayHelper::map($opciones, 'id', 'desc_movim_uf');
-	}    
+	}  
+	
 
     /**
      * @inheritdoc
@@ -109,12 +125,14 @@ class UfTitularidad extends \yii\db\ActiveRecord
             'exp_direccion' => 'Direc.(expensas)',
             'exp_localidad' => 'Localidad (expensas)',
             'exp_email' => 'Mail (expensas)',
-            'created_by' => 'Created By',
-            'created_at' => 'Created At',
-            'updated_by' => 'Updated By',
-            'updated_at' => 'Updated At',
-            'estado' => 'Estado',
-            'motivo_baja' => 'Motivo Baja',
+            'created_by' => Yii::t('app', 'Usuario alta'),
+            'created_at' => Yii::t('app', 'Fecha alta'),
+            'updated_by' => Yii::t('app', 'Usuario modif.'),
+            'updated_at' => Yii::t('app', 'Fecha modif.'),
+            'estado' => Yii::t('app', 'Estado'),            
+            'motivo_baja' => Yii::t('app', 'Motivo Baja'),
+            'userCreatedBy.username'=>'Usuario alta',
+            'userUpdatedBy.username'=>'Usuario modif.', 
             'ultima' => 'Ultima',
         ];
     }
@@ -150,6 +168,16 @@ class UfTitularidad extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Personas::className(), ['id' => 'id_persona'])->viaTable('uf_titularidad_personas', ['uf_titularidad_id' => 'id']);
     }
+    
+    public function getUserCreatedBy()
+    {
+        return $this->hasOne(\common\models\User::className(), ['id' => 'created_by']);
+    }    
+    
+    public function getUserUpdatedBy()
+    {
+        return $this->hasOne(\common\models\User::className(), ['id' => 'updated_by']);
+    }         
     
     /*
 SELECT uf_titularidad.id as id_titularidad,`id_uf`, desc_movim_uf,`fec_desde`,`fec_hasta`,

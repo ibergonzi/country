@@ -9,6 +9,8 @@ use frontend\models\UfTitularidad;
 use frontend\models\UfTitularidadPersonas;
 use frontend\models\Personas;
 use frontend\models\UfTitularidadSearch;
+use frontend\models\Autorizantes;
+
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -33,7 +35,7 @@ class UfTitularidadController extends Controller
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['POST'],
+                    'fin-cesion' => ['POST'],
                 ],
             ],
         ];
@@ -81,7 +83,6 @@ class UfTitularidadController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
              if ($model->validate()) {
-				 Yii::trace('entro');
 				$titPers->load(Yii::$app->request->post());
 				$sessPersonas=\Yii::$app->session->get('titpersonas');
 				if (!$sessPersonas) {
@@ -90,26 +91,57 @@ class UfTitularidadController extends Controller
 					// Comienza Transaccion
 					$transaction = Yii::$app->db->beginTransaction();				
 					try {
+						// busca la UF
 						$UfModel = Uf::findOne($model->id_uf);
-						$ultMovimTit=UfTitularidad::findOne($UfModel->ultUfTitularidad->id);
+						// guarda el id del ultimo movimiento de titularidad
+						$idUltTitularidad=$UfModel->ultUfTitularidad->id;
+						// busca el ultimo movimiento de titularidad
+						$ultMovimTit=UfTitularidad::findOne($idUltTitularidad);
+						// actualizar el campo ultima en false para que no sea mas la ultima titularidad
 						$ultMovimTit->ultima=false;
 						$ultMovimTit->save(false);
-								
+						
+						// ultima en true indica que es el ultimo movimiento de titularidad (el que se esta grabando en este momento)		
 						$model->ultima=true;						
 						$model->save(false);
 						
+						// elimina todos los autorizantes actuales de la unidad para reemplazarlos con los nuevos
+						Autorizantes::deleteAll(['id_uf'=>$model->id_uf]);	
+						$aut=new Autorizantes();
+						$aut->id_uf=$model->id_uf;								
+						
+						// grabación de personas 
 						$titPers->uf_titularidad_id=$model->id;
+						if ($model->tipoMovim->cesion) {
+							$titPers->tipo=UfTitularidadPersonas::TIPO_CES;							 
+						}
+								
 						foreach ($sessPersonas as $titPers->id_persona) {
+							// graba en UfTitularidadPersonas
 							$titPers->id = null;
 							$titPers->isNewRecord = true;							
 							$titPers->save(false);
+							
+							// graba en Autorizantes
+							$aut->id = null;
+							$aut->isNewRecord = true;	
+							$aut->id_persona=$titPers->id_persona;						
+							$aut->save(false);
 						} // foreach sessPersonas
 						
-						// falta la eliminación/inserción en autorizantes
-						// ver que pasa con la finalización de una cesion
-						
-
-						
+						if ($model->tipoMovim->cesion) {
+							// si es una cesion, las personas de $sessPersonas se grabaron como cesionarios,
+							// entonces se debe grabar a los titulares originales como cedentes
+							$ultTitulares=UfTitularidadPersonas::find()->where(['uf_titularidad_id'=>$idUltTitularidad])->all(); 
+							foreach ($ultTitulares as $ut) {
+								$titPers->id=null;
+								$titPers->isNewRecord=true;
+								$titPers->id_persona=$ut->id_persona;
+								$titPers->tipo=UfTitularidadPersonas::TIPO_CED;
+								$titPers->observaciones=null;
+								$titPers->save(false);
+							}
+						}
 						// Todo bien
 						$transaction->commit();
 						\Yii::$app->session->addFlash('success','Movimiento grabado correctamente');
@@ -135,6 +167,63 @@ class UfTitularidadController extends Controller
 			'tmpListas'=>$listas,                
 		]);        
     }
+    
+    public function actionFinCesion($uf,$id) {
+        $model = new UfTitularidad();
+        $model->id_uf=$uf;
+        $model->tipo_movim=10;
+        
+        $movActual=UfTitularidad::findOne($id);
+        $titPers=UfTitularidadPersonas::find()->where(['uf_titularidad_id'=>$id])->all();
+ 		$transaction = Yii::$app->db->beginTransaction();	       
+ 		try {   
+			$movActual->ultima=false;
+			$movActual->save(false);
+			
+			$model->fec_desde=$movActual->fec_hasta;
+			$model->fec_hasta=$model->fec_desde;
+			$model->exp_telefono=$movActual->exp_telefono;
+			$model->exp_direccion=$movActual->exp_direccion;			
+			$model->exp_localidad=$movActual->exp_localidad;
+			$model->exp_email=$movActual->exp_email;
+			$model->ultima=true;
+			$model->save(false);
+			
+			// elimina todos los autorizantes actuales de la unidad para reemplazarlos con los nuevos
+			Autorizantes::deleteAll(['id_uf'=>$model->id_uf]);	
+			$aut=new Autorizantes();
+			$aut->id_uf=$model->id_uf;	
+			
+			// recorre todos los titulares y solo procesa los cedentes como nuevos titulares					
+			foreach ($titPers as $tp) {
+				if ($tp->tipo==UfTitularidadPersonas::TIPO_CED) {
+					$titp=new UfTitularidadPersonas();
+					$titp->uf_titularidad_id=$model->id;
+					$titp->tipo=UfTitularidadPersonas::TIPO_TIT;
+					$titp->id_persona=$tp->id_persona;
+					$titp->save(false);
+					
+					$aut->id = null;
+					$aut->isNewRecord = true;	
+					$aut->id_persona=$titp->id_persona;						
+					$aut->save(false);					
+				}
+				
+			}
+			$transaction->commit();
+			\Yii::$app->session->addFlash('success','Movimiento grabado correctamente');
+			// limpia todo
+			\Yii::$app->session->remove('titpersonas');							
+			//return $this->redirect(['view', 'id' => $model->id]);			
+					
+		} catch(\Exception $e) {
+			$transaction->rollBack();
+			Yii::$app->session->addFlash('danger','Hubo un error en la grabación');
+			throw $e;
+		} // try..catch      
+   
+        return $this->redirect(['view', 'id' => $model->id]);
+	}
     
     public function actionAddLista($grupo, $id)
     {

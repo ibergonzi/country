@@ -139,7 +139,7 @@ $this->registerCss('
 				<div class='col-md-3'>
 					<?= $form->field($titPers, 'observaciones')->textInput(['maxlength' => true]) ?>
 				</div>				
-				<div class='col-md-3'>
+				<div class='col-md-6'>
 					<?php
 						// -------------------Selector de personas c/botón de alta ----------------------------------------
 						//$personaDesc=$model->isNewRecord?'':Personas::formateaPersonaSelect2($model->id_persona,false);
@@ -222,23 +222,25 @@ $this->registerCss('
 						]);  
 					?>						
 				</div>
+							
+			</div>	
+
+
+			<div class='row'>
 				<div class='col-md-3'>
 					<p>
 						<?= Html::submitButton('Confirmar TODO lo realizado' , ['class' => 'btn btn-lg btn-primary',
 						 //'style'=>'vertical-align:text-bottom;'
 						]) ?>
 					</p>					
-				</div>								
-			</div>	
-
-			<?php ActiveForm::end(); ?>
-			<div class='row'>
-				<div class='col-md-12'>
+				</div>	
+				<?php ActiveForm::end(); ?>				
+				<div class='col-md-9'>
 					<div id="divlistapersonas">
 						<?php echo isset($tmpListas['titpersonas'])?$tmpListas['titpersonas']:'' ?>
 					</div>	
 				</div>
-				</div>
+
 			</div>
 			
 	<?php	

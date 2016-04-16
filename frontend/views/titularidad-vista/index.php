@@ -25,8 +25,24 @@ $this->params['breadcrumbs'][] = $this->title;
             //'id',
             //'id_titularidad',
             'id_uf',
-            'desc_movim_uf',
-            //'fec_desde',
+            //'desc_movim_uf',
+            [
+				'attribute'=>'desc_movim_uf',
+				'format' => 'raw',
+				'value' => function ($model, $index, $widget) {
+					return Html::a($model->desc_movim_uf, 
+								Yii::$app->urlManager->createUrl(
+										['uf-titularidad/view', 
+										 'id' => $model->id_titularidad
+										]),
+										['title' => 'Ver detalle',
+										 // para que se abra el link en nueva pestaña hay que setear ademas pjax="0"
+										 'target' => '_blank',
+										 'data-pjax'=>'0',
+										]);
+					},				
+            ],
+            'fec_desde',
             'fec_hasta',
             'exp_telefono',
             'exp_direccion',
@@ -43,7 +59,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'coeficiente',
             'observaciones',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            //['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
 </div>

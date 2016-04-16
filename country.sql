@@ -371,7 +371,7 @@ CREATE TABLE `autorizantes` (
   KEY `id_persona` (`id_persona`),
   CONSTRAINT `autorizantes_ibfk_1` FOREIGN KEY (`id_uf`) REFERENCES `uf` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `autorizantes_ibfk_2` FOREIGN KEY (`id_persona`) REFERENCES `personas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -380,7 +380,7 @@ CREATE TABLE `autorizantes` (
 
 LOCK TABLES `autorizantes` WRITE;
 /*!40000 ALTER TABLE `autorizantes` DISABLE KEYS */;
-INSERT INTO `autorizantes` VALUES (1,128,9),(2,128,10),(3,129,10),(4,129,30);
+INSERT INTO `autorizantes` VALUES (3,129,10),(4,129,30),(9,128,9),(10,128,10),(11,128,30);
 /*!40000 ALTER TABLE `autorizantes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -643,7 +643,8 @@ CREATE TABLE `movim_uf` (
   `id` smallint(6) NOT NULL,
   `desc_movim_uf` varchar(30) NOT NULL,
   `cesion` tinyint(4) NOT NULL DEFAULT '0',
-  `migracion` smallint(6) NOT NULL DEFAULT '0',
+  `migracion` tinyint(6) NOT NULL DEFAULT '0',
+  `fec_vto` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -654,7 +655,7 @@ CREATE TABLE `movim_uf` (
 
 LOCK TABLES `movim_uf` WRITE;
 /*!40000 ALTER TABLE `movim_uf` DISABLE KEYS */;
-INSERT INTO `movim_uf` VALUES (1,'Tit.Inicial',0,1),(2,'Cesión Inicial',1,1),(3,'Venta',0,0),(4,'Cesión de derechos',1,0);
+INSERT INTO `movim_uf` VALUES (1,'Tit.Inicial',0,1,0),(2,'Cesión Inicial',1,1,1),(3,'Venta',0,0,0),(4,'Cesión de derechos',1,0,1),(10,'Fin Cesión',0,0,0);
 /*!40000 ALTER TABLE `movim_uf` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -843,7 +844,7 @@ CREATE TABLE `uf_titularidad` (
   KEY `tipo_movim` (`tipo_movim`),
   CONSTRAINT `uf_titularidad_ibfk_1` FOREIGN KEY (`id_uf`) REFERENCES `uf` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `uf_titularidad_ibfk_2` FOREIGN KEY (`tipo_movim`) REFERENCES `movim_uf` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -852,7 +853,7 @@ CREATE TABLE `uf_titularidad` (
 
 LOCK TABLES `uf_titularidad` WRITE;
 /*!40000 ALTER TABLE `uf_titularidad` DISABLE KEYS */;
-INSERT INTO `uf_titularidad` VALUES (1,128,4,'2016-03-01','2016-03-16',NULL,NULL,NULL,'',9,'2016-03-01 00:00:00',9,'2016-03-01 00:00:00',1,NULL,0),(2,128,1,'2016-03-17',NULL,'156654159',NULL,NULL,'ibergonzi@hotmail.com',9,'2016-03-17 00:00:00',9,'2016-03-17 00:00:00',1,NULL,0),(3,128,3,'2016-04-14',NULL,'156654159','','','ibergonzi@hotmail.com',0,'0000-00-00 00:00:00',0,'0000-00-00 00:00:00',1,NULL,0),(4,128,4,'2016-04-14','2016-04-29','156654159','','','ibergonzi@hotmail.com',9,'2016-04-14 18:01:34',9,'2016-04-14 18:10:52',1,NULL,0),(5,128,3,'2016-04-21',NULL,'156654159','','','ibergonzi@hotmail.com',9,'2016-04-14 18:10:52',9,'2016-04-14 18:14:58',1,NULL,0),(6,128,3,'2016-04-20',NULL,'156654159','','','ibergonzi@hotmail.com',9,'2016-04-14 18:14:58',9,'2016-04-14 18:17:55',1,NULL,0),(7,128,3,'2016-04-21',NULL,'156654159','','','ibergonzi@hotmail.com',9,'2016-04-14 18:17:55',9,'2016-04-14 18:17:55',1,NULL,1);
+INSERT INTO `uf_titularidad` VALUES (1,128,4,'2016-03-01','2016-03-16',NULL,NULL,NULL,'',9,'2016-03-01 00:00:00',9,'2016-03-01 00:00:00',1,NULL,0),(2,128,1,'2016-03-17',NULL,'156654159',NULL,NULL,'ibergonzi@hotmail.com',9,'2016-03-17 00:00:00',9,'2016-03-17 00:00:00',1,NULL,0),(3,128,3,'2016-04-14',NULL,'156654159','','','ibergonzi@hotmail.com',0,'0000-00-00 00:00:00',0,'0000-00-00 00:00:00',1,NULL,0),(4,128,4,'2016-04-14','2016-04-29','156654159','','','ibergonzi@hotmail.com',9,'2016-04-14 18:01:34',9,'2016-04-14 18:10:52',1,NULL,0),(5,128,3,'2016-04-21',NULL,'156654159','','','ibergonzi@hotmail.com',9,'2016-04-14 18:10:52',9,'2016-04-14 18:14:58',1,NULL,0),(6,128,3,'2016-04-20',NULL,'156654159','','','ibergonzi@hotmail.com',9,'2016-04-14 18:14:58',9,'2016-04-14 18:17:55',1,NULL,0),(7,128,3,'2016-04-21',NULL,'156654159','','','ibergonzi@hotmail.com',9,'2016-04-14 18:17:55',9,'2016-04-16 13:15:20',1,NULL,0),(12,128,4,'2016-04-16','2016-04-30','156654159','Uriburu 2617','Rosario','ibergonzi@hotmail.com',9,'2016-04-16 13:15:20',9,'2016-04-16 18:09:11',1,NULL,0),(13,128,10,'2016-04-30','2016-04-30','156654159','Uriburu 2617','Rosario','ibergonzi@hotmail.com',9,'2016-04-16 18:09:11',9,'2016-04-16 18:09:11',1,NULL,1);
 /*!40000 ALTER TABLE `uf_titularidad` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -878,7 +879,7 @@ CREATE TABLE `uf_titularidad_personas` (
   KEY `idx_uftp_uf` (`uf_titularidad_id`),
   CONSTRAINT `uf_titularidad_personas_ibfk_1` FOREIGN KEY (`id_persona`) REFERENCES `personas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `uf_titularidad_personas_ibfk_2` FOREIGN KEY (`uf_titularidad_id`) REFERENCES `uf_titularidad` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -887,7 +888,7 @@ CREATE TABLE `uf_titularidad_personas` (
 
 LOCK TABLES `uf_titularidad_personas` WRITE;
 /*!40000 ALTER TABLE `uf_titularidad_personas` DISABLE KEYS */;
-INSERT INTO `uf_titularidad_personas` VALUES (1,1,9,'T',NULL,0,'0000-00-00 00:00:00',0,'0000-00-00 00:00:00'),(2,2,9,'T',NULL,0,'0000-00-00 00:00:00',0,'0000-00-00 00:00:00'),(3,2,10,'T',NULL,0,'0000-00-00 00:00:00',0,'0000-00-00 00:00:00'),(4,3,30,'T','',0,'0000-00-00 00:00:00',0,'0000-00-00 00:00:00'),(5,4,10,'T','',9,'2016-04-14 18:01:34',9,'2016-04-14 18:01:34'),(6,5,9,'T','',9,'2016-04-14 18:10:52',9,'2016-04-14 18:10:52'),(7,6,7302,'A','',9,'2016-04-14 18:14:58',9,'2016-04-14 18:14:58'),(8,7,9,'T','',9,'2016-04-14 18:17:55',9,'2016-04-14 18:17:55'),(9,7,10,'T','',9,'2016-04-14 18:17:55',9,'2016-04-14 18:17:55'),(10,7,30,'T','',9,'2016-04-14 18:17:55',9,'2016-04-14 18:17:55');
+INSERT INTO `uf_titularidad_personas` VALUES (1,1,9,'T',NULL,0,'0000-00-00 00:00:00',0,'0000-00-00 00:00:00'),(2,2,9,'T',NULL,0,'0000-00-00 00:00:00',0,'0000-00-00 00:00:00'),(3,2,10,'T',NULL,0,'0000-00-00 00:00:00',0,'0000-00-00 00:00:00'),(4,3,30,'T','',0,'0000-00-00 00:00:00',0,'0000-00-00 00:00:00'),(5,4,10,'T','',9,'2016-04-14 18:01:34',9,'2016-04-14 18:01:34'),(6,5,9,'T','',9,'2016-04-14 18:10:52',9,'2016-04-14 18:10:52'),(7,6,7302,'A','',9,'2016-04-14 18:14:58',9,'2016-04-14 18:14:58'),(8,7,9,'T','',9,'2016-04-14 18:17:55',9,'2016-04-14 18:17:55'),(9,7,10,'T','',9,'2016-04-14 18:17:55',9,'2016-04-14 18:17:55'),(10,7,30,'T','',9,'2016-04-14 18:17:55',9,'2016-04-14 18:17:55'),(14,12,84,'S','3416654159',9,'2016-04-16 13:15:20',9,'2016-04-16 13:15:20'),(15,12,9,'D','3416654159',9,'2016-04-16 13:15:20',9,'2016-04-16 13:15:20'),(16,12,10,'D','3416654159',9,'2016-04-16 13:15:20',9,'2016-04-16 13:15:20'),(17,12,30,'D','3416654159',9,'2016-04-16 13:15:20',9,'2016-04-16 13:15:20'),(18,13,9,'T',NULL,9,'2016-04-16 18:09:11',9,'2016-04-16 18:09:11'),(19,13,10,'T',NULL,9,'2016-04-16 18:09:11',9,'2016-04-16 18:09:11'),(20,13,30,'T',NULL,9,'2016-04-16 18:09:11',9,'2016-04-16 18:09:11');
 /*!40000 ALTER TABLE `uf_titularidad_personas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1145,4 +1146,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-04-14 21:59:10
+-- Dump completed on 2016-04-16 18:16:22

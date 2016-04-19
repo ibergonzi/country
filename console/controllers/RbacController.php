@@ -202,6 +202,35 @@ class RbacController extends Controller
 		$auth->addChild($intendente, $altaModificarPersona);
 		$auth->addChild($opIntendencia, $altaModificarPersona);	
 		
+		$accederListaUf=$auth->createPermission('accederListaUf');
+		$accederListaUf->description='Acceso: lista de U.F.';
+		$auth->add($accederListaUf);	
+		$auth->addChild($consejo, $accederListaUf);
+		$auth->addChild($administrador, $accederListaUf);		
+		$auth->addChild($intendente, $accederListaUf);
+		$auth->addChild($opIntendencia, $accederListaUf);	
+		$auth->addChild($portero, $accederListaUf);	
+
+		$exportarListaUf=$auth->createPermission('exportarListaUf');
+		$exportarListaUf->description='Acceso: exportar lista de U.F.';
+		$auth->add($exportarListaUf);	
+		$auth->addChild($consejo, $exportarListaUf);
+		$auth->addChild($administrador, $exportarListaUf);		
+		$auth->addChild($intendente, $exportarListaUf);
+		$auth->addChild($opIntendencia, $exportarListaUf);	
+
+		$borrarUf=$auth->createPermission('borrarUf');
+		$borrarUf->description='Eliminar: U.F.';
+		$auth->add($borrarUf);	
+		$auth->addChild($intendente, $borrarUf);
+		$auth->addChild($opIntendencia, $borrarUf);	
+		
+		$altaModificarUf=$auth->createPermission('altaModificarUf');
+		$altaModificarUf->description='Alta/modif.: U.F.';
+		$auth->add($altaModificarUf);	
+		$auth->addChild($intendente, $altaModificarUf);
+		$auth->addChild($opIntendencia, $altaModificarUf);			
+		
 		$altaPersonaIngEgr=$auth->createPermission('altaPersonaIngEgr');
 		$altaPersonaIngEgr->description='Alta: persona (desde accesos)';
 		$auth->add($altaPersonaIngEgr);	

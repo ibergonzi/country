@@ -66,7 +66,7 @@ class UfTitularidad extends \yii\db\ActiveRecord
 		if ($todos) {
 			$opciones = MovimUf::find()->asArray()->all();
 		} else {
-			$opciones = MovimUf::find()->andWhere(['<>','migracion',1])->asArray()->all();			
+			$opciones = MovimUf::find()->andWhere(['<>','manual',0])->asArray()->all();			
 		}
 
 		return ArrayHelper::map($opciones, 'id', 'desc_movim_uf');
@@ -87,9 +87,27 @@ class UfTitularidad extends \yii\db\ActiveRecord
             [['exp_email'], 'string', 'max' => 255],
             [['motivo_baja'], 'string', 'max' => 50],
             [['id_uf'], 'exist', 'skipOnError' => true, 'targetClass' => Uf::className(), 'targetAttribute' => ['id_uf' => 'id']],
+            [['fec_desde','fec_hasta',],'validaRangoFechas','skipOnEmpty' => false], 
             [['tipo_movim'], 'exist', 'skipOnError' => true, 'targetClass' => MovimUf::className(), 'targetAttribute' => ['tipo_movim' => 'id']],
         ];
     }
+    
+    public function validaRangoFechas($attribute, $params) 
+    {
+		if ($this->tipoMovim->cesion) {
+			if (empty($this->fec_desde) || empty($this->fec_hasta)) {
+				if (empty($this->fec_desde)) {
+					$this->addError('fec_desde','Debe ingresar un rango de fechas');return;
+				}
+				if (empty($this->fec_hasta)) {
+					$this->addError('fec_hasta','Debe ingresar un rango de fechas');return;
+				}
+			}
+			if (strtotime($this->fec_desde) > strtotime($this->fec_hasta)) {
+				$this->addError('fec_hasta','Esta fecha no puede ser anterior a la otra fecha');return;
+			}
+		}
+	}    
     
     // extiende los comportamientos de la clase Personas para grabar datos de auditoría
     public function behaviors()

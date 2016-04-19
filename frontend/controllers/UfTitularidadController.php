@@ -45,14 +45,15 @@ class UfTitularidadController extends Controller
      * Lists all UfTitularidad models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($uf)
     {
         $searchModel = new UfTitularidadSearch();
-        $dataProvider = $searchModel->search(true,Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search($uf,Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'uf'=>$uf,
         ]);
     }
 
@@ -113,7 +114,9 @@ class UfTitularidadController extends Controller
 						// grabación de personas 
 						$titPers->uf_titularidad_id=$model->id;
 						if ($model->tipoMovim->cesion) {
-							$titPers->tipo=UfTitularidadPersonas::TIPO_CES;							 
+							$titPers->tipo=UfTitularidadPersonas::TIPO_CES;	
+						} else {	
+							$titPers->tipo=UfTitularidadPersonas::TIPO_TIT;													 
 						}
 								
 						foreach ($sessPersonas as $titPers->id_persona) {
@@ -138,7 +141,7 @@ class UfTitularidadController extends Controller
 								$titPers->isNewRecord=true;
 								$titPers->id_persona=$ut->id_persona;
 								$titPers->tipo=UfTitularidadPersonas::TIPO_CED;
-								$titPers->observaciones=null;
+								$titPers->observaciones=$ut->observaciones;
 								$titPers->save(false);
 							}
 						}
@@ -181,7 +184,8 @@ class UfTitularidadController extends Controller
 			$movActual->save(false);
 			
 			$model->fec_desde=$movActual->fec_hasta;
-			$model->fec_hasta=$model->fec_desde;
+			//$model->fec_hasta=$model->fec_desde;
+			$model->fec_hasta=null;			
 			$model->exp_telefono=$movActual->exp_telefono;
 			$model->exp_direccion=$movActual->exp_direccion;			
 			$model->exp_localidad=$movActual->exp_localidad;
@@ -201,6 +205,7 @@ class UfTitularidadController extends Controller
 					$titp->uf_titularidad_id=$model->id;
 					$titp->tipo=UfTitularidadPersonas::TIPO_TIT;
 					$titp->id_persona=$tp->id_persona;
+					$titp->observaciones=$tp->observaciones;
 					$titp->save(false);
 					
 					$aut->id = null;
@@ -342,7 +347,7 @@ class UfTitularidadController extends Controller
 				'tipoDoc.desc_tipo_doc_abr',				
 				'nro_doc',					
 			];
-			$heading='<i class="glyphicon glyphicon-user"></i>  Personas (Titularidad)';
+			$heading='<i class="glyphicon glyphicon-user"></i>  Definición de NUEVA TITULARIDAD';
 		
 			
 			$gvType=GridView::TYPE_DANGER;

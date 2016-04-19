@@ -15,7 +15,9 @@ use kartik\grid\GridView;
 /* @var $model frontend\models\UfTitularidad */
 
 $this->title = 'Titularidad U.F. ' . $model->id_uf;
-$this->params['breadcrumbs'][] = ['label' => 'Uf Titularidads', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Unidades funcionales', 'url' => ['uf/index']];
+$this->params['breadcrumbs'][] = ['label' => 'Movs.Titularidad U.F.'.$model->id_uf, 
+									'url' => ['uf-titularidad/index','uf'=>$model->id_uf]];
 $this->params['breadcrumbs'][] = $this->title;
 
 // esto es para que las columnas del detailView no cambien de tamaño
@@ -99,7 +101,7 @@ $this->registerCss('
 			//opciones validas solo para el gridview de kartik
 			'panel'=>[
 				'type'=>GridView::TYPE_INFO,
-				'heading'=>'Titularidad actual sobre U.F.'.$model->id_uf,
+				'heading'=>'Titularidad sobre U.F.'.$model->id_uf,
 				//'headingOptions'=>['class'=>'panel-heading'],
 				'footer'=>false,
 				'before'=>false,
@@ -144,11 +146,13 @@ $this->registerCss('
 			'created_at:datetime',
 			'userUpdatedBy.username',
 			'updated_at:datetime',
+			/*
 			[
 				'label' => 'Estado',
 				'value' => UfTitularidad::getEstados($model->estado)
 			],		
             'motivo_baja',
+            */
             //'ultima',
         ],
     ]) ?>    

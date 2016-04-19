@@ -8,6 +8,7 @@ use frontend\models\UfSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 /**
  * UfController implements the CRUD actions for Uf model.
@@ -20,12 +21,35 @@ class UfController extends Controller
     public function behaviors()
     {
         return [
+        /*
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
                 ],
             ],
+        */
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['delete'],
+                        'allow' => true,
+                        'roles' => ['borrarUf'], 
+                    ],                
+                    [
+                        'actions' => ['index','view'],
+                        'allow' => true,
+                        'roles' => ['accederListaUf'], 
+                    ],
+                    [
+                        'actions' => ['create','update'],
+                        'allow' => true,
+                        'roles' => ['altaModificarUf'], 
+                    ],
+  		
+                 ], // fin rules
+             ], // fin access                 
         ];
     }
 
@@ -101,9 +125,24 @@ class UfController extends Controller
      */
     public function actionDelete($id)
     {
+		/*
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+        */
+        
+        $model = $this->findModel($id);
+        
+        if ($model->load(Yii::$app->request->post())) {
+			$model->estado=Uf::ESTADO_BAJA;
+			if ($model->save()) {
+				return $this->redirect(['view', 'id' => $model->id]);
+			}
+        } else {
+            return $this->render('delete', [
+                'model' => $model,
+            ]);
+        }                
     }
 
     /**

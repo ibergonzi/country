@@ -7,40 +7,40 @@ use yii\grid\GridView;
 /* @var $searchModel frontend\models\UfTitularidadSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Uf Titularidads';
+$this->title = 'Movs.Titularidad U.F.'.$uf;
+$this->params['breadcrumbs'][] = ['label' => 'Unidades funcionales', 'url' => ['uf/index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="uf-titularidad-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h3><?= Html::encode($this->title) ?></h3>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <p>
-        <?= Html::a('Create Uf Titularidad', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
+        //'filterModel' => $searchModel,
         'columns' => [
 
-            'id',
-            'id_uf',
-            'tipo_movim',
-            'fec_desde',
-            'fec_hasta',
-            // 'exp_telefono',
-            // 'exp_direccion',
-            // 'exp_localidad',
-            // 'exp_email:email',
-            // 'created_by',
-            // 'created_at',
+            //'id',
+            //'id_uf',
+            'tipoMovim.desc_movim_uf',
+            'fec_desde:date',
+            'fec_hasta:date',
+            'exp_telefono',
+            'exp_direccion',
+            'exp_localidad',
+            'exp_email:email',
+            //'created_by',
+            //'created_at',
             // 'updated_by',
             // 'updated_at',
             // 'estado',
             // 'motivo_baja',
             // 'ultima',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            ['class' => 'yii\grid\ActionColumn',
+			 'template' => '{view}',              
+            ],
         ],
     ]); ?>
 </div>

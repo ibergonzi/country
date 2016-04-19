@@ -37,19 +37,39 @@ class Uf extends \yii\db\ActiveRecord
     const ESTADO_BAJA = 0;
 	const ESTADO_OCUPADO = 1;
 	const ESTADO_VACIO = 2;
-	const ESTADO_FOREST = 3;
+	const ESTADO_VACIO_FIDEI = 3;	
+	const ESTADO_FOREST = 4;
     
 
 
 	// funcion agregada a mano
 	public static function getEstados($key=null)
 	{
-		$estados=[self::ESTADO_OCUPADO=>'Ocupado',self::ESTADO_VACIO=>'Vacío',self::ESTADO_FOREST=>'Forestación',self::ESTADO_BAJA=>'Baja'];
+		$estados=[self::ESTADO_OCUPADO=>'Ocupado',self::ESTADO_VACIO=>'Vacío',
+				  self::ESTADO_VACIO_FIDEI=>'Vacío/Fideic.',
+				  self::ESTADO_FOREST=>'Forestación',self::ESTADO_BAJA=>'Baja'];
 	    if ($key !== null) {
 			return $estados[$key];
 		}
 		return $estados;
-	}	    
+	}	
+	
+	public static function getEstadosModif()
+	{
+		$estados=[self::ESTADO_OCUPADO=>'Ocupado',self::ESTADO_VACIO=>'Vacío',
+				  self::ESTADO_VACIO_FIDEI=>'Vacío/Fideic.',
+				  self::ESTADO_FOREST=>'Forestación'];
+		return $estados;
+	}	   	   
+	
+	
+	public static function getSuperficieTotal()
+	{
+		$query = (new \yii\db\Query())->from('uf')->where(['<>','estado',self::ESTADO_BAJA]);
+		$sum = $query->sum('superficie');
+		return $sum;
+	}
+	 
 
     /**
      * @inheritdoc
@@ -60,10 +80,20 @@ class Uf extends \yii\db\ActiveRecord
             [['id', 'loteo', 'manzana', ], 'required'],
             [['id', 'loteo', 'manzana', 'created_by', 'updated_by', 'estado'], 'integer'],
             [['created_by', 'created_at', 'updated_by', 'updated_at'], 'safe'],
-			[['superficie', 'coeficiente'], 'number'],            
+			[['superficie', ], 'number','numberPattern' => '/^\s*[-+]?[0-9]*[.,]?[0-9]+([eE][-+]?[0-9]+)?\s*$/'],            
             [['motivo_baja'], 'string', 'max' => 50],
         ];
     }
+    
+	public function beforeSave($insert) 
+	{
+        if (parent::beforeSave($insert)) {
+            $this->superficie = str_replace(",", ".", $this->superficie);
+            return true;
+        } else {
+            return false;
+        }
+    }    
 
     /**
      * @inheritdoc

@@ -133,10 +133,10 @@ $this->registerCss('
 			</div>		
 			
 			<div class='row'>
-				<div class='col-md-3'>
-					<?= $form->field($titPers, 'tipo')->dropDownList($titPers->tipos)  ?>					
-				</div>
-				<div class='col-md-3'>
+
+					<?php //echo $form->field($titPers, 'tipo')->dropDownList($titPers->tipos)  ?>					
+
+				<div class='col-md-6'>
 					<?= $form->field($titPers, 'observaciones')->textInput(['maxlength' => true]) ?>
 				</div>				
 				<div class='col-md-6'>

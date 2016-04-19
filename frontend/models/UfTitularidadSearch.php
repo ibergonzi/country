@@ -41,13 +41,11 @@ class UfTitularidadSearch extends UfTitularidad
      *
      * @return ActiveDataProvider
      */
-    public function search($ultima=true,$params)
+    public function search($uf,$params)
     {
-		if ($ultima) {
-			$query = UfTitularidad::find()->where(['ultima'=>true]);			
-		} else {
-			$query = UfTitularidad::find();
-		}
+
+		$query = UfTitularidad::find()->where(['id_uf'=>$uf]);			
+
 
 		$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['uftitularidad.defaultPageSize'];
 
@@ -56,7 +54,7 @@ class UfTitularidadSearch extends UfTitularidad
             'pagination'=>[
 				'pageSize' => $pageSize,
 			],            
-            'sort' => ['defaultOrder' => ['id' => SORT_ASC,],
+            'sort' => ['defaultOrder' => ['id' => SORT_DESC,],
 						'enableMultiSort'=>true,            
                       ],               
         ]);

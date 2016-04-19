@@ -3,42 +3,50 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
+use frontend\models\Uf;
+
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Uf */
 
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Ufs', 'url' => ['index']];
+$this->title = 'U.F.'.$model->id;
+$this->params['breadcrumbs'][] = ['label' => 'Lista de U.F.', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="uf-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h3><?= Html::encode($this->title) ?></h3>
 
-    <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
+	<?php
+		echo '<p>';
+		if ($model->estado != Uf::ESTADO_BAJA) {
+			if (\Yii::$app->user->can('altaModificarUf')) {
+				echo Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']);
+			}
+			if (\Yii::$app->user->can('borrarUf')) {	
+				echo ' '. Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], ['class' => 'btn btn-danger',]);
+			}
+		}  
+		echo '</p>';
+	?>  
 
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
+            //'id',
             'loteo',
             'manzana',
-            'superficie',
-            'coeficiente',
-            'created_by',
-            'created_at',
-            'updated_by',
-            'updated_at',
-            'estado',
-            'motivo_baja',
+            'superficie:decimal',
+
+			'userCreatedBy.username',
+			'created_at:datetime',
+			'userUpdatedBy.username',
+			'updated_at:datetime',
+			[
+				'label' => 'Estado',
+				'value' => Uf::getEstados($model->estado)
+			],							
+			//'estado',
+			'motivo_baja',
         ],
     ]) ?>
 

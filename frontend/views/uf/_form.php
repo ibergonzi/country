@@ -12,30 +12,24 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'id')->textInput() ?>
+    <?php echo $form->field($model, 'id')->textInput(['readonly' => !$model->isNewRecord]); 
+		$model->superficie = yii::$app->formatter->asDecimal($model->superficie,2);
+    ?>
 
     <?= $form->field($model, 'loteo')->textInput() ?>
 
     <?= $form->field($model, 'manzana')->textInput() ?>
 
     <?= $form->field($model, 'superficie')->textInput() ?>
+    
+    <?php
+		echo $form->field($model, 'estado')->dropDownList($model->estadosModif);
+    ?>
 
-    <?= $form->field($model, 'coeficiente')->textInput() ?>
 
-    <?= $form->field($model, 'created_by')->textInput() ?>
-
-    <?= $form->field($model, 'created_at')->textInput() ?>
-
-    <?= $form->field($model, 'updated_by')->textInput() ?>
-
-    <?= $form->field($model, 'updated_at')->textInput() ?>
-
-    <?= $form->field($model, 'estado')->textInput() ?>
-
-    <?= $form->field($model, 'motivo_baja')->textInput(['maxlength' => true]) ?>
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? 'Crear' : 'Modificar', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

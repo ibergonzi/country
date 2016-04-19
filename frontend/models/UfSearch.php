@@ -19,7 +19,7 @@ class UfSearch extends Uf
     {
         return [
             [['id', 'loteo', 'manzana', 'created_by', 'updated_by', 'estado'], 'integer'],
-            [['superficie', 'coeficiente'], 'number'],
+            [['superficie'], 'number'],
             [['created_at', 'updated_at', 'motivo_baja'], 'safe'],
         ];
     }
@@ -64,7 +64,6 @@ class UfSearch extends Uf
             'loteo' => $this->loteo,
             'manzana' => $this->manzana,
             'superficie' => $this->superficie,
-            'coeficiente' => $this->coeficiente,
             'created_by' => $this->created_by,
             'created_at' => $this->created_at,
             'updated_by' => $this->updated_by,

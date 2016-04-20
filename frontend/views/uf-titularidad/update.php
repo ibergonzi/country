@@ -5,16 +5,17 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\UfTitularidad */
 
-$this->title = 'Update Uf Titularidad: ' . $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Uf Titularidads', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = 'Modif.mov.de titularidad';
+$this->params['breadcrumbs'][] = ['label' => 'Unidades funcionales', 'url' => ['uf/index']];
+$this->params['breadcrumbs'][] = ['label' => 'Movs.Titularidad U.F.'.$model->id_uf, 
+									'url' => ['uf-titularidad/index','uf'=>$model->id_uf]];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="uf-titularidad-update">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h3><?= Html::encode($this->title) ?></h3>
 
-    <?= $this->render('_form', [
+    <?= $this->render('_update', [
         'model' => $model,
     ]) ?>
 

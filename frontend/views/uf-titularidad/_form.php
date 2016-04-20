@@ -41,61 +41,69 @@ $this->registerCss('
     <?php
 
         $UfModel = Uf::findOne($model->id_uf);
+        
+        if (!empty($UfModel->ultUfTitularidad->id)) {
+			
+			$puedeCambiarTipoMovim=true;
  		
-		$query=UfTitularidadPersonas::find()->joinWith('persona')
-			->where(['uf_titularidad_id'=>$UfModel->ultUfTitularidad->id]);
+			$query=UfTitularidadPersonas::find()->joinWith('persona')
+				->where(['uf_titularidad_id'=>$UfModel->ultUfTitularidad->id]);
 
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-            'sort' => ['defaultOrder' => ['tipo' => SORT_DESC,],
-						'enableMultiSort'=>true,            
-                      ],    
-        ]);					      
-        
-        $xDefecto=UfTitularidad::findOne($UfModel->ultUfTitularidad->id);
-        $model->exp_telefono=$xDefecto->exp_telefono;
-        $model->exp_direccion=$xDefecto->exp_direccion;
-        $model->exp_localidad=$xDefecto->exp_localidad;
-        $model->exp_email=$xDefecto->exp_email;                        
-        
-		echo GridView::widget([
-			'dataProvider' => $dataProvider,
-			'condensed'=>true,
-			'layout'=>'{items}',
-			//opciones validas solo para el gridview de kartik
-			'panel'=>[
-				'type'=>GridView::TYPE_INFO,
-				'heading'=>'Titularidad actual sobre U.F.'.$model->id_uf,
-				//'headingOptions'=>['class'=>'panel-heading'],
-				'footer'=>false,
-				'before'=>false,
-				'after'=>false,
-			],		
-			'panelHeadingTemplate'=>'{heading}',			
-			'resizableColumns'=>false,					
-			'columns' => [
-				//'id',
-				//'uf_titularidad_id',
-				[
-					'attribute'=>'tipo',
-					'value'=>function ($model) {return UfTitularidadPersonas::getTipos($model->tipo);},
+			$dataProvider = new ActiveDataProvider([
+				'query' => $query,
+				'sort' => ['defaultOrder' => ['tipo' => SORT_DESC,],
+							'enableMultiSort'=>true,            
+						  ],    
+			]);					      
+			
+			$xDefecto=UfTitularidad::findOne($UfModel->ultUfTitularidad->id);
+			$model->exp_telefono=$xDefecto->exp_telefono;
+			$model->exp_direccion=$xDefecto->exp_direccion;
+			$model->exp_localidad=$xDefecto->exp_localidad;
+			$model->exp_email=$xDefecto->exp_email;                        
+			
+			echo GridView::widget([
+				'dataProvider' => $dataProvider,
+				'condensed'=>true,
+				'layout'=>'{items}',
+				//opciones validas solo para el gridview de kartik
+				'panel'=>[
+					'type'=>GridView::TYPE_INFO,
+					'heading'=>'Titularidad actual sobre U.F.'.$model->id_uf,
+					//'headingOptions'=>['class'=>'panel-heading'],
+					'footer'=>false,
+					'before'=>false,
+					'after'=>false,
+				],		
+				'panelHeadingTemplate'=>'{heading}',			
+				'resizableColumns'=>false,					
+				'columns' => [
+					//'id',
+					//'uf_titularidad_id',
+					[
+						'attribute'=>'tipo',
+						'value'=>function ($model) {return UfTitularidadPersonas::getTipos($model->tipo);},
+					],
+					//'tipo',
+					'id_persona',
+					'persona.apellido',
+					'persona.nombre',
+					'persona.nombre2',
+					'persona.tipoDoc.desc_tipo_doc_abr',
+					'persona.nro_doc',
+					'observaciones',
+					// 'created_by',
+					// 'created_at',
+					// 'updated_by',
+					// 'updated_at',
+
+					//['class' => 'yii\grid\ActionColumn'],
 				],
-				//'tipo',
-				'id_persona',
-				'persona.apellido',
-				'persona.nombre',
-				'persona.nombre2',
-				'persona.tipoDoc.desc_tipo_doc_abr',
-				'persona.nro_doc',
-				'observaciones',
-				// 'created_by',
-				// 'created_at',
-				// 'updated_by',
-				// 'updated_at',
-
-				//['class' => 'yii\grid\ActionColumn'],
-			],
-    ]); ?>
+			]); 
+		} else {
+			$puedeCambiarTipoMovim=false;
+		}
+    ?>
 
 			<?php $form = ActiveForm::begin(); ?>
 
@@ -103,7 +111,7 @@ $this->registerCss('
 
 			<div class='row'>
 				<div class='col-md-6'>
-					<?= $form->field($model, 'tipo_movim')->dropDownList($model->listaMovimientos) ?>
+					<?= $form->field($model, 'tipo_movim')->dropDownList($model->listaMovimientos,['readonly' => !$puedeCambiarTipoMovim]) ?>
 				</div>			
 			
 				<div class='col-md-3'>

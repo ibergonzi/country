@@ -14,6 +14,7 @@ use frontend\models\Autorizantes;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 use yii\data\ArrayDataProvider;
 use kartik\grid\GridView;
@@ -32,12 +33,31 @@ class UfTitularidadController extends Controller
     public function behaviors()
     {
         return [
+        /*
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'fin-cesion' => ['POST'],
                 ],
             ],
+         */
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+  
+                    [
+                        'actions' => ['index','view'],
+                        'allow' => true,
+                        'roles' => ['accederListaUfTit'], 
+                    ],
+                    [
+                        'actions' => ['create','update','add-lista','drop-lista','fin-cesion'],
+                        'allow' => true,
+                        'roles' => ['altaModificarUfTit'], 
+                    ],
+  		
+                 ], // fin rules
+             ], // fin access                       
         ];
     }
 
@@ -95,12 +115,15 @@ class UfTitularidadController extends Controller
 						// busca la UF
 						$UfModel = Uf::findOne($model->id_uf);
 						// guarda el id del ultimo movimiento de titularidad
-						$idUltTitularidad=$UfModel->ultUfTitularidad->id;
-						// busca el ultimo movimiento de titularidad
-						$ultMovimTit=UfTitularidad::findOne($idUltTitularidad);
-						// actualizar el campo ultima en false para que no sea mas la ultima titularidad
-						$ultMovimTit->ultima=false;
-						$ultMovimTit->save(false);
+						
+						if (!empty($UfModel->ultUfTitularidad->id)) {
+							$idUltTitularidad=$UfModel->ultUfTitularidad->id;
+							// busca el ultimo movimiento de titularidad
+							$ultMovimTit=UfTitularidad::findOne($idUltTitularidad);
+							// actualizar el campo ultima en false para que no sea mas la ultima titularidad
+							$ultMovimTit->ultima=false;
+							$ultMovimTit->save(false);
+						}
 						
 						// ultima en true indica que es el ultimo movimiento de titularidad (el que se esta grabando en este momento)		
 						$model->ultima=true;						

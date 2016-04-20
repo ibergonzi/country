@@ -25,7 +25,7 @@ use Yii;
  * @property string $desc_tipo_doc_abr
  * @property string $nro_doc
  * @property double $superficie
- * @property double $coeficiente
+
  */
 class TitularidadVista extends \yii\db\ActiveRecord
 {
@@ -51,9 +51,9 @@ class TitularidadVista extends \yii\db\ActiveRecord
         return [
             [['id'], 'string'],
             [['id_titularidad', 'id_uf', 'id_persona'], 'integer'],
-            [['id_uf', 'desc_movim_uf', 'fec_desde', 'tipo', 'apellido', 'nombre', 'desc_tipo_doc_abr', 'nro_doc', 'superficie', 'coeficiente'], 'required'],
+            [['id_uf', 'desc_movim_uf', 'fec_desde', 'tipo', 'apellido', 'nombre', 'desc_tipo_doc_abr', 'nro_doc', 'superficie', ], 'required'],
             [['fec_desde', 'fec_hasta'], 'safe'],
-            [['superficie', 'coeficiente'], 'number'],
+            [['superficie', ], 'number'],
             [['desc_movim_uf', 'exp_telefono'], 'string', 'max' => 30],
             [['exp_direccion', 'exp_localidad'], 'string', 'max' => 60],
             [['exp_email'], 'string', 'max' => 255],
@@ -88,7 +88,6 @@ class TitularidadVista extends \yii\db\ActiveRecord
             'desc_tipo_doc_abr' => 'Tipo Doc.',
             'nro_doc' => 'Nro.Doc',
             'superficie' => 'Sup.m2',
-            'coeficiente' => 'Coef.',
             'observaciones'=>'Obs.'
         ];
     }

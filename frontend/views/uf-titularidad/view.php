@@ -46,6 +46,7 @@ $this->registerCss('
 
     <p>
 		<?php
+		if (\Yii::$app->user->can('altaModificarUfTit')) {		
 			if ($model->ultima) {
 				echo Html::a('Modificar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']).' ';
 				$mu=MovimUf::findOne($model->tipo_movim);
@@ -62,6 +63,7 @@ $this->registerCss('
 					echo Html::a('Nuevo movimiento', ['create', 'uf' => $model->id_uf], ['class' => 'btn btn-danger']).' ';					
 				}
 			}
+		}
 		?>
 
     </p>

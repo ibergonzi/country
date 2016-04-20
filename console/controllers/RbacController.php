@@ -229,7 +229,22 @@ class RbacController extends Controller
 		$altaModificarUf->description='Alta/modif.: U.F.';
 		$auth->add($altaModificarUf);	
 		$auth->addChild($intendente, $altaModificarUf);
-		$auth->addChild($opIntendencia, $altaModificarUf);			
+		$auth->addChild($opIntendencia, $altaModificarUf);	
+		
+		$accederListaUfTit=$auth->createPermission('accederListaUfTit');
+		$accederListaUfTit->description='Acceso: lista titularidad UF';
+		$auth->add($accederListaUfTit);	
+		$auth->addChild($consejo, $accederListaUfTit);
+		$auth->addChild($administrador, $accederListaUfTit);			
+		$auth->addChild($intendente, $accederListaUfTit);
+		$auth->addChild($opIntendencia, $accederListaUfTit);
+		
+		$altaModificarUfTit=$auth->createPermission('altaModificarUfTit');
+		$altaModificarUfTit->description='Alta/modif.: titularidad de U.F.';
+		$auth->add($altaModificarUfTit);	
+		$auth->addChild($intendente, $altaModificarUfTit);
+		$auth->addChild($opIntendencia, $altaModificarUfTit);						
+				
 		
 		$altaPersonaIngEgr=$auth->createPermission('altaPersonaIngEgr');
 		$altaPersonaIngEgr->description='Alta: persona (desde accesos)';

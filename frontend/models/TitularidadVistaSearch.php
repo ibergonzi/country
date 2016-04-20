@@ -20,7 +20,7 @@ class TitularidadVistaSearch extends TitularidadVista
         return [
             [['id', 'desc_movim_uf', 'fec_desde', 'fec_hasta', 'exp_telefono', 'exp_direccion', 'exp_localidad', 'exp_email', 'tipo', 'apellido', 'nombre', 'nombre2', 'desc_tipo_doc_abr', 'nro_doc', 'observaciones'], 'safe'],
             [['id_titularidad', 'id_uf', 'id_persona'], 'integer'],
-            [['superficie', 'coeficiente'], 'number'],
+            [['superficie', ], 'number'],
         ];
     }
 
@@ -76,7 +76,7 @@ class TitularidadVistaSearch extends TitularidadVista
             'fec_hasta' => $this->fec_hasta,
             'id_persona' => $this->id_persona,
             'superficie' => $this->superficie,
-            'coeficiente' => $this->coeficiente,
+
         ]);
 
         $query->andFilterWhere(['like', 'id', $this->id])

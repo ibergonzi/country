@@ -108,6 +108,20 @@ AppAsset::register($this);
 			] // fin items;
 		]; // fin menuItems[]		
 
+		$menuItems[] = ['label' => 'Unidades', 
+						'items' => [
+							['label' => 'Lista de U.F.', 
+								'url' => ['/uf/index'], 
+								'visible'=>\Yii::$app->user->can('accederListaUf')],		
+							'<li class="divider"></li>',
+							'<li class="dropdown-header">Consultas</li>',							
+							['label' => 'Expensas', 
+								'url' => ['/titularidad-vista/index'], 
+								'visible'=>\Yii::$app->user->can('accederListaUf')],
+								
+								
+			] // fin items;
+		]; // fin menuItems[]	
 
 		$menuItems[] = ['label' => 'Intendencia', 
 						'items' => [

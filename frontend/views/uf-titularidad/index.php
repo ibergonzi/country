@@ -39,7 +39,11 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'ultima',
 
             ['class' => 'yii\grid\ActionColumn',
-			 'template' => '{view}',              
+			 'template' => '{view}',
+            'header'=>Html::a('<span class="glyphicon glyphicon-plus-sign"></span>',
+                                    ['create','uf' => $uf], 
+                                ['class' => 'btn-sm btn-primary',
+                                 'title' => Yii::t('app', 'Nuevo mov.titularidad'),]),			               
             ],
         ],
     ]); ?>

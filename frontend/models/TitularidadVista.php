@@ -76,19 +76,19 @@ class TitularidadVista extends \yii\db\ActiveRecord
             'desc_movim_uf' => 'Movimiento',
             'fec_desde' => 'Desde',
             'fec_hasta' => 'Hasta',
-            'exp_telefono' => 'Telefono',
-            'exp_direccion' => 'Direccion',
+            'exp_telefono' => 'Teléfono',
+            'exp_direccion' => 'Dirección',
             'exp_localidad' => 'Localidad',
-            'exp_email' => 'Email',
-            'tipo' => 'Tipo',
+            'exp_email' => 'Mail',
+            'tipo' => 'Tipo titularidad',
             'id_persona' => 'Persona',
             'apellido' => 'Apellido',
             'nombre' => 'Nombre',
             'nombre2' => '2 Nombre',
             'desc_tipo_doc_abr' => 'Tipo Doc.',
             'nro_doc' => 'Nro.Doc',
-            'superficie' => 'Sup.m2',
-            'observaciones'=>'Obs.'
+            'superficie' => 'Sup.m2.',
+            'observaciones'=>'Observaciones'
         ];
     }
 }

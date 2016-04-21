@@ -92,7 +92,10 @@ AppAsset::register($this);
 								'visible'=>\Yii::$app->user->can('accederListaPersonas')],
 							['label' => 'Lista de Vehiculos', 
 								'url' => ['/vehiculos/index'], 
-								'visible'=>\Yii::$app->user->can('accederListaVehiculos')],								
+								'visible'=>\Yii::$app->user->can('accederListaVehiculos')],	
+							['label' => 'Agenda', 
+								'url' => ['/agenda/index'], 
+								'visible'=>\Yii::$app->user->can('accederAgenda')],																
 			] // fin items;
 		]; // fin menuItems[]
 		$menuItems[] = ['label' => 'Energia', 

@@ -553,11 +553,16 @@ $(document).ready(function() {
 						'type' => 'info',
 						'encodeLabels' => false,
 						'heading' => '',
+						'iconPrefix'=>'',
 						'items' => [
-							['label' => 'Egresos', 'icon' => 'arrow-left', 'url' => Url::to(['accesos/egreso'])],
-							['label' => 'Libro guardia', 'icon' => 'book', 'url' => Url::to(['libro/index']),
+							['label' => 'Egresos', 'icon' => 'glyphicon glyphicon-arrow-left', 'url' => Url::to(['accesos/egreso'])],
+							['label' => 'Egreso grupal', 'icon' => 'fa fa-users', 'url' => Url::to(['accesos/egreso-grupal'])],							
+							['label' => 'Libro guardia', 'icon' => 'glyphicon glyphicon-book', 'url' => Url::to(['libro/index']),
 								'template'=> '<a href="{url}" target="_blank">{icon}{label}</a>'
 							],
+							['label' => 'Agenda', 'icon' => 'glyphicon glyphicon-earphone','url' => Url::to(['agenda/index']),
+								'template'=> '<a href="{url}" target="_blank">{icon}{label}</a>'
+							],							
 				
 						],
 					]);        									

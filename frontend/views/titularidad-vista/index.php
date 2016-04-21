@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 
 use frontend\models\Uf;
+use frontend\models\UfTitularidadPersonas;
 
 use kartik\popover\PopoverX;
 
@@ -58,6 +59,7 @@ $this->registerCss('
    				'group'=>true,
             ],
             //'desc_movim_uf',
+            /*
             [
 				'attribute'=>'desc_movim_uf',
 				'group'=>true,
@@ -76,6 +78,8 @@ $this->registerCss('
 										]);
 					},				
             ],
+            */
+            /*
             [
 				'attribute'=>'fec_desde',
 				'group'=>true,
@@ -86,6 +90,29 @@ $this->registerCss('
 				'group'=>true,
 				'subGroupOf'=>0,
 			],
+			*/
+            [
+				'attribute'=>'superficie',
+				'format'=>['decimal',2],	
+				'hAlign'=>'right',
+				'group'=>true,
+				'subGroupOf'=>0,							
+            ],
+            [
+				'class' => '\kartik\grid\FormulaColumn',
+				'value' => function ($model, $key, $index, $widget) {
+					if ($model->unidad_estado==0) {return null;}
+					$p = compact('model', 'key', 'index');
+					// Write your formula below
+					global $totSup;
+					return $widget->col(1, $p) / $totSup * 100;
+				},
+				'format'=>['decimal',3],
+				'label'=>'Coeficiente',
+				'hAlign'=>'right',
+				'group'=>true,
+				'subGroupOf'=>0,				
+			 ],  
             [
 				'attribute'=>'exp_telefono',
 				'group'=>true,
@@ -106,31 +133,12 @@ $this->registerCss('
 				'format'=>'email',
 				'group'=>true,
 				'subGroupOf'=>0,
+			],			                       
+			[
+				'attribute'=>'tipo',
+				'value'=>function ($model) {return UfTitularidadPersonas::getTipos($model->tipo);},
 			],
-            [
-				'attribute'=>'superficie',
-				'format'=>['decimal',2],	
-				'hAlign'=>'right',
-				'group'=>true,
-				'subGroupOf'=>0,							
-            ],
-            [
-				'class' => '\kartik\grid\FormulaColumn',
-				'value' => function ($model, $key, $index, $widget) {
-					if ($model->unidad_estado==0) {return null;}
-					$p = compact('model', 'key', 'index');
-					// Write your formula below
-					global $totSup;
-					return $widget->col(8, $p) / $totSup * 100;
-				},
-				'format'=>['decimal',3],
-				'label'=>'Coeficiente',
-				'hAlign'=>'right',
-				'group'=>true,
-				'subGroupOf'=>0,				
-			 ],                        
-            'tipo',
-            'id_persona',
+            //'id_persona',
             'apellido',
             'nombre',
             'nombre2',

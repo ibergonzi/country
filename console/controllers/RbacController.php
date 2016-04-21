@@ -310,6 +310,29 @@ class RbacController extends Controller
 		$altaLibro->description='Alta: libro de guardia';
 		$auth->add($altaLibro);	
 		$auth->addChild($portero, $altaLibro);	
+		
+		$accederAgenda=$auth->createPermission('accederAgenda');
+		$accederAgenda->description='Acceso: Agenda';
+		$auth->add($accederAgenda);	
+		$auth->addChild($consejo, $accederAgenda);
+		$auth->addChild($administrador, $accederAgenda);		
+		$auth->addChild($intendente, $accederAgenda);
+		$auth->addChild($opIntendencia, $accederAgenda);	
+		$auth->addChild($portero, $accederAgenda);	
+
+		$borrarAgenda=$auth->createPermission('borrarAgenda');
+		$borrarAgenda->description='Eliminar: Agenda';
+		$auth->add($borrarAgenda);	
+		$auth->addChild($intendente, $borrarAgenda);
+		$auth->addChild($opIntendencia, $borrarAgenda);	
+		$auth->addChild($portero, $borrarAgenda);			
+		
+		$altaModificarAgenda=$auth->createPermission('altaModificarAgenda');
+		$altaModificarAgenda->description='Alta/modif.: Agenda';
+		$auth->add($altaModificarAgenda);	
+		$auth->addChild($intendente, $altaModificarAgenda);
+		$auth->addChild($opIntendencia, $altaModificarAgenda);	
+		$auth->addChild($portero, $altaModificarAgenda);					
 											
 									
 

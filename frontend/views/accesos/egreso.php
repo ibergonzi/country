@@ -392,11 +392,16 @@ $(document).ready(function() {
 						'type' => 'danger',
 						'encodeLabels' => false,
 						'heading' => '',
+						'iconPrefix'=>'',						
 						'items' => [
-							['label' => 'Ingresos', 'icon' => 'arrow-right', 'url' => Url::to(['accesos/ingreso'])],
-							['label' => 'Libro guardia', 'icon' => 'book', 'url' => Url::to(['libro/index']),
+							['label' => 'Ingresos', 'icon' => 'glyphicon glyphicon-arrow-right', 'url' => Url::to(['accesos/ingreso'])],
+							['label' => 'Egreso grupal', 'icon' => 'fa fa-users', 'url' => Url::to(['accesos/egreso-grupal'])],							
+							['label' => 'Libro guardia', 'icon' => 'glyphicon glyphicon-book', 'url' => Url::to(['libro/index']),
 								'template'=> '<a href="{url}" target="_blank">{icon}{label}</a>'
 							],
+							['label' => 'Agenda', 'icon' => 'glyphicon glyphicon-earphone','url' => Url::to(['agenda/index']),
+								'template'=> '<a href="{url}" target="_blank">{icon}{label}</a>'
+							],			
 						],
 					]);  					
 

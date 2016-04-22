@@ -248,7 +248,8 @@ class VehiculosController extends Controller
 			$q=str_replace(' ','%',$q);
 			$sp='CALL vehiculos_busca(:query)' ;
             $command = Yii::$app->db->createCommand($sp);
-            $command->bindParam(":query", trim($q));
+            $q=trim($q);
+            $command->bindParam(":query", $q);
 			
 			$data = $command->queryAll();
 			

@@ -313,7 +313,8 @@ class PersonasController extends Controller
 				$sp='CALL personas_busca_nombres(:query)' ;
 			}
             $command = Yii::$app->db->createCommand($sp);
-            $command->bindParam(":query", trim($q));
+            $q=trim($q);
+            $command->bindParam(":query", $q);
 			
 			$data = $command->queryAll();
 			

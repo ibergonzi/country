@@ -786,12 +786,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/kartik-v/yii2-grid.git",
-                "reference": "fe29bcf8f46bde42aa3eb067851b38dc07cd4d8a"
+                "reference": "fc709eda7a2bfb154f895a33ac05321475a8a153"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kartik-v/yii2-grid/zipball/fe29bcf8f46bde42aa3eb067851b38dc07cd4d8a",
-                "reference": "fe29bcf8f46bde42aa3eb067851b38dc07cd4d8a",
+                "url": "https://api.github.com/repos/kartik-v/yii2-grid/zipball/fc709eda7a2bfb154f895a33ac05321475a8a153",
+                "reference": "fc709eda7a2bfb154f895a33ac05321475a8a153",
                 "shasum": ""
             },
             "require": {
@@ -827,7 +827,7 @@
                 "widget",
                 "yii2"
             ],
-            "time": "2016-04-09 20:31:20"
+            "time": "2016-04-19 16:58:07"
         },
         {
             "name": "kartik-v/yii2-helpers",

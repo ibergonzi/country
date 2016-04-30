@@ -179,17 +179,7 @@ $this->registerCss('
 		// para que no se encime con el summary del gridview	
 		//echo '<div class="clearfix"></div>';	
 
-		// para evitar que la pagina se cuelgue cuando se le saca la paginación y hay muchos registros a mostrar
-		$cant=$dataProvider->totalCount;
-		if ( $cant <= \Yii::$app->params['max-rows-gridview'] ) {
-			if ($cant <= $dataProvider->pagination->pageSize) {
-				$toolbar=['{export}'];
-			} else {
-				$toolbar=['{export}','{toggleData}'];
-			}
-		} else {
-			$toolbar=['{export}'];
-		}
+
 		$contentToolbar=\nterms\pagesize\PageSize::widget([
 			'defaultPageSize'=>\Yii::$app->params['user.defaultPageSize'],
 			'sizes'=>\Yii::$app->params['user.sizes'],

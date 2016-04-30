@@ -164,7 +164,7 @@ $(document).ready(function() {
 							'addon'=>$vehiculosAddon,
 							'pluginOptions' => [
 								'allowClear' => true,
-								'minimumInputLength' => 3,
+								'minimumInputLength' => 2,
 								'ajax' => [
 									'url' => \yii\helpers\Url::to(['vehiculos/vehiculoslist']),
 									'dataType' => 'json',

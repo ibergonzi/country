@@ -63,15 +63,15 @@ class CortesEnergiaGenSearch extends CortesEnergiaGen
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
+            $query->where('0=1');
             return $dataProvider;
         }
 
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'id_cortes_energia' => $this->descripcion, //$this->id_cortes_energia,
-            'id_generador' => $this->id_generador,
+            'id_cortes_energia' => $this->id_cortes_energia,
+            'id_generador' => $this->descripcion,//$this->id_generador,
             'hora_desde' => $this->hora_desde,
             'hora_hasta' => $this->hora_hasta,
             'created_by' => $this->created_by,

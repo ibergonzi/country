@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 
 use kartik\datecontrol\DateControl;
-use yii\widgets\Pjax;
+
 use yii\bootstrap\Collapse;
 
 use frontend\models\Accesos;
@@ -19,6 +19,7 @@ use yii\bootstrap\Modal;
 
 use frontend\models\Mensajes;
 use frontend\models\Comentarios;
+
 $this->registerCss('.modal-body { max-height: calc(100vh - 210px);overflow-y: auto;}');
 
 /* @var $this yii\web\View */
@@ -44,8 +45,10 @@ $this->registerCss('
 }
 ');
 */
+
 use app\assets\ExportSelectorAsset;
 ExportSelectorAsset::register($this);
+
 
 $this->registerJs('
 $(document).ready(function() {
@@ -63,12 +66,16 @@ $(document).ready(function() {
 	});		
 });
 ');
+
+
+
 $this->registerCss('
 .kv-grid-loading {
     opacity: 0.5;
     background: #ffffff url("../images/loading.gif") top center no-repeat !important;
 }
 ');
+
 ?>
 <div class="accesos-index">
 
@@ -124,7 +131,6 @@ $this->registerCss('
        		['class' => 'kartik\grid\ActionColumn',
 				 'header'=>$header,
 				 'headerOptions'=>['style'=>'text-align:center'],   
-				 'options'=>['style'=>'width:70px'],   
 				 'template' => '{comentario} {mensajeP} {mensajeV}',  
 				 'buttons' => [
 					'comentario' => function ($url, $model) {
@@ -270,9 +276,7 @@ $this->registerCss('
             ],
  		    [
 				 'attribute'=>'ing_fecha',
-				 'options'=>['style'=>'width:275px;'],
-				 'contentOptions'=>['style'=>'width:275px;'],   
-				 'headerOptions'=>['style'=>'width:275px;'],          
+
 				 'format'=>['date'],
 				 'filter'=>MaskedInput::widget([
 						'model' => $searchModel,
@@ -305,6 +309,10 @@ $this->registerCss('
             'r_nombre',
             'r_nombre2',
             'r_nro_doc',
+            [
+				'attribute'=>'id_ufs',
+				//'width'=>'90%',
+			],
             [
 				'attribute'=>'ing_id_vehiculo',
 				'format' => 'raw',
@@ -414,9 +422,16 @@ $this->registerCss('
 		'pjaxSettings'=>['neverTimeout'=>true,],          
         
         // Para que muestre todo el gridview, solo aplicable a kartik, el de yii anda bien
-        'containerOptions' => ['style'=>'overflow: visible'], 
+        //'containerOptions' => ['style'=>'overflow: visible'], 
 		'condensed'=>true,
-		'resizableColumns'=>false,
+		'resizableColumns'=>true,
+		'responsive'=>true,
+		
+    'containerOptions'=>['style'=>'overflow: auto'], // only set when $responsive = false
+    'headerRowOptions'=>['class'=>'kartik-sheet-style'],
+    'filterRowOptions'=>['class'=>'kartik-sheet-style'],		
+		
+		//'persistResize'=>true,
 		//'floatHeader'=>true,	
 		//'bordered'=>false,
 

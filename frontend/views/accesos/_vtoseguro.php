@@ -12,9 +12,12 @@ use kartik\datecontrol\DateControl;
 	<?php
 		//Yii::trace($vehiculos);
 		//echo Html::input('input','fecseguro',$fec,['id'=>'fecseguro']); 
+		//Yii::trace($fec);
 		echo DateControl::widget([
 			'name'=>'fecseguro', 
-			'value'=>date('Y-m-d'),
+			//'value'=>date('Y-m-d'),
+			'value'=>$fec,
+
 			'type'=>DateControl::FORMAT_DATE,
 			'options'=>[
 				'options'=>[

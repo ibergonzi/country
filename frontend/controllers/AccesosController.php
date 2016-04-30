@@ -482,6 +482,10 @@ class AccesosController extends Controller
 	{
 		// solo se usa para mostrar el formulario que pide el seguro
 		$p=Personas::findOne($idPersona);
+		
+		if (empty($p->vto_seguro) || $this->fecVencida($p->vto_seguro)) {
+			$p->vto_seguro=date('Y-m-d');
+		}	
 		return $this->renderAjax('_vtoseguro', [
 			'idPersona' => $idPersona,
 			'fec'=>$p->vto_seguro,
@@ -790,14 +794,42 @@ class AccesosController extends Controller
 												});return false;',
 												]);			
 										},						
-						],					
-
+						],		
+						[
+							'header'=>'&nbsp;',					
+							'attribute'=>'venc_vto_seguro',
+							'visible'=>\Yii::$app->session->get('req_seguro'),
+							'format' => 'raw',
+							'value' => function ($model, $index, $widget) {
+											if (empty($model->vto_seguro)) {
+												$ic=' ';
+											} else {
+												// se debe controlar si no está vencido el seguro
+												if ($this->fecVencida($model->vto_seguro)) {												
+													$ic='<span class="glyphicon glyphicon-hourglass" title="Seguro VENCIDO"
+														style="color:#FF8000"></span>';
+												} else {
+													// no está vencido, controla si esta por vencer en 2 dias (ver el valor en params.php)
+													if ($this->fecPorVencer($model->vto_seguro,\Yii::$app->params['fecSeguroDias'])) {
+														$ic='<span class="glyphicon glyphicon-hourglass" title="Seguro por vencer" 
+														></span>';														
+													} else {
+														$ic=' ';
+													}
+												}
+											}								
+											return $ic;
+										},
+						],											
 						[
 							'attribute'=>'vto_seguro',
 							'visible'=>\Yii::$app->session->get('req_seguro'),
 							'format' => 'raw',
 							'value' => function ($model, $index, $widget) {
-								
+											// intendencia pidio que se pueda modificar siempre
+											$pide=true;
+											
+											/*
 											if (empty($model->vto_seguro)) {
 												$pide=true;
 											} else {
@@ -809,6 +841,7 @@ class AccesosController extends Controller
 													$pide=false;
 												}
 											}
+											*/
 								
 											if (!$pide) {
 												return Yii::$app->formatter->format($model->vto_seguro, 'date'); 
@@ -1150,6 +1183,13 @@ class AccesosController extends Controller
 		$vto = strtotime($fec);
 		return ($vto >= $hoy)?false:true;
 	}
+	
+	public function fecPorVencer($fec,$dias) 
+	{
+		$hoy = strtotime('+' . $dias . ' day');
+		$vto = strtotime($fec);
+		return ($vto >= $hoy)?false:true;
+	}	
 
     public function actionEgreso()
     {

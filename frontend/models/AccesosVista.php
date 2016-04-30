@@ -70,7 +70,7 @@ class AccesosVista extends \yii\db\ActiveRecord
             [['id'], 'string'],
             [['id_persona', 'ing_id_vehiculo', 'ing_id_porton', 'ing_id_user', 'egr_id_vehiculo', 'egr_id_porton', 'egr_id_user', 'id_concepto', 'cant_acomp', 'created_by', 'updated_by', 'estado',  ], 'integer'],
             [['id_persona', 'ing_id_vehiculo', 'ing_fecha', 'ing_hora', 'ing_id_porton', 'ing_id_user', 'id_concepto', 'motivo', 'created_by', 'created_at', 'updated_by', 'updated_at', ], 'required'],
-            [['ing_fecha', 'ing_hora', 'egr_fecha', 'egr_hora', 'created_at', 'updated_at','ing_id_llave','egr_id_llave'], 'safe'],
+            [['ing_fecha', 'ing_hora', 'egr_fecha', 'egr_hora', 'created_at', 'updated_at','ing_id_llave','egr_id_llave','id_ufs'], 'safe'],
             [['motivo', 'motivo_baja', 'desc_concepto'], 'string', 'max' => 50],
             [['control'], 'string', 'max' => 200],
             [['r_ing_usuario', 'r_egr_usuario'], 'string', 'max' => 255],
@@ -127,8 +127,14 @@ class AccesosVista extends \yii\db\ActiveRecord
             'r_egr_modelo' => 'Modelo',
             'r_egr_color' => 'Color',
             'desc_concepto' => 'Concepto',
+            'id_ufs'=>'U.F.',
         ];
     }
+    
+    public static function find()
+    {
+        return new AccesosVistaQuery(get_called_class());
+    }    
 }
 /*
 select `country`.`accesos`.`id` AS `id`,`country`.`accesos`.`id_persona` AS `id_persona`,

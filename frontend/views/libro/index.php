@@ -83,18 +83,7 @@ $this->registerCss('
 				],
 			]);
 		if (\Yii::$app->user->can('exportarLibro')) {		
-			// para evitar que la pagina se cuelgue cuando se le saca la paginación y hay muchos registros a mostrar
-			//$cant=$dataProvider->totalCount;
-			//if ( $cant <= \Yii::$app->params['max-rows-gridview'] ) {
-				//if ($cant <= $dataProvider->pagination->pageSize) {
-				//	$toolbar=['{export}',['content'=>$contentToolbar],];
-				//} else {
-					//$toolbar=[['content'=>$contentToolbar],'{export}','{toggleData}'];
-					$toolbar=['{export} ',['content'=>$contentToolbar],];					
-				//}
-			//} else {
-			//	$toolbar=[['content'=>$contentToolbar],'{export}'];
-			//}
+			$toolbar=['{export} ',['content'=>$contentToolbar],];					
 		} else {
 			$toolbar=[['content'=>$contentToolbar]];
 		}

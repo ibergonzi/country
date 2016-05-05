@@ -311,7 +311,7 @@ $this->registerCss('
             'r_nro_doc',
             [
 				'attribute'=>'id_ufs',
-				//'width'=>'90%',
+				'width'=>'200px',
 			],
             [
 				'attribute'=>'ing_id_vehiculo',
@@ -422,14 +422,9 @@ $this->registerCss('
 		'pjaxSettings'=>['neverTimeout'=>true,],          
         
         // Para que muestre todo el gridview, solo aplicable a kartik, el de yii anda bien
-        //'containerOptions' => ['style'=>'overflow: visible'], 
+        'containerOptions' => ['style'=>'overflow: visible'], 
 		'condensed'=>true,
-		'resizableColumns'=>true,
-		'responsive'=>true,
-		
-    'containerOptions'=>['style'=>'overflow: auto'], // only set when $responsive = false
-    'headerRowOptions'=>['class'=>'kartik-sheet-style'],
-    'filterRowOptions'=>['class'=>'kartik-sheet-style'],		
+
 		
 		//'persistResize'=>true,
 		//'floatHeader'=>true,	

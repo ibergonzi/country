@@ -36,6 +36,9 @@ return [
     
     'personas.defaultPageSize'=>15,
     'personas.sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50, 100=>100],
+    
+    'autorizantes.defaultPageSize'=>15,
+    'autorizantes.sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50, 100=>100],    
 
     'vehiculos.defaultPageSize'=>15,
     'vehiculos.sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50, 100=>100], 

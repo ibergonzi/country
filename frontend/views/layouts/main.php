@@ -128,6 +128,8 @@ AppAsset::register($this);
 
 		$menuItems[] = ['label' => 'Intendencia', 
 						'items' => [
+							['label' => 'Autorizantes', 'url' => ['/autorizantes/index'], 
+									'visible'=>\Yii::$app->user->can('accederListaAutorizantes')],						
 							['label' => 'Usuarios', 'url' => ['/user/index'], 'visible'=>\Yii::$app->user->can('accederUser')],
 							['label' => 'Carnets', 'url' => ['/carnets/index'], 'visible'=>\Yii::$app->user->can('accederCarnets')],
 							
@@ -158,6 +160,7 @@ AppAsset::register($this);
 			$contenido=Html::img(Yii::$app->urlManager->createUrl('images/sinfoto.png'),['class'=>'img-thumbnail']);
 		}
 
+		
         $headerPopover='<p><i>Usuario: '. Yii::$app->user->identity->username.'</i></p>'.
 			'<p><i>'. User::getRol(Yii::$app->user->getId())->description . '</i></p>';
 		$userPopover = '<li class="dropdown"><div class="navbar-form">' . PopoverX::widget([
@@ -173,6 +176,7 @@ AppAsset::register($this);
 			]
 		]) . '</div></li>';        
         $menuItems[] = $userPopover;
+        
     }
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],

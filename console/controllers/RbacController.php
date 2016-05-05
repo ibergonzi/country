@@ -202,6 +202,37 @@ class RbacController extends Controller
 		$auth->addChild($intendente, $altaModificarPersona);
 		$auth->addChild($opIntendencia, $altaModificarPersona);	
 		
+		
+		$accederListaAutorizantes=$auth->createPermission('accederListaAutorizantes');
+		$accederListaAutorizantes->description='Acceso: lista de autorizantes';
+		$auth->add($accederListaAutorizantes);	
+		$auth->addChild($consejo, $accederListaAutorizantes);
+		$auth->addChild($administrador, $accederListaAutorizantes);		
+		$auth->addChild($intendente, $accederListaAutorizantes);
+		$auth->addChild($opIntendencia, $accederListaAutorizantes);	
+		$auth->addChild($portero, $accederListaAutorizantes);	
+
+		$exportarListaAutorizantes=$auth->createPermission('exportarListaAutorizantes');
+		$exportarListaAutorizantes->description='Acceso: exportar lista de autorizantes';
+		$auth->add($exportarListaAutorizantes);	
+		$auth->addChild($consejo, $exportarListaAutorizantes);
+		$auth->addChild($administrador, $exportarListaAutorizantes);		
+		$auth->addChild($intendente, $exportarListaAutorizantes);
+		$auth->addChild($opIntendencia, $exportarListaAutorizantes);	
+
+		$borrarAutorizante=$auth->createPermission('borrarAutorizante');
+		$borrarAutorizante->description='Eliminar: autorizante';
+		$auth->add($borrarAutorizante);	
+		$auth->addChild($intendente, $borrarAutorizante);
+		$auth->addChild($opIntendencia, $borrarAutorizante);	
+		
+		$altaAutorizante=$auth->createPermission('altaAutorizante');
+		$altaAutorizante->description='Alta: autorizante';
+		$auth->add($altaAutorizante);	
+		$auth->addChild($intendente, $altaAutorizante);
+		$auth->addChild($opIntendencia, $altaAutorizante);			
+		
+		
 		$accederListaUf=$auth->createPermission('accederListaUf');
 		$accederListaUf->description='Acceso: lista de U.F.';
 		$auth->add($accederListaUf);	

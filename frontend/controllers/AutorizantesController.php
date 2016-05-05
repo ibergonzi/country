@@ -8,6 +8,7 @@ use frontend\models\AutorizantesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 /**
  * AutorizantesController implements the CRUD actions for Autorizantes model.
@@ -23,6 +24,32 @@ class AutorizantesController extends Controller
                     'delete' => ['post'],
                 ],
             ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['delete'],
+                        'allow' => true,
+                        'roles' => ['borrarAutorizante'], 
+                    ],                
+                    [
+                        'actions' => ['index'],
+                        'allow' => true,
+                        'roles' => ['accederListaAutorizantes'], 
+                    ],
+                    [
+                        'actions' => ['create'],
+                        'allow' => true,
+                        'roles' => ['altaAutorizante'], 
+                    ],
+                    [ 
+                        'actions' => ['apellidoslist'],
+						'allow' => true,
+						'roles' => ['accederIngreso','accederEgreso'],  
+					],
+ 		
+                 ], // fin rules
+             ], // fin access                  
         ];
     }
     
@@ -104,7 +131,7 @@ class AutorizantesController extends Controller
         $model = new Autorizantes();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         } else {
             return $this->render('create', [
                 'model' => $model,

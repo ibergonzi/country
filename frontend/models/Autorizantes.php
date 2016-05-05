@@ -31,7 +31,10 @@ class Autorizantes extends \yii\db\ActiveRecord
     {
         return [
             [['id_uf', 'id_persona'], 'required'],
-            [['id_uf', 'id_persona'], 'integer']
+            [['id_uf', 'id_persona'], 'integer'],
+            [['id_persona', 'id_uf'], 'unique', 'targetAttribute' => ['id_persona', 'id_uf'], 'message' => 'La combinación UF/Persona ya existe.'],
+            [['id_uf'], 'exist', 'skipOnError' => true, 'targetClass' => Uf::className(), 'targetAttribute' => ['id_uf' => 'id']],
+            [['id_persona'], 'exist', 'skipOnError' => true, 'targetClass' => Personas::className(), 'targetAttribute' => ['id_persona' => 'id']],
         ];
     }
 
@@ -43,7 +46,8 @@ class Autorizantes extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('app', 'ID'),
             'id_uf' => Yii::t('app', 'UF'),
-            'id_persona' => Yii::t('app', 'Persona'),
+            'id_persona' => Yii::t('app', 'ID Persona'),
+            'nombre2'=>'Nombre 2',
         ];
     }
     
@@ -74,4 +78,12 @@ class Autorizantes extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Personas::className(), ['id' => 'id_persona']);
     }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLlaves()
+    {
+        return $this->hasMany(Llaves::className(), ['id_autorizante' => 'id']);
+    }    
 }

@@ -16,6 +16,7 @@ $this->registerCss('
     background: #ffffff url("../images/loading.gif") top center no-repeat !important;
 }
 ');
+/*
 $this->registerCss('
 .fade {
   opacity: 0;
@@ -47,6 +48,7 @@ $this->registerCss('
   padding: 1px;
 }
 ');
+*/
 ?>
 <div class="agenda-index">
 
@@ -90,8 +92,10 @@ $this->registerCss('
         'containerOptions' => ['style'=>'overflow: visible'], 		        
         'options'=>['id'=>'gridAgenda'],
         'columns' => $columns,
-		'condensed'=>true, 
+        		//'floatHeader'=>true,	
+		//'condensed'=>true, 
 		//'layout'=>'&nbsp;{toolbar}{summary}{items}{pager}',
+
 		'pager' => [
 			'firstPageLabel' => true,
 			'lastPageLabel' => true,

@@ -17,7 +17,7 @@ class RangoPersonas extends Model
     public function rules()
     {
         return [
-             [['idPersonaDesde','idPersonaHasta',],'safe'],
+             [['idPersonaDesde','idPersonaHasta',],'required'],
              [['idPersonaDesde'], 'exist', 'skipOnError' => true, 'targetClass' => Personas::className(), 'targetAttribute' => ['idPersonaDesde' => 'id']],
              [['idPersonaHasta'], 'exist', 'skipOnError' => true, 'targetClass' => Personas::className(), 'targetAttribute' => ['idPersonaHasta' => 'id']],             
         ];

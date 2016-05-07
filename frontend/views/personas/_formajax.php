@@ -9,6 +9,8 @@ use yii\widgets\ActiveForm;
 /* @var $model frontend\models\Personas */
 /* @var $form yii\widgets\ActiveForm */
 
+// la variable $selector se define desde el form que llama personas/create-ajax (esto se define asi para cuando desde el mismo form
+// se usa mas de un select2 de personas)
 $js = 
 <<<JS
 	$('form#form-personanueva-ajax').
@@ -18,10 +20,10 @@ $js =
 				form.attr('action'),
 				form.serialize()
 			).done(function(result) {
-					var seleccion=$('#selectorPersonas');
+					var seleccion=$('#$selector');
 					var option = $('<option></option>').
 						 attr('selected', true).
-						 text(result.modelP['apellido']+' '+result.modelP['nombre']).
+						 text(result.modelP['apellido']+' '+result.modelP['nombre']+' D:'+result.modelP['nro_doc']+' ('+result.modelP['id']+')').
 						 val(result.modelP['id']);
 					option.appendTo(seleccion);
 					seleccion.trigger('change');

@@ -132,6 +132,7 @@ AppAsset::register($this);
 									'visible'=>\Yii::$app->user->can('accederListaAutorizantes')],						
 							['label' => 'Usuarios', 'url' => ['/user/index'], 'visible'=>\Yii::$app->user->can('accederUser')],
 							['label' => 'Carnets', 'url' => ['/carnets/index'], 'visible'=>\Yii::$app->user->can('accederCarnets')],
+							['label' => 'Cambio Personas', 'url' => ['/personas/change'], 'visible'=>\Yii::$app->user->can('cambiarPersona')],							
 							
 			] // fin items;
 		]; // fin menuItems[]		

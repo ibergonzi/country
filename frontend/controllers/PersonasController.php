@@ -60,7 +60,7 @@ class PersonasController extends Controller
                         'roles' => ['accederListaPersonas'], 
                     ],
                     [
-                        'actions' => ['create','update','change'],
+                        'actions' => ['create','update'],
                         'allow' => true,
                         'roles' => ['altaModificarPersona'], 
                     ],
@@ -68,7 +68,12 @@ class PersonasController extends Controller
                         'actions' => ['create-ajax'],
                         'allow' => true,
                         'roles' => ['altaPersonaIngEgr'], 
-                    ],                    
+                    ], 
+                    [
+                        'actions' => ['change'],
+                        'allow' => true,
+                        'roles' => ['cambiarPersona'], 
+                    ],                                             
                     [ 
                         'actions' => ['apellidoslist'],
 						'allow' => true,
@@ -87,35 +92,45 @@ class PersonasController extends Controller
 		$model=new RangoPersonas();
 		$listaCambios='';
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-			$c=Accesos::updateAll(['id_persona'=>$model->idPersonaHasta],['=','id_persona',$model->idPersonaDesde]);
-			if ($c > 0) {
-				$listaCambios+='<p><i>Accesos:</i> cantidad de cambios realizados -> '.$c.'</p>';
-			} 
-			$c=AccesosAutorizantes::updateAll(['id_persona'=>$model->idPersonaHasta],['=','id_persona',$model->idPersonaDesde]);
-			if ($c > 0) {
-				$listaCambios+='<p><i>Accesos (autorizantes):</i> cantidad de cambios realizados -> '.$c.'</p>';
-			} 			
-			$c=Autorizantes::updateAll(['id_persona'=>$model->idPersonaHasta],['=','id_persona',$model->idPersonaDesde]);
-			if ($c > 0) {
-				$listaCambios+='<p><i>Autorizantes:</i> cantidad de cambios realizados -> '.$c.'</p>';
-			} 	
-			$c=Llaves::updateAll(['id_persona'=>$model->idPersonaHasta],['=','id_persona',$model->idPersonaDesde]);
-			if ($c > 0) {
-				$listaCambios+='<p><i>Llaves (personas):</i> cantidad de cambios realizados -> '.$c.'</p>';
-			}
-			$c=Llaves::updateAll(['id_autorizante'=>$model->idPersonaHasta],['=','id_persona',$model->idPersonaDesde]);
-			if ($c > 0) {
-				$listaCambios+='<p><i>Llaves (autorizantes):</i> cantidad de cambios realizados -> '.$c.'</p>';
-			} 
-			$c=Mensajes::updateAll(['model_id'=>$model->idPersonaHasta],['model_id'=>$model->idPersonaDesde,
-																		'model'=>'frontend\models\Personas']);
-			if ($c > 0) {
-				$listaCambios+='<p><i>Mensajes:</i> cantidad de cambios realizados -> '.$c.'</p>';
-			} 	
-			$c=UfTitularidadPersonas::updateAll(['id_persona'=>$model->idPersonaHasta],['=','id_persona',$model->idPersonaDesde]);
-			if ($c > 0) {
-				$listaCambios+='<p><i>Titularidad:</i> cantidad de cambios realizados -> '.$c.'</p>';
-			}
+			// Comienza Transaccion
+			$transaction = Yii::$app->db->beginTransaction();				
+			try {			
+				$c=Accesos::updateAll(['id_persona'=>$model->idPersonaHasta],['id_persona'=>$model->idPersonaDesde]);
+				if ($c > 0) {
+					$listaCambios.='<p><i>Accesos:</i> cantidad de cambios realizados -> '.$c.'</p>';
+				} 
+				$c=AccesosAutorizantes::updateAll(['id_persona'=>$model->idPersonaHasta],['id_persona'=>$model->idPersonaDesde]);
+				if ($c > 0) {
+					$listaCambios.='<p><i>Accesos (autorizantes):</i> cantidad de cambios realizados -> '.$c.'</p>';
+				} 			
+				$c=Autorizantes::updateAll(['id_persona'=>$model->idPersonaHasta],['id_persona'=>$model->idPersonaDesde]);
+				if ($c > 0) {
+					$listaCambios.='<p><i>Autorizantes:</i> cantidad de cambios realizados -> '.$c.'</p>';
+				} 	
+				$c=Llaves::updateAll(['id_persona'=>$model->idPersonaHasta],['id_persona'=>$model->idPersonaDesde]);
+				if ($c > 0) {
+					$listaCambios.='<p><i>Llaves (personas):</i> cantidad de cambios realizados -> '.$c.'</p>';
+				}
+				$c=Llaves::updateAll(['id_autorizante'=>$model->idPersonaHasta],['id_persona'=>$model->idPersonaDesde]);
+				if ($c > 0) {
+					$listaCambios.='<p><i>Llaves (autorizantes):</i> cantidad de cambios realizados -> '.$c.'</p>';
+				} 
+				$c=Mensajes::updateAll(['model_id'=>$model->idPersonaHasta],['model_id'=>$model->idPersonaDesde,
+																			'model'=>'frontend\models\Personas']);
+				if ($c > 0) {
+					$listaCambios.='<p><i>Mensajes:</i> cantidad de cambios realizados -> '.$c.'</p>';
+				} 	
+				$c=UfTitularidadPersonas::updateAll(['id_persona'=>$model->idPersonaHasta],['id_persona'=>$model->idPersonaDesde]);
+				if ($c > 0) {
+					$listaCambios.='<p><i>Titularidad:</i> cantidad de cambios realizados -> '.$c.'</p>';
+				}
+				if ($listaCambios=='') {$listaCambios='<p>No se ha realizado ningún cambio. Controle los IDs de personas utilizados.</p>';}
+				$transaction->commit();				
+			} catch(\Exception $e) {
+				$transaction->rollBack();
+				Yii::$app->session->addFlash('danger','Hubo un error en la grabación');
+				throw $e;
+			} // try..catch
 		}
         return $this->render('change', [
             'model' => $model,
@@ -272,8 +287,11 @@ class PersonasController extends Controller
     }
     
     
-    public function actionCreateAjax()
+    public function actionCreateAjax($selector='selectorPersonas')
     {
+		// si no se especifica el parametro $selector se toma 'selectorPersonas' por defecto, esto comportamiento contempla
+		// el caso de que en el mismo form se use mas de un select2 para buscar personas (por ejemplo personas/change)
+		
         $model = new Personas();
      	$model->id_tipo_doc=96; // DNI por defecto  
      	$model->estado=Personas::ESTADO_ACTIVO;      
@@ -301,6 +319,7 @@ class PersonasController extends Controller
 		}	
 		return $this->renderAjax('createajax', [
 				'model' => $model,
+				'selector'=> $selector,
 		 ]);
     }    
 

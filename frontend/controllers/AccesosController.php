@@ -503,19 +503,27 @@ class AccesosController extends Controller
 		return $this->refreshListas();		
 	}
 	
-	public function actionBuscaPorId()
+	public function actionBuscaPorId($selector='selectorPersonas')
 	{
 		// solo se usa para mostrar el formulario que busca la persona por ID o codigo de barras
-		return $this->renderAjax('_buscaporid');
+		return $this->renderAjax('_buscaporid',['selector'=>$selector]);
 	}	
 	
 	public function actionBuscaPersonaPorId($idPersonaPorId) 
 	{
+		Yii::$app->response->format = 'json';		
 		$p=Personas::findOne($idPersonaPorId);
 		if ($p) {
-			return $p->id;
+			return [
+				'message' => 'found',
+				'modelP'=>$p
+			];				
+			//return $p->id;
 		} else {
-			return 'notFound';
+			return [
+				'message' => 'notFound',
+			];				
+			//return 'notFound';
 		}
 	}
 	    

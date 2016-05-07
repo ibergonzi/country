@@ -16,6 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= $this->render('_formajax', [
         'model' => $model,
+        'selector'=>$selector,
     ]) ?>
 
 </div>

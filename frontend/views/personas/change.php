@@ -22,7 +22,13 @@ use frontend\models\Personas;
 
    
 	<?php
-		echo $listaCambios;
+		$this->title = 'Reemplazo de personas en el sistema';	
+	
+		if ($listaCambios=='') {
+			echo '<h3>ATENCION: esta opción reemplaza una persona por otra en TODO el sistema, usar con precaución.</h3>';
+		} else {
+			echo $listaCambios;
+		}
 	
 		// -------------------Selector de personas sin botón de alta ----------------------------------------
 		$personaDescDesde=empty($model->idPersonaDesde)?'':Personas::formateaPersonaSelect2($model->idPersonaDesde,false);
@@ -43,6 +49,7 @@ use frontend\models\Personas;
 							cache    : false,
 							url  : $(this).attr("href"),
 							success  : function(response) {
+										console.log(response);
 										$("#divporid").html(response);
 										$("#modalporid").modal("show");
 										$("#idPersonaPorId").focus();
@@ -54,9 +61,9 @@ use frontend\models\Personas;
 				'asButton' => true
 			]
 		];
-		echo $form->field($model, 'idPersonaDesde')->label(false)->widget(Select2::classname(), [
+		echo $form->field($model, 'idPersonaDesde')->label('Persona a reemplazar')->widget(Select2::classname(), [
 			'initValueText' => $personaDescDesde, 
-			'options' => ['id'=>'selectorPersonas2',
+			'options' => ['id'=>'selectorPersonas',
 						  'placeholder' => 'Buscar por documento o nombre (Indique la persona a reemplazar)',
 						  'title'=>'Buscar personas',
 						 ],
@@ -73,6 +80,7 @@ use frontend\models\Personas;
 				'templateResult' => new JsExpression('function(idpersona) { return idpersona.text; }'),
 				'templateSelection' => new JsExpression('function (idpersona) { return idpersona.text; }'),
 			],
+		
 		]);  			
 	
 	
@@ -80,8 +88,8 @@ use frontend\models\Personas;
 		// -------------------Selector de personas c/botón de alta ----------------------------------------
 		$personaDescHasta=empty($model->idPersonaHasta)?'':Personas::formateaPersonaSelect2($model->idPersonaHasta,false);
 
-		$personasUrl=Yii::$app->urlManager->createUrl(['personas/create-ajax']);
-		$porID=Yii::$app->urlManager->createUrl(['accesos/busca-por-id']);
+		$personasUrl=Yii::$app->urlManager->createUrl(['personas/create-ajax','selector'=>'selectorPersonasH']);
+		$porID=Yii::$app->urlManager->createUrl(['accesos/busca-por-id','selector'=>'selectorPersonasH']);
 		$personasAddon = [
 			'prepend'=>[
 				'content'=>'<span class="glyphicon glyphicon-user" title="Buscar Personas"></span>',
@@ -124,9 +132,9 @@ use frontend\models\Personas;
 				'asButton' => true
 			]
 		];
-		echo $form->field($model, 'idPersonaHasta')->label(false)->widget(Select2::classname(), [
+		echo $form->field($model, 'idPersonaHasta')->label('Persona que reemplaza a la anterior')->widget(Select2::classname(), [
 			'initValueText' => $personaDescHasta, 
-			'options' => ['id'=>'selectorPersonas',
+			'options' => ['id'=>'selectorPersonasH',
 						  'placeholder' => 'Buscar por documento o nombre (Indique la persona que reemplaza a la anterior)',
 						  'title'=>'Buscar personas',
 						 ],
@@ -145,22 +153,7 @@ use frontend\models\Personas;
 			],
 		]);  		
 	
-	// modal que se abre cuando se presiona el boton de agregar persona nueva
-	Modal::begin(['id'=>'modalpersonanueva',
-		'header'=>'<span class="btn-warning">&nbsp;Persona nueva&nbsp;</span>',
-		'options'=>['class'=>'nofade'],
-		]
-		);
-		echo '<div id="divpersonanueva"></div>';
-	Modal::end();  
-	// modal que se abre cuando se busca por ID o codigo de barras
-	Modal::begin(['id'=>'modalporid',
-		'header'=>'<span class="btn-warning">&nbsp;Busca persona por ID o código de barras&nbsp;</span>',
-		'options'=>['class'=>'nofade'],
-		//'clientOptions'=>['backdrop'=>'static','keyboard'=>false],		
-		]);
-		echo '<div id="divporid"></div>';
-	Modal::end();  			
+	
 	
 	?>
 
@@ -168,6 +161,26 @@ use frontend\models\Personas;
         <?= Html::submitButton('Aceptar', ['class' => 'btn btn-primary']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php 
+		ActiveForm::end(); 
+		// modal que se abre cuando se presiona el boton de agregar persona nueva
+		Modal::begin(['id'=>'modalpersonanueva',
+			'header'=>'<span class="btn-warning">&nbsp;Persona nueva&nbsp;</span>',
+			'options'=>['class'=>'nofade'],
+			]
+			);
+			echo '<div id="divpersonanueva"></div>';
+		Modal::end();  
+		// modal que se abre cuando se busca por ID o codigo de barras
+		Modal::begin(['id'=>'modalporid',
+			'header'=>'<span class="btn-warning">&nbsp;Busca persona por ID o código de barras&nbsp;</span>',
+			'options'=>['class'=>'nofade'],
+			//'clientOptions'=>['backdrop'=>'static','keyboard'=>false],		
+			]);
+			echo '<div id="divporid"></div>';
+		Modal::end();  		    
+    
+    
+    ?>
 
 </div>

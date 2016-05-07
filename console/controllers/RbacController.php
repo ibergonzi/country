@@ -202,6 +202,12 @@ class RbacController extends Controller
 		$auth->addChild($intendente, $altaModificarPersona);
 		$auth->addChild($opIntendencia, $altaModificarPersona);	
 		
+		$cambiarPersona=$auth->createPermission('cambiarPersona');
+		$cambiarPersona->description='Cambiar persona en todo el sistema';
+		$auth->add($cambiarPersona);	
+		$auth->addChild($intendente, $cambiarPersona);
+		//$auth->addChild($opIntendencia, $cambiarPersona);		
+		
 		
 		$accederListaAutorizantes=$auth->createPermission('accederListaAutorizantes');
 		$accederListaAutorizantes->description='Acceso: lista de autorizantes';

@@ -269,7 +269,9 @@ $this->registerCss('
 
         'filterSelector' => 'select[name="per-page"]',
 		'pjax'=>true,
-		'pjaxSettings'=>['neverTimeout'=>true,],          
+		'pjaxSettings'=>['neverTimeout'=>true,],  
+		
+		'persistResize'=>true,        
 
 		'layout'=>'&nbsp;{toolbar}{summary}{items}{pager}',
 	

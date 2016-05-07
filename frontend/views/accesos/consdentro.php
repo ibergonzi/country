@@ -424,6 +424,8 @@ $this->registerCss('
         // Para que muestre todo el gridview, solo aplicable a kartik, el de yii anda bien
         'containerOptions' => ['style'=>'overflow: visible'], 
 		'condensed'=>true,
+		
+		'resizableColumns'=>false,
 
 		
 		//'persistResize'=>true,

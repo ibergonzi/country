@@ -16,18 +16,69 @@ use frontend\models\Personas;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="autorizantes-form">
+<div class="personas-form">
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'id_uf')->textInput() ?>
-
    
-    
 	<?php
+		echo $listaCambios;
+	
+		// -------------------Selector de personas sin botón de alta ----------------------------------------
+		$personaDescDesde=empty($model->idPersonaDesde)?'':Personas::formateaPersonaSelect2($model->idPersonaDesde,false);
+
+		$personasUrl=Yii::$app->urlManager->createUrl(['personas/create-ajax']);
+		$porID=Yii::$app->urlManager->createUrl(['accesos/busca-por-id']);
+		$personasAddon = [
+			'prepend'=>[
+				'content'=>'<span class="glyphicon glyphicon-user" title="Buscar Personas"></span>',
+			],
+			'append' => [
+				'content'=>Html::a('<span class="glyphicon glyphicon-barcode btn btn-primary"></span>',
+						$porID,
+						['title' => Yii::t('app', 'Ingresa por ID'),
+						 'tabindex'=>-1,										
+						 'onclick'=>'$.ajax({
+							type     :"POST",
+							cache    : false,
+							url  : $(this).attr("href"),
+							success  : function(response) {
+										$("#divporid").html(response);
+										$("#modalporid").modal("show");
+										$("#idPersonaPorId").focus();
+										}
+						});
+						return false;',
+						])										
+						,	
+				'asButton' => true
+			]
+		];
+		echo $form->field($model, 'idPersonaDesde')->label(false)->widget(Select2::classname(), [
+			'initValueText' => $personaDescDesde, 
+			'options' => ['id'=>'selectorPersonas2',
+						  'placeholder' => 'Buscar por documento o nombre (Indique la persona a reemplazar)',
+						  'title'=>'Buscar personas',
+						 ],
+			'addon'=>$personasAddon,
+			'pluginOptions' => [
+				'allowClear' => true,
+				'minimumInputLength' => 3,
+				'ajax' => [
+					'url' => \yii\helpers\Url::to(['personas/apellidoslist']),
+					'dataType' => 'json',
+					'data' => new JsExpression('function(params) { return {q:params.term}; }')
+				],
+				'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+				'templateResult' => new JsExpression('function(idpersona) { return idpersona.text; }'),
+				'templateSelection' => new JsExpression('function (idpersona) { return idpersona.text; }'),
+			],
+		]);  			
+	
+	
+	
 		// -------------------Selector de personas c/botón de alta ----------------------------------------
-		$personaDesc=empty($model->id_persona)?'':Personas::formateaPersonaSelect2($model->id_persona,false);
-		//$personaDesc='';
+		$personaDescHasta=empty($model->idPersonaHasta)?'':Personas::formateaPersonaSelect2($model->idPersonaHasta,false);
 
 		$personasUrl=Yii::$app->urlManager->createUrl(['personas/create-ajax']);
 		$porID=Yii::$app->urlManager->createUrl(['accesos/busca-por-id']);
@@ -73,10 +124,10 @@ use frontend\models\Personas;
 				'asButton' => true
 			]
 		];
-		echo $form->field($model, 'id_persona')->label(false)->widget(Select2::classname(), [
-			'initValueText' => $personaDesc, 
+		echo $form->field($model, 'idPersonaHasta')->label(false)->widget(Select2::classname(), [
+			'initValueText' => $personaDescHasta, 
 			'options' => ['id'=>'selectorPersonas',
-						  'placeholder' => 'Buscar por documento o nombre',
+						  'placeholder' => 'Buscar por documento o nombre (Indique la persona que reemplaza a la anterior)',
 						  'title'=>'Buscar personas',
 						 ],
 			'addon'=>$personasAddon,
@@ -92,7 +143,6 @@ use frontend\models\Personas;
 				'templateResult' => new JsExpression('function(idpersona) { return idpersona.text; }'),
 				'templateSelection' => new JsExpression('function (idpersona) { return idpersona.text; }'),
 			],
-	
 		]);  		
 	
 	// modal que se abre cuando se presiona el boton de agregar persona nueva
@@ -115,7 +165,7 @@ use frontend\models\Personas;
 	?>
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton('Aceptar', ['class' => 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

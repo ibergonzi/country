@@ -21,6 +21,13 @@ use frontend\models\Accesos;
 use frontend\models\Vehiculos;
 use yii\data\ArrayDataProvider;
 
+use frontend\models\RangoPersonas;
+use frontend\models\AccesosAutorizantes;
+use frontend\models\Autorizantes;
+use frontend\models\Llaves;
+use frontend\models\Mensajes;
+use frontend\models\UfTitularidadPersonas;
+
 /**
  * PersonasController implements the CRUD actions for Personas model.
  */
@@ -53,7 +60,7 @@ class PersonasController extends Controller
                         'roles' => ['accederListaPersonas'], 
                     ],
                     [
-                        'actions' => ['create','update'],
+                        'actions' => ['create','update','change'],
                         'allow' => true,
                         'roles' => ['altaModificarPersona'], 
                     ],
@@ -74,6 +81,47 @@ class PersonasController extends Controller
         ];
     }
     
+
+	public function actionChange()
+	{
+		$model=new RangoPersonas();
+		$listaCambios='';
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+			$c=Accesos::updateAll(['id_persona'=>$model->idPersonaHasta],['=','id_persona',$model->idPersonaDesde]);
+			if ($c > 0) {
+				$listaCambios+='<p><i>Accesos:</i> cantidad de cambios realizados -> '.$c.'</p>';
+			} 
+			$c=AccesosAutorizantes::updateAll(['id_persona'=>$model->idPersonaHasta],['=','id_persona',$model->idPersonaDesde]);
+			if ($c > 0) {
+				$listaCambios+='<p><i>Accesos (autorizantes):</i> cantidad de cambios realizados -> '.$c.'</p>';
+			} 			
+			$c=Autorizantes::updateAll(['id_persona'=>$model->idPersonaHasta],['=','id_persona',$model->idPersonaDesde]);
+			if ($c > 0) {
+				$listaCambios+='<p><i>Autorizantes:</i> cantidad de cambios realizados -> '.$c.'</p>';
+			} 	
+			$c=Llaves::updateAll(['id_persona'=>$model->idPersonaHasta],['=','id_persona',$model->idPersonaDesde]);
+			if ($c > 0) {
+				$listaCambios+='<p><i>Llaves (personas):</i> cantidad de cambios realizados -> '.$c.'</p>';
+			}
+			$c=Llaves::updateAll(['id_autorizante'=>$model->idPersonaHasta],['=','id_persona',$model->idPersonaDesde]);
+			if ($c > 0) {
+				$listaCambios+='<p><i>Llaves (autorizantes):</i> cantidad de cambios realizados -> '.$c.'</p>';
+			} 
+			$c=Mensajes::updateAll(['model_id'=>$model->idPersonaHasta],['model_id'=>$model->idPersonaDesde,
+																		'model'=>'frontend\models\Personas']);
+			if ($c > 0) {
+				$listaCambios+='<p><i>Mensajes:</i> cantidad de cambios realizados -> '.$c.'</p>';
+			} 	
+			$c=UfTitularidadPersonas::updateAll(['id_persona'=>$model->idPersonaHasta],['=','id_persona',$model->idPersonaDesde]);
+			if ($c > 0) {
+				$listaCambios+='<p><i>Titularidad:</i> cantidad de cambios realizados -> '.$c.'</p>';
+			}
+		}
+        return $this->render('change', [
+            'model' => $model,
+            'listaCambios'=>$listaCambios,
+        ]);
+	}
 
     /**
      * Lists all Personas models.

@@ -69,7 +69,7 @@ class AccesosController extends Controller
                         'roles' => ['borrarAcceso'], 
                     ],                
                     [
-                        'actions' => ['index','view','pdf'],
+                        'actions' => ['index','view','pdf','ctrl-barrera'],
                         'allow' => true,
                         'roles' => ['accederConsAccesos'], 
                     ],
@@ -112,6 +112,37 @@ class AccesosController extends Controller
         ];
     }
 
+
+	public function actionCtrlBarrera()
+	{
+		if (!\Yii::$app->session->get('porton')) {
+			return '';
+		}	
+		$ult=Accesos::find()
+			->andWhere(['ing_id_porton'=>\Yii::$app->session->get('porton')])
+			//->andWhere(['ing_id_llave'=>null])
+			->andWhere(['egr_fecha'=>null])			
+			->orderBy(['id' => SORT_DESC])->one();
+	
+		$horaMov = strtotime($ult->ing_hora);	
+		$ahora=strtotime('- 5 seconds');	
+
+		if ($horaMov > $ahora) {
+			$p=Personas::findOne($ult->id_persona);
+			$cartel="<p>$p->apellido, $p->nombre</p>";
+			if (!empty($p->foto)) {
+				$cartel.='<p>'.Html::img(Yii::$app->urlManager->createUrl('images/personas/'.$p->foto)).'</p>';
+			} else {
+				$cartel.='<p>'.Html::img(Yii::$app->urlManager->createUrl('images/sinfoto.png')).'</p>';
+			}
+			return $cartel;
+		} else {	
+			return '';
+		}
+	}
+		//Yii::trace(date("Y-m-d H:i:s", $horaMov));
+		//Yii::trace(date("Y-m-d H:i:s", $ahora));
+		//Yii::trace(date_default_timezone_get());	
 
     /**
      * Lists all Accesos models.

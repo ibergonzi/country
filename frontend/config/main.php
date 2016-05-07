@@ -14,6 +14,7 @@ return [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
+	'timeZone' => 'UTC-3',    
     'components' => [
         'user' => [
             'identityClass' => 'common\models\User',

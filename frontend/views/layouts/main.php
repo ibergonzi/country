@@ -15,10 +15,43 @@ use kartik\popover\PopoverX;
 use common\models\User;
 use frontend\models\CortesEnergia;
 
+use app\assets\BarreraAsset;
+
 use kartik\icons\Icon;
 Icon::map($this, Icon::FA);
 
 AppAsset::register($this);
+
+// Solo para porteros logueados, cuando esté funcionando la llave, 
+// si es llave de panico en vez de alertify.log(response) se deberia usar alertify.error(response)
+if (!Yii::$app->user->isGuest) {
+	$rolPortero=(User::getRol(Yii::$app->user->getId())->name == 'portero')?true:false;
+	if ($rolPortero) {
+		BarreraAsset::register($this);		
+		
+		$urlCtrlBarrera=Yii::$app->urlManager->createUrl(['accesos/ctrl-barrera']);
+		// cada 5 segundos se llama a accesos/ctrl-barrera y el cartel queda visible 7 segundos
+		$barrera = <<< JS
+$(document).ready(function() {
+	setInterval(function(){ $.ajax({type  : "POST",
+									cache : false,
+									url   : "$urlCtrlBarrera",
+									success: function(response) {
+												if (response!="") {
+													alertify.set({ delay: 7000 });
+													alertify.log(response);
+												}
+											}
+									}); 
+						  }, 5000
+				);
+});
+JS;
+		$this->registerJs($barrera);
+	}
+}
+
+
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>

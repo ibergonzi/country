@@ -77,9 +77,47 @@ $this->registerJs($js,yii\web\View::POS_READY);
 					])
 				?>
 
-				<?= $form->field($model, 'modelo')->textInput(['maxlength' => true,'style' => 'text-transform: uppercase']) ?>
+				<?= $form->field($model, 'modelo')->widget(AutoComplete::className(),[
+						'model' => $model,
+						'attribute' => 'modelo',
+						'options'=>[
+							'style'=>'text-transform: uppercase',
+							'class'=>'form-control',
+							'max-height'=>'100px',
+							'overflow-y'=>'auto',
+							'overflow-x'=>'hidden',
+							'z-index'=>'5000',
 
-				<?= $form->field($model, 'color')->textInput(['maxlength' => true,'style' => 'text-transform: uppercase']) ?>
+						],
+						'clientOptions' => [
+							'source' => Vehiculos::getModelosVehiculos(),
+							'minLength' => 1,
+							'appendTo'=>'#form-vehiculonuevo-ajax',
+						   
+						], 
+					])
+				?>
+
+				<?= $form->field($model, 'color')->widget(AutoComplete::className(),[
+						'model' => $model,
+						'attribute' => 'color',
+						'options'=>[
+							'style'=>'text-transform: uppercase',
+							'class'=>'form-control',
+							'max-height'=>'100px',
+							'overflow-y'=>'auto',
+							'overflow-x'=>'hidden',
+							'z-index'=>'5000',
+
+						],
+						'clientOptions' => [
+							'source' => Vehiculos::getColoresVehiculos(),
+							'minLength' => 1,
+							'appendTo'=>'#form-vehiculonuevo-ajax',
+						   
+						], 
+					])
+				?>
 				
 				<?= $form->field($model, 'estado')->hiddenInput()->label(false) ?>
 

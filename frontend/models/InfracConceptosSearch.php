@@ -5,12 +5,12 @@ namespace frontend\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use frontend\models\Uf;
+use frontend\models\InfracConceptos;
 
 /**
- * UfSearch represents the model behind the search form about `frontend\models\Uf`.
+ * InfracConceptosSearch represents the model behind the search form about `frontend\models\InfracConceptos`.
  */
-class UfSearch extends Uf
+class InfracConceptosSearch extends InfracConceptos
 {
     /**
      * @inheritdoc
@@ -18,9 +18,9 @@ class UfSearch extends Uf
     public function rules()
     {
         return [
-            [['id', 'loteo', 'manzana', 'created_by', 'updated_by', 'estado'], 'integer'],
-            [['superficie'], 'number'],
-            [['created_at', 'updated_at', 'motivo_baja'], 'safe'],
+            [['id', 'es_multa', 'dias_verif', 'multa_unidad', 'multa_reincidencia', 'multa_reinc_dias', 'multa_personas', 'created_by', 'updated_by', 'estado'], 'integer'],
+            [['concepto', 'created_at', 'updated_at', 'motivo_baja'], 'safe'],
+            [['multa_precio', 'multa_reinc_porc', 'multa_personas_precio'], 'number'],
         ];
     }
 
@@ -42,9 +42,9 @@ class UfSearch extends Uf
      */
     public function search($params)
     {
-        $query = Uf::find();
+        $query = InfracConceptos::find();
         
-		$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['uf.defaultPageSize'];        
+		$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['infracConceptos.defaultPageSize'];        
 
         // add conditions that should always apply here
 
@@ -69,9 +69,15 @@ class UfSearch extends Uf
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'loteo' => $this->loteo,
-            'manzana' => $this->manzana,
-            'superficie' => $this->superficie,
+            'es_multa' => $this->es_multa,
+            'dias_verif' => $this->dias_verif,
+            'multa_unidad' => $this->multa_unidad,
+            'multa_precio' => $this->multa_precio,
+            'multa_reincidencia' => $this->multa_reincidencia,
+            'multa_reinc_porc' => $this->multa_reinc_porc,
+            'multa_reinc_dias' => $this->multa_reinc_dias,
+            'multa_personas' => $this->multa_personas,
+            'multa_personas_precio' => $this->multa_personas_precio,
             'created_by' => $this->created_by,
             'created_at' => $this->created_at,
             'updated_by' => $this->updated_by,
@@ -79,7 +85,8 @@ class UfSearch extends Uf
             'estado' => $this->estado,
         ]);
 
-        $query->andFilterWhere(['like', 'motivo_baja', $this->motivo_baja]);
+        $query->andFilterWhere(['like', 'concepto', $this->concepto])
+            ->andFilterWhere(['like', 'motivo_baja', $this->motivo_baja]);
 
         return $dataProvider;
     }

@@ -455,7 +455,7 @@ CREATE TABLE `comentarios` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `model_id` (`model_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -464,7 +464,7 @@ CREATE TABLE `comentarios` (
 
 LOCK TABLES `comentarios` WRITE;
 /*!40000 ALTER TABLE `comentarios` DISABLE KEYS */;
-INSERT INTO `comentarios` VALUES (2,'otro mas','frontend\\models\\Libro',5,9,'2016-02-09 17:08:20',9,'2016-02-09 17:08:20'),(3,'Para el otro CUACCCCCCCCCCCC','frontend\\models\\Libro',4,9,'2016-02-09 17:10:56',9,'2016-02-09 17:10:56'),(4,'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod vehicula eros pellentesque lacinia. Nulla suscipit metus ut enim iaculis, vitae sollicitudin velit vehicula. Nunc et elit sagittis, venenatis arcu vitae, pretium purus. Praesent venenatis libero vel lobortis consectetur. Nulla ut feugiat tortor. Quisque vestibulum, nisi sit amet luctus lobortis, diam diam dignissim tellus, a dignissim nibh massa ac magna. Nullam in nisi risus','frontend\\models\\Libro',4,9,'2016-02-11 10:43:42',9,'2016-02-11 10:43:42'),(5,'Comentario 1','frontend\\models\\Personas',9,9,'2016-03-07 16:09:45',9,'2016-03-07 16:09:45'),(6,'Comentario 2','frontend\\models\\Personas',9,9,'2016-03-07 16:09:56',9,'2016-03-07 16:09:56'),(7,'Comentario 3\r\n','frontend\\models\\Personas',9,9,'2016-03-07 16:10:08',9,'2016-03-07 16:10:08'),(8,'Comentario 4','frontend\\models\\Personas',9,9,'2016-03-07 16:10:26',9,'2016-03-07 16:10:26'),(9,'Lleva una bicicleta en el baul','frontend\\models\\Accesos',55,9,'2016-03-22 17:45:22',9,'2016-03-22 17:45:22'),(10,'no se sabe cuando va a salir\r\n','frontend\\models\\Accesos',64,9,'2016-03-27 01:01:39',9,'2016-03-27 01:01:39'),(11,'Guarda con este','frontend\\models\\Personas',7302,9,'2016-03-27 19:42:51',9,'2016-03-27 19:42:51'),(12,'comentario nuevo','frontend\\models\\CortesEnergia',2,9,'2016-04-07 19:25:50',9,'2016-04-07 19:25:50'),(13,'a ver que pasa\r\n','frontend\\models\\Accesos',72,9,'2016-04-07 19:28:51',9,'2016-04-07 19:28:51'),(14,'otro mas','frontend\\models\\CortesEnergia',4,9,'2016-04-07 19:30:06',9,'2016-04-07 19:30:06'),(15,'prueba','frontend\\models\\CortesEnergiaGen',6,9,'2016-04-08 19:27:22',9,'2016-04-08 19:27:22'),(16,'morales debe multas\r\n','frontend\\models\\Accesos',76,9,'2016-04-28 18:24:08',9,'2016-04-28 18:24:08'),(17,'bueno, ya no debe mas','frontend\\models\\Accesos',76,9,'2016-04-28 18:24:47',9,'2016-04-28 18:24:47');
+INSERT INTO `comentarios` VALUES (2,'otro mas','frontend\\models\\Libro',5,9,'2016-02-09 17:08:20',9,'2016-02-09 17:08:20'),(3,'Para el otro CUACCCCCCCCCCCC','frontend\\models\\Libro',4,9,'2016-02-09 17:10:56',9,'2016-02-09 17:10:56'),(4,'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod vehicula eros pellentesque lacinia. Nulla suscipit metus ut enim iaculis, vitae sollicitudin velit vehicula. Nunc et elit sagittis, venenatis arcu vitae, pretium purus. Praesent venenatis libero vel lobortis consectetur. Nulla ut feugiat tortor. Quisque vestibulum, nisi sit amet luctus lobortis, diam diam dignissim tellus, a dignissim nibh massa ac magna. Nullam in nisi risus','frontend\\models\\Libro',4,9,'2016-02-11 10:43:42',9,'2016-02-11 10:43:42'),(5,'Comentario 1','frontend\\models\\Personas',9,9,'2016-03-07 16:09:45',9,'2016-03-07 16:09:45'),(6,'Comentario 2','frontend\\models\\Personas',9,9,'2016-03-07 16:09:56',9,'2016-03-07 16:09:56'),(7,'Comentario 3\r\n','frontend\\models\\Personas',9,9,'2016-03-07 16:10:08',9,'2016-03-07 16:10:08'),(8,'Comentario 4','frontend\\models\\Personas',9,9,'2016-03-07 16:10:26',9,'2016-03-07 16:10:26'),(9,'Lleva una bicicleta en el baul','frontend\\models\\Accesos',55,9,'2016-03-22 17:45:22',9,'2016-03-22 17:45:22'),(10,'no se sabe cuando va a salir\r\n','frontend\\models\\Accesos',64,9,'2016-03-27 01:01:39',9,'2016-03-27 01:01:39'),(11,'Guarda con este','frontend\\models\\Personas',7302,9,'2016-03-27 19:42:51',9,'2016-03-27 19:42:51'),(12,'comentario nuevo','frontend\\models\\CortesEnergia',2,9,'2016-04-07 19:25:50',9,'2016-04-07 19:25:50'),(13,'a ver que pasa\r\n','frontend\\models\\Accesos',72,9,'2016-04-07 19:28:51',9,'2016-04-07 19:28:51'),(14,'otro mas','frontend\\models\\CortesEnergia',4,9,'2016-04-07 19:30:06',9,'2016-04-07 19:30:06'),(15,'prueba','frontend\\models\\CortesEnergiaGen',6,9,'2016-04-08 19:27:22',9,'2016-04-08 19:27:22'),(16,'morales debe multas\r\n','frontend\\models\\Accesos',76,9,'2016-04-28 18:24:08',9,'2016-04-28 18:24:08'),(17,'bueno, ya no debe mas','frontend\\models\\Accesos',76,9,'2016-04-28 18:24:47',9,'2016-04-28 18:24:47'),(18,'Calculo mal hecho','frontend\\models\\InfracConceptos',1,9,'2016-05-11 18:43:39',9,'2016-05-11 18:43:39');
 /*!40000 ALTER TABLE `comentarios` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -563,6 +563,71 @@ INSERT INTO `generadores` VALUES (1,'Grupo Electr. 1',1),(2,'Grupo Electr. 2',1)
 UNLOCK TABLES;
 
 --
+-- Table structure for table `infrac_conceptos`
+--
+
+DROP TABLE IF EXISTS `infrac_conceptos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `infrac_conceptos` (
+  `id` smallint(6) NOT NULL AUTO_INCREMENT,
+  `concepto` varchar(75) NOT NULL,
+  `es_multa` tinyint(1) NOT NULL,
+  `dias_verif` tinyint(4) NOT NULL,
+  `multa_unidad` tinyint(4) DEFAULT NULL,
+  `multa_precio` double NOT NULL,
+  `multa_reincidencia` tinyint(1) NOT NULL,
+  `multa_reinc_porc` double NOT NULL,
+  `multa_reinc_dias` smallint(6) NOT NULL,
+  `multa_personas` tinyint(1) NOT NULL,
+  `multa_personas_precio` double NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_by` int(11) NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `estado` tinyint(4) NOT NULL,
+  `motivo_baja` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `multa_unidad` (`multa_unidad`),
+  CONSTRAINT `infrac_conceptos_ibfk_1` FOREIGN KEY (`multa_unidad`) REFERENCES `infrac_unidades` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `infrac_conceptos`
+--
+
+LOCK TABLES `infrac_conceptos` WRITE;
+/*!40000 ALTER TABLE `infrac_conceptos` DISABLE KEYS */;
+INSERT INTO `infrac_conceptos` VALUES (1,'concepto',0,4,NULL,0,0,0,0,0,0,9,'2016-05-11 16:12:56',9,'2016-05-11 16:12:56',1,NULL),(2,'concepto2',1,0,1,180,0,0,0,0,0,9,'2016-05-11 17:55:39',9,'2016-05-11 17:55:39',1,NULL),(3,'concepto3',1,0,2,0,0,0,0,0,0,9,'2016-05-11 18:10:53',9,'2016-05-11 18:10:53',1,NULL);
+/*!40000 ALTER TABLE `infrac_conceptos` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `infrac_unidades`
+--
+
+DROP TABLE IF EXISTS `infrac_unidades`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `infrac_unidades` (
+  `id` tinyint(4) NOT NULL AUTO_INCREMENT,
+  `unidad` varchar(5) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `infrac_unidades`
+--
+
+LOCK TABLES `infrac_unidades` WRITE;
+/*!40000 ALTER TABLE `infrac_unidades` DISABLE KEYS */;
+INSERT INTO `infrac_unidades` VALUES (1,'Pesos'),(2,'Lts.');
+/*!40000 ALTER TABLE `infrac_unidades` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `infracciones`
 --
 
@@ -585,12 +650,12 @@ CREATE TABLE `infracciones` (
   `fecha_verif` date DEFAULT NULL,
   `verificado` tinyint(4) NOT NULL,
   `foto` varchar(20) DEFAULT NULL,
-  `unidad_multa` varchar(5) DEFAULT NULL,
-  `monto` double NOT NULL,
-  `personas_cant` tinyint(4) NOT NULL,
-  `personas_monto` double NOT NULL,
-  `personas_total` double NOT NULL,
-  `monto_total` double NOT NULL,
+  `multa_unidad` tinyint(4) DEFAULT NULL,
+  `multa_monto` double NOT NULL,
+  `multa_pers_cant` tinyint(4) NOT NULL,
+  `multa_pers_monto` double NOT NULL,
+  `multa_pers_total` double NOT NULL,
+  `multa_total` double NOT NULL,
   `created_by` int(11) NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_by` int(11) NOT NULL,
@@ -601,7 +666,13 @@ CREATE TABLE `infracciones` (
   KEY `id_uf` (`id_uf`),
   KEY `id_vehiculo` (`id_vehiculo`),
   KEY `id_persona` (`id_persona`),
-  KEY `id_informante` (`id_informante`)
+  KEY `id_informante` (`id_informante`),
+  KEY `multa_unidad` (`multa_unidad`),
+  CONSTRAINT `infracciones_ibfk_1` FOREIGN KEY (`id_uf`) REFERENCES `uf` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `infracciones_ibfk_2` FOREIGN KEY (`id_vehiculo`) REFERENCES `vehiculos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `infracciones_ibfk_3` FOREIGN KEY (`id_persona`) REFERENCES `personas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `infracciones_ibfk_4` FOREIGN KEY (`id_informante`) REFERENCES `personas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `infracciones_ibfk_5` FOREIGN KEY (`multa_unidad`) REFERENCES `infrac_unidades` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1269,4 +1340,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-05-10 19:05:04
+-- Dump completed on 2016-05-11 18:57:11

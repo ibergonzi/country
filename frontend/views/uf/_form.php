@@ -13,7 +13,7 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin(); ?>
 
     <?php echo $form->field($model, 'id')->textInput(['readonly' => !$model->isNewRecord]); 
-		$model->superficie = yii::$app->formatter->asDecimal($model->superficie,2);
+		$model->superficie = (!empty($model->superficie))?yii::$app->formatter->asDecimal($model->superficie,2):'';
     ?>
 
     <?= $form->field($model, 'loteo')->textInput() ?>

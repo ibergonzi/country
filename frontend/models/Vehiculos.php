@@ -101,6 +101,33 @@ class Vehiculos extends \yii\db\ActiveRecord
 
 	   return $p;
     }	
+    
+    
+	public static function getModelosVehiculos() {
+       $sql = "SELECT DISTINCT modelo FROM vehiculos WHERE modelo IS NOT NULL ORDER BY modelo";
+
+       $command = \Yii::$app->db->createCommand($sql);
+
+       $result=$command->queryAll();
+       
+       $p=[];
+	   foreach ($result as $k=>$v) $p[]=$v['modelo'];
+
+	   return $p;
+    }	
+    
+	public static function getColoresVehiculos() {
+       $sql = "SELECT DISTINCT color FROM vehiculos WHERE color IS NOT NULL ORDER BY color";
+
+       $command = \Yii::$app->db->createCommand($sql);
+
+       $result=$command->queryAll();
+       
+       $p=[];
+	   foreach ($result as $k=>$v) $p[]=$v['color'];
+
+	   return $p;
+    }	          
 
 
 

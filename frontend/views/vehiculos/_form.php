@@ -34,9 +34,39 @@ use yii\jui\AutoComplete;
         ])
     ?>
 
-    <?= $form->field($model, 'modelo')->textInput(['maxlength' => true,'style' => 'text-transform: uppercase']) ?>
+     <?= $form->field($model, 'modelo')->widget(AutoComplete::className(),[
+            'model' => $model,
+            'attribute' => 'modelo',
+            'options'=>[
+                'style'=>'text-transform: uppercase',
+                'class'=>'form-control',
+                'max-height'=>'100px',
+                'overflow-y'=>'auto',
+                'overflow-x'=>'hidden',
+ 
+            ],
+            'clientOptions' => [
+                'source' => Vehiculos::getModelosVehiculos(),
+            ], 
+        ])
+    ?>
 
-    <?= $form->field($model, 'color')->textInput(['maxlength' => true,'style' => 'text-transform: uppercase']) ?>
+     <?= $form->field($model, 'color')->widget(AutoComplete::className(),[
+            'model' => $model,
+            'attribute' => 'color',
+            'options'=>[
+                'style'=>'text-transform: uppercase',
+                'class'=>'form-control',
+                'max-height'=>'100px',
+                'overflow-y'=>'auto',
+                'overflow-x'=>'hidden',
+ 
+            ],
+            'clientOptions' => [
+                'source' => Vehiculos::getColoresVehiculos(),
+            ], 
+        ])
+    ?>
     
     <?= $form->field($model, 'estado')->hiddenInput()->label(false) ?>
 

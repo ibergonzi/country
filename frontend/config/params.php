@@ -54,5 +54,8 @@ return [
     
     'uf.defaultPageSize'=>20,
     'uf.sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50, 100=>100,200=>200,400=>400],
+    
+    'infracConceptos.defaultPageSize'=>20,
+    'infracConceptos.sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50],    
 
 ];

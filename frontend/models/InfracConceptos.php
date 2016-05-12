@@ -128,7 +128,7 @@ class InfracConceptos extends \yii\db\ActiveRecord
             [['motivo_baja'], 'string', 'max' => 50],
             [['multa_unidad'], 'exist', 'skipOnError' => true, 
 				'targetClass' => InfracUnidades::className(), 'targetAttribute' => ['multa_unidad' => 'id']],
-			[['multa_precio','multa_reincidencia','multa_reinc_porc','multa_reinc_dias','multa_personas','multa_personas_precio','dias_verif'], 'default', 'value' => 0],	
+			//[['multa_precio','multa_reincidencia','multa_reinc_porc','multa_reinc_dias','multa_personas','multa_personas_precio','dias_verif'], 'default', 'value' => 0],	
 					
         ];
     }
@@ -150,12 +150,14 @@ class InfracConceptos extends \yii\db\ActiveRecord
             'multa_reinc_dias' => 'Reinc.Dias',
             'multa_personas' => 'Multa Personas?',
             'multa_personas_precio' => 'Precio x Pers.',
-            'created_by' => 'Created By',
-            'created_at' => 'Created At',
-            'updated_by' => 'Updated By',
-            'updated_at' => 'Update At',
+            'created_by' => Yii::t('app', 'Usuario alta'),
+            'created_at' => Yii::t('app', 'Fecha alta'),
+            'updated_by' => Yii::t('app', 'Usuario modif.'),
+            'updated_at' => Yii::t('app', 'Fecha modif.'),
             'estado' => 'Estado',
             'motivo_baja' => 'Motivo Baja',
+            'userCreatedBy.username'=>'Usuario alta',
+            'userUpdatedBy.username'=>'Usuario modif.',             
         ];
     }
 
@@ -166,4 +168,14 @@ class InfracConceptos extends \yii\db\ActiveRecord
     {
         return $this->hasOne(InfracUnidades::className(), ['id' => 'multa_unidad']);
     }
+    
+    public function getUserCreatedBy()
+    {
+        return $this->hasOne(\common\models\User::className(), ['id' => 'created_by']);
+    }    
+    
+    public function getUserUpdatedBy()
+    {
+        return $this->hasOne(\common\models\User::className(), ['id' => 'updated_by']);
+    }              
 }

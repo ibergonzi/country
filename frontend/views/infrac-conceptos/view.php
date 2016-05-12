@@ -3,25 +3,27 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
+use frontend\models\InfracConceptos;
+
 /* @var $this yii\web\View */
 /* @var $model frontend\models\InfracConceptos */
 
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Infrac Conceptos', 'url' => ['index']];
+$this->title = 'Detalle de concepto';
+$this->params['breadcrumbs'][] = ['label' => 'Conceptos de infracciones', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+
+// esto es para que las columnas del detailView no cambien de tamaño
+$this->registerCss('table.detail-view th {width: 25%;} table.detail-view td {width: 75%;}');
 ?>
 <div class="infrac-conceptos-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h3><?= Html::encode($this->title.' (Infracciones)') ?></h3>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+        <?= Html::a('Modificar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Eliminar', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
+
         ]) ?>
     </p>
 
@@ -30,20 +32,32 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'concepto',
-            'es_multa',
+			[
+				'attribute' => 'es_multa',
+				'value' => InfracConceptos::getSiNo($model->es_multa)
+			],	            
             'dias_verif',
             'multa_unidad',
-            'multa_precio',
-            'multa_reincidencia',
-            'multa_reinc_porc',
+            'multa_precio:decimal',
+			[
+				'attribute' => 'multa_reincidencia',
+				'value' => InfracConceptos::getSiNo($model->multa_reincidencia)
+			],	             
+            'multa_reinc_porc:decimal',
             'multa_reinc_dias',
-            'multa_personas',
-            'multa_personas_precio',
-            'created_by',
-            'created_at',
-            'updated_by',
-            'updated_at',
-            'estado',
+			[
+				'attribute' => 'multa_personas',
+				'value' => InfracConceptos::getSiNo($model->multa_personas)
+			],	            
+            'multa_personas_precio:decimal',
+            'userCreatedBy.username',
+            'created_at:datetime',
+            'userUpdatedBy.username',
+            'updated_at:datetime',
+			[
+				'attribute' => 'estado', // o 'label'=>'Estado'
+				'value' => InfracConceptos::getEstados($model->estado)
+			],	
             'motivo_baja',
         ],
     ]) ?>

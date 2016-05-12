@@ -20,12 +20,14 @@ class InfracConceptosController extends Controller
     public function behaviors()
     {
         return [
+			/*
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
                 ],
             ],
+            */
         ];
     }
 
@@ -36,6 +38,10 @@ class InfracConceptosController extends Controller
     public function actionIndex()
     {
         $searchModel = new InfracConceptosSearch();
+        
+        // Trae inicialmente todos los registros activos
+        $searchModel->estado = InfracConceptos::ESTADO_ACTIVO;
+        
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -127,9 +133,24 @@ class InfracConceptosController extends Controller
      */
     public function actionDelete($id)
     {
+		/*
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+        */
+        
+        $model = $this->findModel($id);
+        
+        if ($model->load(Yii::$app->request->post())) {
+			$model->estado=InfracConceptos::ESTADO_BAJA;
+			if ($model->save()) {
+				return $this->redirect(['view', 'id' => $model->id]);
+			}
+        } else {
+            return $this->render('delete', [
+                'model' => $model,
+            ]);
+        }              
     }
 
     /**

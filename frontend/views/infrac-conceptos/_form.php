@@ -38,15 +38,15 @@ $(document).ready(function() {
 	});
 });
 ');
-
+$this->registerJs('$("#infracconceptos-concepto").focus()', yii\web\View::POS_READY);
 ?>
 
 <div class="infrac-conceptos-form">
 
     <?php $form = ActiveForm::begin(); 
-		$model->multa_precio = (!empty($model->multa_precio))?yii::$app->formatter->asDecimal($model->multa_precio,2):'';    
- 		$model->multa_reinc_porc = (!empty($model->multa_reinc_porc))?yii::$app->formatter->asDecimal($model->multa_reinc_porc,2):''; 
-		$model->multa_personas_precio = (!empty($model->multa_personas_precio))?yii::$app->formatter->asDecimal($model->multa_personas_precio,2):''; 		   
+		$model->multa_precio = (!empty($model->multa_precio))?yii::$app->formatter->asDecimal($model->multa_precio,2):'0,00';    
+ 		$model->multa_reinc_porc = (!empty($model->multa_reinc_porc))?yii::$app->formatter->asDecimal($model->multa_reinc_porc,2):'0,00'; 
+		$model->multa_personas_precio = (!empty($model->multa_personas_precio))?yii::$app->formatter->asDecimal($model->multa_personas_precio,2):'0,00'; 		   
     ?>
 
     <?= $form->field($model, 'concepto')->textInput(['maxlength' => true]) ?>

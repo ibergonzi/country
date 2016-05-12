@@ -110,7 +110,12 @@ $this->registerCss('
 				'attribute'=>'multa_personas_precio',
 				'format'=>['decimal',2],	
 				'hAlign'=>'right',			
-            ],               
+            ],       
+            [
+				'attribute'=>'estado',  
+				'value'=>function ($model) { return InfracConceptos::getEstados($model->estado);},
+				'filter'=>InfracConceptos::getEstados()				         
+            ],        
 
            ['class' => 'kartik\grid\ActionColumn',
              'header'=>Html::a('<span class="glyphicon glyphicon-plus-sign"></span>',
@@ -164,11 +169,7 @@ $this->registerCss('
 							]);
 					return $url;
 				 }	
-		 					 
-
 			  }
-	  
-	  
             ],
 		];	
 		if (\Yii::$app->user->can('exportarListaPersonas')) {        

@@ -48,24 +48,19 @@ class UserSearch extends User
 		$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['user.defaultPageSize'];        
 		
 		// Aca se cocina lo que deberia ver el usuario segun su rol
-
 		$rol=User::getRol(Yii::$app->user->getId());
-
 		switch($rol->name) {
 			case (string)"administrador": 
-				$query->andFilterWhere(['not in','item_name','administrador'])
-								->andWhere(['not in','item_name','consejo']);
+				$query->andFilterWhere(['not in','item_name',['administrador','consejo']]);
 				break;
 			case (string)"consejo": 
-				$query->andFilterWhere(['not in','item_name','consejo']);
+				$query->andFilterWhere(['not in','item_name',['consejo']]);
 				break;
 			default:
-				$query->andFilterWhere(['not in','item_name','intendente'])
-								->andWhere(['not in','item_name','administrador'])
-								->andWhere(['not in','item_name','consejo']);				
+				$query->andFilterWhere(['not in','item_name',['intendente','administrador','consejo']]);
+	
 		}
 		$query->andFilterWhere(['status' => User::STATUS_ACTIVE]);
-
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -79,14 +74,19 @@ class UserSearch extends User
 					  ],                    
         ]);
         
+ 	        
+        
         // Agregado a mano, para que incluya el ordenamiento por descCliente
         $dataProvider->sort->attributes['descRolUsuario'] = [
             'asc' => ['auth_item.description' => SORT_ASC],
             'desc' => ['auth_item.description' => SORT_DESC],
         ];
-        
+
+     
 
         $this->load($params);
+        
+         
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
@@ -94,12 +94,16 @@ class UserSearch extends User
             return $dataProvider;
         }
 
+ 
+
         $query->andFilterWhere([
             'id' => $this->id,
             'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
+        
+       
 
         $query->andFilterWhere(['like', 'username', $this->username])
             //->andFilterWhere(['like', 'auth_key', $this->auth_key])
@@ -107,7 +111,9 @@ class UserSearch extends User
             //->andFilterWhere(['like', 'password_reset_token', $this->password_reset_token])
             ->andFilterWhere(['like', 'email', $this->email])
             ->andFilterWhere(['like', 'auth_item.description', $this->descRolUsuario]);
+           
 
+          
         return $dataProvider;
     }
 }

@@ -23,6 +23,9 @@ $(document).ready(function() {
     $("#modalcomentarionuevo").on("shown.bs.modal", function (e) {
 		$("#comentarios-comentario").focus();
 	});	
+    $("#modalcomentarionuevo").on("hidden.bs.modal", function (e) {
+		$("#gridUsers").yiiGridView("applyFilter");
+	});			
 });
 ');
 $this->registerCss('
@@ -34,7 +37,7 @@ $this->registerCss('
 ?>
 <div class="user-index">
 
-    <h2><?= Html::encode($this->title) ?></h2>
+    <h3><?= Html::encode($this->title) ?></h3>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
@@ -43,7 +46,7 @@ $this->registerCss('
 
 	<?php
 		$columns=[
-				'id',		
+				'id',	
 				'username',
 				[
 					'attribute'=>'email',
@@ -54,7 +57,7 @@ $this->registerCss('
 					'attribute'=>'descRolUsuario',
 					'value'=>'authAssignment.authItem.description',   
 			    ],              
-
+				
 				['class' => 'kartik\grid\ActionColumn',
 				 'header'=>'',
 				 'template' => '{view} {update} {delete} {comentario}',  
@@ -121,6 +124,7 @@ $this->registerCss('
 				  }
 		  
 				], 
+				
 			];
 
 		$lbl2='';
@@ -162,6 +166,7 @@ $this->registerCss('
 				$poItems[$i]=$searchModel->getAttributeLabel($c);
 			}
 		}
+	
 
 		// tiene que estar fuera del Pjax
 		echo PopoverX::widget([
@@ -193,16 +198,24 @@ $this->registerCss('
 			$toolbar=['{export} ',['content'=>$contentToolbar],];
 		//} else {
 		//	$toolbar=[['content'=>$contentToolbar]];
-		//}			
+		//}		
+		
 
 	?>
-    <?= GridView::widget([
+    <?php 
+
+		echo GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        
 
         'filterSelector' => 'select[name="per-page"]',  
 		'pjax'=>true,
 		'pjaxSettings'=>['neverTimeout'=>true,], 
+		
+		
+        'options'=>['id'=>'gridUsers'],
+        'columns' => $columns,		
 
 		'condensed'=>true, 				
 		'layout'=>'&nbsp;{toolbar}{summary}{items}{pager}',
@@ -242,18 +255,18 @@ $this->registerCss('
 							//'destination' => 'I',
 							//'marginTop' => 20,
 							//'marginBottom' => 20,
-							/*
-							'cssInline' => '.kv-wrap{padding:20px;}' .
-								'.kv-align-center{text-align:center;}' .
-								'.kv-align-left{text-align:left;}' .
-								'.kv-align-right{text-align:right;}' .
-								'.kv-align-top{vertical-align:top!important;}' .
-								'.kv-align-bottom{vertical-align:bottom!important;}' .
-								'.kv-align-middle{vertical-align:middle!important;}' .
-								'.kv-page-summary{border-top:4px double #ddd;font-weight: bold;}' .
-								'.kv-table-footer{border-top:4px double #ddd;font-weight: bold;}' .
-								'.kv-table-caption{font-size:1.5em;padding:8px;border:1px solid #ddd;border-bottom:none;}',
-							*/
+
+							//'cssInline' => '.kv-wrap{padding:20px;}' .
+							//	'.kv-align-center{text-align:center;}' .
+							//	'.kv-align-left{text-align:left;}' .
+							//	'.kv-align-right{text-align:right;}' .
+							//	'.kv-align-top{vertical-align:top!important;}' .
+							//	'.kv-align-bottom{vertical-align:bottom!important;}' .
+							//	'.kv-align-middle{vertical-align:middle!important;}' .
+							//	'.kv-page-summary{border-top:4px double #ddd;font-weight: bold;}' .
+							//	'.kv-table-footer{border-top:4px double #ddd;font-weight: bold;}' .
+							//	'.kv-table-caption{font-size:1.5em;padding:8px;border:1px solid #ddd;border-bottom:none;}',
+
 							
 							'methods' => [
 								'SetHeader' => [
@@ -314,10 +327,13 @@ $this->registerCss('
 			
 			],
 		],		
-						
-        'columns' => $columns,
+	
+
  
-    ]); ?>
+    ]); 
+
+    ?>
+    
     <?php
 	// para usar los comentarios en cualquier vista se incluyen:
 	/*

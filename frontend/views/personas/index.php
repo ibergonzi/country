@@ -72,11 +72,7 @@ $this->registerCss('
 			]; 	
 			
 		$columns=[
-            [
-				'attribute'=>'id',
-					'options'=>['style'=>'width:75px',], 
-				
-            ],
+			'id',
             'apellido',
             'nombre',
             'nombre2',

@@ -159,7 +159,7 @@ JS;
 			] // fin items;
 		]; // fin menuItems[]	
 
-		$menuItems[] = ['label' => 'Intendencia', 
+		$menuItems[] = ['label' => 'Parámetros', 
 						'items' => [
 							['label' => 'Autorizantes', 'url' => ['/autorizantes/index'], 
 									'visible'=>\Yii::$app->user->can('accederListaAutorizantes')],						

@@ -8,6 +8,7 @@ use frontend\models\InfracConceptosSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 /**
  * InfracConceptosController implements the CRUD actions for InfracConceptos model.
@@ -28,6 +29,22 @@ class InfracConceptosController extends Controller
                 ],
             ],
             */
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['index','view'],
+                        'allow' => true,
+                        'roles' => ['accederParametros'], 
+                    ],
+                    [
+                        'actions' => ['create','update','delete'],
+                        'allow' => true,
+                        'roles' => ['modificarParametros'], 
+                    ],
+ 		
+                 ], // fin rules
+             ], // fin access                
         ];
     }
 

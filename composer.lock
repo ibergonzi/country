@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "ea394de831c30a853f1473c722c121dc",
-    "content-hash": "4e2c52fb30aab0309274751e86d0dafc",
+    "hash": "887d5030d8d85bd61a4385ac89cd3b13",
+    "content-hash": "4a1a0627005bc48a420032fdbde3ab2f",
     "packages": [
         {
             "name": "bower-asset/bootstrap",
@@ -643,12 +643,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/kartik-v/yii2-builder.git",
-                "reference": "22abcfb747df9261445da509cb6471111727f6d6"
+                "reference": "9fb987e693a5a6eb53bf5da704177bc75cfbff59"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kartik-v/yii2-builder/zipball/22abcfb747df9261445da509cb6471111727f6d6",
-                "reference": "22abcfb747df9261445da509cb6471111727f6d6",
+                "url": "https://api.github.com/repos/kartik-v/yii2-builder/zipball/9fb987e693a5a6eb53bf5da704177bc75cfbff59",
+                "reference": "9fb987e693a5a6eb53bf5da704177bc75cfbff59",
                 "shasum": ""
             },
             "require": {
@@ -683,7 +683,7 @@
                 "widget",
                 "yii2"
             ],
-            "time": "2015-10-22 12:05:25"
+            "time": "2016-05-12 18:09:35"
         },
         {
             "name": "kartik-v/yii2-datecontrol",
@@ -786,12 +786,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/kartik-v/yii2-grid.git",
-                "reference": "70bfc9f6f31dac4e4b5d0fa8fbbc1de733d34361"
+                "reference": "1fdff28ff504b0ee9074c68e44a9a740e1504078"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kartik-v/yii2-grid/zipball/70bfc9f6f31dac4e4b5d0fa8fbbc1de733d34361",
-                "reference": "70bfc9f6f31dac4e4b5d0fa8fbbc1de733d34361",
+                "url": "https://api.github.com/repos/kartik-v/yii2-grid/zipball/1fdff28ff504b0ee9074c68e44a9a740e1504078",
+                "reference": "1fdff28ff504b0ee9074c68e44a9a740e1504078",
                 "shasum": ""
             },
             "require": {
@@ -827,7 +827,7 @@
                 "widget",
                 "yii2"
             ],
-            "time": "2016-05-08 08:40:47"
+            "time": "2016-05-13 17:22:20"
         },
         {
             "name": "kartik-v/yii2-helpers",

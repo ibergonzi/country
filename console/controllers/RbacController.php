@@ -40,7 +40,7 @@ class RbacController extends Controller
 		$guardia=$auth->createRole('guardia');
 		$guardia->description='Rol: Guardia';	
 		$sinrol=$auth->createRole('sinRol');
-		$sinrol->description='Rol: Sin rol asignado';
+		$sinrol->description='Sin rol asignado';
 
 		$auth->add($consejo);
 		$auth->add($administrador);		
@@ -181,7 +181,7 @@ class RbacController extends Controller
 		$auth->addChild($intendente, $accederListaPersonas);
 		$auth->addChild($opIntendencia, $accederListaPersonas);	
 		$auth->addChild($portero, $accederListaPersonas);	
-
+		
 		$exportarListaPersonas=$auth->createPermission('exportarListaPersonas');
 		$exportarListaPersonas->description='Acceso: exportar lista de personas';
 		$auth->add($exportarListaPersonas);	
@@ -369,7 +369,21 @@ class RbacController extends Controller
 		$auth->add($altaModificarAgenda);	
 		$auth->addChild($intendente, $altaModificarAgenda);
 		$auth->addChild($opIntendencia, $altaModificarAgenda);	
-		$auth->addChild($portero, $altaModificarAgenda);					
+		$auth->addChild($portero, $altaModificarAgenda);	
+		
+		$accederParametros=$auth->createPermission('accederParametros');
+		$accederParametros->description='Acceso: parámetros varios';
+		$auth->add($accederParametros);	
+		$auth->addChild($consejo, $accederParametros);
+		$auth->addChild($administrador, $accederParametros);		
+		$auth->addChild($intendente, $accederParametros);
+		$auth->addChild($opIntendencia, $accederParametros);
+		
+		$modificarParametros=$auth->createPermission('modificarParametros');
+		$modificarParametros->description='Modificar: parámetros varios';
+		$auth->add($modificarParametros);	
+		$auth->addChild($intendente, $modificarParametros);
+		$auth->addChild($opIntendencia, $modificarParametros);									
 											
 									
 

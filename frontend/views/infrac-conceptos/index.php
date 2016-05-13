@@ -172,7 +172,7 @@ $this->registerCss('
 			  }
             ],
 		];	
-		if (\Yii::$app->user->can('exportarListaPersonas')) {        
+		if (\Yii::$app->user->can('accederParametros')) {        
 			// contiene la selección inicial de columnas, es decir, todas
 			// por ejemplo [0,1,2,3]
 			$poSel=[];
@@ -224,7 +224,7 @@ $this->registerCss('
 					'title'=>'Cantidad de elementos por página',
 				],
 			]);		
-		if (\Yii::$app->user->can('exportarListaPersonas')) {			
+		if (\Yii::$app->user->can('accederParametros')) {			
 			$toolbar=['{export} ',['content'=>$contentToolbar],];
 		} else {
 			$toolbar=[['content'=>$contentToolbar]];

@@ -10,6 +10,11 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 
+use kartik\grid\GridView;
+use frontend\models\UfTitularidadPersonas;
+
+use yii\data\ActiveDataProvider;
+
 /**
  * UfController implements the CRUD actions for Uf model.
  */
@@ -38,7 +43,7 @@ class UfController extends Controller
                         'roles' => ['borrarUf'], 
                     ],                
                     [
-                        'actions' => ['index','view'],
+                        'actions' => ['index','view', 'titularidad'],
                         'allow' => true,
                         'roles' => ['accederListaUf'], 
                     ],
@@ -52,6 +57,60 @@ class UfController extends Controller
              ], // fin access                 
         ];
     }
+    
+    
+    public function actionTitularidad($id_uf)
+    {
+        $UfModel = Uf::findOne($id_uf);
+        
+       
+        if (!empty($UfModel->ultUfTitularidad->id)) {
+			$query=UfTitularidadPersonas::find()->joinWith('persona')
+				->where(['uf_titularidad_id'=>$UfModel->ultUfTitularidad->id]);
+
+			$dataProvider = new ActiveDataProvider([
+				'query' => $query,
+				'sort' => ['defaultOrder' => ['tipo' => SORT_DESC,],
+							'enableMultiSort'=>true,            
+						  ],    
+			]);					      
+			
+			$response=GridView::widget([
+				'dataProvider' => $dataProvider,
+				'condensed'=>true,
+				'layout'=>'{items}',
+				//opciones validas solo para el gridview de kartik
+				'panel'=>[
+					'type'=>GridView::TYPE_INFO,
+					'heading'=>'Titularidad actual sobre U.F.'.$id_uf,
+					//'headingOptions'=>['class'=>'panel-heading'],
+					'footer'=>false,
+					'before'=>false,
+					'after'=>false,
+				],		
+				'panelHeadingTemplate'=>'{heading}',			
+				'resizableColumns'=>false,					
+				'columns' => [
+					[
+						'attribute'=>'tipo',
+						'value'=>function ($model) {return UfTitularidadPersonas::getTipos($model->tipo);},
+					],
+					'id_persona',
+					'persona.apellido',
+					'persona.nombre',
+					'persona.nombre2',
+					'persona.tipoDoc.desc_tipo_doc_abr',
+					'persona.nro_doc',
+					//'observaciones',
+
+				],
+			]); 
+		} else {
+			$response='';
+		}	
+		\Yii::$app->response->format = 'json';				
+		return $response;			
+	}
 
     /**
      * Lists all Uf models.

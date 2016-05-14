@@ -20,7 +20,7 @@ class InfracConceptosSearch extends InfracConceptos
         return [
             [['id', 'es_multa', 'dias_verif', 'multa_unidad', 'multa_reincidencia', 'multa_reinc_dias', 'multa_personas', 'created_by', 'updated_by', 'estado'], 'integer'],
             [['concepto', 'created_at', 'updated_at', 'motivo_baja'], 'safe'],
-            [['multa_precio', 'multa_reinc_porc', 'multa_personas_precio'], 'number'],
+            [['multa_precio', 'multa_reinc_porc', 'multa_personas_precio'], 'number','numberPattern' => '/^\s*[-+]?[0-9]*[.,]?[0-9]+([eE][-+]?[0-9]+)?\s*$/'],
         ];
     }
 
@@ -72,12 +72,12 @@ class InfracConceptosSearch extends InfracConceptos
             'es_multa' => $this->es_multa,
             'dias_verif' => $this->dias_verif,
             'multa_unidad' => $this->multa_unidad,
-            'multa_precio' => $this->multa_precio,
+            'multa_precio' => str_replace(",", ".", $this->multa_precio),
             'multa_reincidencia' => $this->multa_reincidencia,
-            'multa_reinc_porc' => $this->multa_reinc_porc,
+            'multa_reinc_porc' => str_replace(",", ".", $this->multa_reinc_porc),
             'multa_reinc_dias' => $this->multa_reinc_dias,
             'multa_personas' => $this->multa_personas,
-            'multa_personas_precio' => $this->multa_personas_precio,
+            'multa_personas_precio' => str_replace(",", ".", $this->multa_personas_precio),
             'created_by' => $this->created_by,
             'created_at' => $this->created_at,
             'updated_by' => $this->updated_by,

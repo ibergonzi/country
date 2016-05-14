@@ -9,6 +9,8 @@ use yii\behaviors\TimestampBehavior;
 use yii\behaviors\BlameableBehavior;
 use yii\db\Expression;
 
+use yii\helpers\ArrayHelper;
+
 /**
  * This is the model class for table "infrac_conceptos".
  *
@@ -66,6 +68,13 @@ class InfracConceptos extends \yii\db\ActiveRecord
 		}
 		return $estados;
 	}
+	
+	// devuelve lista de conceptos preparada para los dropDownList
+	public static function getLista()
+	{
+		$opciones = self::find()->where(['estado'=>self::ESTADO_ACTIVO])->asArray()->all();
+		return ArrayHelper::map($opciones, 'id', 'concepto');
+	}     		
     
     // extiende los comportamientos de la clase Personas para grabar datos de auditoría
     public function behaviors()

@@ -52,17 +52,15 @@ use yii\widgets\ActiveForm;
 		
 		<div class="col-md-3">
 
-			<?php
+				<?php
+				$sinImg=Yii::$app->urlManager->createUrl('images/sinfoto.png');				
 				if (!empty($model->foto)) {
-					echo Html::img(Yii::$app->urlManager->createUrl('images/personas/'.$model->foto),
-							['class'=>'img-thumbnail pull-right']);
+					$imgFile=Yii::$app->urlManager->createUrl('images/personas/'.$model->foto);
+					echo Html::img($imgFile,['class'=>'img-thumbnail pull-right','onerror'=>"this.src='$sinImg'"]);
+				} else {
+					echo Html::img($sinImg,	['class'=>'img-thumbnail pull-right']);
 				}
-				else
-				{
-					echo Html::img(Yii::$app->urlManager->createUrl('images/sinfoto.png'),
-						['class'=>'img-thumbnail pull-right']);
-				}
-			?>
+				?>
 
 		</div>	
 	</div>

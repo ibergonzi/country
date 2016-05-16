@@ -90,8 +90,7 @@ $this->params['breadcrumbs'][] = $this->title;
 					$imgFile=Yii::$app->urlManager->createUrl('images/personas/'.$model->foto);
 					echo Html::img($imgFile,['class'=>'img-thumbnail pull-right','onerror'=>"this.src='$sinImg'"]);
 				} else {
-					echo Html::img(Yii::$app->urlManager->createUrl('images/sinfoto.png'),
-						['class'=>'img-thumbnail pull-right']);
+					echo Html::img($sinImg,	['class'=>'img-thumbnail pull-right']);
 				}
 				?>
 

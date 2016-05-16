@@ -185,16 +185,15 @@ JS;
         */
         $u=User::findOne(Yii::$app->user->getId());
         
+		$sinImg=Yii::$app->urlManager->createUrl('images/sinfoto.png');				
 		if (!empty($u->foto)) {
-			$contenido=Html::img(Yii::$app->urlManager->createUrl('images/usuarios/'.$u->foto),
-				['class'=>'img-thumbnail']);
-		}
-		else
-        {
-			$contenido=Html::img(Yii::$app->urlManager->createUrl('images/sinfoto.png'),['class'=>'img-thumbnail']);
-		}
-
-		
+			$imgFile=Yii::$app->urlManager->createUrl('images/usuarios/'.$u->foto);
+			$contenido=Html::img($imgFile,['class'=>'img-thumbnail','onerror'=>"this.src='$sinImg'"]);
+		} else {
+			$contenido=Html::img($sinImg, ['class'=>'img-thumbnail']);
+		}        
+        
+	
         $headerPopover='<p><i>Usuario: '. Yii::$app->user->identity->username.'</i></p>'.
 			'<p><i>'. User::getRol(Yii::$app->user->getId())->description . '</i></p>';
 		$userPopover = '<li class="dropdown"><div class="navbar-form">' . PopoverX::widget([

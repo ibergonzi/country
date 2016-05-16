@@ -376,14 +376,13 @@ $(document).ready(function() {
 				    
 					$u=User::findOne(Yii::$app->user->getId());
 					
+					$sinImg=Yii::$app->urlManager->createUrl('images/sinfoto.png');				
 					if (!empty($u->foto)) {
-						$contenido=Html::img(Yii::$app->urlManager->createUrl('images/usuarios/'.$u->foto),
-							['class'=>'img-thumbnail']);
-					}
-					else
-					{
-						$contenido=Html::img(Yii::$app->urlManager->createUrl('images/sinfoto.png'),['class'=>'img-thumbnail']);
-					}
+						$imgFile=Yii::$app->urlManager->createUrl('images/usuarios/'.$u->foto);
+						$contenido=Html::img($imgFile,['class'=>'img-thumbnail','onerror'=>"this.src='$sinImg'"]);
+					} else {
+						$contenido=Html::img($sinImg, ['class'=>'img-thumbnail']);
+					}  
 					echo $contenido;
 					echo '<p><i>Usuario: '. Yii::$app->user->identity->username.'</i></p>';	
 					echo '<h4>Portón: '.\Yii::$app->session->get('porton').'</h4>';		

@@ -299,22 +299,15 @@ $this->registerCss('
 
 		<div class="col-md-5">
 
-			<?php
-				if (!empty($model->foto)) {
-					$imgFile=Yii::$app->urlManager->createUrl('images/multas/'.$model->foto);
-					if (file_exists($imgFile)) {
-						echo Html::img($imgFile,['class'=>'img-thumbnail pull-right']);
+				<?php
+					$sinImg=Yii::$app->urlManager->createUrl('images/sinmulta.jpg');
+					if (!empty($model->foto)) {
+						$imgFile=Yii::$app->urlManager->createUrl('images/multas/'.$model->foto);
+						echo Html::img($imgFile,['class'=>'img-thumbnail pull-right','onerror'=>"this.src='$sinImg'"]);
 					} else {
-						echo Html::img(Yii::$app->urlManager->createUrl('images/sinmulta.jpg'),
-							['class'=>'img-thumbnail pull-right']);							
-					}		
-				}
-				else
-				{
-					echo Html::img(Yii::$app->urlManager->createUrl('images/sinmulta.jpg'),
-						['class'=>'img-thumbnail pull-right']);
-				}
-			?>
+						echo Html::img($sinImg, ['class'=>'img-thumbnail pull-right']);
+					}
+				?>
 
 		</div>	
 	</div>

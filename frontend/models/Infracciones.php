@@ -129,7 +129,7 @@ class Infracciones extends \yii\db\ActiveRecord
             [['multa_monto', 'multa_pers_monto', 'multa_pers_total', 'multa_total'], 'number', 'numberPattern' => '/^\s*[-+]?[0-9]*[.,]?[0-9]+([eE][-+]?[0-9]+)?\s*$/'],
             [['nro_acta'], 'string', 'max' => 10],
             [['lugar', 'descripcion', 'motivo_baja'], 'string', 'max' => 50],
-            [['foto'], 'string', 'max' => 20],
+ 			[['foto'], 'file', 'extensions'=>'jpg, jpeg'],  
             [['id_uf'], 'exist', 'skipOnError' => true, 'targetClass' => Uf::className(), 'targetAttribute' => ['id_uf' => 'id']],
             [['id_vehiculo'], 'exist', 'skipOnError' => true, 'targetClass' => Vehiculos::className(), 'targetAttribute' => ['id_vehiculo' => 'id']],
             [['id_persona'], 'exist', 'skipOnError' => true, 'targetClass' => Personas::className(), 'targetAttribute' => ['id_persona' => 'id']],
@@ -146,25 +146,25 @@ class Infracciones extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'id_uf' => 'Id Uf',
-            'id_vehiculo' => 'Id Vehiculo',
-            'id_persona' => 'Id Persona',
+            'id_uf' => 'U.F.',
+            'id_vehiculo' => 'ID Vehiculo',
+            'id_persona' => 'ID Persona',
             'fecha' => 'Fecha',
             'hora' => 'Hora',
-            'nro_acta' => 'Nro Acta',
+            'nro_acta' => 'Nro.Acta',
             'lugar' => 'Lugar',
-            'id_concepto' => 'Id Concepto',
-            'id_informante' => 'Id Informante',
-            'descripcion' => 'Descripcion',
+            'id_concepto' => 'Concepto',
+            'id_informante' => 'Informante',
+            'descripcion' => 'Descripción',
             'notificado' => 'Notificado',
-            'fecha_verif' => 'Fecha Verif',
+            'fecha_verif' => 'Fec.Verif.',
             'verificado' => 'Verificado',
             'foto' => 'Foto',
-            'multa_unidad' => 'Multa Unidad',
-            'multa_monto' => 'Multa Monto',
-            'multa_pers_cant' => 'Multa Pers Cant',
-            'multa_pers_monto' => 'Multa Pers Monto',
-            'multa_pers_total' => 'Multa Pers Total',
+            'multa_unidad' => 'Unidad',
+            'multa_monto' => 'Monto Base',
+            'multa_pers_cant' => 'Cant.Personas',
+            'multa_pers_monto' => 'Monto x Pers.',
+            'multa_pers_total' => 'Monto Personas',
             'multa_total' => 'Multa Total',
             'created_by' => Yii::t('app', 'Usuario alta'),
             'created_at' => Yii::t('app', 'Fecha alta'),
@@ -188,7 +188,7 @@ class Infracciones extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdVehiculo()
+    public function getVehiculo()
     {
         return $this->hasOne(Vehiculos::className(), ['id' => 'id_vehiculo']);
     }
@@ -196,7 +196,7 @@ class Infracciones extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdPersona()
+    public function getPersona()
     {
         return $this->hasOne(Personas::className(), ['id' => 'id_persona']);
     }
@@ -204,7 +204,7 @@ class Infracciones extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdInformante()
+    public function getInformante()
     {
         return $this->hasOne(Personas::className(), ['id' => 'id_informante']);
     }
@@ -224,4 +224,14 @@ class Infracciones extends \yii\db\ActiveRecord
     {
         return $this->hasOne(InfracConceptos::className(), ['id' => 'id_concepto']);
     }
+    
+    public function getUserCreatedBy()
+    {
+        return $this->hasOne(\common\models\User::className(), ['id' => 'created_by']);
+    }    
+    
+    public function getUserUpdatedBy()
+    {
+        return $this->hasOne(\common\models\User::className(), ['id' => 'updated_by']);
+    }         
 }

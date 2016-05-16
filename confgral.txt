@@ -31,6 +31,7 @@ Linux
       sudo chgrp www-data images
 13.b) crear carpeta personas dentro de frontend/web/images y sudo chgrp www-data personas      
 13.c) crear carpeta usuarios dentro de frontend/web/images y sudo chgrp www-data usuarios
+13.e) crear carpeta multas dentro de frontend/web/images y sudo chgrp www-data multas
 13.d) IMPORTANTE, para que funcione la exportación de Kartik hay que tambien cambiar el grupo a dos carpetas:
       dentro de vendor/kartik-v/mpdf
       sudo chgrp www-data tmp

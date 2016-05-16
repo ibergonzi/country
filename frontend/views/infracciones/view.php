@@ -3,12 +3,30 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
+use frontend\models\Infracciones;
+
+
+
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Infracciones */
 
 $this->title = $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Infracciones', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+
+// esto es para que las columnas del detailView no cambien de tamaño
+$this->registerCss('table.detail-view th {width: 25%;} table.detail-view td {width: 75%;}');
+
+$this->registerCss('
+.table-condensed > thead > tr > th,
+.table-condensed > tbody > tr > th,
+.table-condensed > tfoot > tr > th,
+.table-condensed > thead > tr > td,
+.table-condensed > tbody > tr > td,
+.table-condensed > tfoot > tr > td {
+  padding: 1px;
+}
+');
 ?>
 <div class="infracciones-view">
 
@@ -35,33 +53,51 @@ $this->params['breadcrumbs'][] = $this->title;
 
 				<?= DetailView::widget([
 					'model' => $model,
+					'options'=>['class' => 'table table-striped table-bordered table-condensed detail-view'],					
 					'attributes' => [
 						'id',
+						'nro_acta',	
+						'fecha:date',
+						'hora:time',											
 						'id_uf',
+						'concepto.concepto',						
 						'id_vehiculo',
+						'vehiculo.patente',
+						'vehiculo.marca',
+						'vehiculo.modelo',
+						'vehiculo.color',
 						'id_persona',
-						'fecha',
-						'hora',
-						'nro_acta',
+						'persona.apellido',
+						'persona.nombre',
+						'persona.nro_doc',
 						'lugar',
-						'id_concepto',
 						'id_informante',
+						'informante.apellido',
+						'informante.nombre',
 						'descripcion',
-						'notificado',
+						[
+							'attribute' => 'notificado',
+							'value' => Infracciones::getSiNo($model->notificado)
+						],	
 						'fecha_verif',
-						'verificado',
-						'foto',
-						'multa_unidad',
+						[
+							'attribute' => 'verificado',
+							'value' => Infracciones::getSiNo($model->verificado)
+						],	
+						'multaUnidad.unidad',
 						'multa_monto',
 						'multa_pers_cant',
 						'multa_pers_monto',
 						'multa_pers_total',
 						'multa_total',
-						'created_by',
-						'created_at',
-						'updated_by',
-						'updated_at',
-						'estado',
+						'userCreatedBy.username',
+						'created_at:datetime',
+						'userUpdatedBy.username',
+						'updated_at:datetime',
+						[
+							'label' => 'Estado',
+							'value' => Infracciones::getEstados($model->estado)
+						],	
 						'motivo_baja',
 					],
 				]) ?>
@@ -74,8 +110,7 @@ $this->params['breadcrumbs'][] = $this->title;
 						$imgFile=Yii::$app->urlManager->createUrl('images/multas/'.$model->foto);
 						echo Html::img($imgFile,['class'=>'img-thumbnail pull-right','onerror'=>"this.src='$sinImg'"]);
 					} else {
-						echo Html::img(Yii::$app->urlManager->createUrl('images/sinmulta.jpg'),
-							['class'=>'img-thumbnail pull-right']);
+						echo Html::img($sinImg, ['class'=>'img-thumbnail pull-right']);
 					}
 				?>
 

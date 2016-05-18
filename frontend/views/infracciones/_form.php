@@ -162,7 +162,7 @@ $this->registerCss('
 							'asButton' => true
 						]
 					];
-					echo $form->field($model, 'id_persona')->label('Persona')->widget(Select2::classname(), [
+					echo $form->field($model, 'id_persona')->label('Infractor')->widget(Select2::classname(), [
 						'initValueText' => $personaDesc, 
 						'options' => ['id'=>'selectorPersonas',
 									  'placeholder' => 'Buscar por documento o nombre',

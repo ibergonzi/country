@@ -148,7 +148,7 @@ class Infracciones extends \yii\db\ActiveRecord
             'id' => 'ID',
             'id_uf' => 'U.F.',
             'id_vehiculo' => 'ID Vehiculo',
-            'id_persona' => 'ID Persona',
+            'id_persona' => 'Infractor',
             'fecha' => 'Fecha',
             'hora' => 'Hora',
             'nro_acta' => 'Nro.Acta',

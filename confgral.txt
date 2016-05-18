@@ -496,5 +496,9 @@ fijarse el puerto dentro de ~/.vnc el log (habitualmente es el 5901)
 FIREWALL
 Instalar gufw (interfaz grafica del firewall), habilitar los puertos 22 y 5901 (para ssh y vnc)
 Habilitar HTTP (puerto 80) para entrantes    
+
+GIT Windows
+igual que en linux, pero se usa "Git Bash", antes hay que setear una variable de ambiente GIT_SSL_NO_VERIFY con valor 1
+
  
 

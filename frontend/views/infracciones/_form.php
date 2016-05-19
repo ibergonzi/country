@@ -20,6 +20,7 @@ use frontend\models\InfracConceptos;
 /* @var $model frontend\models\Infracciones */
 /* @var $form yii\widgets\ActiveForm */
 
+
 $this->registerJs('
 $(document).ready(function() {
     $("#infracciones-id_uf").on("change", function (e) {

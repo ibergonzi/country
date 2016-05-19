@@ -46,14 +46,13 @@ $this->registerCss('
     <?php 
 		$lbl2='';
 		$pdfHeader=[
-					'L'=>['content'=>\Yii::$app->params['lblName']],
+					'L'=>['content'=>Html::img(Yii::$app->homeUrl.'images/logoreportes.png')],
 					'C'=>['content'=>$this->title . $lbl2,
 						  //'font-size' => 80,
 						  'font-style'=>'B'
 						  //'color'=> '#333333'
 						],
-					'R'=>['content'=>''],
-				
+					'R'=>['content'=>\Yii::$app->params['lblName']],
 			];
 		$pdfFooter=[
 			'L'=>['content'=>\Yii::$app->params['lblName2']],
@@ -321,8 +320,8 @@ $this->registerCss('
 								'.kv-page-summary{border-top:4px double #ddd;font-weight: bold;}' .
 								'.kv-table-footer{border-top:4px double #ddd;font-weight: bold;}' .
 								'.kv-table-caption{font-size:1.5em;padding:8px;border:1px solid #ddd;border-bottom:none;}',
-							*/
 							
+							*/
 							'methods' => [
 								'SetHeader' => [
 									['odd' => $pdfHeader, 'even' => $pdfHeader]

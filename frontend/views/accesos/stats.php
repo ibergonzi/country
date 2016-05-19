@@ -159,11 +159,13 @@ $this->title='Estadistica de accesos';
 								3=>GridView::F_SUM,
 
 							],
+							
 							'contentFormats'=>[      
 								2=>['format'=>'number', 'decimals'=>0],
-								3=>['format'=>'number', 'decimals'=>2],
+								3=>['format'=>'decimal', 'decimals'=>2],
 
 							],
+							
 							'contentOptions'=>[     
 								0=>['style'=>'font-variant:small-caps;text-align:right'],
 								2=>['style'=>'text-align:right'],

@@ -11,6 +11,9 @@ use yii\filters\VerbFilter;
 
 use yii\web\UploadedFile;
 
+use frontend\models\RangoFechas;
+use yii\data\ActiveDataProvider;
+
 /**
  * InfraccionesController implements the CRUD actions for Infracciones model.
  */
@@ -30,6 +33,40 @@ class InfraccionesController extends Controller
             ],
         ];
     }
+    
+    public function actionRendicFechas()
+    {
+		$model=new RangoFechas();
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+			return $this->redirect(['rendic-selec', 'fd'=>$model->fecdesde,'fh'=>$model->fechasta]);
+		}
+		return $this->render('rendicfechas',['model'=>$model]); //$model->fecdesde y fechasta		
+	}
+	
+	public function actionRendicSelec($fd,$fh)
+	{
+        $query = Infracciones::find()->where(['between','fecha',$fd,$fh])->andWhere(['estado'=>Infracciones::ESTADO_ACTIVO]);
+        
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            /*
+            'pagination'=>[
+				'pageSize' => 80,
+			],            
+            'sort' => ['defaultOrder' => ['id' => SORT_DESC,],
+						'enableMultiSort'=>true,            
+                      ],      
+                      */       
+                         
+        ]);	
+        return $this->render('rendicselec', [
+             'dataProvider' => $dataProvider,
+             'fd'=>$fd,
+             'fh'=>$fh,
+        ]);        	
+        
+		
+	}
 
     /**
      * Lists all Infracciones models.

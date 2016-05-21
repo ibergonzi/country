@@ -10,7 +10,9 @@ use kartik\widgets\DatePicker;
 use kartik\grid\GridView;
 
 
-$this->title='Rendición de multas';
+$this->title='Emisión de informes de multas';
+
+$this->params['breadcrumbs'][] = $this->title;
 
 /* @var $this yii\web\View */
 /* @var $model frontend\models\PersonaSearch */

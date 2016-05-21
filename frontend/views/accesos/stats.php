@@ -161,8 +161,8 @@ $this->title='Estadistica de accesos';
 							],
 							
 							'contentFormats'=>[      
-								2=>['format'=>'number', 'decimals'=>0],
-								3=>['format'=>'decimal', 'decimals'=>2],
+								//2=>['format'=>'number', 'decimals'=>0],
+								//3=>['format'=>'number', 'decimals'=>2,'decPoint'=>',', 'thousandSep'=>'.'],
 
 							],
 							
@@ -185,7 +185,7 @@ $this->title='Estadistica de accesos';
 					[
 					'attribute'=>'porc',
 					'hAlign'=>'right',
-					'format'=>['decimal', 2],	
+					//'format'=>['decimal', 2],	
 					'pageSummary'=>true				
 					],
 				],	

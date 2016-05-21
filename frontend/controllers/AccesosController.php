@@ -185,7 +185,7 @@ class AccesosController extends Controller
 				$nameSeries=[];
 				foreach ($rows as &$r) {
 					$r['desc_dia']=$semana[$r['dia']];
-					$r['porc']=$r['cant']/$totCant*100;
+					$r['porc']= number_format($r['cant']/$totCant*100,2);
 					if (!in_array($r['desc_dia'], $categ)) {
 							$categ[]=$r['desc_dia'];
 							$categNum[]=$r['dia'];		

@@ -34,6 +34,7 @@ class InfraccionesController extends Controller
         ];
     }
     
+    // solo pide rango de fechas y redirige a RendicSelec
     public function actionRendicFechas()
     {
 		$model=new RangoFechas();
@@ -43,30 +44,78 @@ class InfraccionesController extends Controller
 		return $this->render('rendicfechas',['model'=>$model]); //$model->fecdesde y fechasta		
 	}
 	
+	// muestra las multas, permite seleccionarlas para su posterior rendicion llamando a Rendic (pasa las IDs de multas)
 	public function actionRendicSelec($fd,$fh)
 	{
-        $query = Infracciones::find()->where(['between','fecha',$fd,$fh])->andWhere(['estado'=>Infracciones::ESTADO_ACTIVO]);
+        $query = Infracciones::find()->where(['between','fecha',$fd,$fh])
+									 ->andWhere(['estado'=>Infracciones::ESTADO_ACTIVO])
+									 ->andWhere(['>','multa_total',0])
+									 ->orderBy(['hora'=>SORT_ASC]);
         
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            /*
-            'pagination'=>[
-				'pageSize' => 80,
-			],            
-            'sort' => ['defaultOrder' => ['id' => SORT_DESC,],
-						'enableMultiSort'=>true,            
-                      ],      
-                      */       
-                         
-        ]);	
+            'pagination'=>['pageSize' => 0,],
+            'sort'=>false,            
+        ]);		        
+        
+        if (isset($_POST['keylist'])) {
+			$keys=$_POST['keylist'];
+
+			return $this->redirect(['rendic', 
+				 'fd'=>$fd,
+				 'fh'=>$fh,
+				 'keys'=>$keys
+			]);                      			
+		}
         return $this->render('rendicselec', [
              'dataProvider' => $dataProvider,
              'fd'=>$fd,
              'fh'=>$fh,
         ]);        	
+ 	}
+	
+	// Rendición de multas, se recibe el periodo y las IDs de multas seleccionadas previamente en RendicSelec
+	public function actionRendic()
+	{
+		$fd=$_GET['fd'];
+		$fh=$_GET['fh'];
+		$keys=$_GET['keys'];		
+				
+				
+		// detalle		
+        $query = Infracciones::find()->where(['between','fecha',$fd,$fh])
+									 ->andWhere(['estado'=>Infracciones::ESTADO_ACTIVO])
+									 ->andWhere(['>','multa_total',0])									 
+									 ->andWhere(['in','id',$keys])
+									 ->orderBy(['id_uf'=>SORT_ASC,'hora'=>SORT_ASC]);
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination'=>['pageSize' => 0,],            
+            'sort'=>false,                                  
+        ]);		  
+        
+        // resumen de reincidencias
+        $queryR = Infracciones::find()->select(['id_concepto','id_uf','count(*) as cant','sum(multa_total) as tot'])
+									 ->andWhere(['estado'=>Infracciones::ESTADO_ACTIVO])
+									 ->andWhere(['>','multa_total',0])									 
+									 ->andWhere(['in','id',$keys])
+									 ->groupBy(['id_concepto','id_uf']) 
+									 ->orderBy(['id_concepto'=>SORT_ASC,'id_uf'=>SORT_ASC]);	
+        $dataProviderR = new ActiveDataProvider([
+            'query' => $queryR,
+            'pagination'=>['pageSize' => 0,],            
+            'sort'=>false,                                  
+        ]);										 							            
+        
+        return $this->render('rendic', [
+             'dataProvider'  => $dataProvider,
+             'dataProviderR' => $dataProviderR,
+             'fd'=>$fd,
+             'fh'=>$fh,
+        ]);        	
         
 		
-	}
+	}	
 
     /**
      * Lists all Infracciones models.

@@ -8,7 +8,8 @@ use kartik\grid\GridView;
 /* @var $searchModel frontend\models\InfraccionesSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Seleccione las multas para realizar la rendición';
+$this->title = 'Seleccione las multas para emitir los informes';
+$this->params['breadcrumbs'][] = ['label' => 'Emisión de informes de multas', 'url' => ['rendic-fechas']];
 $this->params['breadcrumbs'][] = $this->title;
 
 
@@ -32,7 +33,8 @@ $this->registerCss('
 					 return ['checked' => true];
 				 }
 			],		
-            'id',
+
+            /*
             [
 				'attribute'=>'id_uf',
 				'format' => 'raw',
@@ -49,7 +51,6 @@ $this->registerCss('
 										]);
 					},
             ],
-            /*
             [
 				'attribute'=>'id_vehiculo',
 				'format' => 'raw',
@@ -83,24 +84,20 @@ $this->registerCss('
 					},
             ],   
             */         
-            [
-				'attribute'=>'fecha',
-				'format'=>'date'
-			],
-            [
-				'attribute'=>'hora',
-				'format'=>'time'
-			],
-            'nro_acta',
+			'fecha:date',
+			'hora:time',
+            'id',
+            'id_uf',		
+            //'nro_acta',
             'lugar',
-            'id_concepto',
+            'concepto.concepto',
             //'id_informante',
             'descripcion',
             //'notificado',
             //'fecha_verif',
-            'verificado',
+            //'verificado',
             //'foto',
-            'multa_unidad',
+            'multaUnidad.unidad',
             // 'multa_monto',
             // 'multa_pers_cant',
             // 'multa_pers_monto',
@@ -110,21 +107,40 @@ $this->registerCss('
             // 'created_at',
             // 'updated_by',
             // 'updated_at',
-            'estado',
+            //'estado',
             // 'motivo_baja',
 
 
         ];
         
 
+		echo Html::SubmitButton('<span class="glyphicon glyphicon-plus-sign"></span>',
+							
+							['class' => 'btn btn-lg btn-primary',
+							 'title' => 'Efectuar egreso',
+							 //'data-pjax'=>'0',
+							 'onclick'=>"var keys = $('#gridInfracciones').yiiGridView('getSelectedRows');
+										$.post({
+										   url: 'rendic-selec?fd=$fd&fh=$fh', 
+										   data: {keylist: keys}
+										});"
+							]
+						 );
+/*		
+$.post(
+   [ "listeaffecter", 
+    {
+        pk : $('#grid').yiiGridView('getSelectedRows')
+    },]
 
-		
-    
+);		
+*/
+		//echo Html::a('cuac', ['rendic-selec', 'fd'=>$fd,'fh'=>$fh,'keylist' => ''], ['class' => 'btn btn-primary'])   
     
 		echo GridView::widget([
         'dataProvider' => $dataProvider,
-		'pjax'=>true,
-		'pjaxSettings'=>['neverTimeout'=>true,],  
+		//'pjax'=>true,
+		//'pjaxSettings'=>['neverTimeout'=>true,],  
 		        
         'options'=>['id'=>'gridInfracciones'],
         'columns' => $columns,

@@ -59,6 +59,9 @@ class Infracciones extends \yii\db\ActiveRecord
     const ESTADO_BAJA = 0;
 	const ESTADO_ACTIVO = 1;
 	
+	public $cant;
+	public $tot;
+	
 	// funcion agregada a mano
 	public static function getEstados($key=null)
 	{
@@ -145,7 +148,7 @@ class Infracciones extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'id' => 'Nro.Infr.',
             'id_uf' => 'U.F.',
             'id_vehiculo' => 'ID Vehiculo',
             'id_persona' => 'Infractor',
@@ -174,6 +177,9 @@ class Infracciones extends \yii\db\ActiveRecord
             'motivo_baja' => 'Motivo Baja',
             'userCreatedBy.username'=>'Usuario alta',
             'userUpdatedBy.username'=>'Usuario modif.', 
+            // se usan en Rendic
+            'cant'=>'Cant.del periodo',
+            'tot'=>'Importe',
         ];
     }
 

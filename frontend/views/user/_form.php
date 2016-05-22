@@ -45,6 +45,8 @@ use common\models\User;
 							,['id'=>'rol','class'=>'form-control']);
 				
 				?>
+				<?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>				
+				<?= $form->field($model, 'acceso_externo')->dropDownList(User::getSiNo()) ?>
 				<?php
 					if ($model->isNewRecord) echo $form->field($model, 'foto')->fileInput() ;
 					if (!$model->isNewRecord) echo $form->field($model, 'foto')

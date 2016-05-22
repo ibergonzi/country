@@ -55,6 +55,7 @@ class SignupForm extends Model
             $user = new User();
             $user->username = $this->username;
             $user->email = $this->email;
+            $user->acceso_externo=false;
             $user->setPassword($this->password);
             $user->generateAuthKey();
             if ($user->save()) {

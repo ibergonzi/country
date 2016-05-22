@@ -21,7 +21,7 @@ class UserSearch extends User
     {
         return [
             [['id', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['username', 'auth_key', 'password_hash', 'password_reset_token', 'email','descRolUsuario'], 'safe'],
+            [['username', 'auth_key', 'password_hash', 'password_reset_token', 'email','descRolUsuario','acceso_externo'], 'safe'],
         ];
     }
 
@@ -101,6 +101,7 @@ class UserSearch extends User
             'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'acceso_externo'=>$this->acceso_externo,
         ]);
         
        

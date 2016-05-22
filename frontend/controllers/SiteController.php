@@ -90,13 +90,20 @@ class SiteController extends Controller
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
+			
 			// OJO hasta el return es todo código para verificar la IP--------------
-			$rol=User::getRol(Yii::$app->user->getId())->name;
+			
+			// verifica si la IP del usuario es de afuera de la red interna
+			if ( !$this->matchIP(Yii::$app->request->userIp, Yii::$app->params['localIP']) && 
+			     !$this->matchIP(Yii::$app->request->userIp, '127.0.0.1') ) {
+				// si la IP NO es de la intranet se verifica si el usuario
+				// tiene permisos para ingresar desde afuera
+				if (!User::getOutsideAccess(Yii::$app->user->getId())) {
+					Yii::$app->user->logout();
+					return $this->goHome();							
+				}
+			}
 
-			if ($rol=='portero' && Yii::$app->request->userIp != '127.0.0.1') {
-				Yii::$app->user->logout();
-				return $this->goHome();				
-			}			
 			//----------------------------------------------------------------------
             return $this->goBack();
         } else {
@@ -105,6 +112,17 @@ class SiteController extends Controller
             ]);
         }
     }
+    
+    
+    protected function matchIP($usrIP,$localIP)
+    {
+		if ($localIP === '*' || $localIP === $usrIP || (($pos = strpos($localIP, '*')) !== false && !strncmp($usrIP, $localIP, $pos))) {
+			return true;
+		} else {
+			return false;
+		}
+    }    
+    
 
     /**
      * Logs out the current user.

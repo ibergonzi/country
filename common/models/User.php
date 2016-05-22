@@ -42,7 +42,21 @@ class User extends ActiveRecord implements IdentityInterface
 			'username'=>'Nombre',
 			'email'=>'Correo',
 			'descRolUsuario'=>'Rol',
+			'acceso_externo'=>'Acceso externo'
 		];
+	}
+
+
+	// se usa para acceso_externo
+	const SI = 1;
+	const NO = 0;
+	public static function getSiNo($key=null)
+	{
+		$estados=[self::NO=>'No',self::SI=>'Si'];
+	    if ($key !== null) {
+			return $estados[$key];
+		}
+		return $estados;
 	}
 
     /**
@@ -63,6 +77,14 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
+            
+            ['email', 'filter', 'filter' => 'trim'],
+            ['email', 'required'],
+            ['email', 'email'],
+            ['email', 'string', 'max' => 255],
+            ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'Esta dirección de correo ya fue utilizada.'],
+
+            ['acceso_externo', 'required'],            
         ];
     }
     
@@ -83,6 +105,13 @@ class User extends ActiveRecord implements IdentityInterface
 			// acá no hace nada, se hace asi porque siempre hay un solo rol por usuario
 		}
 		return $rol;
+	}
+	
+	// agrega a mano, devuelve true si la cuenta del usuario permite acceso desde afuera
+	public static function getOutsideAccess($id)
+	{
+		$u=static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
+		return $u->acceso_externo;
 	}
     
 

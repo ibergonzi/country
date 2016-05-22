@@ -3,7 +3,10 @@
 return [
     'adminEmail' => 'miraflores.adm.notif@gmail.com',
     
-	//basicamente para las exportaciones	
+    // ip de la red local (se usa el * para indicar todos los numeros, por ejemplo: 192.168.*)
+    'localIP'=>'192.168.0.*',
+    
+	// parametros de exportaciones	
     'lblName'=> 'Barrio Miraflores',
     'lblName2'=>'Funes Hills',
     

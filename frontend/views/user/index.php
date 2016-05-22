@@ -1,4 +1,5 @@
 <?php
+use common\models\User;
 
 use yii\helpers\Html;
 use kartik\grid\GridView;
@@ -48,16 +49,20 @@ $this->registerCss('
 		$columns=[
 				'id',	
 				'username',
-				[
-					'attribute'=>'email',
-					'format'=>'email',
-				],
-				
+			
 			    [
 					'attribute'=>'descRolUsuario',
 					'value'=>'authAssignment.authItem.description',   
-			    ],              
-				
+			    ],        
+				[
+					'attribute'=>'acceso_externo',
+					'value'=>function ($model) { return User::getSiNo($model->acceso_externo);},
+					'filter'=>User::getSiNo()
+				],    			          
+				[
+					'attribute'=>'email',
+					'format'=>'email',
+				],				
 				['class' => 'kartik\grid\ActionColumn',
 				 'header'=>'',
 				 'template' => '{view} {update} {delete} {comentario}',  

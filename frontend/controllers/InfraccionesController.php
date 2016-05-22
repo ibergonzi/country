@@ -8,11 +8,14 @@ use frontend\models\InfraccionesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 use yii\web\UploadedFile;
 
 use frontend\models\RangoFechas;
 use yii\data\ActiveDataProvider;
+
+use common\models\User;
 
 /**
  * InfraccionesController implements the CRUD actions for Infracciones model.
@@ -25,12 +28,47 @@ class InfraccionesController extends Controller
     public function behaviors()
     {
         return [
+			/*
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
                 ],
             ],
+            */
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['delete'],
+                        'allow' => true,
+                        'roles' => ['borrarInfrac'], 
+                    ],                
+                    [
+                        'actions' => ['index','view'],
+                        'allow' => true,
+                        'roles' => ['accederListaInfrac'],
+                    ],
+                    [
+                        'actions' => ['create','update'],
+                        'allow' => true,
+                        'roles' => ['altaModificarInfrac','altaModificarMulta'], 
+                    
+                    ],                    
+                    [
+                        'actions' => ['rendic-fechas','rendic-selec','rendic'],
+                        'allow' => true,
+                        'roles' => ['accederRendicMultas'], 
+                    
+                    ],    
+                              
+
+                 ], // fin rules
+                 
+                 'denyCallback' => function ($rule, $action){
+					 return false;
+				 }
+             ], // fin access            
         ];
     }
     

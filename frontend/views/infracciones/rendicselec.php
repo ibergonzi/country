@@ -117,7 +117,7 @@ $this->registerCss('
 		echo Html::SubmitButton('<span class="glyphicon glyphicon-plus-sign"></span>',
 							
 							['class' => 'btn btn-lg btn-primary',
-							 'title' => 'Efectuar egreso',
+							 'title' => 'Emitir informes',
 							 //'data-pjax'=>'0',
 							 'onclick'=>"var keys = $('#gridInfracciones').yiiGridView('getSelectedRows');
 										$.post({

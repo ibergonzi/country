@@ -13,6 +13,8 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 
+use common\models\User;
+
 /**
  * Site controller
  */
@@ -88,6 +90,14 @@ class SiteController extends Controller
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
+			// OJO hasta el return es todo código para verificar la IP--------------
+			$rol=User::getRol(Yii::$app->user->getId())->name;
+
+			if ($rol=='portero' && Yii::$app->request->userIp != '127.0.0.1') {
+				Yii::$app->user->logout();
+				return $this->goHome();				
+			}			
+			//----------------------------------------------------------------------
             return $this->goBack();
         } else {
             return $this->render('login', [

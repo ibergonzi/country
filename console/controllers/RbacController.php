@@ -371,6 +371,51 @@ class RbacController extends Controller
 		$auth->addChild($opIntendencia, $altaModificarAgenda);	
 		$auth->addChild($portero, $altaModificarAgenda);	
 		
+		$accederListaInfrac=$auth->createPermission('accederListaInfrac');
+		$accederListaInfrac->description='Acceso: lista de Infracciones/multas';
+		$auth->add($accederListaInfrac);	
+		$auth->addChild($consejo, $accederListaInfrac);
+		$auth->addChild($administrador, $accederListaInfrac);		
+		$auth->addChild($intendente, $accederListaInfrac);
+		$auth->addChild($opIntendencia, $accederListaInfrac);	
+		$auth->addChild($portero, $accederListaInfrac);	
+
+		$exportarListaInfrac=$auth->createPermission('exportarListaInfrac');
+		$exportarListaInfrac->description='Acceso: exportar lista de infracciones/multas';
+		$auth->add($exportarListaInfrac);	
+		$auth->addChild($consejo, $exportarListaInfrac);
+		$auth->addChild($administrador, $exportarListaInfrac);		
+		$auth->addChild($intendente, $exportarListaInfrac);
+		$auth->addChild($opIntendencia, $exportarListaInfrac);	
+
+		$borrarInfrac=$auth->createPermission('borrarInfrac');
+		$borrarInfrac->description='Eliminar: Infracción/multa';
+		$auth->add($borrarInfrac);	
+		$auth->addChild($intendente, $borrarInfrac);
+		$auth->addChild($opIntendencia, $borrarInfrac);	
+		
+		$altaModificarInfrac=$auth->createPermission('altaModificarInfrac');
+		$altaModificarInfrac->description='Alta/modif.: Infracción';
+		$auth->add($altaModificarInfrac);	
+		$auth->addChild($intendente, $altaModificarInfrac);
+		$auth->addChild($opIntendencia, $altaModificarInfrac);
+		$auth->addChild($portero, $altaModificarInfrac);	
+		
+		$altaModificarMulta=$auth->createPermission('altaModificarMulta');
+		$altaModificarMulta->description='Alta/modif.: Multa';
+		$auth->add($altaModificarMulta);	
+		$auth->addChild($intendente, $altaModificarMulta);
+		$auth->addChild($opIntendencia, $altaModificarMulta);
+		
+		$accederRendicMultas=$auth->createPermission('accederRendicMultas');
+		$accederRendicMultas->description='Acceso: rendición de multas';
+		$auth->add($accederRendicMultas);	
+		$auth->addChild($consejo, $accederRendicMultas);
+		$auth->addChild($administrador, $accederRendicMultas);		
+		$auth->addChild($intendente, $accederRendicMultas);
+		$auth->addChild($opIntendencia, $accederRendicMultas);	
+	
+		
 		$accederParametros=$auth->createPermission('accederParametros');
 		$accederParametros->description='Acceso: parámetros varios';
 		$auth->add($accederParametros);	

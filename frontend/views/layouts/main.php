@@ -47,7 +47,7 @@ $(document).ready(function() {
 				);
 });
 JS;
-		$this->registerJs($barrera);
+		// activar cuando se implemente lo de las barreras: $this->registerJs($barrera);
 	}
 }
 
@@ -195,7 +195,8 @@ JS;
         
 	
         $headerPopover='<p><i>Usuario: '. Yii::$app->user->identity->username.'</i></p>'.
-			'<p><i>'. User::getRol(Yii::$app->user->getId())->description . '</i></p>';
+			'<p><i>'. User::getRol(Yii::$app->user->getId())->description . '</i></p>'.
+			'<p><i>IP: '. Yii::$app->request->userIp . '</i></p>';
 		$userPopover = '<li class="dropdown"><div class="navbar-form">' . PopoverX::widget([
 			'header' => $headerPopover,
 			'placement' => PopoverX::ALIGN_BOTTOM_RIGHT,

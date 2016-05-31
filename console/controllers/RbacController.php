@@ -18,27 +18,30 @@ class RbacController extends Controller
 		echo $status;return 1;	
 		*/
 			
+        if (!$this->confirm('Está seguro? Se reconstruirá todo el árbol de permisos.')) {
+            return self::EXIT_CODE_NORMAL;
+        }
 		
         $auth = Yii::$app->authManager;
 		
 		// Creacion de roles
 		
 		$consejo=$auth->createRole('consejo');
-		$consejo->description='Rol: Consejo';
+		$consejo->description='Consejo';
 		$administrador=$auth->createRole('administrador');
-		$administrador->description='Rol: Administrador';
+		$administrador->description='Administrador';
 		$intendente=$auth->createRole('intendente');
-		$intendente->description='Rol: Intendente';
+		$intendente->description='Intendente';
 		$opIntendencia=$auth->createRole('opIntendencia');
-		$opIntendencia->description='Rol: Operador de Intendencia';
+		$opIntendencia->description='Operador de Intendencia';
 		$arquitecto=$auth->createRole('arquitecto');
-		$arquitecto->description='Rol: Arquitecto';	
+		$arquitecto->description='Arquitecto';	
 		$portero=$auth->createRole('portero');
-		$portero->description='Rol: Portero';		
+		$portero->description='Portero';		
 		$propietario=$auth->createRole('propietario');
-		$propietario->description='Rol: Propietario';		
+		$propietario->description='Propietario';		
 		$guardia=$auth->createRole('guardia');
-		$guardia->description='Rol: Guardia';	
+		$guardia->description='Guardia';	
 		$sinrol=$auth->createRole('sinRol');
 		$sinrol->description='Sin rol asignado';
 
@@ -414,7 +417,6 @@ class RbacController extends Controller
 		$auth->addChild($administrador, $accederRendicMultas);		
 		$auth->addChild($intendente, $accederRendicMultas);
 		$auth->addChild($opIntendencia, $accederRendicMultas);	
-	
 		
 		$accederParametros=$auth->createPermission('accederParametros');
 		$accederParametros->description='Acceso: parámetros varios';
@@ -428,7 +430,21 @@ class RbacController extends Controller
 		$modificarParametros->description='Modificar: parámetros varios';
 		$auth->add($modificarParametros);	
 		$auth->addChild($intendente, $modificarParametros);
-		$auth->addChild($opIntendencia, $modificarParametros);									
+		$auth->addChild($opIntendencia, $modificarParametros);	
+		
+		$accederAutManualAccesos=$auth->createPermission('accederAutManualAccesos');
+		$accederAutManualAccesos->description='Acceso: Autorización acceso manual';
+		$auth->add($accederAutManualAccesos);	
+		$auth->addChild($consejo, $accederAutManualAccesos);
+		$auth->addChild($administrador, $accederAutManualAccesos);		
+		$auth->addChild($intendente, $accederAutManualAccesos);
+		$auth->addChild($opIntendencia, $accederAutManualAccesos);
+		
+		$altaModificarAutManualAccesos=$auth->createPermission('altaModificarAutManualAccesos');
+		$altaModificarAutManualAccesos->description='Alta/modif.: Autorización acceso manual';
+		$auth->add($altaModificarAutManualAccesos);	
+		$auth->addChild($intendente, $altaModificarAutManualAccesos);
+		$auth->addChild($opIntendencia, $altaModificarAutManualAccesos);										
 											
 									
 

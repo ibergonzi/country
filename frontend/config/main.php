@@ -51,6 +51,10 @@ return [
 			'thousandSeparator'=>'.',
 		],
 
+        'assetManager' => [
+            'appendTimestamp' => true,
+        ],
+
     ],
     'modules' => [
 		'gridview' =>  [

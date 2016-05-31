@@ -99,38 +99,62 @@ JS;
 						'items' => [
 							['label' => '<span class="glyphicon glyphicon-arrow-right"></span>&nbsp;Ingresos', 
 								'url' => ['/accesos/ingreso'], 
-								'visible'=>\Yii::$app->user->can('accederIngreso')],
+								'visible'=>\Yii::$app->user->can('accederIngreso')
+							],
 							['label' => '<span class="glyphicon glyphicon-arrow-left"></span>&nbsp;Egresos', 
 								'url' => ['/accesos/egreso'], 
-								'visible'=>\Yii::$app->user->can('accederEgreso')],
+								'visible'=>\Yii::$app->user->can('accederEgreso')
+							],
 							['label' => '<span class="fa fa-users"></span>&nbsp;Egreso Grupal', 
 								'url' => ['/accesos/egreso-grupal'], 
-								'visible'=>\Yii::$app->user->can('accederEgresoGrupal')],
+								'visible'=>\Yii::$app->user->can('accederEgresoGrupal')
+							],
 							['label' => '<span class="glyphicon glyphicon-book"></span>&nbsp;Libro', 
 								'url' => ['/libro/index'], 
-								'visible'=>\Yii::$app->user->can('accederLibro')],
+								'visible'=>\Yii::$app->user->can('accederLibro')
+							],
 							'<li class="divider"></li>',
 							'<li class="dropdown-header">Consultas</li>',
 							['label' => 'Accesos', 
 								'url' => ['/accesos/index'], 
-								'visible'=>\Yii::$app->user->can('accederConsAccesos')],
+								'visible'=>\Yii::$app->user->can('accederConsAccesos')
+							],
 							['label' => 'Personas adentro', 
 								'url' => ['/accesos/cons-dentro'], 
-								'visible'=>\Yii::$app->user->can('accederConsDentro')],
+								'visible'=>\Yii::$app->user->can('accederConsDentro')
+							],
 							['label' => 'Estadisticas', 
 								'url' => ['/accesos/stats'], 
-								'visible'=>\Yii::$app->user->can('accederStatsAccesos')],									
+								'visible'=>\Yii::$app->user->can('accederStatsAccesos')
+							],									
 							['label' => 'Lista de Personas', 
 								'url' => ['/personas/index'], 
-								'visible'=>\Yii::$app->user->can('accederListaPersonas')],
+								'visible'=>\Yii::$app->user->can('accederListaPersonas')
+							],
 							['label' => 'Lista de Vehiculos', 
 								'url' => ['/vehiculos/index'], 
-								'visible'=>\Yii::$app->user->can('accederListaVehiculos')],	
+								'visible'=>\Yii::$app->user->can('accederListaVehiculos')
+							],	
 							['label' => 'Agenda', 
 								'url' => ['/agenda/index'], 
-								'visible'=>\Yii::$app->user->can('accederAgenda')],																
+								'visible'=>\Yii::$app->user->can('accederAgenda')
+							],																
 			] // fin items;
 		]; // fin menuItems[]
+		
+		$menuItems[] = ['label' => 'Infracciones', 
+						'items' => [
+							['label' => 'Infracciones/multas', 
+								'url' => ['/infracciones/index'], 
+								'visible'=>\Yii::$app->user->can('accederListaInfrac')
+							],
+							['label' => 'Informe de multas', 
+								'url' => ['/infracciones/rendic-fechas'], 
+								'visible'=>\Yii::$app->user->can('accederRendicMultas')
+							],							
+			] // fin items;
+		]; // fin menuItems[]						
+		
 		$menuItems[] = ['label' => 'Energia', 
 						'items' => [
 							$itemCorte,
@@ -165,8 +189,12 @@ JS;
 									'visible'=>\Yii::$app->user->can('accederListaAutorizantes')],						
 							['label' => 'Usuarios', 'url' => ['/user/index'], 'visible'=>\Yii::$app->user->can('accederUser')],
 							['label' => 'Carnets', 'url' => ['/carnets/index'], 'visible'=>\Yii::$app->user->can('accederCarnets')],
-							['label' => 'Cambio Personas', 'url' => ['/personas/change'], 'visible'=>\Yii::$app->user->can('cambiarPersona')],							
-							
+							['label' => 'Cambio Personas', 'url' => ['/personas/change'], 'visible'=>\Yii::$app->user->can('cambiarPersona')],
+							'<li class="divider"></li>',							
+							['label' => 'Infracciones: Conceptos', 'url' => ['/infrac-conceptos/index'], 'visible'=>\Yii::$app->user->can('accederParametros')],
+							['label' => 'Infracciones: Unidades', 'url' => ['/infrac-unidades/index'], 'visible'=>\Yii::$app->user->can('accederParametros')],																					
+							'<li class="divider"></li>',
+							['label' => 'Autoriz.accesos manuales', 'url' => ['/accesos-autmanual/index'], 'visible'=>\Yii::$app->user->can('accederAutManualAccesos')],							
 			] // fin items;
 		]; // fin menuItems[]		
 		if (\Yii::$app->session->get('porton')) {	
@@ -199,11 +227,12 @@ JS;
 			'<p><i>IP: '. Yii::$app->request->userIp . '</i></p>';
 		$userPopover = '<li class="dropdown"><div class="navbar-form">' . PopoverX::widget([
 			'header' => $headerPopover,
-			'placement' => PopoverX::ALIGN_BOTTOM_RIGHT,
-			'size' => 'md',
+			'placement' => PopoverX::ALIGN_BOTTOM,
+			'type'=> Popoverx::TYPE_WARNING,
+			//'size' => 'md',
 			'content' => $contenido,
 			'footer' => Html::a('Cerrar sesión &raquo;',['/site/logout'], 
-							['data-method' => 'post','class'=>'btn btn-sm btn-primary']),
+							['data-method' => 'post','class'=>'btn btn-sm btn-warning']),
 			'toggleButton' => [
 				'label' => Html::tag('span', '', ['class' => 'glyphicon glyphicon-lock',]),
 				'class'=>'btn btn-sm btn-default'

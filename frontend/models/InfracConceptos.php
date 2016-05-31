@@ -74,7 +74,14 @@ class InfracConceptos extends \yii\db\ActiveRecord
 	{
 		$opciones = self::find()->where(['estado'=>self::ESTADO_ACTIVO])->asArray()->all();
 		return ArrayHelper::map($opciones, 'id', 'concepto');
-	}     		
+	}     	
+	
+	// devuelve lista de conceptos preparada para los dropDownList (solo infracciones)
+	public static function getListaInfrac()
+	{
+		$opciones = self::find()->where(['estado'=>self::ESTADO_ACTIVO,'es_multa'=>false])->asArray()->all();
+		return ArrayHelper::map($opciones, 'id', 'concepto');
+	}    		
     
     // extiende los comportamientos de la clase Personas para grabar datos de auditoría
     public function behaviors()

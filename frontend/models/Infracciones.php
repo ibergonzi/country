@@ -180,6 +180,9 @@ class Infracciones extends \yii\db\ActiveRecord
             // se usan en Rendic
             'cant'=>'Cant.del periodo',
             'tot'=>'Importe',
+            // se usan en Index
+            'rUnidad'=>'Unidad',
+            'rConcepto'=>'Concepto'
         ];
     }
 

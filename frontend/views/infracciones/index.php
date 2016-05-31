@@ -7,6 +7,11 @@ use yii\bootstrap\Modal;
 use frontend\models\Comentarios;
 
 use kartik\popover\PopoverX;
+use yii\bootstrap\Collapse;
+
+use frontend\models\Infracciones;
+use frontend\models\InfracConceptos;
+use frontend\models\InfracUnidades;
 
 /* @var $this yii\web\View */
 /* @var $searchModel frontend\models\InfraccionesSearch */
@@ -44,7 +49,34 @@ $this->registerCss('
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?php 
-		$lbl2='';
+    
+		if (\Yii::$app->session->get('infracFecDesde')) {
+			$lbl=Html::tag('span','',['class'=>'glyphicon glyphicon-warning-sign','style'=>'color:#FF8000']).
+				'  '.
+				'Filtro por fecha desde el ' . Yii::$app->formatter->asDate(\Yii::$app->session->get('infracFecDesde')) .
+				' hasta el ' . Yii::$app->formatter->asDate(\Yii::$app->session->get('infracFecHasta'));
+
+		} else {
+			$lbl='Filtrar por rango de fechas';
+		}
+
+		echo Collapse::widget([
+		'encodeLabels'=>false,
+		'items'=>[
+				[
+				'label'=> $lbl,
+				'content'=>$this->render('_searchfec', ['model' => $searchModel]),
+				]
+			]
+		]);
+
+		
+		if (\Yii::$app->session->get('infracFecDesde')) {
+			$lbl2=' ('.Yii::$app->formatter->asDate(\Yii::$app->session->get('infracFecDesde')) .
+						'-' . Yii::$app->formatter->asDate(\Yii::$app->session->get('infracFecHasta')) . ')';
+		} else {
+			$lbl2='';
+		}	
 		$pdfHeader=[
 					'L'=>['content'=>Html::img(Yii::$app->homeUrl.'images/logoreportes.png')],
 					'C'=>['content'=>$this->title . $lbl2,
@@ -122,14 +154,36 @@ $this->registerCss('
 			],
             'nro_acta',
             'lugar',
-            'id_concepto',
+            //'id_concepto',
+            [
+				'attribute'=>'rConcepto',
+				'value'=>'concepto.concepto',
+				'filter'=>InfracConceptos::getLista(),
+            ],            
             //'id_informante',
             'descripcion',
-            'notificado',
-            'fecha_verif',
-            'verificado',
+            [
+				'attribute'=>'notificado',
+				'value'=>function ($model) { return Infracciones::getSiNo($model->notificado);},
+				'filter'=>Infracciones::getSiNo()				
+            ],
+            [
+				'attribute'=>'fecha_verif',
+				'format'=>'date'
+			],
+            [
+				'attribute'=>'verificado',
+				'value'=>function ($model) { return Infracciones::getSiNo($model->verificado);},
+				'filter'=>Infracciones::getSiNo()				
+            ],
+            //'verificado',
             //'foto',
-            'multa_unidad',
+            //'multa_unidad',
+            [
+				'attribute'=>'rUnidad',
+				'value'=>'multaUnidad.unidad',
+				'filter'=>InfracUnidades::getLista(),
+            ],             
             // 'multa_monto',
             // 'multa_pers_cant',
             // 'multa_pers_monto',
@@ -139,14 +193,18 @@ $this->registerCss('
             // 'created_at',
             // 'updated_by',
             // 'updated_at',
-            'estado',
+            [
+				'attribute'=>'estado',  
+				'value'=>function ($model) { return Infracciones::getEstados($model->estado);},
+				'filter'=>Infracciones::getEstados()				         
+            ],  
             // 'motivo_baja',
 
            ['class' => 'kartik\grid\ActionColumn',
              'header'=>Html::a('<span class="glyphicon glyphicon-plus-sign"></span>',
                                     ['create'], 
                                 ['class' => 'btn-sm btn-primary',
-                                 'title' => Yii::t('app', 'Alta de persona'),]),
+                                 'title' => Yii::t('app', 'Alta de infracción/multa'),]),
  			 'template' => '{view} {comentario}',      
 			 'buttons' => [
 				'comentario' => function ($url, $model) {
@@ -203,7 +261,7 @@ $this->registerCss('
             ],
         ];
         
-		if (\Yii::$app->user->can('exportarListaPersonas')) {        
+		if (\Yii::$app->user->can('exportarListaInfrac')) {        
 			// contiene la selección inicial de columnas, es decir, todas
 			// por ejemplo [0,1,2,3]
 			$poSel=[];
@@ -247,15 +305,15 @@ $this->registerCss('
 
 		
 		$contentToolbar=\nterms\pagesize\PageSize::widget([
-			'defaultPageSize'=>\Yii::$app->params['personas.defaultPageSize'],
-			'sizes'=>\Yii::$app->params['personas.sizes'],
+			'defaultPageSize'=>\Yii::$app->params['infracciones.defaultPageSize'],
+			'sizes'=>\Yii::$app->params['infracciones.sizes'],
 			'label'=>'',
 			'options'=>[
 					'class'=>'btn btn-default',
 					'title'=>'Cantidad de elementos por página',
 				],
 			]);		
-		if (\Yii::$app->user->can('exportarListaPersonas')) {			
+		if (\Yii::$app->user->can('exportarListaInfrac')) {			
 			$toolbar=['{export} ',['content'=>$contentToolbar],];
 		} else {
 			$toolbar=[['content'=>$contentToolbar]];

@@ -14,6 +14,7 @@ use kartik\icons\Icon;
 use frontend\models\Vehiculos;
 use frontend\models\Personas;
 use frontend\models\InfracConceptos;
+use frontend\models\Infracciones;
 
 
 /* @var $this yii\web\View */
@@ -188,7 +189,13 @@ $this->registerCss('
 
 				<?= $form->field($model, 'lugar')->textInput(['maxlength' => true]) ?>
 
-				<?= $form->field($model, 'id_concepto')->dropDownList(InfracConceptos::getLista()) ?>
+				<?php
+					if (\Yii::$app->user->can('altaModificarMulta')) {				
+						echo $form->field($model, 'id_concepto')->dropDownList(InfracConceptos::getLista());
+					} else {
+						echo $form->field($model, 'id_concepto')->dropDownList(InfracConceptos::getListaInfrac());
+					}
+				?>
 
 				<?php
 					// -------------------Selector de personas sin botón de alta ----------------------------------------
@@ -245,7 +252,7 @@ $this->registerCss('
 
 				<?= $form->field($model, 'descripcion')->textInput(['maxlength' => true]) ?>
 
-				<?= $form->field($model, 'notificado')->textInput() ?>
+				<?= $form->field($model, 'notificado')->dropDownList(Infracciones::getSiNo()) ?>
 
 				<?php //echo $form->field($model, 'fecha_verif')->textInput() ?>
 
@@ -255,7 +262,7 @@ $this->registerCss('
 
 				<?php //echo $form->field($model, 'multa_monto')->textInput() ?>
 
-				<?php echo $form->field($model, 'multa_pers_cant')->textInput() ?>
+				<?php echo $form->field($model, 'multa_pers_cant')->textInput()->hint('Si no hay personas involucradas en la infracción ingrese 0 (cero)') ?>
 
 				<?php //echo $form->field($model, 'multa_pers_monto')->textInput() ?>
 

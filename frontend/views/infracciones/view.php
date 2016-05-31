@@ -10,7 +10,7 @@ use frontend\models\Infracciones;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Infracciones */
 
-$this->title = $model->id;
+$this->title = 'Detalle de infracción';
 $this->params['breadcrumbs'][] = ['label' => 'Infracciones', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -32,16 +32,31 @@ $this->registerCss('
 
     <h3><?= Html::encode($this->title) ?></h3>
 
-    <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
+	<?php
+		if (!$pdf) {
+			echo '<p>';			
+			if ($model->estado==Infracciones::ESTADO_ACTIVO ) {	
+				if ($model->multa_total > 0) {	
+					if (\Yii::$app->user->can('altaModificarMulta')) {							
+						echo Html::a('Modificar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']).'&nbsp;'; 
+					}
+				} else {
+					if (\Yii::$app->user->can('altaModificarInfrac')) {							
+						echo Html::a('Modificar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']).'&nbsp;'; 
+					}					
+				}
+				if (\Yii::$app->user->can('borrarInfrac')) { 					
+					echo Html::a('Eliminar', ['delete', 'id' => $model->id], ['class' => 'btn btn-danger',]).'&nbsp;';
+				}
+			}
+			if (\Yii::$app->user->can('exportarListaInfrac')) { 			
+				echo Html::a('<i class="fa fa-file-pdf-o"></i> PDF', ['pdf', 'id' => $model->id], [
+					'class' => 'btn btn-default',//'target'=>'_blank',
+					]);	
+			}
+			echo '</p>';					
+		}				
+    ?>
 
 
 	<div class='container'>
@@ -50,8 +65,17 @@ $this->registerCss('
 
 			<div class="col-md-6">
 
-
-				<?= DetailView::widget([
+				<?php
+					$imgClass=($pdf)?'pull-right':'img-thumbnail pull-right';
+					$sinImg=Yii::$app->urlManager->createUrl('images/sinmulta.jpg');
+					if (!empty($model->foto)) {
+						$imgFile=Yii::$app->urlManager->createUrl('images/multas/'.$model->foto);
+						$imgFoto=Html::img($imgFile,['class'=>$imgClass,'onerror'=>"this.src='$sinImg'"]);
+					} else {
+						$imgFoto=Html::img($sinImg, ['class'=>$imgClass]);
+					}
+				
+					echo DetailView::widget([
 					'model' => $model,
 					'options'=>['class' => 'table table-striped table-bordered table-condensed detail-view'],					
 					'attributes' => [
@@ -96,22 +120,29 @@ $this->registerCss('
 						'updated_at:datetime',
 						[
 							'label' => 'Estado',
-							'value' => Infracciones::getEstados($model->estado)
+							'value' => Infracciones::getEstados($model->estado),
+							'visible'=>($pdf)?false:true,
 						],	
-						'motivo_baja',
+						[
+							'attribute'=>'motivo_baja',
+							'visible'=>($pdf)?false:true,							
+						],
+						//'motivo_baja',
+						[
+							'label'=>'Foto',
+							'value'=>$imgFoto,
+							'format'=>'raw',
+							'visible'=>$pdf,							
+						],
 					],
 				]) ?>
 				
 			</div>
 			<div class="col-md-6">
 				<?php
-					$sinImg=Yii::$app->urlManager->createUrl('images/sinmulta.jpg');
-					if (!empty($model->foto)) {
-						$imgFile=Yii::$app->urlManager->createUrl('images/multas/'.$model->foto);
-						echo Html::img($imgFile,['class'=>'img-thumbnail pull-right','onerror'=>"this.src='$sinImg'"]);
-					} else {
-						echo Html::img($sinImg, ['class'=>'img-thumbnail pull-right']);
-					}
+				if (!$pdf) {
+					echo $imgFoto;
+				}
 				?>
 
 			</div>	

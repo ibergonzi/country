@@ -10,12 +10,17 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 
+// se usa en actionUpdate (si el usuario no puede modificar una multa)
+use yii\web\ForbiddenHttpException;
+
 use yii\web\UploadedFile;
 
 use frontend\models\RangoFechas;
 use yii\data\ActiveDataProvider;
 
 use common\models\User;
+
+use kartik\mpdf\Pdf;
 
 /**
  * InfraccionesController implements the CRUD actions for Infracciones model.
@@ -45,10 +50,15 @@ class InfraccionesController extends Controller
                         'roles' => ['borrarInfrac'], 
                     ],                
                     [
-                        'actions' => ['index','view'],
+                        'actions' => ['index','view',],
                         'allow' => true,
                         'roles' => ['accederListaInfrac'],
                     ],
+                    [
+                        'actions' => ['pdf'],
+                        'allow' => true,
+                        'roles' => ['exportarListaInfrac'], 
+                    ],                    
                     [
                         'actions' => ['create','update'],
                         'allow' => true,
@@ -64,10 +74,7 @@ class InfraccionesController extends Controller
                               
 
                  ], // fin rules
-                 
-                 'denyCallback' => function ($rule, $action){
-					 return false;
-				 }
+                
              ], // fin access            
         ];
     }
@@ -162,6 +169,10 @@ class InfraccionesController extends Controller
     public function actionIndex()
     {
         $searchModel = new InfraccionesSearch();
+        
+        // Trae inicialmente todos los registros activos
+        $searchModel->estado = Infracciones::ESTADO_ACTIVO;        
+        
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -179,8 +190,41 @@ class InfraccionesController extends Controller
     {
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'pdf'=>false,
         ]);
     }
+    
+    public function actionPdf($id)
+    {
+		
+	   $r=$this->renderPartial('view', [
+				'model' => $this->findModel($id),
+				'pdf'=>true
+			]);		
+	
+		$pdf = new Pdf([
+			'filename'=>'Detalle Infracción '.$id.'.pdf',
+			'mode' => Pdf::MODE_CORE, 
+			'format' => Pdf::FORMAT_A4, 
+			// Pdf::ORIENT_LANDSCAPE
+			'orientation' => Pdf::ORIENT_PORTRAIT, 
+			//'destination' => Pdf::DEST_BROWSER, // no funciona con firefox
+			'destination' => Pdf::DEST_DOWNLOAD, 
+			'content' => $r,  
+			'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
+			// any css to be embedded if required
+			//'cssInline' => '.kv-heading-1{font-size:18px}', 
+			// aca pongo el estilo que uso en el view para que los detailview salgan parejitos
+			'cssInline' => 'table.detail-view th {width: 25%;} table.detail-view td {width: 75%;}',
+			'options' => ['title' => 'Detalle de acceso'],
+			'methods' => [ 
+				'SetHeader'=>['Detalle de Infracción - Miraflores'], 
+				'SetFooter'=>['{PAGENO}'],
+			]
+		]);
+		return $pdf->render(); 		
+	
+    }    
 
     /**
      * Creates a new Infracciones model.
@@ -251,7 +295,12 @@ class InfraccionesController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-
+        
+		if ($model->multa_total > 0) {	
+			if (!\Yii::$app->user->can('altaModificarMulta')) {
+				throw new ForbiddenHttpException('Ud.solo puede modificar infracciones');  
+			}      
+		}
        // antes de recuperar los valores del post, se guarda el valor que tenia $model->archivo
         // esto se hace porque UploadedFile::getInstance sobreescribe el modelo y si en el formulario
         // no se eligio ningun archivo, se borra el que tenia antes de grabar
@@ -349,9 +398,21 @@ class InfraccionesController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        //$this->findModel($id)->delete();
+        //return $this->redirect(['index']);
 
-        return $this->redirect(['index']);
+        $model = $this->findModel($id);
+        
+        if ($model->load(Yii::$app->request->post())) {
+			$model->estado=Infracciones::ESTADO_BAJA;
+			if ($model->save()) {
+				return $this->redirect(['view', 'id' => $model->id]);
+			}
+        } else {
+            return $this->render('delete', [
+                'model' => $model,
+            ]);
+        }               
     }
 
     /**

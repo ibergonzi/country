@@ -107,7 +107,7 @@ class AccesosSearchAut extends AccesosVistaF
             'pagination'=>[
 				'pageSize' => $pageSize,
 			],
-			'sort' => ['defaultOrder' => ['id_acceso' => SORT_DESC,],
+			'sort' => ['defaultOrder' => ['ing_fecha' => SORT_DESC,],
 						// esta opcion se usa para que sea el campo que el usuario ordene, luego ordene siempre por el default
 						// es decir, si el usuario ordena por persona, la lista viene ordenada por persona y created_at desc
 					   'enableMultiSort'=>true,

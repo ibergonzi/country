@@ -451,12 +451,22 @@ class RbacController extends Controller
 			
 		// Asignaciones de roles a usuarios OJO con el id de user
 		
+		/*
+		
 		$auth->assign($administrador, 8);
         $auth->assign($consejo, 7);
         $auth->assign($intendente, 9);
         
         $auth->assign($portero,11);
         $auth->assign($sinrol,15);
+        *
+        
+        */
+ 
+ 		$auth->assign($administrador, 2);
+        $auth->assign($consejo, 1);
+        $auth->assign($intendente, 22);        
+        
      
 		
     }

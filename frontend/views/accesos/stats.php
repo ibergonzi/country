@@ -70,7 +70,8 @@ $this->title='Estadistica de accesos';
 		if (!empty($dataProvider)) {
 			
 			$toolbar=['{export}'];
-			$lbl2='';
+			$lbl2=' ('.Yii::$app->formatter->asDate($model->fecdesde) .
+					'-' . Yii::$app->formatter->asDate($model->fechasta) . ')';
 			$pdfHeader=[
 						'L'=>['content'=>\Yii::$app->params['lblName']],
 						'C'=>['content'=>$this->title . $lbl2,
@@ -161,8 +162,8 @@ $this->title='Estadistica de accesos';
 							],
 							
 							'contentFormats'=>[      
-								//2=>['format'=>'number', 'decimals'=>0],
-								//3=>['format'=>'number', 'decimals'=>2,'decPoint'=>',', 'thousandSep'=>'.'],
+								2=>['format'=>'number', 'decimals'=>0],
+								3=>['format'=>'number', 'decimals'=>2,'decPoint'=>',', 'thousandSep'=>'.'],
 
 							],
 							

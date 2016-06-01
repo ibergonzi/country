@@ -84,7 +84,7 @@ $this->registerCss('
 					$p = compact('model', 'key', 'index');
 					// Write your formula below
 					global $totSup;
-					return $widget->col(3, $p) / $totSup * 100;
+					return ($totSup==0)?0:$widget->col(3, $p) / $totSup * 100;
 				},
 				'format'=>['decimal',3],
 				'label'=>'Coeficiente',

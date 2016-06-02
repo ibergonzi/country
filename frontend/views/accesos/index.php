@@ -64,6 +64,9 @@ $this->registerCss('
 				'  '.
 				'Filtro por fecha desde el ' . Yii::$app->formatter->asDate(\Yii::$app->session->get('accesosFecDesdeF')) .
 				' hasta el ' . Yii::$app->formatter->asDate(\Yii::$app->session->get('accesosFecHastaF'));
+				
+				$searchModel->fecdesde=\Yii::$app->session->get('accesosFecDesdeF');
+				$searchModel->fechasta=\Yii::$app->session->get('accesosFecHastaF');
 
 		} else {
 			$lbl='Filtrar por rango de fechas';

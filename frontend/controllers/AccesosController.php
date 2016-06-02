@@ -151,7 +151,21 @@ class AccesosController extends Controller
     public function actionIndex()
     {
         $searchModel = new AccesosSearchAut();
-        //Yii::trace($searchModel->attributeLabels());
+        
+		// para mejorar los tiempos se proponen las fechas desde y hasta, el usuario las puede cambiar
+		
+		if ( !\Yii::$app->session->get('accesosFecDesdeF') || !\Yii::$app->session->get('accesosFecHastaF') ) {
+			$fecUltAcc=Accesos::find()->max('ing_fecha');
+			if (!\Yii::$app->session->get('accesosFecDesdeF')) {
+				$d=\Yii::$app->params['filtroConsAccesosDias'];
+				$f=date('Y-m-d',strtotime('-'.$d.' days', strtotime($fecUltAcc)));
+				\Yii::$app->session->set('accesosFecDesdeF',$f);			
+			}
+			if (!\Yii::$app->session->get('accesosFecHastaF')) {
+				\Yii::$app->session->set('accesosFecHastaF',$fecUltAcc);			
+			}      
+		}  
+        
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams,false);
 
         return $this->render('index', [

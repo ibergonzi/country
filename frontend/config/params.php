@@ -24,6 +24,9 @@ return [
     // esto se utiliza en el ingreso (function refreshListas)
     'fecSeguroDias'=>2,
     
+    // Cantidad de dias que se utiliza para calcular la "fecha desde" del filtro de la consulta de accesos (accesos/index)
+    'filtroConsAccesosDias'=>6,
+    
     // defaults de paginación de grillas, OJO verificar que no haya que tocar en los php.ini los max_execution_time
     'libro.defaultPageSize'=>5,
     'libro.sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50],

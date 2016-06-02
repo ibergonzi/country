@@ -66,10 +66,12 @@ use kartik\widgets\DatePicker;
 										'title'=>'Eliminar Filtro',
 										'data'=>[
 											'params'=>['resetFechas'=>true],
-											'method'=>'get'
+											'method'=>'get',
+											'confirm'=>'Si elimina el filtro la consulta va a tomar demasiado tiempo. Se sugiere utilizar un rango de fechas, continúa de todas formas?',
 												]
 									]);        
 			}
+
 
 		?>
     </div>

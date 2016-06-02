@@ -343,7 +343,7 @@ $this->registerCss('
             'control',
 
         ];	
-		if (\Yii::$app->user->can('exportarConsDentro')) {        
+		if ($consulta && \Yii::$app->user->can('exportarConsDentro')) {        
 			// contiene la selección inicial de columnas, es decir, todas
 			// por ejemplo [0,1,2,3]
 			$poSel=[];
@@ -405,7 +405,7 @@ $this->registerCss('
 					'title'=>'Cantidad de elementos por página',
 				],
 			]);		
-		if (\Yii::$app->user->can('exportarConsDentro')) {			
+		if ($consulta && \Yii::$app->user->can('exportarConsDentro')) {			
 			$toolbar=['{export} ',['content'=>$contentToolbar],];
 		} else {
 			$toolbar=[['content'=>$contentToolbar]];

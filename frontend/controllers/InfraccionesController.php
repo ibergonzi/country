@@ -140,11 +140,12 @@ class InfraccionesController extends Controller
         ]);		  
         
         // resumen de reincidencias
-        $queryR = Infracciones::find()->select(['id_concepto','id_uf','count(*) as cant','sum(multa_total) as tot'])
+        $queryR = Infracciones::find()->select(['id_concepto','id_uf','multa_fec_reinc','count(*) as cant','sum(multa_total) as tot'])
 									 ->andWhere(['estado'=>Infracciones::ESTADO_ACTIVO])
-									 ->andWhere(['>','multa_total',0])									 
+									 ->andWhere(['>','multa_total',0])	
+									 ->andWhere('multa_fec_reinc<fecha')								 
 									 ->andWhere(['in','id',$keys])
-									 ->groupBy(['id_concepto','id_uf']) 
+									 ->groupBy(['id_concepto','id_uf','multa_fec_reinc']) 
 									 ->orderBy(['id_concepto'=>SORT_ASC,'id_uf'=>SORT_ASC]);	
         $dataProviderR = new ActiveDataProvider([
             'query' => $queryR,
@@ -196,12 +197,10 @@ class InfraccionesController extends Controller
     
     public function actionPdf($id)
     {
-		
 	   $r=$this->renderPartial('view', [
 				'model' => $this->findModel($id),
 				'pdf'=>true
 			]);		
-	
 		$pdf = new Pdf([
 			'filename'=>'Detalle Infracción '.$id.'.pdf',
 			'mode' => Pdf::MODE_CORE, 
@@ -223,7 +222,6 @@ class InfraccionesController extends Controller
 			]
 		]);
 		return $pdf->render(); 		
-	
     }    
 
     /**
@@ -241,8 +239,10 @@ class InfraccionesController extends Controller
 			if ($ic->es_multa) {
 				$model->multa_unidad=$ic->multa_unidad; 
 				if ($ic->multa_reincidencia) {
+					$model->multa_fec_reinc=$this->calculaFecReinc($model->fecha,$ic);					
 					$model->multa_monto=$this->calculaReinc($model,$ic,true);
 				} else {
+					$model->multa_fec_reinc=$model->fecha;					
 					$model->multa_monto=$ic->multa_precio;
 				}
 				$model->multa_pers_monto=$ic->multa_personas_precio;
@@ -252,6 +252,7 @@ class InfraccionesController extends Controller
 				$model->verificado=true;				
 			} else {
 				$model->multa_unidad=null;
+				$model->multa_fec_reinc=$model->fecha;
 				$model->multa_monto=0;
 				$model->multa_pers_monto=0;
 				$model->multa_pers_total=0;
@@ -312,8 +313,10 @@ class InfraccionesController extends Controller
 			if ($ic->es_multa) {
 				$model->multa_unidad=$ic->multa_unidad; 
 				if ($ic->multa_reincidencia) {
+					$model->multa_fec_reinc=$this->calculaFecReinc($model->fecha,$ic);					
 					$model->multa_monto=$this->calculaReinc($model,$ic,false);
 				} else {
+					$model->multa_fec_reinc=$model->fecha;					
 					$model->multa_monto=$ic->multa_precio;
 				}
 				$model->multa_pers_monto=$ic->multa_personas_precio;
@@ -323,6 +326,7 @@ class InfraccionesController extends Controller
 				$model->verificado=true;				
 			} else {
 				$model->multa_unidad=null;
+				$model->multa_fec_reinc=$model->fecha;				
 				$model->multa_monto=0;
 				$model->multa_pers_monto=0;
 				$model->multa_pers_total=0;
@@ -363,18 +367,30 @@ class InfraccionesController extends Controller
         } 
         return $this->render('update', ['model' => $model,]);
     }
+
+     private function calculaFecReinc($fec,$ic) 
+     {
+		// si por error se coloca un valor que es menor que 1 dia, se devuelve la propia fecha de la multa 
+		if ($ic->multa_reinc_dias <= 1) { return $fec; }
+		
+		// Se calcula la fecha desde la cual se cuentan las reincidencias 
+		// Según intendente multa_reinc_dias se toma desde el ultimo dia del mes anterior a la multa, 
+		// es decir, si la multa es del mes 11/2016 el periodo es 31/10/2016-multa_reinc_dias hasta la fecha de la propia multa
+		// esto se hace así para poder informar la misma fecha que se consideran las reincidencias para las multas del mismo mes
+
+		$fecUltDiaMesAnt=date('Y-m-d', mktime(0, 0, 0, date('m',strtotime($fec)), 0, date('Y',strtotime($fec))));
+		$fecAtrasUnix=strtotime('-' . $ic->multa_reinc_dias . ' days', strtotime($fecUltDiaMesAnt));
+		
+		$fec=date('Y-m-d',$fecAtrasUnix);
+		return $fec;
+	 }
     
      private function calculaReinc($model,$ic,$alta) 
      {
-		// si por error se coloca un valor que es menor que 1 dia, se devuelve la multa sin reincidencias 
-		if ($ic->multa_reinc_dias <= 1) { return $ic->multa_precio; }
-		
-		// Se calcula la fecha desde la cual se cuentan las reincidencias (desde la fecha de la multa - multa_reinc_dias)
-		$fecAtrasUnix=strtotime('-' . $ic->multa_reinc_dias . ' days', strtotime($model->fecha));
-		$fecAtras=date('Y-m-d',$fecAtrasUnix);
+		$fecAtras=date('Y-m-d',strtotime($model->multa_fec_reinc));
 		$fecMulta=date('Y-m-d',strtotime($model->fecha));
 		
-		// cuenta todas las multas para la unidad funcional desde la fecha calculada
+		// cuenta todas las multas para la unidad funcional desde la fecha de reinc
 		$cantMultas=Infracciones::find()->where([
 				'id_uf'=>$model->id_uf,
 				'estado'=>Infracciones::ESTADO_ACTIVO,

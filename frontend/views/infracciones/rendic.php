@@ -3,6 +3,8 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 
+use frontend\models\Infracciones;
+
 
 /* @var $this yii\web\View */
 /* @var $searchModel frontend\models\InfraccionesSearch */
@@ -228,6 +230,26 @@ $this->registerCss('
 				'attribute'=>'tot',
 				'hAlign'=>'right',	
 				'format'=>['decimal', 2],					
+			],
+			[
+				//'attribute'=>'multa_fec_reinc',
+				'label'=>'Cant.Reincidencias',
+				'value'=>function($m) use ($fd) {
+					// cuenta todas las multas para la unidad funcional desde la fecha de reinc hasta el dia anterior al periodo informado
+					$fh=date('Y-m-d', mktime(0, 0, 0, date('m',strtotime($fd)), 0, date('Y',strtotime($fd))));
+					
+					$cantMultas=Infracciones::find()->where([
+							'id_uf'=>$m->id_uf,
+							'estado'=>Infracciones::ESTADO_ACTIVO,
+							'id_concepto'=>$m->id_concepto
+							])
+							->andWhere(['between','fecha',$m->multa_fec_reinc,$fh])->count();		
+					if ($cantMultas > 1) {$cantMultas=$cantMultas-1;}
+					$gfd=Yii::$app->formatter->asDate($m->multa_fec_reinc);
+					$gfh=Yii::$app->formatter->asDate($fh);
+										
+					return "desde $gfd hasta $gfh: $cantMultas";
+				}
 			],
 
 		];

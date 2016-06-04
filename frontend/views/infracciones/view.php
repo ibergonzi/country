@@ -109,6 +109,7 @@ $this->registerCss('
 							'value' => Infracciones::getSiNo($model->verificado)
 						],	
 						'multaUnidad.unidad',
+						'multa_fec_reinc:date',
 						'multa_monto',
 						'multa_pers_cant',
 						'multa_pers_monto',

@@ -27,6 +27,7 @@ use yii\db\Expression;
  * @property integer $verificado
  * @property string $foto
  * @property integer $multa_unidad
+ * @property integer $multa_fec_reinc
  * @property double $multa_monto
  * @property integer $multa_pers_cant
  * @property double $multa_pers_monto
@@ -124,10 +125,10 @@ class Infracciones extends \yii\db\ActiveRecord
     {
         return [
             [['id_uf', 'id_vehiculo', 'id_persona', 'hora', 'lugar', 'id_concepto', 'id_informante', 
-				'notificado', 'verificado', 'multa_monto', 'multa_pers_cant', 'multa_pers_monto', 'multa_pers_total', 
+				'notificado', 'verificado', 'multa_fec_reinc', 'multa_monto', 'multa_pers_cant', 'multa_pers_monto', 'multa_pers_total', 
 				'multa_total',], 'required'],
             [['id_uf', 'id_vehiculo', 'id_persona', 'id_concepto', 'id_informante', 'notificado', 'verificado', 
-				'multa_unidad', 'multa_pers_cant', 'created_by', 'updated_by', 'estado'], 'integer'],
+				'multa_unidad','multa_pers_cant', 'created_by', 'updated_by', 'estado'], 'integer'],
             [['fecha', 'hora', 'fecha_verif', 'created_by', 'created_at', 'updated_by', 'updated_at'], 'safe'],
             [['multa_monto', 'multa_pers_monto', 'multa_pers_total', 'multa_total'], 'number', 'numberPattern' => '/^\s*[-+]?[0-9]*[.,]?[0-9]+([eE][-+]?[0-9]+)?\s*$/'],
             [['nro_acta'], 'string', 'max' => 10],
@@ -164,6 +165,7 @@ class Infracciones extends \yii\db\ActiveRecord
             'verificado' => 'Verificado',
             'foto' => 'Foto',
             'multa_unidad' => 'Unidad',
+            'multa_fec_reinc'=>'Fec.Reinc',
             'multa_monto' => 'Monto Base',
             'multa_pers_cant' => 'Cant.Personas',
             'multa_pers_monto' => 'Monto x Pers.',

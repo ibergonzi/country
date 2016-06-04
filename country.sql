@@ -56,6 +56,7 @@ CREATE TABLE `accesos` (
   KEY `control` (`control`),
   KEY `ing_id_llave` (`ing_id_llave`),
   KEY `egr_id_llave` (`egr_id_llave`),
+  KEY `egr_fecha` (`egr_fecha`),
   CONSTRAINT `accesos_ibfk_1` FOREIGN KEY (`egr_id_llave`) REFERENCES `llaves` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_concepto` FOREIGN KEY (`id_concepto`) REFERENCES `accesos_conceptos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_egr_vehiculo` FOREIGN KEY (`egr_id_vehiculo`) REFERENCES `vehiculos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -681,6 +682,7 @@ CREATE TABLE `infracciones` (
   `verificado` tinyint(4) NOT NULL,
   `foto` varchar(255) DEFAULT NULL,
   `multa_unidad` tinyint(4) DEFAULT NULL,
+  `multa_fec_reinc` date NOT NULL,
   `multa_monto` double NOT NULL,
   `multa_pers_cant` tinyint(4) NOT NULL,
   `multa_pers_monto` double NOT NULL,
@@ -714,7 +716,7 @@ CREATE TABLE `infracciones` (
 
 LOCK TABLES `infracciones` WRITE;
 /*!40000 ALTER TABLE `infracciones` DISABLE KEYS */;
-INSERT INTO `infracciones` VALUES (2,128,2,9,'2016-05-14','2016-05-14 17:05:00','1','uf',1,10,'uf descripcion',1,'2016-05-14',0,'',NULL,0,0,0,0,0,9,'2016-05-14 17:08:46',9,'2016-05-14 17:08:46',1,NULL),(3,128,2,9,'2016-05-14','2016-05-14 17:00:00','2','uffff',5,84,'descuuuu',0,NULL,1,'',1,100,4,45,180,280,9,'2016-05-14 17:17:46',9,'2016-05-14 17:17:46',1,NULL),(4,129,2,857,'2016-05-01','2016-05-01 08:40:00','3','128',2,10,'cuac',0,NULL,1,'',1,100,3,60,180,280.25,9,'2016-05-16 14:56:21',9,'2016-05-16 14:56:21',1,NULL),(5,128,2,930,'2016-05-03','2016-05-03 09:45:00','4','128 again',2,10,'fddfdd',0,NULL,1,'5.jpg',1,120,0,60,0,120,9,'2016-05-16 14:59:41',9,'2016-05-16 16:02:46',1,NULL),(6,128,2,857,'2016-05-06','2016-05-06 05:30:00','5','128 again',2,9,'ffff',1,NULL,1,NULL,1,140,2,60,120,260,9,'2016-05-16 15:31:09',9,'2016-05-28 18:40:13',0,'');
+INSERT INTO `infracciones` VALUES (2,128,2,9,'2016-05-14','2016-05-14 17:05:00','1','uf',1,10,'uf descripcion',1,'2016-05-14',0,'',NULL,'2016-05-14',0,0,0,0,0,9,'2016-05-14 17:08:46',9,'2016-05-14 17:08:46',1,NULL),(3,128,2,9,'2016-05-14','2016-05-14 17:00:00','2','uffff',5,84,'descuuuu',0,NULL,1,'',1,'2016-05-14',100,4,45,180,280,9,'2016-05-14 17:17:46',9,'2016-05-14 17:17:46',1,NULL),(4,129,2,857,'2016-05-01','2016-05-01 08:40:00','3','128',2,10,'cuac',0,NULL,1,'',1,'2016-05-01',100,3,60,180,280.25,9,'2016-05-16 14:56:21',9,'2016-05-16 14:56:21',1,NULL),(5,128,2,930,'2016-05-03','2016-05-03 09:45:00','4','128 again',2,10,'fddfdd',0,NULL,1,'5.jpg',1,'2016-05-03',120,0,60,0,120,9,'2016-05-16 14:59:41',9,'2016-05-16 16:02:46',1,NULL),(6,128,2,857,'2016-05-06','2016-05-06 05:30:00','5','128 again',2,9,'ffff',1,NULL,1,NULL,1,'2016-05-06',140,2,60,120,260,9,'2016-05-16 15:31:09',9,'2016-05-28 18:40:13',0,'');
 /*!40000 ALTER TABLE `infracciones` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1374,4 +1376,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-05-31 16:45:25
+-- Dump completed on 2016-06-04 13:48:46

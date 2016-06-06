@@ -9,6 +9,8 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
+use yii\filters\AccessControl;
+
 /**
  * AccesosconceptosController implements the CRUD actions for AccesosConceptos model.
  */
@@ -23,6 +25,22 @@ class AccesosconceptosController extends Controller
                     'delete' => ['post'],
                 ],
             ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['delete','create','update'],
+                        'allow' => true,
+                        'roles' => ['modificarParametros'], 
+                    ],                
+                    [
+                        'actions' => ['index','view',],
+                        'allow' => true,
+                        'roles' => ['accederParametros'],
+                    ],
+                 ], // fin rules
+                
+             ], // fin access               
         ];
     }
 
@@ -98,9 +116,15 @@ class AccesosconceptosController extends Controller
      */
     public function actionDelete($id)
     {
+		/*
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+        */
+       $model = $this->findModel($id);  
+       $model->estado=($model->estado==AccesosConceptos::ESTADO_ACTIVO)?AccesosConceptos::ESTADO_INACTIVO:AccesosConceptos::ESTADO_ACTIVO;
+       $model->save();
+       return $this->redirect(['view', 'id' => $model->id]);              
     }
 
     /**

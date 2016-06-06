@@ -191,10 +191,15 @@ JS;
 							['label' => 'Carnets', 'url' => ['/carnets/index'], 'visible'=>\Yii::$app->user->can('accederCarnets')],
 							['label' => 'Cambio Personas', 'url' => ['/personas/change'], 'visible'=>\Yii::$app->user->can('cambiarPersona')],
 							'<li class="divider"></li>',							
-							['label' => 'Infracciones: Conceptos', 'url' => ['/infrac-conceptos/index'], 'visible'=>\Yii::$app->user->can('accederParametros')],
-							['label' => 'Infracciones: Unidades', 'url' => ['/infrac-unidades/index'], 'visible'=>\Yii::$app->user->can('accederParametros')],																					
+							['label' => 'Infracciones: Conceptos', 'url' => ['/infrac-conceptos/index'], 
+										'visible'=>\Yii::$app->user->can('accederParametros')],
+							['label' => 'Infracciones: Unidades', 'url' => ['/infrac-unidades/index'], 
+										'visible'=>\Yii::$app->user->can('accederParametros')],																					
 							'<li class="divider"></li>',
-							['label' => 'Autoriz.accesos manuales', 'url' => ['/accesos-autmanual/index'], 'visible'=>\Yii::$app->user->can('accederAutManualAccesos')],							
+							['label' => 'Autoriz.accesos manuales', 'url' => ['/accesos-autmanual/index'], 
+										'visible'=>\Yii::$app->user->can('accederAutManualAccesos')],	
+							['label' => 'Conceptos de accesos', 'url' => ['/accesosconceptos/index'], 
+										'visible'=>\Yii::$app->user->can('accederParametros')],																
 			] // fin items;
 		]; // fin menuItems[]		
 		if (\Yii::$app->session->get('porton')) {	

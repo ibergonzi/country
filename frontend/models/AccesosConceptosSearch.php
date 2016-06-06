@@ -19,7 +19,7 @@ class AccesosConceptosSearch extends AccesosConceptos
     {
         return [
             [['id', 'req_tarjeta', 'req_seguro'], 'integer'],
-            [['concepto'], 'safe'],
+            [['concepto','estado'], 'safe'],
         ];
     }
 

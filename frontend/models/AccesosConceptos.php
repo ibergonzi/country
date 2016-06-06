@@ -30,8 +30,9 @@ class AccesosConceptos extends \yii\db\ActiveRecord
         return 'accesos_conceptos';
     }
     
-    const ESTADO_BAJA = 0;
+    const ESTADO_INACTIVO = 0;
 	const ESTADO_ACTIVO = 1;    
+	const SIN_INGRESO = 0;
 
 	// devuelve lista de tipos documentos preparada para los dropDownList
 	// se usa:  $form->field($model, 'id_tipo_doc')->dropDownList($model->listaTiposdoc)
@@ -41,23 +42,32 @@ class AccesosConceptos extends \yii\db\ActiveRecord
 			$opciones = self::find()->where(['estado'=>self::ESTADO_ACTIVO])->asArray()->all();
 		} else {
 			// se excluye el concepto 0 (sin entrada)
-			$opciones = self::find()->where(['estado'=>self::ESTADO_ACTIVO])->andWhere(['<>','id',0])->asArray()->all();
+			$opciones = self::find()->where(['estado'=>self::ESTADO_ACTIVO])->andWhere(['<>','id',self::SIN_INGRESO])->asArray()->all();
 		}
 		return ArrayHelper::map($opciones, 'id', 'concepto');
 	}
-	
-	
 
 	// funcion agregada a mano
 	public static function getEstados($key=null)
 	{
-		$estados=[self::ESTADO_ACTIVO=>'Activo',self::ESTADO_BAJA=>'Baja'];
+		$estados=[self::ESTADO_ACTIVO=>'Habilitado',self::ESTADO_INACTIVO=>'Deshabilitado'];
 	    if ($key !== null) {
 			return $estados[$key];
 		}
 		return $estados;
 	}	
 	
+	const SI = 1;
+	const NO = 0;
+	
+	public static function getSiNo($key=null)
+	{
+		$estados=[self::NO=>'No',self::SI=>'Si'];
+	    if ($key !== null) {
+			return $estados[$key];
+		}
+		return $estados;
+	}	
 	
 	// se graban los nombres en mayúsculas
     public function beforeSave($insert)
@@ -109,8 +119,15 @@ class AccesosConceptos extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('app', 'ID'),
             'concepto' => Yii::t('app', 'Concepto'),
-            'req_tarjeta' => Yii::t('app', 'Req Tarjeta'),
-            'req_seguro' => Yii::t('app', 'Req Seguro'),
+            'req_tarjeta' => Yii::t('app', 'Requiere Tarjeta'),
+            'req_seguro' => Yii::t('app', 'Requiere Seguro'),
+            'created_by' => Yii::t('app', 'Usuario alta'),
+            'created_at' => Yii::t('app', 'Fecha alta'),
+            'updated_by' => Yii::t('app', 'Usuario modif.'),
+            'updated_at' => Yii::t('app', 'Fecha modif.'),
+            'estado' => 'Estado',
+            'userCreatedBy.username'=>'Usuario alta',
+            'userUpdatedBy.username'=>'Usuario modif.',              
         ];
     }
 
@@ -121,4 +138,14 @@ class AccesosConceptos extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Accesos::className(), ['id_concepto' => 'id']);
     }
+    
+    public function getUserCreatedBy()
+    {
+        return $this->hasOne(\common\models\User::className(), ['id' => 'created_by']);
+    }    
+    
+    public function getUserUpdatedBy()
+    {
+        return $this->hasOne(\common\models\User::className(), ['id' => 'updated_by']);
+    }        
 }

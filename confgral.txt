@@ -374,6 +374,28 @@ ANOTACIONES GENERALES
 
               ];
           }
+
+4.1) Para personalizar los templates de gii se debe copiar la carpeta default (del vendor) y modificar main-local.php de la sig.forma:
+    //$config['modules']['gii'] = 'yii\gii\Module';
+    $config['modules']['gii'] = [
+        'class' => 'yii\gii\Module',      
+        //'allowedIPs' => ['127.0.0.1', '::1', '192.168.0.*', '192.168.178.20'],  
+        'generators' => [ //here
+            'model' => [ // generator name
+                'class' => 'yii\gii\generators\model\Generator', // generator class
+                'templates' => [ //setting for out templates
+                    'mio' => '/var/www/html/country/misTemplatesGii/model/default', // template name => path to template
+                ]
+            ],
+            'crud' => [ // generator name
+                'class' => 'yii\gii\generators\crud\Generator', // generator class
+                'templates' => [ //setting for out templates
+                    'mio' => '/var/www/html/country/misTemplatesGii/crud/default', // template name => path to template
+                ]
+            ]            
+        ],
+    ];          
+          
 5) i18n
 5.1) desde consola:
    ./yii message/config @common/config/i18n.php

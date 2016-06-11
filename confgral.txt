@@ -185,8 +185,7 @@ Si es PHP7, las carpetas son /etc/php/7.0/cli y /etc/php/7.0/apache2
     donde el archivo .index contiene la lista de los bin logs. Los permisos y owner:group son importantes para hacer la restauracion
  c) La estrategia de backup consiste en hacer un backup lógico en caliente de todas las bases de datos InnoDB (con mysqldump), 
     rotar el bin log actual por uno nuevo (con mysqladmin flush-logs) y respaldar el log bin anterior
- d) Para el backup logico: mysqldump --single-transaction --flush-logs --master-data=2 \
-         --all-databases --delete-master-logs > backup_lunes.sql
+ d) Para el backup logico: mysqldump --single-transaction --flush-logs --master-data=2 --all-databases --delete-master-logs > backup_lunes.sql
          
     --single-transaction permite hacer el backup sin afectar las transacciones en curso
     --flush-logs rota el bin log actual (como si se hiciese un mysqladmin flus-logs)
@@ -197,6 +196,76 @@ Si es PHP7, las carpetas son /etc/php/7.0/cli y /etc/php/7.0/apache2
     y
     mysqlbinlog mysqld-bin.000007 mysqld-bin.000008 | mysql
     
+    o 
+    
+	mysqlbinlog mysqld-bin.[0-9]* | mysql  
+	
+ f) uso de Percona Xtrabackup
+    1) Instalar desde www.percona.com (i686 es para 32 bits OJO), bajar solo el paquete principal
+    2) para hacer backup TOTAL: 
+       xtrabackup --user=root --password=petu1999 --backup --datadir=/var/lib/mysql --target-dir=/home/desa/lib/mysql
+       
+       desde root o con sudo
+    3) Luego de backup total hay que prepararlo:
+       xtrabackup --prepare --target-dir=/home/desa/lib/mysql/ --user=root --password=petu1999   	
+	4) para restaurar la copia completa, solo hay que bajar el servidor mysql, eliminar todo el contenido de /var/lib/mysql y 
+	   copiar con cp de carpeta a carpeta, chown -R mysql:mysql /var/lib/mysql y levantar mysql
+	4a) en vez de copiar con cp se puede copiar con rsync (sirve para copias locales y remotas):
+	    rsync -avrP /home/desa/lib/mysql/ /var/lib/mysql/   
+	5) para que el restore pueda ser mas rápido hay que ejecutar de nuevo la preparación. Cuando se hace por primera vez el backup
+	   total, las bases pueden estar inconsistentes porque desde que empezó el backup hasta que terminó pueden haber movimientos.
+	   La primera vez que se ejecuta el prepare deja las bases consistentes, pero no crea los logfiles, esto se hace con un segundo 
+	   prepare. Por lo tanto los pasos son: --backup, luego --prepare y luego --prepare otra vez.
+
+	Voy a usar innobackupex en vez de xtrabackup porque el mecanismo es el mismo pero copia tambien estructuras de tablas
+	
+	Esquema de backup:
+		04:30hs carpeta 00 (full backup)
+		06:30hs carpeta 01 (incremental desde 00)
+		08:30hs carpeta 02 (incremental desde 01)
+		10:30hs carpeta 03 (incremental desde 02)
+		12:30hs carpeta 04 (incremental desde 03)	
+		14:30hs carpeta 05 (incremental desde 04)
+		16:30hs carpeta 06 (incremental desde 05)
+		18:30hs carpeta 07 (incremental desde 06)
+		20:30hs carpeta 08 (incremental desde 07)
+		22:30hs carpeta 09 (incremental desde 08)	
+		
+		Full backup (00):
+		innobackupex --user=root --password=petu1999 /home/desa/backup/00/ --no-timestamp
+		
+		Incremental (01)						
+		innobackupex --incremental /home/desa/backup/01/ --incremental-basedir=/home/desa/backup/00/ --no-timestamp --user=root --password=petu1999
+		
+		Incremental (02)						
+		innobackupex --incremental /home/desa/backup/02/ --incremental-basedir=/home/desa/backup/01/ --no-timestamp --user=root --password=petu1999     
+		
+		Asi hasta definir la carpeta 09
+		
+		En el script cuando se finaliza un backup debería copiarlo a otro lado, se puede comprimir la carpeta asi:
+			tar zcvf 00.tar.gz 00
+		
+		CUIDADO!! antes de hacer cualquier backup se debe borrar la carpeta correspondiente
+	
+	Restauración
+		Para la restauración se debe "preparar" el backup, es decir, se debe dejar el backup consistente, por ejemplo, si quiero
+		restaurar un backup antes del backup de las 10:30 hs, tengo que procesar 00, 01, 02 de la siguiente forma:
+		
+			innobackupex --apply-log --redo-only /home/desa/backup/00
+			innobackupex --apply-log --redo-only /home/desa/backup/00 --incremental-dir=/home/desa/backup/01
+			innobackupex --apply-log /home/desa/backup/00 --incremental-dir=/home/desa/backup/02
+			innobackupex --apply-log /home/desa/backup/00
+		
+		Notar que en el ultimo incremental (el 02) no se usa la opcion --redo-only
+		Opcionalmente, si se desea crear los logs en ese momento (y no que lo haga mysql cuando arranque de nuevo) se ejecuta:
+			xtrabackup --prepare --target-dir=/home/desa/backup/00/
+		Luego de la preparación, se procede con la restauración propiamente dicha:
+			innobackupex --copy-back /home/desa/backup/00/	
+			
+				
+		
+		
+						
 
    
    
@@ -495,9 +564,36 @@ reemplazar todo el contenido de ~/.vnc/xstartup con lo siguiente:
 tightvncserver :1
 fijarse el puerto dentro de ~/.vnc el log (habitualmente es el 5901)
 
+
+apt-get install xtightvncviewer
+
+$ xtightvncviewer 192.168.0.12:1
+
 FIREWALL
 Instalar gufw (interfaz grafica del firewall), habilitar los puertos 22 y 5901 (para ssh y vnc)
-Habilitar HTTP (puerto 80) para entrantes    
+Habilitar HTTP (puerto 80 y 5901) para entrantes    
+
+tightvncserver en el Startup
+sudo vi /etc/systemd/system/tightvncserver.service
+[Unit]
+    Description=TightVNC remote desktop server
+    After=sshd.service
+[Service]
+    Type=dbus
+    ExecStart=/usr/bin/tightvncserver :1
+    User=desa
+    Type=forking
+[Install]
+    WantedBy=multi-user.target
+    
+Cambiar User=desa por el usuario que corresponda
+
+sudo chown root:root /etc/systemd/system/tightvncserver.service
+sudo chmod 755 /etc/systemd/system/tightvncserver.service 
+
+sudo systemctl enable tightvncserver.service
+    
+
 
 GIT Windows
 igual que en linux, pero se usa "Git Bash", antes hay que setear una variable de ambiente GIT_SSL_NO_VERIFY con valor 1

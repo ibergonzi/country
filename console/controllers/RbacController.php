@@ -4,6 +4,8 @@ namespace console\controllers;
 use Yii;
 use yii\console\Controller;
 
+use common\models\User;
+
 class RbacController extends Controller
 {
     public function actionInit()
@@ -463,9 +465,15 @@ class RbacController extends Controller
         
         */
  
- 		$auth->assign($administrador, 2);
-        $auth->assign($consejo, 1);
-        $auth->assign($intendente, 22);        
+ 		//$auth->assign($administrador, 2);
+        //$auth->assign($consejo, 1);
+
+		$users=User::findAll();
+		foreach ($users as $u) {
+			if ($u->id == 1) {$auth->assign($consejo, $u->id);continue;}
+			if ($u->id == 2) {$auth->assign($administrador, $u->id);continue;}
+			$auth->assign($sinrol,$u->id);
+		}
         
      
 		

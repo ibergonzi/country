@@ -8,6 +8,8 @@ use frontend\models\GeneradoresSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+// para aplicar RBAC
+use yii\filters\AccessControl;
 
 /**
  * GeneradoresController implements the CRUD actions for Generadores model.
@@ -26,6 +28,28 @@ class GeneradoresController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
+            /*
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['delete'],
+                        'allow' => true,
+                        'roles' => ['borrar'], 
+                    ],                
+                    [
+                        'actions' => ['index','view'],
+                        'allow' => true,
+                        'roles' => ['acceder'], 
+                    ],
+                    [
+                        'actions' => ['create','update'],
+                        'allow' => true,
+                        'roles' => ['altaModificar'], 
+                    ],
+                 ], // fin rules
+            ], // fin access   
+            */             
         ];
     }
 

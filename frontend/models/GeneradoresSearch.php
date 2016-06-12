@@ -43,10 +43,19 @@ class GeneradoresSearch extends Generadores
     {
         $query = Generadores::find();
 
+		//$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['REEMPLAZAR.defaultPageSize'];
+		$pageSize=isset($_GET['per-page'])?$_GET['per-page']:15;
+
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination'=>[
+				'pageSize' => $pageSize,
+			],            
+            'sort' => ['defaultOrder' => ['id' => SORT_DESC,],
+						'enableMultiSort'=>true,            
+                      ],              
         ]);
 
         $this->load($params);

@@ -46,7 +46,7 @@ class AccesosAutmanual extends \yii\db\ActiveRecord
 	
 	public static function periodoManualActivo($hora)        
 	{
-		$periodos=self::findAll()->where(['estado'=>self::ESTADO_ABIERTO]);
+		$periodos=self::find()->where(['estado'=>self::ESTADO_ABIERTO])->all();
 		$permite=false;
 		foreach ($periodos as $p) {
 			if ( strtotime($hora) >= strtotime($p->hora_desde) && strtotime($hora) <= strtotime($p->hora_hasta) ) {

@@ -138,10 +138,23 @@ JS;
 							['label' => 'Agenda', 
 								'url' => ['/agenda/index'], 
 								'visible'=>\Yii::$app->user->can('accederAgenda')
-							],																
+							],
+							'<li class="divider"></li>',
+							'<li class="dropdown-header">Diferido</li>',
+							['label' => '<span class="glyphicon glyphicon-arrow-right"></span>&nbsp;Ingresos', 
+								'url' => ['/accesos/ingreso','diferido'=>1], 
+								'visible'=>\Yii::$app->user->can('accederIngreso')
+							],
+							['label' => '<span class="glyphicon glyphicon-arrow-left"></span>&nbsp;Egresos', 
+								'url' => ['/accesos/egreso','diferido'=>1], 
+								'visible'=>\Yii::$app->user->can('accederEgreso')
+							],	
 			] // fin items;
 		]; // fin menuItems[]
 		
+		
+		
+	
 		$menuItems[] = ['label' => 'Infracciones', 
 						'items' => [
 							['label' => 'Infracciones/multas', 

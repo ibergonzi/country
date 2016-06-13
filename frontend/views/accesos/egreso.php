@@ -24,6 +24,8 @@ use kartik\popover\PopoverX;
 
 use kartik\icons\Icon;
 
+use kartik\datecontrol\DateControl;
+
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Accesos */
 
@@ -295,6 +297,13 @@ $(document).ready(function() {
 								}'
 							]							
 						]);  	
+
+						if ($diferido) {
+							echo $form->field($model, 'egr_hora')->widget(DateControl::classname(), [
+									'type'=>DateControl::FORMAT_DATETIME,
+									'displayFormat'=>'php:d/m/Y H:i'
+								]);							
+						}	
 	
 					?>
 				

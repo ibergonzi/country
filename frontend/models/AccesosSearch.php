@@ -93,11 +93,10 @@ class AccesosSearch extends AccesosVista
     public function search($params,$consDentro=null)
     {
 		// OJO uso AccesosSearch para que me tome los attributelabels de las propiedades nuevas (antes tenia Accesos)
+		$query = AccesosSearch::find()->andWhere(['egr_fecha'=>null,'estado'=>1]);
 		if ($consDentro) {
-			$query = AccesosSearch::find()->andWhere(['egr_fecha'=>null,'estado'=>1]);	
 			$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['accesos.defaultPageSize'];			
 		} else {
-			$query = AccesosSearch::find();
 			$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['accesosEgr.defaultPageSize'];			
 		}
         
@@ -106,7 +105,7 @@ class AccesosSearch extends AccesosVista
             'pagination'=>[
 				'pageSize' => $pageSize,
 			],
-			'sort' => ['defaultOrder' => ['id' => SORT_DESC,],
+			'sort' => ['defaultOrder' => ['ing_hora' => SORT_DESC,],
 						// esta opcion se usa para que sea el campo que el usuario ordene, luego ordene siempre por el default
 						// es decir, si el usuario ordena por persona, la lista viene ordenada por persona y created_at desc
 					   'enableMultiSort'=>true,
@@ -170,8 +169,8 @@ class AccesosSearch extends AccesosVista
             
 
 		if (isset($params['resetFechas'])) {
-			\Yii::$app->session->remove('accesosFecDesde');
-			\Yii::$app->session->remove('accesosFecHasta');
+			\Yii::$app->session->remove('accesosFecDesdeF');
+			\Yii::$app->session->remove('accesosFecHastaF');
 			$this->fecdesde=null;
 			$this->fechasta=null;
 			unset($params['resetFechas']);
@@ -180,8 +179,8 @@ class AccesosSearch extends AccesosVista
 
         if (!empty($this->fecdesde) && !empty($this->fechasta)) {
 			// cada vez que se envia el form con el rango de fechas se guardan las fechas en sesion
-			\Yii::$app->session->set('accesosFecDesde',$this->fecdesde);			
-			\Yii::$app->session->set('accesosFecHasta',$this->fechasta);					
+			\Yii::$app->session->set('accesosFecDesdeF',$this->fecdesde);			
+			\Yii::$app->session->set('accesosFecHastaF',$this->fechasta);					
 			
 			// para el between entre datetimes se debe agregar un dia mas a la fecha hasta
 			$f=new \DateTime($this->fechasta);
@@ -189,15 +188,15 @@ class AccesosSearch extends AccesosVista
 			$query->andFilterWhere(['between', 'ing_fecha', $this->fecdesde, $f->format('Y-m-d')]);
 			
 		} else {
-			$sfd=\Yii::$app->session->get('accesosFecDesde')?\Yii::$app->session->get('accesosFecDesde'):'';
-			$sfh=\Yii::$app->session->get('accesosFecHasta')?\Yii::$app->session->get('accesosFecHasta'):'';
+			$sfd=\Yii::$app->session->get('accesosFecDesdeF')?\Yii::$app->session->get('accesosFecDesdeF'):'';
+			$sfh=\Yii::$app->session->get('accesosFecHastaF')?\Yii::$app->session->get('accesosFecHastaF'):'';
 			
 			// si todavia están en sesion las variables del rango de fechas se hace el between y se elimina created_at
 			if ($sfd && $sfh) {
 				// para el between entre datetimes se debe agregar un dia mas a la fecha hasta
-				$f=new \DateTime(\Yii::$app->session->get('accesosFecHasta'));
+				$f=new \DateTime(\Yii::$app->session->get('accesosFecHastaF'));
 				//$f->add(new \DateInterval('P1D'));
-				$query->andFilterWhere(['between', 'ing_fecha', \Yii::$app->session->get('accesosFecDesde'), 
+				$query->andFilterWhere(['between', 'ing_fecha', \Yii::$app->session->get('accesosFecDesdeF'), 
 						$f->format('Y-m-d')]);
 				$this->created_at='';		
 			}				

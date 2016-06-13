@@ -81,6 +81,36 @@ $this->registerCss('
 
     
     <?php 
+		if (\Yii::$app->session->get('accesosFecDesdeF')) {
+			$lbl=Html::tag('span','',['class'=>'glyphicon glyphicon-warning-sign','style'=>'color:#FF8000']).
+				'  '.
+				'Filtro por fecha desde el ' . Yii::$app->formatter->asDate(\Yii::$app->session->get('accesosFecDesdeF')) .
+				' hasta el ' . Yii::$app->formatter->asDate(\Yii::$app->session->get('accesosFecHastaF'));
+				
+				$searchModel->fecdesde=\Yii::$app->session->get('accesosFecDesdeF');
+				$searchModel->fechasta=\Yii::$app->session->get('accesosFecHastaF');
+
+		} else {
+			$lbl='Filtrar por rango de fechas';
+		}
+
+		echo Collapse::widget([
+		'encodeLabels'=>false,
+		'items'=>[
+				[
+				'label'=> $lbl,
+				'content'=>$this->render('_searchfec', ['model' => $searchModel]),
+				]
+			]
+		]);
+
+		
+		if (\Yii::$app->session->get('accesosFecDesdeF')) {
+			$lbl2=' ('.Yii::$app->formatter->asDate(\Yii::$app->session->get('accesosFecDesdeF')) .
+						'-' . Yii::$app->formatter->asDate(\Yii::$app->session->get('accesosFecHastaF')) . ')';
+		} else {
+			$lbl2='';
+		}	    
 		$lbl2='';
 		$pdfHeader=[
 					'L'=>['content'=>\Yii::$app->params['lblName']],

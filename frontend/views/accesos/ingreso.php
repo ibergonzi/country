@@ -22,6 +22,8 @@ use kartik\popover\PopoverX;
 
 use kartik\icons\Icon;
 
+use kartik\datecontrol\DateControl;
+
 
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Accesos */
@@ -444,7 +446,14 @@ $(document).ready(function() {
 									});
 							',
 							]);
-						echo $form->field($model,'motivo')->textInput(['maxlength' => true,'style' => 'text-transform: uppercase']);		
+						echo $form->field($model,'motivo')->textInput(['maxlength' => true,'style' => 'text-transform: uppercase']);
+						
+						if ($diferido) {
+							echo $form->field($model, 'ing_hora')->widget(DateControl::classname(), [
+									'type'=>DateControl::FORMAT_DATETIME,
+									'displayFormat'=>'php:d/m/Y H:i'
+								]);							
+						}		
 
 						
 						//echo $form->field($model,'cant_acomp')->textInput();				

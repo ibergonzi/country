@@ -34,9 +34,24 @@ class Autorizantes extends \yii\db\ActiveRecord
             [['id_uf', 'id_persona'], 'integer'],
             [['id_persona', 'id_uf'], 'unique', 'targetAttribute' => ['id_persona', 'id_uf'], 'message' => 'La combinación UF/Persona ya existe.'],
             [['id_uf'], 'exist', 'skipOnError' => true, 'targetClass' => Uf::className(), 'targetAttribute' => ['id_uf' => 'id']],
+            [['id_uf'],'validaUfValida'],
             [['id_persona'], 'exist', 'skipOnError' => true, 'targetClass' => Personas::className(), 'targetAttribute' => ['id_persona' => 'id']],
         ];
     }
+    
+    public function validaUfValida($attribute, $params) 
+    {  
+		if (!empty($this->id_uf)) {
+			$u=Uf::findOne($this->id_uf);
+			if ($u->estado == 0) {
+				$uf_generica=\Yii::$app->params['uf.generica'];	
+				if ($uf_generica !== $u->id) {
+					$this->addError('id_uf','La UF está dada de baja');return;
+				}
+			}
+		}
+		  
+	}
 
     /**
      * @inheritdoc

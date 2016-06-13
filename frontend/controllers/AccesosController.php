@@ -32,6 +32,7 @@ use frontend\models\AccesosUf;
 use frontend\models\AccesosConceptos;
 use frontend\models\Uf;
 use frontend\models\RangoFechas;
+use frontend\models\AccesosAutmanual;
 
 
 use kartik\mpdf\Pdf;
@@ -174,6 +175,101 @@ class AccesosController extends Controller
         ]);
     }
     
+  
+    public function actionEgresoGrupal()
+    {
+		// chequea que se haya elegido un porton, sino es asi se redirecciona a la eleccion de porton
+		if (!\Yii::$app->session->get('porton')) {
+			// se setea returnUrl para que funcione el goBack en portones/elegir (parecido a lo que hace login())
+			//Yii::$app->user->setReturnUrl(Yii::$app->urlManager->createUrl(['accesos/egreso']));
+			return $this->redirect(['portones/elegir','backUrl'=>'accesos/egreso-grupal']);
+		}		
+		
+        $searchModel = new AccesosSearch();
+        
+		// para mejorar los tiempos se proponen las fechas desde y hasta, el usuario las puede cambiar
+		
+		if ( !\Yii::$app->session->get('accesosFecDesdeF') || !\Yii::$app->session->get('accesosFecHastaF') ) {
+			$fecUltAcc=Accesos::find()->max('ing_fecha');
+			if (!\Yii::$app->session->get('accesosFecDesdeF')) {
+				$d=\Yii::$app->params['filtroConsAccesosDias'];
+				$f=date('Y-m-d',strtotime('-'.$d.' days', strtotime($fecUltAcc)));
+				\Yii::$app->session->set('accesosFecDesdeF',$f);			
+			}
+			if (!\Yii::$app->session->get('accesosFecHastaF')) {
+				\Yii::$app->session->set('accesosFecHastaF',$fecUltAcc);			
+			}      
+		}  
+        
+		if (isset($_POST['keylist'])) {
+			$keys=$_POST['keylist'];
+			
+			\Yii::$app->response->format = 'json';	
+			if (!is_array($keys)) {
+				return ['status' => 'error'];
+			}
+			if (count($keys)==0) { return ['status' => 'error'];}
+			
+
+			// Para que coincidan las fechas y horas en todos los registros se utilizan variables auxiliares antes de grabar
+			$fecAux=date("Y-m-d");
+			$horAux=new Expression('CURRENT_TIMESTAMP');
+			$transaction = Yii::$app->db->beginTransaction();				
+			try {			
+				foreach ($keys as $m) {
+					$model=Accesos::findOne($m);
+					$model->egr_id_vehiculo=$model->ing_id_vehiculo;
+					$model->egr_fecha=$fecAux;
+					$model->egr_hora=$horAux;
+					$model->egr_id_porton=\Yii::$app->session->get('porton');  
+					$model->egr_id_user=\Yii::$app->user->identity->id;					
+					$model->save();				
+				}	
+				$transaction->commit();
+			} catch(\Exception $e) {
+				$transaction->rollBack();
+				throw $e;
+			} // try..catch			
+			return ['status' => 'success'];			
+		}
+		
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams,false);
+
+        return $this->render('consdentro', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'consulta'=>false
+        ]);
+    }    
+    
+    public function actionConsDentro()
+    {
+        $searchModel = new AccesosSearch();
+        //Yii::trace($searchModel->attributeLabels());
+        
+		// para mejorar los tiempos se proponen las fechas desde y hasta, el usuario las puede cambiar
+		
+		if ( !\Yii::$app->session->get('accesosFecDesdeF') || !\Yii::$app->session->get('accesosFecHastaF') ) {
+			$fecUltAcc=Accesos::find()->max('ing_fecha');
+			if (!\Yii::$app->session->get('accesosFecDesdeF')) {
+				$d=\Yii::$app->params['filtroConsAccesosDias'];
+				$f=date('Y-m-d',strtotime('-'.$d.' days', strtotime($fecUltAcc)));
+				\Yii::$app->session->set('accesosFecDesdeF',$f);			
+			}
+			if (!\Yii::$app->session->get('accesosFecHastaF')) {
+				\Yii::$app->session->set('accesosFecHastaF',$fecUltAcc);			
+			}      
+		}          
+        
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams,true);
+
+        return $this->render('consdentro', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'consulta'=>true
+        ]);
+    }   
+    
     public function actionStats()
     {
 		$model=new RangoFechas();
@@ -283,71 +379,7 @@ class AccesosController extends Controller
 			]);
 
         		
-	}
-    
-    public function actionEgresoGrupal()
-    {
-		// chequea que se haya elegido un porton, sino es asi se redirecciona a la eleccion de porton
-		if (!\Yii::$app->session->get('porton')) {
-			// se setea returnUrl para que funcione el goBack en portones/elegir (parecido a lo que hace login())
-			//Yii::$app->user->setReturnUrl(Yii::$app->urlManager->createUrl(['accesos/egreso']));
-			return $this->redirect(['portones/elegir','backUrl'=>'accesos/egreso-grupal']);
-		}		
-		
-        $searchModel = new AccesosSearch();
-		if (isset($_POST['keylist'])) {
-			$keys=$_POST['keylist'];
-			
-			\Yii::$app->response->format = 'json';	
-			if (!is_array($keys)) {
-				return ['status' => 'error'];
-			}
-			if (count($keys)==0) { return ['status' => 'error'];}
-			
-
-			// Para que coincidan las fechas y horas en todos los registros se utilizan variables auxiliares antes de grabar
-			$fecAux=date("Y-m-d");
-			$horAux=new Expression('CURRENT_TIMESTAMP');
-			$transaction = Yii::$app->db->beginTransaction();				
-			try {			
-				foreach ($keys as $m) {
-					$model=Accesos::findOne($m);
-					$model->egr_id_vehiculo=$model->ing_id_vehiculo;
-					$model->egr_fecha=$fecAux;
-					$model->egr_hora=$horAux;
-					$model->egr_id_porton=\Yii::$app->session->get('porton');  
-					$model->egr_id_user=\Yii::$app->user->identity->id;					
-					$model->save();				
-				}	
-				$transaction->commit();
-			} catch(\Exception $e) {
-				$transaction->rollBack();
-				throw $e;
-			} // try..catch			
-			return ['status' => 'success'];			
-		}
-		
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams,true);
-
-        return $this->render('consdentro', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-            'consulta'=>false
-        ]);
-    }    
-    
-    public function actionConsDentro()
-    {
-        $searchModel = new AccesosSearch();
-        //Yii::trace($searchModel->attributeLabels());
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams,true);
-
-        return $this->render('consdentro', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-            'consulta'=>true
-        ]);
-    }        
+	}         
     
     /**
      * Displays a single Accesos model.
@@ -1244,7 +1276,7 @@ class AccesosController extends Controller
 		return ($vto >= $hoy)?false:true;
 	}	
 
-    public function actionEgreso()
+    public function actionEgreso($diferido=false)
     {
 		// chequea que se haya elegido un porton, sino es asi se redirecciona a la eleccion de porton
 		if (!\Yii::$app->session->get('porton')) {
@@ -1274,7 +1306,13 @@ class AccesosController extends Controller
 				\Yii::$app->session->addFlash('danger','Debe especificar un vehiculo');
 				$rechaza=true;
 			}
-			
+
+			if ($diferido) {
+				if (!AccesosAutmanual::periodoManualActivo($model->egr_hora)) {
+					\Yii::$app->session->addFlash('danger','Fecha/hora no está dentro de un periodo habilitado');	
+					$rechaza=true;			
+				}
+			}			
 			
 			if ($rechaza) {
 				// actualiza los 2 grupos en variables que se van a pasar al render
@@ -1283,12 +1321,18 @@ class AccesosController extends Controller
 				return $this->render('egreso', [
 					'model' => $model,
 					'tmpListas'=>$listas,
+					'diferido'=>$diferido,					
 				]);   				
 			}			
 
 			// Para que coincidan las fechas y horas en todos los registros se utilizan variables auxiliares antes de grabar
-			$fecAux=date("Y-m-d");
-			$horAux=new Expression('CURRENT_TIMESTAMP');
+			if ($diferido) {
+				$fecAux=$model->egr_hora;
+				$horAux=$model->egr_hora;
+			} else {			
+				$fecAux=date("Y-m-d");
+				$horAux=new Expression('CURRENT_TIMESTAMP');
+			}
 			// Comienza Transaccion
 			$transaction = Yii::$app->db->beginTransaction();				
 			try {
@@ -1371,11 +1415,12 @@ class AccesosController extends Controller
 		return $this->render('egreso', [
 			'model' => $model,
 			'tmpListas'=>$listas,
+			'diferido'=>$diferido,			
 		]);        
 		        
 	}
 
-    public function actionIngreso()
+    public function actionIngreso($diferido=false)
     {
 		// chequea que se haya elegido un porton, sino es asi se redirecciona a la eleccion de porton
 		if (!\Yii::$app->session->get('porton')) {
@@ -1431,8 +1476,13 @@ class AccesosController extends Controller
 							break;
 						}
 					}
-					
-					
+				}
+			}
+			
+			if ($diferido) {
+				if (!AccesosAutmanual::periodoManualActivo($model->ing_hora)) {
+					\Yii::$app->session->addFlash('danger','Fecha/hora no está dentro de un periodo habilitado');	
+					$rechaza=true;			
 				}
 			}
 			
@@ -1443,12 +1493,18 @@ class AccesosController extends Controller
 				return $this->render('ingreso', [
 					'model' => $model,
 					'tmpListas'=>$listas,
+					'diferido'=>$diferido,
 				]);   				
 			}			
-
+			
 			// Para que coincidan las fechas y horas en todos los registros se utilizan variables auxiliares antes de grabar
-			$fecAux=date("Y-m-d");
-			$horAux=new Expression('CURRENT_TIMESTAMP');
+			if ($diferido) {
+				$fecAux=$model->ing_hora;
+				$horAux=$model->ing_hora;
+			} else {
+				$fecAux=date("Y-m-d");
+				$horAux=new Expression('CURRENT_TIMESTAMP');
+			}
 			// Comienza Transaccion
 			$transaction = Yii::$app->db->beginTransaction();				
 			try {
@@ -1507,6 +1563,7 @@ class AccesosController extends Controller
 		return $this->render('ingreso', [
 			'model' => $model,
 			'tmpListas'=>$listas,
+			'diferido'=>$diferido,			
 		]);        
     }
 

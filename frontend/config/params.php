@@ -20,6 +20,9 @@ return [
     'generico.id'=>3,
     'generico.patente'=>'7777',    
     
+    // la uf generica 
+    'uf.generica'=>0,
+    
     // Cantidad de dias que se adicionan a la fecha del dia para controlar los seguros que se estén por vencer
     // esto se utiliza en el ingreso (function refreshListas)
     'fecSeguroDias'=>2,

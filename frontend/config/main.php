@@ -7,14 +7,15 @@ $params = array_merge(
 );
 
 use \kartik\datecontrol\Module;
-date_default_timezone_set('America/Argentina');
+date_default_timezone_set('America/Argentina/Buenos_Aires');
 return [
     'id' => 'app-frontend',
     'name'=>'Miraflores',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
-	'timeZone' => 'UTC-3',    
+	//'timeZone' => 'UTC-3',  
+	'timeZone' => 'America/Argentina/Buenos_Aires',	  
     'components' => [
         'user' => [
             'identityClass' => 'common\models\User',

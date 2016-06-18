@@ -94,7 +94,6 @@ class AccesosSearch extends AccesosVista
     {
 		// OJO uso AccesosSearch para que me tome los attributelabels de las propiedades nuevas (antes tenia Accesos)
 		$query = AccesosSearch::find()->andWhere(['egr_fecha'=>null,'estado'=>1]);
-
 		if ($consDentro) {
 			$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['accesos.defaultPageSize'];			
 		} else {
@@ -207,6 +206,8 @@ class AccesosSearch extends AccesosVista
 			}	
 		}
 
+		//$query->andFilterWhere(['egr_fecha'=>null,'estado'=>1]);
+		
 
         return $dataProvider;
     }

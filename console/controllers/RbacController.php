@@ -468,7 +468,7 @@ class RbacController extends Controller
  		//$auth->assign($administrador, 2);
         //$auth->assign($consejo, 1);
 
-		$users=User::findAll();
+		$users=User::find()->all();
 		foreach ($users as $u) {
 			if ($u->id == 1) {$auth->assign($consejo, $u->id);continue;}
 			if ($u->id == 2) {$auth->assign($administrador, $u->id);continue;}

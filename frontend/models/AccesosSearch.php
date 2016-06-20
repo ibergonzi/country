@@ -52,7 +52,6 @@ class AccesosSearch extends AccesosVista
 				'desc_concepto',
 				'ing_id_llave',
 				'egr_id_llave',	
-				'id_ufs',				
 				], 'safe'],
             [['fecdesde','fechasta',],'safe'],
             [['fecdesde','fechasta',],'validaRangoFechas','skipOnEmpty' => true],				
@@ -90,15 +89,13 @@ class AccesosSearch extends AccesosVista
      *
      * @return ActiveDataProvider
      */
-    public function search($params,$consDentro=null)
+    public function search($params)
     {
 		// OJO uso AccesosSearch para que me tome los attributelabels de las propiedades nuevas (antes tenia Accesos)
 		$query = AccesosSearch::find()->andWhere(['egr_fecha'=>null,'estado'=>1]);
-		if ($consDentro) {
-			$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['accesos.defaultPageSize'];			
-		} else {
-			$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['accesosEgr.defaultPageSize'];			
-		}
+
+		$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['accesosEgr.defaultPageSize'];			
+
         
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -164,7 +161,6 @@ class AccesosSearch extends AccesosVista
             ->andFilterWhere(['like', 'r_egr_marca', $this->r_egr_marca])
             ->andFilterWhere(['like', 'r_egr_modelo', $this->r_egr_modelo])
             ->andFilterWhere(['like', 'r_egr_color', $this->r_egr_color])
-            ->andFilterWhere(['like', 'id_ufs', $this->id_ufs])            
             ->andFilterWhere(['like', 'desc_concepto', $this->desc_concepto]);
             
 

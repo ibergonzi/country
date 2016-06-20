@@ -365,33 +365,9 @@ $this->registerCss('
 				'filter'=>AccesosConceptos::getListaConceptos(false),
 		    ],
             'motivo',		 
+
             'control',
-            [
-				'attribute'=>'id_autorizante',
-				'format' => 'raw',
-				'value' => function ($model, $index, $widget) {
-					return Html::a($model->id_autorizante, 
-								Yii::$app->urlManager->createUrl(
-										['personas/view', 
-										 'id' => $model->id_autorizante
-										]),
-										['title' => 'Ver detalle de autorizante',
-										 // para que se abra el link en nueva pestaña hay que setear ademas pjax="0"
-										 'target' => '_blank',
-										 'data-pjax'=>'0'
-										]);
-					},
-            ],
-            'r_aut_apellido',
-            'r_aut_nombre',
-            'r_aut_nombre2',
 
-			/*		
-			'r_aut_nro_doc',
-
-			*/                     
-            'id_uf',
-    
         ];	
 		if ($consulta && \Yii::$app->user->can('exportarConsDentro')) {        
 			// contiene la selección inicial de columnas, es decir, todas

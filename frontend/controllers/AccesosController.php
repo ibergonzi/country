@@ -235,7 +235,7 @@ class AccesosController extends Controller
 		
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams,false);
 
-        return $this->render('consdentro', [
+        return $this->render('consegrgrupal', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'consulta'=>false
@@ -244,7 +244,7 @@ class AccesosController extends Controller
     
     public function actionConsDentro()
     {
-        $searchModel = new AccesosSearch();
+        $searchModel = new AccesosSearchAut();
         //Yii::trace($searchModel->attributeLabels());
         
 		// para mejorar los tiempos se proponen las fechas desde y hasta, el usuario las puede cambiar

@@ -94,14 +94,20 @@ class AccesosSearchAut extends AccesosVistaF
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params,$consDentro=null)
     {
 		// OJO uso AccesosSearch para que me tome los attributelabels de las propiedades nuevas (antes tenia Accesos)
 
-		$query = AccesosSearchAut::find();
 
-		$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['accesosAut.defaultPageSize'];
-        
+		if ($consDentro) {
+			$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['accesos.defaultPageSize'];			
+			$query = AccesosSearchAut::find()->andWhere(['egr_fecha'=>null,'estado'=>1]);
+		} else {
+			$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['accesosAut.defaultPageSize'];			
+			$query = AccesosSearchAut::find();
+		}
+
+      
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination'=>[

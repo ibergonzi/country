@@ -620,5 +620,13 @@ sudo systemctl enable tightvncserver.service
 GIT Windows
 igual que en linux, pero se usa "Git Bash", antes hay que setear una variable de ambiente GIT_SSL_NO_VERIFY con valor 1
 
+country DNS
+freedns.afraid.org
+usuario mirafloresadm
+clave mirafloresadm
+mail miraflores.adm.notif@gmail.com
+
+
+
  
 

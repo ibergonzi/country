@@ -67,8 +67,11 @@ class CarnetsController extends Controller
 		if ($pdf) {	
 		    $r=$this->renderPartial('view',['pdf'=>true,'lado'=>$lado]);		
 			$pdf = new Pdf(); 
-			$mpdf = $pdf->api; 
+			
+			$mpdf = $pdf->api;
+			$mpdf->keep_table_proportions = true;			 
 			$mpdf->WriteHtml($r); 
+			Yii::trace($r);
 			echo $mpdf->Output('tarjetas-'.$lado.'.pdf', 'D'); 	
 		}			
 		$listas=$this->refreshListas();

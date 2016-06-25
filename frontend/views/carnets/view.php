@@ -30,37 +30,45 @@ if ($sessPersonas) {
 	foreach ($sessPersonas as $id) {
 			$y=$y+1;		
 			if ($y==1) { echo '<tr>';}
-			echo '<td style="border:1px solid black;overflow-y:hidden;text-align:center;height: 90mm;width: 46mm;">';
+			//echo '<td style="border:1px solid black;overflow-y:hidden;text-align:center;height: 90mm;width: 46mm;">';
+			echo '<td style="border:1px solid black;overflow-y:hidden;text-align:center;height: 100mm !important;min-width: 46mm !important;">';
 			if ($lado=='frente') {
 					$p=Personas::findOne($id);
 					if (!empty($p->foto)) {
 						echo '<p>'.Html::img(Yii::$app->urlManager->createUrl('images/personas/'.$p->foto),
-							['style'=>'width: 40mm;height:40mm;']).'</p>';
+							//['style'=>'width: 40mm;height:40mm;']).'</p>';
+							['style'=>'height:40mm;']).'</p>';							
 					} else {
 						echo '<p>'.Html::img(Yii::$app->urlManager->createUrl('images/sinfoto.png'),
-							['style'=>'width: 40mm;height:40mm;']).'</p>';
+							//['style'=>'width: 40mm;height:40mm;']).'</p>';
+							['style'=>'height:40mm;']).'</p>';
 					}
 					echo '<p>'.$p->apellido.' ('.$p->id.')</p>';
 					echo '<p>'.$p->nombre.' '.$p->nombre2.'</p>';
 					echo '<p>'.$p->nro_doc.'</p>';
 					echo '<div style="color:white;text-align:center;padding:5px;">';
-					echo '<barcode code="*'. $p->id .'*" type="C39" size="0.5" height="2.0"/>';
+					//echo '<barcode code="*'. $p->id .'*" type="C39" size="0.5" height="2.0"/>';
+					echo '<barcode code="*'. $p->id .'*" type="C39"/>';
 					echo '</div>';
 			} else {
 				echo Html::img(Yii::$app->urlManager->createUrl('images/dorso.png'),
-							['style'=>'width: 40mm;height:auto;']);
+							//['style'=>'width: 40mm;height:auto;']);
+							['style'=>'height:auto;']);							
 			}			
 		
 			echo '</td>';
 		
-			if ($y==4) {
+			//if ($y==4) {
+			if ($y==3) {				
 				$y=0;
 				echo '</tr>';
 			}
 	} // fin foreach sessPersonas
 	if ($y > 0) {
-		for ($i=$y+1;$i<=4;$i++) {
-					echo '<td style="height: 90mm;width: 46mm;">';
+		//for ($i=$y+1;$i<=4;$i++) {
+		for ($i=$y+1;$i<=3;$i++) {			
+					//echo '<td style="height: 90mm;width: 46mm;">';
+					echo '<td style="min-height: 100mm;min-width: 46mm !important;">';					
 					echo '</td>';
 		}
 		echo '</tr>';

@@ -626,7 +626,13 @@ usuario mirafloresadm
 clave mirafloresadm
 mail miraflores.adm.notif@gmail.com
 
-
+PROBLEMAS INEXPLICABLES
+Cuando se hace "composer update" se pueden originar problemas que no tienen explicación, por ejemplo que los filters de los grids
+dejen de funcionar. La solución es la siguiente:
+1) Copiar la carpeta "vendor" y el archivo composer.lock a otro lugar (si todo sale mal se restaura y listo)
+2) Eliminar composer.lock
+3) Eliminar todo el contenido de la carpeta vendor y dejar, si hubiese, el .gitignore
+4) composer install --prefer-dist
 
  
 

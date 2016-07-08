@@ -224,15 +224,15 @@ $this->registerCss('
 
 		
 		$contentToolbar=\nterms\pagesize\PageSize::widget([
-			'defaultPageSize'=>\Yii::$app->params['personas.defaultPageSize'],
-			'sizes'=>\Yii::$app->params['personas.sizes'],
+			'defaultPageSize'=>\Yii::$app->params['autorizantes.defaultPageSize'],
+			'sizes'=>\Yii::$app->params['autorizantes.sizes'],
 			'label'=>'',
 			'options'=>[
 					'class'=>'btn btn-default',
 					'title'=>'Cantidad de elementos por página',
 				],
 			]);		
-		if (\Yii::$app->user->can('exportarListaPersonas')) {			
+		if (\Yii::$app->user->can('exportarListaAutorizantes')) {			
 			$toolbar=['{export} ',['content'=>$contentToolbar],];
 		} else {
 			$toolbar=[['content'=>$contentToolbar]];

@@ -21,9 +21,9 @@ class PersonasSearch extends Personas
     public function rules()
     {
         return [
-            [['id', 'id_tipo_doc', 'created_by', 'updated_by'], 'integer'],
-            [['apellido', 'nombre', 'nombre2', 'nro_doc', 'foto', 'created_at', 
-				'updated_at', 'motivo_baja','estado','tipoDoc'], 'safe'],
+            //[['id', 'id_tipo_doc', 'created_by', 'updated_by'], 'integer'],
+            //[['id','apellido', 'nombre', 'nombre2', 'nro_doc', 'foto', 'created_at','updated_at', 'motivo_baja','estado','tipoDoc'], 'safe'],
+            [['id','apellido', 'nombre', 'nombre2', 'nro_doc', 'estado','tipoDoc'], 'safe'],
         ];
     }
 
@@ -75,17 +75,17 @@ class PersonasSearch extends Personas
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
+            $query->where('0=1');
             return $dataProvider;
         }
 
         $query->andFilterWhere([
             'personas.id' => $this->id,
             'id_tipo_doc' => $this->tipoDoc, // se usa el campo agregado (viene con el valor en el filter) en vez de $this->id_tipo_doc,
-            'created_by' => $this->created_by,
-            'created_at' => $this->created_at,
-            'updated_by' => $this->updated_by,
-            'updated_at' => $this->updated_at,
+            //'created_by' => $this->created_by,
+            //'created_at' => $this->created_at,
+            //'updated_by' => $this->updated_by,
+            //'updated_at' => $this->updated_at,
             'estado' => $this->estado,
 
             
@@ -95,8 +95,8 @@ class PersonasSearch extends Personas
             ->andFilterWhere(['like', 'nombre', $this->nombre])
             ->andFilterWhere(['like', 'nombre2', $this->nombre2])
             ->andFilterWhere(['like', 'nro_doc', $this->nro_doc])
-            ->andFilterWhere(['like', 'foto', $this->foto])
-            ->andFilterWhere(['like', 'motivo_baja', $this->motivo_baja])
+            //->andFilterWhere(['like', 'foto', $this->foto])
+            //->andFilterWhere(['like', 'motivo_baja', $this->motivo_baja])
             ;
 
         return $dataProvider;

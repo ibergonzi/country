@@ -3,8 +3,6 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 
-use yii\widgets\Pjax;
-
 use frontend\models\Personas;
 use yii\bootstrap\Modal;
 use frontend\models\Mensajes;
@@ -76,12 +74,14 @@ $this->registerCss('
             'apellido',
             'nombre',
             'nombre2',
+            
             [
 				'attribute'=>'tipoDoc',
 				'value'=>'tipoDoc.desc_tipo_doc_abr',
 				'filter'=>$searchModel->listaTiposdoc,
             ],
             //'id_tipo_doc',
+            
             'nro_doc',
             // 'foto',
             // 'created_by',
@@ -224,7 +224,8 @@ $this->registerCss('
 					])											
 			]);
 			// para que no se encime con el summary del gridview	
-			//echo '<div class="clearfix"></div>';	
+			//echo '<div class="clearfix"></div>';
+				
 		}		
 
 		
@@ -243,8 +244,7 @@ $this->registerCss('
 			$toolbar=[['content'=>$contentToolbar]];
 		}					
 	
-	?>
-    <?= GridView::widget([
+		echo GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         

@@ -101,7 +101,7 @@ class InfraccionesSearch extends Infracciones
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
+            'infracciones.id' => $this->id,
             'id_uf' => $this->id_uf,
             'id_vehiculo' => $this->id_vehiculo,
             'id_persona' => $this->id_persona,

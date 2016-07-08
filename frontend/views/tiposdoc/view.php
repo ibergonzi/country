@@ -6,8 +6,8 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Tiposdoc */
 
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Tiposdocs', 'url' => ['index']];
+$this->title = 'Detalle de tipo de documento';
+$this->params['breadcrumbs'][] = ['label' => 'Tipos de documentos', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="tiposdoc-view">
@@ -15,14 +15,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <h3><?= Html::encode($this->title) ?></h3>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
+        <?= Html::a('Modificar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+
     </p>
 
     <?= DetailView::widget([
@@ -31,7 +25,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'desc_tipo_doc',
             'desc_tipo_doc_abr',
-            'persona_fisica',
+			[
+				'attribute' => 'persona_fisica',
+				'value' => frontend\models\Tiposdoc::getSiNo($model->persona_fisica)
+			],
         ],
     ]) ?>
 

@@ -6,8 +6,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\InfracUnidades */
 
-$this->title = 'Create Infrac Unidades';
-$this->params['breadcrumbs'][] = ['label' => 'Infrac Unidades', 'url' => ['index']];
+$this->title = 'Crear Unidad de infracciones';
+$this->params['breadcrumbs'][] = ['label' => 'Unidades de infracciones', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="infrac-unidades-create">

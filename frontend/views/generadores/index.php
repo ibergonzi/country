@@ -3,6 +3,8 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 
+use frontend\models\Generadores;
+
 // necesario para comentarios
 use yii\bootstrap\Modal;
 use frontend\models\Comentarios;
@@ -67,7 +69,11 @@ $this->registerCss('
 	$columns = [
 	            'id',
             'descripcion',
-            'activo',
+            [
+				'attribute'=>'activo',
+				'value'=>function ($model) { return Generadores::getSiNo($model->activo);},
+				'filter'=>Generadores::getSiNo()
+            ],
 	
            ['class' => 'kartik\grid\ActionColumn',
              'header'=>Html::a('<span class="glyphicon glyphicon-plus-sign"></span>',
@@ -169,10 +175,9 @@ $this->registerCss('
 	
 	// Definición de la cantidad de items a paginar
 	$contentToolbar=\nterms\pagesize\PageSize::widget([
-		//'defaultPageSize'=>\Yii::$app->params['REEMPLAZAR.defaultPageSize'],
-		//'sizes'=>\Yii::$app->params['REEMPLAZAR.sizes'],
-		'defaultPageSize'=>15,
-		'sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50],		
+		'defaultPageSize'=>\Yii::$app->params['generadores.defaultPageSize'],
+		'sizes'=>\Yii::$app->params['generadores.sizes'],
+	
 		'label'=>'',
 		'options'=>[
 				'class'=>'btn btn-default',

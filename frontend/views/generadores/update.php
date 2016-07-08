@@ -5,10 +5,10 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Generadores */
 
-$this->title = 'Update Generadores: ' . $model->id;
+$this->title = 'Modificar generador';
 $this->params['breadcrumbs'][] = ['label' => 'Generadores', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = ['label' => 'Detalle de generador', 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = 'Modificar';
 ?>
 <div class="generadores-update">
 

@@ -13,7 +13,7 @@ use kartik\popover\PopoverX;
 /* @var $searchModel frontend\models\InfracUnidadesSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Infrac Unidades';
+$this->title = 'Unidades de infracciones';
 $this->params['breadcrumbs'][] = $this->title;
 
 // scrollbar para el modal de comentarios
@@ -168,10 +168,9 @@ $this->registerCss('
 	
 	// Definición de la cantidad de items a paginar
 	$contentToolbar=\nterms\pagesize\PageSize::widget([
-		//'defaultPageSize'=>\Yii::$app->params['REEMPLAZAR.defaultPageSize'],
-		//'sizes'=>\Yii::$app->params['REEMPLAZAR.sizes'],
-		'defaultPageSize'=>15,
-		'sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50],		
+		'defaultPageSize'=>\Yii::$app->params['infracUnidades.defaultPageSize'],
+		'sizes'=>\Yii::$app->params['infracUnidades.sizes'],
+	
 		'label'=>'',
 		'options'=>[
 				'class'=>'btn btn-default',

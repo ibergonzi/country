@@ -22,34 +22,30 @@ class GeneradoresController extends Controller
     public function behaviors()
     {
         return [
+			/*
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
                 ],
             ],
-            /*
+            */
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['delete'],
-                        'allow' => true,
-                        'roles' => ['borrar'], 
-                    ],                
-                    [
                         'actions' => ['index','view'],
                         'allow' => true,
-                        'roles' => ['acceder'], 
+                        'roles' => ['accederParametros'], 
                     ],
                     [
-                        'actions' => ['create','update'],
+                        'actions' => ['create','update',],
                         'allow' => true,
-                        'roles' => ['altaModificar'], 
+                        'roles' => ['modificarParametros'], 
                     ],
+ 		
                  ], // fin rules
-            ], // fin access   
-            */             
+             ], // fin access                
         ];
     }
 

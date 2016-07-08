@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Generadores */
 
-$this->title = 'Create Generadores';
+$this->title = 'Crear Generador';
 $this->params['breadcrumbs'][] = ['label' => 'Generadores', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

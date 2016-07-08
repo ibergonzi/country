@@ -18,6 +18,20 @@ class MovimUf extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
+     
+     
+	const SI = 1;
+	const NO = 0;
+	
+	public static function getSiNo($key=null)
+	{
+		$estados=[self::NO=>'No',self::SI=>'Si'];
+	    if ($key !== null) {
+			return $estados[$key];
+		}
+		return $estados;
+	}     
+     
     public static function tableName()
     {
         return 'movim_uf';

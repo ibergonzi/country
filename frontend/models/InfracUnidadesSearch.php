@@ -43,8 +43,7 @@ class InfracUnidadesSearch extends InfracUnidades
     {
         $query = InfracUnidades::find();
 
-		//$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['REEMPLAZAR.defaultPageSize'];
-		$pageSize=isset($_GET['per-page'])?$_GET['per-page']:15;
+		$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['infracUnidades.defaultPageSize'];
 
         // add conditions that should always apply here
 

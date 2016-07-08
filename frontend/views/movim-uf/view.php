@@ -6,8 +6,8 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\MovimUf */
 
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Movim Ufs', 'url' => ['index']];
+$this->title = 'Detalle de movimiento de U.F.';
+$this->params['breadcrumbs'][] = ['label' => 'Movimientos de U.F.', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="movim-uf-view">
@@ -15,14 +15,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <h3><?= Html::encode($this->title) ?></h3>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
+        <?= Html::a('Modificar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+
     </p>
 
     <?= DetailView::widget([
@@ -30,10 +24,22 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'desc_movim_uf',
-            'cesion',
-            'migracion',
-            'fec_vto',
-            'manual',
+			[
+				'attribute' => 'cesion',
+				'value' => frontend\models\MovimUf::getSiNo($model->cesion)
+			],
+			[
+				'attribute' => 'migracion',
+				'value' => frontend\models\MovimUf::getSiNo($model->migracion)
+			],
+			[
+				'attribute' => 'fec_vto',
+				'value' => frontend\models\MovimUf::getSiNo($model->fec_vto)
+			],
+			[
+				'attribute' => 'manual',
+				'value' => frontend\models\MovimUf::getSiNo($model->manual)
+			],
         ],
     ]) ?>
 

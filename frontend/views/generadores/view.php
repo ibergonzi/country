@@ -6,7 +6,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Generadores */
 
-$this->title = $model->id;
+$this->title = 'Detalle de generador';
 $this->params['breadcrumbs'][] = ['label' => 'Generadores', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -15,14 +15,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <h3><?= Html::encode($this->title) ?></h3>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
+        <?= Html::a('Modificar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+
     </p>
 
     <?= DetailView::widget([
@@ -30,7 +24,10 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'descripcion',
-            'activo',
+			[
+				'attribute' => 'activo',
+				'value' => frontend\models\Generadores::getSiNo($model->activo)
+			],
         ],
     ]) ?>
 

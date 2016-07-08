@@ -5,10 +5,10 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Tiposdoc */
 
-$this->title = 'Update Tiposdoc: ' . $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Tiposdocs', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = 'Modificar tipo de documento';
+$this->params['breadcrumbs'][] = ['label' => 'Tipos de documentos', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Detalle de tipo de documento', 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = 'Modificar';
 ?>
 <div class="tiposdoc-update">
 

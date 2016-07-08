@@ -15,16 +15,16 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'id')->textInput() ?>
+    <?= $form->field($model, 'id')->textInput(['autofocus' => $model->isNewRecord,'readonly'=>!$model->isNewRecord]) ?>
 
-    <?= $form->field($model, 'desc_tipo_doc')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'desc_tipo_doc')->textInput(['maxlength' => true,'autofocus' => !$model->isNewRecord,]) ?>
 
     <?= $form->field($model, 'desc_tipo_doc_abr')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'persona_fisica')->textInput() ?>
+    <?= $form->field($model, 'persona_fisica')->dropDownList(frontend\models\Tiposdoc::getSiNo()) ?>
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? 'Crear' : 'Modificar', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

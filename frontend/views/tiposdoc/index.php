@@ -3,6 +3,8 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 
+use frontend\models\Tiposdoc;
+
 // necesario para comentarios
 use yii\bootstrap\Modal;
 use frontend\models\Comentarios;
@@ -13,7 +15,7 @@ use kartik\popover\PopoverX;
 /* @var $searchModel frontend\models\TiposdocSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Tiposdocs';
+$this->title = 'Tipos de documentos';
 $this->params['breadcrumbs'][] = $this->title;
 
 // scrollbar para el modal de comentarios
@@ -68,7 +70,11 @@ $this->registerCss('
 	            'id',
             'desc_tipo_doc',
             'desc_tipo_doc_abr',
-            'persona_fisica',
+            [
+				'attribute'=>'persona_fisica',
+				'value'=>function ($model) { return Tiposdoc::getSiNo($model->persona_fisica);},
+				'filter'=>Tiposdoc::getSiNo()
+            ],
 	
            ['class' => 'kartik\grid\ActionColumn',
              'header'=>Html::a('<span class="glyphicon glyphicon-plus-sign"></span>',
@@ -170,10 +176,9 @@ $this->registerCss('
 	
 	// Definición de la cantidad de items a paginar
 	$contentToolbar=\nterms\pagesize\PageSize::widget([
-		//'defaultPageSize'=>\Yii::$app->params['REEMPLAZAR.defaultPageSize'],
-		//'sizes'=>\Yii::$app->params['REEMPLAZAR.sizes'],
-		'defaultPageSize'=>15,
-		'sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50],		
+		'defaultPageSize'=>\Yii::$app->params['tiposdoc.defaultPageSize'],
+		'sizes'=>\Yii::$app->params['tiposdoc.sizes'],
+		
 		'label'=>'',
 		'options'=>[
 				'class'=>'btn btn-default',

@@ -6,8 +6,8 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\InfracUnidades */
 
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Infrac Unidades', 'url' => ['index']];
+$this->title = 'Detalle de unidad de infracciones';
+$this->params['breadcrumbs'][] = ['label' => 'Unidades de infracciones', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="infrac-unidades-view">
@@ -15,14 +15,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <h3><?= Html::encode($this->title) ?></h3>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
+        <?= Html::a('Modificar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+
     </p>
 
     <?= DetailView::widget([

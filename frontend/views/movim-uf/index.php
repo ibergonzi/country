@@ -3,6 +3,8 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 
+use frontend\models\MovimUf;
+
 // necesario para comentarios
 use yii\bootstrap\Modal;
 use frontend\models\Comentarios;
@@ -13,7 +15,7 @@ use kartik\popover\PopoverX;
 /* @var $searchModel frontend\models\MovimUfSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Movim Ufs';
+$this->title = 'Movimientos de U.F.';
 $this->params['breadcrumbs'][] = $this->title;
 
 // scrollbar para el modal de comentarios
@@ -67,10 +69,26 @@ $this->registerCss('
 	$columns = [
 	            'id',
             'desc_movim_uf',
-            'cesion',
-            'migracion',
-            'fec_vto',
-            // 'manual',
+            [
+				'attribute'=>'cesion',
+				'value'=>function ($model) { return MovimUf::getSiNo($model->cesion);},
+				'filter'=>MovimUf::getSiNo()
+            ],
+            [
+				'attribute'=>'migracion',
+				'value'=>function ($model) { return MovimUf::getSiNo($model->migracion);},
+				'filter'=>MovimUf::getSiNo()
+            ],
+            [
+				'attribute'=>'fec_vto',
+				'value'=>function ($model) { return MovimUf::getSiNo($model->fec_vto);},
+				'filter'=>MovimUf::getSiNo()
+            ],
+            [
+				'attribute'=>'manual',
+				'value'=>function ($model) { return MovimUf::getSiNo($model->manual);},
+				'filter'=>MovimUf::getSiNo()
+            ],
 	
            ['class' => 'kartik\grid\ActionColumn',
              'header'=>Html::a('<span class="glyphicon glyphicon-plus-sign"></span>',
@@ -172,10 +190,9 @@ $this->registerCss('
 	
 	// Definición de la cantidad de items a paginar
 	$contentToolbar=\nterms\pagesize\PageSize::widget([
-		//'defaultPageSize'=>\Yii::$app->params['REEMPLAZAR.defaultPageSize'],
-		//'sizes'=>\Yii::$app->params['REEMPLAZAR.sizes'],
-		'defaultPageSize'=>15,
-		'sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50],		
+		'defaultPageSize'=>\Yii::$app->params['movimUf.defaultPageSize'],
+		'sizes'=>\Yii::$app->params['movimUf.sizes'],
+
 		'label'=>'',
 		'options'=>[
 				'class'=>'btn btn-default',

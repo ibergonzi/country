@@ -70,4 +70,16 @@ return [
     'infracciones.defaultPageSize'=>15,
     'infracciones.sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50, 100=>100,200=>200,400=>400],        
 
+    'infracUnidades.defaultPageSize'=>5,
+    'infracUnidades.sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50], 
+   
+    'tiposdoc.defaultPageSize'=>20,
+    'tiposdoc.sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50], 
+    
+    'movimUf.defaultPageSize'=>15,
+    'movimUf.sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50],
+    
+    'generadores.defaultPageSize'=>5,
+    'generadores.sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50],              
+
 ];

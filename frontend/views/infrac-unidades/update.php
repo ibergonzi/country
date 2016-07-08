@@ -5,10 +5,10 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\InfracUnidades */
 
-$this->title = 'Update Infrac Unidades: ' . $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Infrac Unidades', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = 'Modificar unidad de infracciones';
+$this->params['breadcrumbs'][] = ['label' => 'Unidades de infracciones', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Detalle de unidad de infracciones', 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = 'Modificar';
 ?>
 <div class="infrac-unidades-update">
 

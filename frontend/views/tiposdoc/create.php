@@ -6,8 +6,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Tiposdoc */
 
-$this->title = 'Create Tiposdoc';
-$this->params['breadcrumbs'][] = ['label' => 'Tiposdocs', 'url' => ['index']];
+$this->title = 'Crear tipo de documento';
+$this->params['breadcrumbs'][] = ['label' => 'Tipos de documentos', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="tiposdoc-create">

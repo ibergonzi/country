@@ -6,8 +6,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\MovimUf */
 
-$this->title = 'Create Movim Uf';
-$this->params['breadcrumbs'][] = ['label' => 'Movim Ufs', 'url' => ['index']];
+$this->title = 'Crear movimiento de U.F.';
+$this->params['breadcrumbs'][] = ['label' => 'MMovimientos de U.F.', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="movim-uf-create">

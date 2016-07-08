@@ -43,8 +43,7 @@ class MovimUfSearch extends MovimUf
     {
         $query = MovimUf::find();
 
-		//$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['REEMPLAZAR.defaultPageSize'];
-		$pageSize=isset($_GET['per-page'])?$_GET['per-page']:15;
+		$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['movimUf.defaultPageSize'];
 
         // add conditions that should always apply here
 

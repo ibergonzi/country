@@ -220,6 +220,7 @@ $this->registerCss('
 			]);
 			// para que no se encime con el summary del gridview	
 			//echo '<div class="clearfix"></div>';	
+			
 		}		
 
 		
@@ -254,7 +255,7 @@ $this->registerCss('
 		'export' => [
 			'label' => 'Exportar',
 			'fontAwesome' => true,
-		    'showConfirmAlert'=>false,	
+		    'showConfirmAlert'=>true,
 		    'target'=>GridView::TARGET_BLANK,			
 		],
 		

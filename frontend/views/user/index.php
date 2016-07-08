@@ -228,7 +228,7 @@ $this->registerCss('
 		'export' => [
 			'label' => 'Exportar',
 			'fontAwesome' => true,
-		    'showConfirmAlert'=>false,	
+		    'showConfirmAlert'=>true,	
 		    'target'=>GridView::TARGET_BLANK,			
 		],
 		

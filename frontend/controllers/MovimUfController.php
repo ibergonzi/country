@@ -3,8 +3,8 @@
 namespace frontend\controllers;
 
 use Yii;
-use frontend\models\Tiposdoc;
-use frontend\models\TiposdocSearch;
+use frontend\models\MovimUf;
+use frontend\models\MovimUfSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -12,9 +12,9 @@ use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 
 /**
- * TiposdocController implements the CRUD actions for Tiposdoc model.
+ * MovimUfController implements the CRUD actions for MovimUf model.
  */
-class TiposdocController extends Controller
+class MovimUfController extends Controller
 {
     /**
      * @inheritdoc
@@ -54,12 +54,12 @@ class TiposdocController extends Controller
     }
 
     /**
-     * Lists all Tiposdoc models.
+     * Lists all MovimUf models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new TiposdocSearch();
+        $searchModel = new MovimUfSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -69,7 +69,7 @@ class TiposdocController extends Controller
     }
 
     /**
-     * Displays a single Tiposdoc model.
+     * Displays a single MovimUf model.
      * @param integer $id
      * @return mixed
      */
@@ -81,13 +81,13 @@ class TiposdocController extends Controller
     }
 
     /**
-     * Creates a new Tiposdoc model.
+     * Creates a new MovimUf model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Tiposdoc();
+        $model = new MovimUf();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -99,7 +99,7 @@ class TiposdocController extends Controller
     }
 
     /**
-     * Updates an existing Tiposdoc model.
+     * Updates an existing MovimUf model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -118,7 +118,7 @@ class TiposdocController extends Controller
     }
 
     /**
-     * Deletes an existing Tiposdoc model.
+     * Deletes an existing MovimUf model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -131,15 +131,15 @@ class TiposdocController extends Controller
     }
 
     /**
-     * Finds the Tiposdoc model based on its primary key value.
+     * Finds the MovimUf model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Tiposdoc the loaded model
+     * @return MovimUf the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Tiposdoc::findOne($id)) !== null) {
+        if (($model = MovimUf::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

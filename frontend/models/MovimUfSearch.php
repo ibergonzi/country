@@ -5,12 +5,12 @@ namespace frontend\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use frontend\models\Tiposdoc;
+use frontend\models\MovimUf;
 
 /**
- * TiposdocSearch represents the model behind the search form about `frontend\models\Tiposdoc`.
+ * MovimUfSearch represents the model behind the search form about `frontend\models\MovimUf`.
  */
-class TiposdocSearch extends Tiposdoc
+class MovimUfSearch extends MovimUf
 {
     /**
      * @inheritdoc
@@ -18,8 +18,8 @@ class TiposdocSearch extends Tiposdoc
     public function rules()
     {
         return [
-            [['id', 'persona_fisica'], 'integer'],
-            [['desc_tipo_doc', 'desc_tipo_doc_abr'], 'safe'],
+            [['id', 'cesion', 'migracion', 'fec_vto', 'manual'], 'integer'],
+            [['desc_movim_uf'], 'safe'],
         ];
     }
 
@@ -41,7 +41,7 @@ class TiposdocSearch extends Tiposdoc
      */
     public function search($params)
     {
-        $query = Tiposdoc::find();
+        $query = MovimUf::find();
 
 		//$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['REEMPLAZAR.defaultPageSize'];
 		$pageSize=isset($_GET['per-page'])?$_GET['per-page']:15;
@@ -69,11 +69,13 @@ class TiposdocSearch extends Tiposdoc
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'persona_fisica' => $this->persona_fisica,
+            'cesion' => $this->cesion,
+            'migracion' => $this->migracion,
+            'fec_vto' => $this->fec_vto,
+            'manual' => $this->manual,
         ]);
 
-        $query->andFilterWhere(['like', 'desc_tipo_doc', $this->desc_tipo_doc])
-            ->andFilterWhere(['like', 'desc_tipo_doc_abr', $this->desc_tipo_doc_abr]);
+        $query->andFilterWhere(['like', 'desc_movim_uf', $this->desc_movim_uf]);
 
         return $dataProvider;
     }

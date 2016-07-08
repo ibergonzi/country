@@ -3,8 +3,8 @@
 namespace frontend\controllers;
 
 use Yii;
-use frontend\models\Tiposdoc;
-use frontend\models\TiposdocSearch;
+use frontend\models\InfracUnidades;
+use frontend\models\InfracUnidadesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -12,9 +12,9 @@ use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 
 /**
- * TiposdocController implements the CRUD actions for Tiposdoc model.
+ * InfracUnidadesController implements the CRUD actions for InfracUnidades model.
  */
-class TiposdocController extends Controller
+class InfracUnidadesController extends Controller
 {
     /**
      * @inheritdoc
@@ -54,12 +54,12 @@ class TiposdocController extends Controller
     }
 
     /**
-     * Lists all Tiposdoc models.
+     * Lists all InfracUnidades models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new TiposdocSearch();
+        $searchModel = new InfracUnidadesSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -69,7 +69,7 @@ class TiposdocController extends Controller
     }
 
     /**
-     * Displays a single Tiposdoc model.
+     * Displays a single InfracUnidades model.
      * @param integer $id
      * @return mixed
      */
@@ -81,13 +81,13 @@ class TiposdocController extends Controller
     }
 
     /**
-     * Creates a new Tiposdoc model.
+     * Creates a new InfracUnidades model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Tiposdoc();
+        $model = new InfracUnidades();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -99,7 +99,7 @@ class TiposdocController extends Controller
     }
 
     /**
-     * Updates an existing Tiposdoc model.
+     * Updates an existing InfracUnidades model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -118,7 +118,7 @@ class TiposdocController extends Controller
     }
 
     /**
-     * Deletes an existing Tiposdoc model.
+     * Deletes an existing InfracUnidades model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -131,15 +131,15 @@ class TiposdocController extends Controller
     }
 
     /**
-     * Finds the Tiposdoc model based on its primary key value.
+     * Finds the InfracUnidades model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Tiposdoc the loaded model
+     * @return InfracUnidades the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Tiposdoc::findOne($id)) !== null) {
+        if (($model = InfracUnidades::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

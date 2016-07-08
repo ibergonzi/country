@@ -4,13 +4,13 @@ use yii\helpers\Html;
 
 
 /* @var $this yii\web\View */
-/* @var $model frontend\models\Tiposdoc */
+/* @var $model frontend\models\InfracUnidades */
 
-$this->title = 'Create Tiposdoc';
-$this->params['breadcrumbs'][] = ['label' => 'Tiposdocs', 'url' => ['index']];
+$this->title = 'Create Infrac Unidades';
+$this->params['breadcrumbs'][] = ['label' => 'Infrac Unidades', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="tiposdoc-create">
+<div class="infrac-unidades-create">
 
     <h3><?= Html::encode($this->title) ?></h3>
 

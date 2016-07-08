@@ -5,12 +5,12 @@ namespace frontend\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use frontend\models\Tiposdoc;
+use frontend\models\InfracUnidades;
 
 /**
- * TiposdocSearch represents the model behind the search form about `frontend\models\Tiposdoc`.
+ * InfracUnidadesSearch represents the model behind the search form about `frontend\models\InfracUnidades`.
  */
-class TiposdocSearch extends Tiposdoc
+class InfracUnidadesSearch extends InfracUnidades
 {
     /**
      * @inheritdoc
@@ -18,8 +18,8 @@ class TiposdocSearch extends Tiposdoc
     public function rules()
     {
         return [
-            [['id', 'persona_fisica'], 'integer'],
-            [['desc_tipo_doc', 'desc_tipo_doc_abr'], 'safe'],
+            [['id'], 'integer'],
+            [['unidad'], 'safe'],
         ];
     }
 
@@ -41,7 +41,7 @@ class TiposdocSearch extends Tiposdoc
      */
     public function search($params)
     {
-        $query = Tiposdoc::find();
+        $query = InfracUnidades::find();
 
 		//$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['REEMPLAZAR.defaultPageSize'];
 		$pageSize=isset($_GET['per-page'])?$_GET['per-page']:15;
@@ -69,11 +69,9 @@ class TiposdocSearch extends Tiposdoc
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'persona_fisica' => $this->persona_fisica,
         ]);
 
-        $query->andFilterWhere(['like', 'desc_tipo_doc', $this->desc_tipo_doc])
-            ->andFilterWhere(['like', 'desc_tipo_doc_abr', $this->desc_tipo_doc_abr]);
+        $query->andFilterWhere(['like', 'unidad', $this->unidad]);
 
         return $dataProvider;
     }

@@ -4,13 +4,13 @@ use yii\helpers\Html;
 
 
 /* @var $this yii\web\View */
-/* @var $model frontend\models\Tiposdoc */
+/* @var $model frontend\models\MovimUf */
 
-$this->title = 'Create Tiposdoc';
-$this->params['breadcrumbs'][] = ['label' => 'Tiposdocs', 'url' => ['index']];
+$this->title = 'Create Movim Uf';
+$this->params['breadcrumbs'][] = ['label' => 'Movim Ufs', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="tiposdoc-create">
+<div class="movim-uf-create">
 
     <h3><?= Html::encode($this->title) ?></h3>
 

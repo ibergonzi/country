@@ -4,11 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model frontend\models\TiposdocSearch */
+/* @var $model frontend\models\InfracUnidadesSearch */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="tiposdoc-search">
+<div class="infrac-unidades-search">
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
@@ -17,11 +17,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'id') ?>
 
-    <?= $form->field($model, 'desc_tipo_doc') ?>
-
-    <?= $form->field($model, 'desc_tipo_doc_abr') ?>
-
-    <?= $form->field($model, 'persona_fisica') ?>
+    <?= $form->field($model, 'unidad') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>

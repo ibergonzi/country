@@ -10,10 +10,10 @@ use frontend\models\Comentarios;
 use kartik\popover\PopoverX;
 
 /* @var $this yii\web\View */
-/* @var $searchModel frontend\models\TiposdocSearch */
+/* @var $searchModel frontend\models\MovimUfSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Tiposdocs';
+$this->title = 'Movim Ufs';
 $this->params['breadcrumbs'][] = $this->title;
 
 // scrollbar para el modal de comentarios
@@ -41,7 +41,7 @@ $this->registerCss('
 ');
 
 ?>
-<div class="tiposdoc-index">
+<div class="movim-uf-index">
 
     <h3><?= Html::encode($this->title) ?></h3>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -66,9 +66,11 @@ $this->registerCss('
 	
 	$columns = [
 	            'id',
-            'desc_tipo_doc',
-            'desc_tipo_doc_abr',
-            'persona_fisica',
+            'desc_movim_uf',
+            'cesion',
+            'migracion',
+            'fec_vto',
+            // 'manual',
 	
            ['class' => 'kartik\grid\ActionColumn',
              'header'=>Html::a('<span class="glyphicon glyphicon-plus-sign"></span>',
@@ -116,7 +118,7 @@ $this->registerCss('
 				 }
 				 if ($action === 'view') {
 					$url=Yii::$app->urlManager->createUrl(
-							['tiposdoc/view', 
+							['movim-uf/view', 
 							 'id' => $model->id
 							]);
 					return $url;

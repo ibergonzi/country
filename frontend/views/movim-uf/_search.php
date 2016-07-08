@@ -4,11 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model frontend\models\TiposdocSearch */
+/* @var $model frontend\models\MovimUfSearch */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="tiposdoc-search">
+<div class="movim-uf-search">
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
@@ -17,11 +17,15 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'id') ?>
 
-    <?= $form->field($model, 'desc_tipo_doc') ?>
+    <?= $form->field($model, 'desc_movim_uf') ?>
 
-    <?= $form->field($model, 'desc_tipo_doc_abr') ?>
+    <?= $form->field($model, 'cesion') ?>
 
-    <?= $form->field($model, 'persona_fisica') ?>
+    <?= $form->field($model, 'migracion') ?>
+
+    <?= $form->field($model, 'fec_vto') ?>
+
+    <?php // echo $form->field($model, 'manual') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>

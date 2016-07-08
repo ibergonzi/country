@@ -4,13 +4,13 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model frontend\models\Tiposdoc */
+/* @var $model frontend\models\MovimUf */
 
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Tiposdocs', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Movim Ufs', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="tiposdoc-view">
+<div class="movim-uf-view">
 
     <h3><?= Html::encode($this->title) ?></h3>
 
@@ -29,9 +29,11 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'desc_tipo_doc',
-            'desc_tipo_doc_abr',
-            'persona_fisica',
+            'desc_movim_uf',
+            'cesion',
+            'migracion',
+            'fec_vto',
+            'manual',
         ],
     ]) ?>
 

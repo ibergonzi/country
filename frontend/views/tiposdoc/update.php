@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $model frontend\models\Tiposdoc */
 
 $this->title = 'Modificar tipo de documento';
-$this->params['breadcrumbs'][] = ['label' => 'Tipos de documentos', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Tipos de documento', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => 'Detalle de tipo de documento', 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Modificar';
 ?>

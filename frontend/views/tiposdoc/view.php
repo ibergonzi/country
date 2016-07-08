@@ -7,7 +7,7 @@ use yii\widgets\DetailView;
 /* @var $model frontend\models\Tiposdoc */
 
 $this->title = 'Detalle de tipo de documento';
-$this->params['breadcrumbs'][] = ['label' => 'Tipos de documentos', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Tipos de documento', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="tiposdoc-view">

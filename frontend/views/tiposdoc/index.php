@@ -15,7 +15,7 @@ use kartik\popover\PopoverX;
 /* @var $searchModel frontend\models\TiposdocSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Tipos de documentos';
+$this->title = 'Tipos de documento';
 $this->params['breadcrumbs'][] = $this->title;
 
 // scrollbar para el modal de comentarios

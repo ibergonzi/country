@@ -58,12 +58,14 @@ class AuthAssignment extends \yii\db\ActiveRecord
 		$roles=$auth->getRoles();
 		// aca se filtran
 		switch($rol->name) {
-			case (string)"administrador": 
+			case (string)"intendente": 
 				unset($roles['administrador'],$roles['consejo']);		
 				break;
-			case (string)"consejo": 
+			case (string)"administrador": 
 				unset($roles['consejo']);		
 				break;
+			case (string)"consejo": 
+				break;				
 			default:	
 				unset($roles['intendente'],$roles['administrador'],$roles['consejo']);			
 		}		

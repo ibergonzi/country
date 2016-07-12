@@ -49,13 +49,17 @@ class UserSearch extends User
 		
 		// Aca se cocina lo que deberia ver el usuario segun su rol
 		$rol=User::getRol(Yii::$app->user->getId());
+		// el administrador no puede ver al usuario consejo, el consejo puede ver a todos, 
+		// el intendente no puede ver al consejo ni administrador
 		switch($rol->name) {
 			case (string)"administrador": 
-				$query->andFilterWhere(['not in','item_name',['administrador','consejo']]);
-				break;
-			case (string)"consejo": 
 				$query->andFilterWhere(['not in','item_name',['consejo']]);
 				break;
+			case (string)"consejo": 
+				break;
+			case (string)"intendente": 
+				$query->andFilterWhere(['not in','item_name',['administrador','consejo']]);
+				break;				
 			default:
 				$query->andFilterWhere(['not in','item_name',['intendente','administrador','consejo']]);
 	

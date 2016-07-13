@@ -289,13 +289,13 @@ $this->registerCss('
 				'visible'=>!$consulta
 			],			
             [
-				'attribute'=>'id',
+				'attribute'=>'id_acceso',
 				'format' => 'raw',
 				'value' => function ($model, $index, $widget) {
-					return Html::a($model->id, 
+					return Html::a($model->id_acceso, 
 								Yii::$app->urlManager->createUrl(
 										['accesos/view', 
-										 'id' => $model->id
+										 'id' => $model->id_acceso
 										]),
 										['title' => 'Ver detalle',
 										 // para que se abra el link en nueva pestaña hay que setear ademas pjax="0"

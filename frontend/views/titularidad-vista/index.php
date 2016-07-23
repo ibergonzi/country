@@ -137,6 +137,7 @@ $this->registerCss('
 			[
 				'attribute'=>'tipo',
 				'value'=>function ($model) {return UfTitularidadPersonas::getTipos($model->tipo);},
+				'filter'=>UfTitularidadPersonas::getTipos(),
 			],
             //'id_persona',
             'apellido',

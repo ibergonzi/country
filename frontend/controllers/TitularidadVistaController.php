@@ -8,6 +8,7 @@ use frontend\models\TitularidadVistaSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 /**
  * TitularidadVistaController implements the CRUD actions for TitularidadVista model.
@@ -20,12 +21,25 @@ class TitularidadVistaController extends Controller
     public function behaviors()
     {
         return [
+			/*
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
                 ],
             ],
+            */
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['index'],
+                        'allow' => true,
+                        'roles' => ['accederListaUf'], 
+                    ],                
+		
+                 ], // fin rules
+             ], // fin access             
         ];
     }
 

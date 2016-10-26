@@ -109,7 +109,11 @@ class Accesos extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+			/*
             [['id_persona', 'ing_id_vehiculo', 'ing_fecha', 'ing_hora', 
+				'ing_id_porton', 'ing_id_user', 'id_concepto', 'motivo', ], 'required'],
+            */
+            [['ing_fecha', 'ing_hora', 
 				'ing_id_porton', 'ing_id_user', 'id_concepto', 'motivo', ], 'required'],
             [['id_persona', 'ing_id_vehiculo', 'ing_id_porton', 
 				'ing_id_user', 'egr_id_vehiculo', 'egr_id_porton', 'egr_id_user', 

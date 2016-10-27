@@ -265,7 +265,7 @@ class VehiculosController extends Controller
 					}
 				}
 			}
-			asort($aux);
+			//asort($aux); Saqué el asort porque ya lo traigo ordenado desde el sp (además no funcionaba)
 		
 			$out['results'] = array_values($aux);
 		}

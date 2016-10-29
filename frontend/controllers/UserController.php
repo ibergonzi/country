@@ -30,7 +30,7 @@ class UserController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['index','view','delete','update'],
+                        'actions' => ['index','view','delete','update','changepwd'],
                         'allow' => true,
                         //'roles' => ['administrador','consejo','intendente'],
                         'roles' => ['accederUser'], 
@@ -39,6 +39,23 @@ class UserController extends Controller
             ],
         ];
     }
+    
+    
+    
+	public function actionChangepwd($id)
+	{
+		$user=$this->findModel($id);
+		if ($user) {
+			if (!User::isPasswordResetTokenValid($user->password_reset_token)) {
+				$user->generatePasswordResetToken();
+			}
+			if ($user->save()) {
+				
+				return $this->redirect(['site/reset-password','token'=>$user->password_reset_token]);				
+			}
+		}
+
+	}
 
     /**
      * Lists all User models.

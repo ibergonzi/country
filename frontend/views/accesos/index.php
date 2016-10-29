@@ -306,8 +306,14 @@ $this->registerCss('
 					},
             ],
             'r_ing_patente',
-            'r_ing_marca',
-            'r_ing_modelo',
+		    [
+				'attribute'=>'r_ing_marca',
+				'noWrap' => true, 				
+		    ],				
+		    [
+				'attribute'=>'r_ing_modelo',
+				'noWrap' => true, 				
+		    ],				
             'r_ing_color',
             'ing_id_porton',
             'r_ing_usuario',
@@ -315,10 +321,13 @@ $this->registerCss('
 				'attribute'=>'id_concepto',
 				'value'=>'desc_concepto', 
 				'filter'=>AccesosConceptos::getListaConceptos(true),
+				'noWrap' => true, 				
 		    ],
 		    'ing_id_llave',
-            'motivo',		 
-               
+		    [
+				'attribute'=>'motivo',		
+				'noWrap' => true, 
+            ],   
             [
 				'attribute'=>'id_autorizante',
 				'format' => 'raw',

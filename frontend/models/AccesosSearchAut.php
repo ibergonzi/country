@@ -63,6 +63,7 @@ class AccesosSearchAut extends AccesosVistaF
         ];
     }
     
+    
     public function validaRangoFechas($attribute, $params) 
     {
 		if (empty($this->fecdesde) || empty($this->fechasta)) {

@@ -83,6 +83,7 @@ class User extends ActiveRecord implements IdentityInterface
             ['email', 'email'],
             ['email', 'string', 'max' => 255],
             ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'Esta dirección de correo ya fue utilizada.'],
+            ['username', 'unique', 'targetClass' => '\common\models\User', 'message' => 'Nombre de usuario ya utilizado, elija otro nombre.'],
 
             ['acceso_externo', 'required'],            
         ];

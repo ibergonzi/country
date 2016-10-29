@@ -3,6 +3,8 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
+use common\models\User;
+
 /* @var $this yii\web\View */
 /* @var $model common\models\User */
 
@@ -41,7 +43,11 @@ $this->params['breadcrumbs'][] = $this->title;
 							'attribute'=>'descRolUsuario',
 							'value'=>function ($data) { return $data->authAssignment->authItem->description;},   
 					   ], 
-					   */       
+					   */      
+					   [
+							'attribute'=>'acceso_externo',
+							'value'=>User::getSiNo($model->acceso_externo)
+						] 
 					],
 				]) ?>
 

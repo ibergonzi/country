@@ -160,7 +160,7 @@ $(document).ready(function() {
 							'initValueText' => $vehiculoDesc, 
 							'options' => [
 											'id'=>'selectorVehiculos',
-											'placeholder' => 'Buscar por patente o marca/modelo',
+											'placeholder' => 'Buscar por patente',
 										    'title'=>'Buscar vehiculos',											
 										 ],
 							'addon'=>$vehiculosAddon,

@@ -40,7 +40,7 @@ return [
     'accesos.defaultPageSize'=>10,
     'accesos.sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50, 100=>100, 200=>200, 300=>300],  
     
-    'accesosEgr.defaultPageSize'=>5,
+    'accesosEgr.defaultPageSize'=>25,
     'accesosEgr.sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50],   
     
     'personas.defaultPageSize'=>15,

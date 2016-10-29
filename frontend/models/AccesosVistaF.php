@@ -141,8 +141,11 @@ class AccesosVistaF extends \yii\db\ActiveRecord
             'r_egr_modelo' => 'Modelo',
             'r_egr_color' => 'Color',
             'desc_concepto' => 'Concepto',
+            'vto_seguro'=>'Vto.seguro',
         ];
     }
+    
+   
 }
 /*
 select NULL AS `id`,`country`.`accesos`.`id` AS `id_acceso`,`country`.`accesos`.`id_persona` AS `id_persona`,

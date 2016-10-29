@@ -34,6 +34,7 @@ use common\models\User;
 				); ?>
 				
 				<div class="form-group">
+				<?= $form->field($model, 'username')->textInput(['maxlength' => true]) ?>					
 				<?php 
 				
 					$rol=User::getRol($model->id);	
@@ -58,7 +59,8 @@ use common\models\User;
 
 
 				<div class="form-group">
-					<?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+					<?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : 'Guardar cambios', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+					<?= Html::a('Cambio clave', ['changepwd', 'id' => $model->id], ['class' => 'btn btn-danger',]) ?>	
 				</div>
 
 				<?php ActiveForm::end(); ?>

@@ -35,6 +35,12 @@ class RangoFechas extends Model
 		if (strtotime($this->fecdesde) > strtotime($this->fechasta)) {
 			$this->addError('fechasta','Esta fecha no puede ser anterior a la otra fecha');return;
 		}
+		
+		if (strtotime($this->fechasta) > strtotime(date('Y-m-d'))) {
+			$this->addError('fechasta','No se permite una fecha posterior a la fecha de hoy');return;
+		}
+		
+
 	}
 
    public function attributeLabels()

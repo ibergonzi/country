@@ -185,7 +185,8 @@ class AccesosController extends Controller
 			return $this->redirect(['portones/elegir','backUrl'=>'accesos/egreso-grupal']);
 		}		
 		
-        $searchModel = new AccesosSearch();
+        //$searchModel = new AccesosSearch();
+        $searchModel = new AccesosSearchAut();
         
 		// para mejorar los tiempos se proponen las fechas desde y hasta, el usuario las puede cambiar
 		
@@ -217,7 +218,11 @@ class AccesosController extends Controller
 			$transaction = Yii::$app->db->beginTransaction();				
 			try {			
 				foreach ($keys as $m) {
-					$model=Accesos::findOne($m);
+					// id viene desde la vista como id_acceso-id_uf, por lo tanto hay que separarlo
+					$idAux=explode('-',$m);
+					// quedando en $idAux[0] el id del acceso y en $idAux[1] el id de la UF
+					
+					$model=Accesos::findOne($idAux[0]);
 					$model->egr_id_vehiculo=$model->ing_id_vehiculo;
 					$model->egr_fecha=$fecAux;
 					$model->egr_hora=$horAux;
@@ -233,7 +238,7 @@ class AccesosController extends Controller
 			return ['status' => 'success'];			
 		}
 		
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams,false);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams,true);
 
         return $this->render('consegrgrupal', [
             'searchModel' => $searchModel,
@@ -1022,7 +1027,7 @@ class AccesosController extends Controller
 						],					
 						[
 							'header'=>'',
-							'attribute'=>'Sin ingreso',
+							'attribute'=>'Sin ing.',
 							'format' => 'raw',
 							'value' => function ($model, $index, $widget) {
 													$a=Accesos::find()
@@ -1041,7 +1046,13 @@ class AccesosController extends Controller
 						'apellido',
 						'nombre',
 						'nombre2',
-						'nro_doc',					
+						'nro_doc',	
+						/*
+						[
+							'attribute'=>'vto_seguro',
+							'format'=>'date',
+						],
+						*/				
 					];
 					$heading='<i class="glyphicon glyphicon-user"></i>  Personas (Egreso)';
 					//$heading='Personas';

@@ -289,13 +289,13 @@ $this->registerCss('
 				'visible'=>!$consulta
 			],			
             [
-				'attribute'=>'id',
+				'attribute'=>'id_acceso',
 				'format' => 'raw',
 				'value' => function ($model, $index, $widget) {
-					return Html::a($model->id, 
+					return Html::a($model->id_acceso, 
 								Yii::$app->urlManager->createUrl(
 										['accesos/view', 
-										 'id' => $model->id
+										 'id' => $model->id_acceso
 										]),
 										['title' => 'Ver detalle',
 										 // para que se abra el link en nueva pestaña hay que setear ademas pjax="0"
@@ -335,10 +335,26 @@ $this->registerCss('
 										]);
 					},
             ],
-            'r_apellido',
-            'r_nombre',
-            'r_nombre2',
+   		    [
+				'attribute'=>'r_apellido',
+				'noWrap'=>true,
+		    ],
+   		    [
+				'attribute'=>            'r_nombre',
+				'noWrap'=>true,
+		    ],
+   		    [
+				'attribute'=>            'r_nombre2',
+				'noWrap'=>true,
+		    ],
             'r_nro_doc',
+            
+            'id_uf',
+            
+            [
+				'attribute'=>'vto_seguro',
+				'format'=>'date',
+            ],            
             [
 				'attribute'=>'ing_id_vehiculo',
 				'format' => 'raw',
@@ -356,17 +372,32 @@ $this->registerCss('
 					},
             ],
             'r_ing_patente',
-            'r_ing_marca',
-            'r_ing_modelo',
-            'r_ing_color',
+   		    [
+				'attribute'=>            'r_ing_marca',
+				'noWrap'=>true,
+		    ],
+   		    [
+				'attribute'=>            'r_ing_modelo',
+				'noWrap'=>true,
+		    ],
+   		    [
+				'attribute'=>            'r_ing_color',
+				'noWrap'=>true,
+		    ],
    		    [
 				'attribute'=>'id_concepto',
 				'value'=>'desc_concepto', 
 				'filter'=>AccesosConceptos::getListaConceptos(false),
+				'noWrap'=>true,
 		    ],
-            'motivo',		 
-
-            'control',
+   		    [
+				'attribute'=>'motivo',
+				'noWrap'=>true,
+		    ],						 
+   		    [
+				'attribute'=>'control',
+				'noWrap'=>true,
+		    ],				
 
         ];	
 		if ($consulta && \Yii::$app->user->can('exportarConsDentro')) {        

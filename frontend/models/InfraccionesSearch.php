@@ -112,7 +112,7 @@ class InfraccionesSearch extends Infracciones
             'notificado' => $this->notificado,
             'fecha_verif' => $this->fecSP2EN($this->fecha_verif),
             'verificado' => $this->verificado,
-            'multa_unidad' => $this->rUnidad, //$this->multa_unidad,
+            'infracciones.multa_unidad' => $this->rUnidad, //$this->multa_unidad,
             'multa_monto' => str_replace(",", ".", $this->multa_monto),
             'multa_pers_cant' => $this->multa_pers_cant,
             'multa_pers_monto' => str_replace(",", ".", $this->multa_pers_monto),

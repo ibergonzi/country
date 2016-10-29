@@ -26,7 +26,6 @@ $this->registerCss('.modal-body { max-height: calc(100vh - 210px);overflow-y: au
 /* @var $searchModel frontend\models\AccesosSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-
 if ($consulta) {
 	$this->title = 'Personas adentro';
 } else {
@@ -287,7 +286,7 @@ $this->registerCss('
 			[
 				'class' => '\kartik\grid\CheckboxColumn',
 				'visible'=>!$consulta
-			],			
+			],	
             [
 				'attribute'=>'id_acceso',
 				'format' => 'raw',
@@ -340,6 +339,10 @@ $this->registerCss('
             'r_nombre2',
             'r_nro_doc',
             [
+				'attribute'=>'id_uf',				
+				//'width'=>'300px',
+            ],
+            [
 				'attribute'=>'ing_id_vehiculo',
 				'format' => 'raw',
 				'value' => function ($model, $index, $widget) {
@@ -390,7 +393,6 @@ $this->registerCss('
 			'r_aut_nro_doc',
 
 			*/                     
-            'id_uf',
     
         ];	
 		if ($consulta && \Yii::$app->user->can('exportarConsDentro')) {        

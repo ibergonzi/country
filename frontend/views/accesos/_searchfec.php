@@ -18,7 +18,7 @@ use kartik\widgets\DatePicker;
 
     <?php $form = ActiveForm::begin([
 		//'id'=>'formfec1',
-        'action' => ['index'],
+        'action' => [$page],
         'method' => 'get',
 		'layout' => 'inline'        
     ]); ?>
@@ -61,7 +61,7 @@ use kartik\widgets\DatePicker;
     
         <?php
 			if (\Yii::$app->session->get('accesosFecDesdeF')) {			
-				echo Html::a('<span class="glyphicon glyphicon-remove"></span>',['index'],[
+				echo Html::a('<span class="glyphicon glyphicon-remove"></span>',[$page],[
 										'class'=>'btn btn-danger',
 										'title'=>'Eliminar Filtro',
 										'data'=>[

@@ -167,7 +167,7 @@ class AccesosController extends Controller
 			}      
 		}  
         
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams,false);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams,false,false);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -222,13 +222,20 @@ class AccesosController extends Controller
 					$idAux=explode('-',$m);
 					// quedando en $idAux[0] el id del acceso y en $idAux[1] el id de la UF
 					
-					$model=Accesos::findOne($idAux[0]);
-					$model->egr_id_vehiculo=$model->ing_id_vehiculo;
-					$model->egr_fecha=$fecAux;
-					$model->egr_hora=$horAux;
-					$model->egr_id_porton=\Yii::$app->session->get('porton');  
-					$model->egr_id_user=\Yii::$app->user->identity->id;					
-					$model->save();				
+					$modelPorID=Accesos::findOne($idAux[0]);
+					
+					$model=Accesos::find()->where(['id_persona'=>$modelPorID->id_persona,'egr_fecha'=>null])->all();
+					
+					if (!empty($model)) {
+						foreach ($model as $m) {					
+							$m->egr_id_vehiculo=$modelPorID->ing_id_vehiculo;
+							$m->egr_fecha=$fecAux;
+							$m->egr_hora=$horAux;
+							$m->egr_id_porton=\Yii::$app->session->get('porton');  
+							$m->egr_id_user=\Yii::$app->user->identity->id;					
+							$m->save();
+						}
+					}				
 				}	
 				$transaction->commit();
 			} catch(\Exception $e) {
@@ -238,7 +245,7 @@ class AccesosController extends Controller
 			return ['status' => 'success'];			
 		}
 		
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams,true);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams,true,true);
 
         return $this->render('consegrgrupal', [
             'searchModel' => $searchModel,
@@ -266,7 +273,7 @@ class AccesosController extends Controller
 			}      
 		}          
         
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams,true);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams,true,false);
 
         return $this->render('consdentro', [
             'searchModel' => $searchModel,
@@ -351,7 +358,7 @@ class AccesosController extends Controller
 
 					$cantsPie[]=[$semana[$cn],(int)$cant['cant']];
 				}		
-				Yii::trace($cantsPie);
+				//Yii::trace($cantsPie);
 				$pie=[		
 
 							'type' => 'pie',
@@ -744,7 +751,7 @@ class AccesosController extends Controller
 				->orderBy(['id' => SORT_DESC])->asArray()->one();			
 		}
 		
-		Yii::trace($ult);
+		//Yii::trace($ult);
 		\Yii::$app->response->format = 'json';
 		
 		$a=Accesos::findOne($ult['id']);
@@ -1349,54 +1356,47 @@ class AccesosController extends Controller
 			try {
 				$controlEgreso=$model->control;
 				foreach ($sessPersonas as $id_persona) {
-					$model=Accesos::find()->where(['id_persona'=>$id_persona,'egr_fecha'=>null])
-						->orderBy(['id' => SORT_DESC])->one();
-					if (!empty($model)) {	
-						foreach ($sessVehiculo as $model->egr_id_vehiculo) {
-							// Aunque deberia haber un solo vehiculo
-							
-							// Para que save() no funcione como update sino como insert, 
-							// se debe resetear el id y setear isNewRecord como true
-							//$model->id = null;
-							$model->egr_fecha=$fecAux;
-							$model->egr_hora=$horAux;
-							$model->egr_id_porton=\Yii::$app->session->get('porton');        
-							$model->egr_id_user=\Yii::$app->user->identity->id;
+					$model=Accesos::find()->where(['id_persona'=>$id_persona,'egr_fecha'=>null])->all();
+						//->orderBy(['id' => SORT_DESC])->one(); Antes afectaba solo al ultimo ingreso
+					if (!empty($model)) {
+						foreach ($model as $m) {
+							$m->egr_id_vehiculo=$sessVehiculo[0];
+							$m->egr_fecha=$fecAux;
+							$m->egr_hora=$horAux;
+							$m->egr_id_porton=\Yii::$app->session->get('porton');        
+							$m->egr_id_user=\Yii::$app->user->identity->id;
 							if ($controlEgreso) {
-								if ($model->control) {
-									$model->control=$model->control.'.- '.$controlEgreso;
+								if ($m->control) {
+									$m->control=$m->control.'.- '.$controlEgreso;
 								} else {
-									$model->control=$controlEgreso;
+									$m->control=$controlEgreso;
 								}
-							}					
-							$model->save();
+							}
+							$m->save();
 						}
+						
 					} else {		
 						$model=new Accesos();
-						foreach ($sessVehiculo as $model->egr_id_vehiculo) {
-							// Aunque deberia haber un solo vehiculo
-							
-							// Para que save() no funcione como update sino como insert, 
-							// se debe resetear el id y setear isNewRecord como true
-							$model->id = null;
-							$model->id_persona=$id_persona;
-							$model->ing_id_vehiculo=$model->egr_id_vehiculo;
-							$model->ing_fecha=$fecAux;
-							$model->ing_hora=$horAux;
-							$model->egr_fecha=$fecAux;
-							$model->egr_hora=$horAux;
-							$model->egr_id_porton=\Yii::$app->session->get('porton');  
-							$model->ing_id_porton=$model->egr_id_porton;      
-							$model->egr_id_user=\Yii::$app->user->identity->id;					
-							$model->ing_id_user=\Yii::$app->user->identity->id;		
-							$model->id_concepto=0;
-							$model->motivo='Sin ingreso';
-										
-							$model->isNewRecord = true;
-							$model->save();
-						}
-
-					} //foreach vehiculos
+						// Para que save() no funcione como update sino como insert, 
+						// se debe resetear el id y setear isNewRecord como true
+						$model->id = null;
+						$model->id_persona=$id_persona;
+						$model->egr_id_vehiculo=$sessVehiculo[0];							
+						$model->ing_id_vehiculo=$model->egr_id_vehiculo;
+						$model->ing_fecha=$fecAux;
+						$model->ing_hora=$horAux;
+						$model->egr_fecha=$fecAux;
+						$model->egr_hora=$horAux;
+						$model->egr_id_porton=\Yii::$app->session->get('porton');  
+						$model->ing_id_porton=$model->egr_id_porton;      
+						$model->egr_id_user=\Yii::$app->user->identity->id;					
+						$model->ing_id_user=\Yii::$app->user->identity->id;		
+						$model->id_concepto=0;
+						$model->motivo='Sin ingreso';
+									
+						$model->isNewRecord = true;
+						$model->save();
+					}
 					
 				} //foreach personas
 				

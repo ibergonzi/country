@@ -81,6 +81,8 @@ $this->registerCss('
 
     
     <?php 
+    
+		/*
 		if (\Yii::$app->session->get('accesosFecDesdeF')) {
 			$lbl=Html::tag('span','',['class'=>'glyphicon glyphicon-warning-sign','style'=>'color:#FF8000']).
 				'  '.
@@ -112,6 +114,9 @@ $this->registerCss('
 			$lbl2='';
 		}	    
 		$lbl2='';
+		*/
+		$lbl2='';
+		
 		$pdfHeader=[
 					'L'=>['content'=>\Yii::$app->params['lblName']],
 					'C'=>['content'=>$this->title . $lbl2,
@@ -465,7 +470,8 @@ $this->registerCss('
 		if ($consulta && \Yii::$app->user->can('exportarConsDentro')) {			
 			$toolbar=['{export} ',['content'=>$contentToolbar],];
 		} else {
-			$toolbar=[['content'=>$contentToolbar]];
+			//$toolbar=[['content'=>$contentToolbar]];
+			$toolbar='';
 		}				
 
 	 

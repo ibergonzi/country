@@ -95,13 +95,22 @@ class AccesosSearchAut extends AccesosVistaF
      *
      * @return ActiveDataProvider
      */
-    public function search($params,$consDentro=null)
+    public function search($params,$consDentro=null,$egrGrupal=null)
     {
 		// OJO uso AccesosSearch para que me tome los attributelabels de las propiedades nuevas (antes tenia Accesos)
+		
+		// $consDentro=false --> consulta general, pagina y filtra por fecha
+		// $consDentro=true --> se usa para consulta de personas dentro y egresos grupales
+		// $consDentro=true AND $egrGrupal=true --> no pagina ni filtra por fecha
+		// $consDentro=true AND $egrGrupal=false --> solo pagina, no filtra por fecha
 
 
 		if ($consDentro) {
-			$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['accesos.defaultPageSize'];			
+			if ($egrGrupal) {
+				$pageSize=0;
+			} else {
+				$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['accesos.defaultPageSize'];			
+			}
 			$query = AccesosSearchAut::find()->andWhere(['egr_fecha'=>null,'estado'=>1]);
 		} else {
 			$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['accesosAut.defaultPageSize'];			
@@ -180,43 +189,48 @@ class AccesosSearchAut extends AccesosVistaF
             ->andFilterWhere(['like', 'r_egr_color', $this->r_egr_color])
             ->andFilterWhere(['like', 'desc_concepto', $this->desc_concepto]);
 
-		if (isset($params['resetFechas'])) {
-			\Yii::$app->session->remove('accesosFecDesdeF');
-			\Yii::$app->session->remove('accesosFecHastaF');
-			$this->fecdesde=null;
-			$this->fechasta=null;
-			unset($params['resetFechas']);
-		}
-		
+		// el filtro por fechas NO se aplica a la consulta de personas dentro y egresos grupales
+		if (!$consDentro) {
 
-        if (!empty($this->fecdesde) && !empty($this->fechasta)) {
-			// cada vez que se envia el form con el rango de fechas se guardan las fechas en sesion
-			\Yii::$app->session->set('accesosFecDesdeF',$this->fecdesde);			
-			\Yii::$app->session->set('accesosFecHastaF',$this->fechasta);					
+			if (isset($params['resetFechas'])) {
+				\Yii::$app->session->remove('accesosFecDesdeF');
+				\Yii::$app->session->remove('accesosFecHastaF');
+				$this->fecdesde=null;
+				$this->fechasta=null;
+				unset($params['resetFechas']);
+			}
 			
-			// para el between entre datetimes se debe agregar un dia mas a la fecha hasta
-			$f=new \DateTime($this->fechasta);
-			//$f->add(new \DateInterval('P1D'));
-			$query->andFilterWhere(['between', 'ing_fecha', $this->fecdesde, $f->format('Y-m-d')]);
-			
-		} else {
-			$sfd=\Yii::$app->session->get('accesosFecDesdeF')?\Yii::$app->session->get('accesosFecDesdeF'):'';
-			$sfh=\Yii::$app->session->get('accesosFecHastaF')?\Yii::$app->session->get('accesosFecHastaF'):'';
-			
-			// si todavia están en sesion las variables del rango de fechas se hace el between y se elimina created_at
-			if ($sfd && $sfh) {
+
+			if (!empty($this->fecdesde) && !empty($this->fechasta)) {
+				// cada vez que se envia el form con el rango de fechas se guardan las fechas en sesion
+				\Yii::$app->session->set('accesosFecDesdeF',$this->fecdesde);			
+				\Yii::$app->session->set('accesosFecHastaF',$this->fechasta);					
+				
 				// para el between entre datetimes se debe agregar un dia mas a la fecha hasta
-				$f=new \DateTime(\Yii::$app->session->get('accesosFecHastaF'));
+				$f=new \DateTime($this->fechasta);
 				//$f->add(new \DateInterval('P1D'));
-				$query->andFilterWhere(['between', 'ing_fecha', \Yii::$app->session->get('accesosFecDesdeF'), 
-						$f->format('Y-m-d')]);
-				$this->created_at='';		
-			}				
-			else
-			{	
-				$query->andFilterWhere(['like', 'ing_fecha', $this->created_at]);
-			}	
-		}
+				$query->andFilterWhere(['between', 'ing_fecha', $this->fecdesde, $f->format('Y-m-d')]);
+				
+			} else {
+				$sfd=\Yii::$app->session->get('accesosFecDesdeF')?\Yii::$app->session->get('accesosFecDesdeF'):'';
+				$sfh=\Yii::$app->session->get('accesosFecHastaF')?\Yii::$app->session->get('accesosFecHastaF'):'';
+				
+				// si todavia están en sesion las variables del rango de fechas se hace el between y se elimina created_at
+				if ($sfd && $sfh) {
+					// para el between entre datetimes se debe agregar un dia mas a la fecha hasta
+					$f=new \DateTime(\Yii::$app->session->get('accesosFecHastaF'));
+					//$f->add(new \DateInterval('P1D'));
+					$query->andFilterWhere(['between', 'ing_fecha', \Yii::$app->session->get('accesosFecDesdeF'), 
+							$f->format('Y-m-d')]);
+					$this->created_at='';		
+				}				
+				else
+				{	
+					$query->andFilterWhere(['like', 'ing_fecha', $this->created_at]);
+				}	
+			}
+		
+		} // fin !$consDentro
 
 
         return $dataProvider;

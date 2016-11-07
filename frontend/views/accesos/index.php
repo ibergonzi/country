@@ -77,7 +77,7 @@ $this->registerCss('
 		'items'=>[
 				[
 				'label'=> $lbl,
-				'content'=>$this->render('_searchfec', ['model' => $searchModel]),
+				'content'=>$this->render('_searchfec', ['model' => $searchModel,'page'=>'index']),
 				]
 			]
 		]);

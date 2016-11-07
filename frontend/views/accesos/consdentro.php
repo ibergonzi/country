@@ -80,6 +80,8 @@ $this->registerCss('
 
     
     <?php 
+    
+		/*
 		if (\Yii::$app->session->get('accesosFecDesdeF')) {
 			$lbl=Html::tag('span','',['class'=>'glyphicon glyphicon-warning-sign','style'=>'color:#FF8000']).
 				'  '.
@@ -98,7 +100,7 @@ $this->registerCss('
 		'items'=>[
 				[
 				'label'=> $lbl,
-				'content'=>$this->render('_searchfec', ['model' => $searchModel]),
+				'content'=>$this->render('_searchfec', ['model' => $searchModel,'page'=>'cons-dentro']),
 				]
 			]
 		]);
@@ -111,6 +113,9 @@ $this->registerCss('
 			$lbl2='';
 		}	    
 		$lbl2='';
+		*/
+		$lbl2='';
+		
 		$pdfHeader=[
 					'L'=>['content'=>\Yii::$app->params['lblName']],
 					'C'=>['content'=>$this->title . $lbl2,

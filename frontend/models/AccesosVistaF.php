@@ -121,7 +121,7 @@ class AccesosVistaF extends \yii\db\ActiveRecord
             'estado' => 'Estado',
             'motivo_baja' => 'Motivo Baja',
             'id_autorizante' => 'Autorizante',
-            'id_uf' => 'U.F.',
+            'id_uf' => 'Un.Func.',
             'r_ing_usuario' => 'Usuario Ing.',
             'r_egr_usuario' => 'Usuario Egr.',
             'r_apellido' => 'Apellido',

@@ -649,24 +649,28 @@ class AccesosController extends Controller
 						}	
 					
 				} else {
-					/*
-					if ($grupo == 'autorizantes') {
-						$aut=Autorizantes::find()->where(['id_persona'=>$id])->all();
-						foreach ($aut as $a) {
-							//Chequea que no se duplique el id en la lista
-							if (!in_array($a->id, $sess)) {
-								$sess[]=$a->id;
-								\Yii::$app->session[$grupo]=$sess;			
-							} 
-						}
-					} else {
-						//Chequea que no se duplique el id en la lista
-					*/
-						if (!in_array($id, $sess)) {
+					if (!in_array($id, $sess)) {
+						if ($grupo == 'autorizantes') {
+							// Si es autorizante se debe controlar que no se duplique la u.f.
+							$aut=Autorizantes::findOne($id);
+							$ufAux=$aut->id_uf;
+							$esta=false;
+							foreach ($sess as $id_aut) {
+								$aut=Autorizantes::findOne($id_aut);
+								if ($aut->id_uf == $ufAux) {
+									$esta=true;
+								}
+							}
+							if (!$esta) {
+								$sess[]=$id;
+								\Yii::$app->session[$grupo]=$sess;
+							}
+							
+						} else {
 							$sess[]=$id;
-							\Yii::$app->session[$grupo]=$sess;			
-						} 
-					//}
+							\Yii::$app->session[$grupo]=$sess;
+						}				
+					} 
 				} 
 			} else {
 				/*
@@ -1487,6 +1491,22 @@ class AccesosController extends Controller
 							break;
 						}
 					}
+				}
+				// verifica que el concepto sea valido
+				$hayAutorizantes=false;
+				foreach ($sessPersonas as $IDpersonaAux) {
+					$aut=Autorizantes::find()->where(['id_persona'=>$IDpersonaAux])->all();
+					if (!empty($aut)) {
+						$hayAutorizantes=true;
+					}
+				}
+				if ($hayAutorizantes && $model->id_concepto != \Yii::$app->params['concepto.COPROPIETARIO']) {
+					\Yii::$app->session->addFlash('danger','Verifique el concepto');
+					$rechaza=true;
+				}
+				if (!$hayAutorizantes && $model->id_concepto == \Yii::$app->params['concepto.COPROPIETARIO']) {
+					\Yii::$app->session->addFlash('danger','Verifique el concepto');
+					$rechaza=true;
 				}
 			}
 			

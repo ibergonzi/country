@@ -355,10 +355,23 @@ $this->registerCss('
             'r_nro_doc',
             
             'id_uf',
-            
+   		    [
+				'attribute'=>'r_aut_apellido',
+				'noWrap'=>true,
+		    ],            
             [
 				'attribute'=>'vto_seguro',
 				'format'=>'date',
+				//'visible'=>'accesosConcepto->req_seguro',
+				
+				'value' => function ($model, $index, $widget) {
+					if ($model->accesosConcepto->req_seguro) {
+						return $model->vto_seguro;
+					} else {
+						return null;
+					}
+				},
+				
             ],            
             [
 				'attribute'=>'ing_id_vehiculo',

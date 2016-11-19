@@ -294,7 +294,21 @@ class AccesosController extends Controller
 			$command=\Yii::$app->db->createCommand($q);	
 			$command->bindParam(':fecdesde', $model->fecdesde);	
 			$command->bindParam(':fechasta', $model->fechasta);	
-			$rows=$command->queryAll();				
+			$rows=$command->queryAll();	
+			//Yii::trace($rows);
+			if (count($rows)==0) {			
+				$dataProvider=null;   
+				$series=null;
+				$categ=null;
+				$pie=null;
+				return $this->render('stats', [
+					'model' => $model,
+					'dataProvider'=>$dataProvider,
+					'series'=>$series,
+					'categ'=>$categ,
+					'pie'=>$pie,
+				]);				
+			}			
 			$totCant=0;
 			foreach ($rows as $r) {
 				$totCant+=$r['cant'];

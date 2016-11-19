@@ -17,7 +17,8 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    '(not set)' => '(no definido)',
+    //'(not set)' => '(no definido)',
+    '(not set)' => '-',
     'An internal server error occurred.' => 'Hubo un error interno del servidor.',
     'Are you sure you want to delete this item?' => '¿Está seguro de eliminar este elemento?',
     'Delete' => 'Eliminar',

@@ -124,7 +124,7 @@ class AccesosVistaF extends \yii\db\ActiveRecord
             'id_uf' => 'Un.Func.',
             'r_ing_usuario' => 'Usuario Ing.',
             'r_egr_usuario' => 'Usuario Egr.',
-            'r_apellido' => 'Apellido',
+            'r_apellido' => 'Apell.Aut.',
             'r_nombre' => 'Nombre',
             'r_nombre2' => 'Nombre2',
             'r_nro_doc' => 'Nro Doc',
@@ -145,7 +145,10 @@ class AccesosVistaF extends \yii\db\ActiveRecord
         ];
     }
     
-   
+    public function getAccesosConcepto()
+    {
+        return $this->hasOne(AccesosConceptos::className(), ['id' => 'id_concepto']);
+    }   
 }
 /*
 select NULL AS `id`,`country`.`accesos`.`id` AS `id_acceso`,`country`.`accesos`.`id_persona` AS `id_persona`,

@@ -50,6 +50,8 @@ return [
 			
 			'decimalSeparator'=>',',
 			'thousandSeparator'=>'.',
+			
+			'nullDisplay' => '',			
 		],
 
         'assetManager' => [

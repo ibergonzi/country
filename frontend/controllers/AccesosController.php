@@ -299,7 +299,7 @@ class AccesosController extends Controller
 			foreach ($rows as $r) {
 				$totCant+=$r['cant'];
 			}	
-			$semana=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+			$semana=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
 
 			if ($totCant > 0) {	
 				$categ=[];
@@ -624,7 +624,15 @@ class AccesosController extends Controller
 		foreach ($aux as $i) {
 			$r=$this->actionAddLista($grupo, $i);
 		}
-		\Yii::$app->response->format = 'json';		
+		\Yii::$app->response->format = 'json';	
+		
+		// si se elige a una sola persona de la lista, se deberia traer los datos del ultimo ingreso
+		if (count($aux)==1) {
+			$idP=$aux[0];
+			$rAux=$this->actionBuscaUltIngreso('ingpersonas', $idP);
+			$r['ultIngr']=$rAux;
+			Yii::trace($r['ultIngr']);
+		}	
 		return $r;
 	}
     
@@ -744,18 +752,25 @@ class AccesosController extends Controller
 		
 		if (empty($id)) {return;}
 		if ($grupo !== 'ingpersonas' && $grupo !== 'ingvehiculos') {return;}
-		
+	
+		\Yii::$app->response->format = 'json';
+				
 		if ($grupo=='ingpersonas') {
 			$ult=Accesos::find()->where(['id_persona'=>$id])
 				->andWhere(['>','id_concepto',0])
 				->orderBy(['id' => SORT_DESC])->asArray()->one();
 		} else {
+			// se pidió expresamente que solo se propongan las condiciones del ingreso cuando sean por PERSONA
+			// y no por vehículo (punto 4 mail 18/11 solicitado por Fabian)
+			/*
 			$ult=Accesos::find()->where(['ing_id_vehiculo'=>$id])
 				->andWhere(['>','id_concepto',0])
-				->orderBy(['id' => SORT_DESC])->asArray()->one();			
+				->orderBy(['id' => SORT_DESC])->asArray()->one();
+			*/			
+			$ult='notFound';
+			return $ult;			
 		}
 		
-		//Yii::trace($ult);
 		\Yii::$app->response->format = 'json';
 		
 		$a=Accesos::findOne($ult['id']);
@@ -779,7 +794,7 @@ class AccesosController extends Controller
 	
 	public function actionRefreshConcepto($id_concepto=null) 
 	{
-		if (empty($id_concepto) || $id_concepto=='null') {return;}
+		if (empty($id_concepto) || $id_concepto=='null') {\Yii::$app->session->set('req_seguro',false);return;}
 		$ac=AccesosConceptos::findOne($id_concepto);
 		\Yii::$app->session->set('req_seguro',$ac->req_seguro);
 		// en la vista solo se usa el grupo personas pero se devuelve todo
@@ -799,7 +814,15 @@ class AccesosController extends Controller
 
 
 	public function refreshListas() {
-		$response=['ingpersonas'=>'','ingvehiculos'=>'','autorizantes'=>'','egrpersonas'=>'','egrvehiculos'=>''];
+		// el 'ultIngr' solo se utiliza desde actionAddListaArray, es decir, cuando desde _ingpersonas.php
+		// se elige una sola persona de la lista. Al elegir una  sola persona se debe setear el motivo, concepto
+		// y los autorizantes del ultimo ingreso. ultIngr contiene un array con los datos de un ingreso, 
+		// el resto (ingpersonas, ingvehiculos, etc.) contiene codigo html
+		
+		$response=['ingpersonas'=>'','ingvehiculos'=>'','autorizantes'=>'',
+				   'egrpersonas'=>'','egrvehiculos'=>'',
+				   'ultIngr'=>''
+				   ];
 		foreach ($response as $grupo=>$valor) {
 		
 			// Se recupera de la sesion
@@ -1500,10 +1523,12 @@ class AccesosController extends Controller
 						$hayAutorizantes=true;
 					}
 				}
+				// si hay copropietarios, el concepto debe ser copropietario
 				if ($hayAutorizantes && $model->id_concepto != \Yii::$app->params['concepto.COPROPIETARIO']) {
 					\Yii::$app->session->addFlash('danger','Verifique el concepto');
 					$rechaza=true;
 				}
+				// si no hay copropietarios, el concepto no puede ser copropietario
 				if (!$hayAutorizantes && $model->id_concepto == \Yii::$app->params['concepto.COPROPIETARIO']) {
 					\Yii::$app->session->addFlash('danger','Verifique el concepto');
 					$rechaza=true;

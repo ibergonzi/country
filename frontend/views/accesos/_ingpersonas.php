@@ -44,6 +44,20 @@ $("#listboxPersonas1 :checkbox").keypress( function (e) {
 								success  : function(r) {
 											$("#divlistapersonas").html(r["ingpersonas"]);
 											$("#modalpersonas_vehiculo").modal("hide");
+											if (r["ultIngr"] != "notFound") {
+												$("#accesos-motivo").val(r["ultIngr"].motivo);
+												$("#accesos-id_concepto").val(r["ultIngr"].id_concepto);
+												$("#accesos-id_concepto").trigger("change");
+												$("#accesos-cant_acomp").val(r["ultIngr"].cant_acomp);
+												$("#divlistaautorizantes").html(r["ultIngr"].motivo_baja["autorizantes"]);
+											} else {
+												$("#accesos-motivo").val("");
+												$("#accesos-id_concepto").val("");
+												$("#accesos-cant_acomp").val("");
+												$("#divlistaautorizantes").html("");
+											}
+
+																						
 											$("#btnSubmit").focus();
 											}
 								});

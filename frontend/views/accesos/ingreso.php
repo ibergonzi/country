@@ -213,6 +213,7 @@ $(document).ready(function() {
 																} else {
 																	$("#accesos-motivo").val("");
 																	$("#accesos-id_concepto").val("");
+																	$("#accesos-id_concepto").trigger("change");						
 																	$("#accesos-cant_acomp").val("");
 																	$("#divlistaautorizantes").html("");
 																}

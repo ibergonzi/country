@@ -206,6 +206,7 @@ class RbacController extends Controller
 		$auth->add($altaModificarPersona);	
 		$auth->addChild($intendente, $altaModificarPersona);
 		$auth->addChild($opIntendencia, $altaModificarPersona);	
+		$auth->addChild($portero, $altaModificarPersona);	
 		
 		$cambiarPersona=$auth->createPermission('cambiarPersona');
 		$cambiarPersona->description='Cambiar persona en todo el sistema';
@@ -322,7 +323,9 @@ class RbacController extends Controller
 		$altaModificarVehiculo->description='Alta/modif.: persona';
 		$auth->add($altaModificarVehiculo);	
 		$auth->addChild($intendente, $altaModificarVehiculo);
-		$auth->addChild($opIntendencia, $altaModificarVehiculo);	
+		$auth->addChild($opIntendencia, $altaModificarVehiculo);
+		$auth->addChild($portero, $altaModificarVehiculo);
+			
 		
 		$altaVehiculoIngEgr=$auth->createPermission('altaVehiculoIngEgr');
 		$altaVehiculoIngEgr->description='Alta: vehiculo (desde accesos)';

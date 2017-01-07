@@ -73,7 +73,7 @@ class UfTitularidadPersonas extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['uf_titularidad_id', 'id_persona', 'tipo', ], 'required'],
+            [['uf_titularidad_id', 'tipo', ], 'required'],
             [['uf_titularidad_id', 'id_persona', 'created_by', 'updated_by'], 'integer'],
             [['created_by', 'created_at', 'updated_by', 'updated_at'], 'safe'],
             [['tipo'], 'string', 'max' => 1],

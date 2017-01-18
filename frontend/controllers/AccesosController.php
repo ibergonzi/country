@@ -642,14 +642,14 @@ class AccesosController extends Controller
 		
 		// si se elige a una sola persona de la lista, se deberia traer los datos del ultimo ingreso
 		//if (count($aux)==1) {
-		
+		if (count($aux)>=1) {		
 		// 18/01/2017, solicitado por Guillermo, ahora si se elige más de una persona, 
 		// se toma solamente la primera de ellas y se buscan los datos del ultimo ingreso
 			$idP=$aux[0];
 			$rAux=$this->actionBuscaUltIngreso('ingpersonas', $idP);
 			$r['ultIngr']=$rAux;
 			Yii::trace($r['ultIngr']);
-		//}	
+		}	
 		return $r;
 	}
     

@@ -342,6 +342,8 @@ Si los cambios en "hotfix" no son necesarios para que "autoriz" funcione bien, l
 el trabajo en "autoriz", cambiarse a "master" y fusionar "autoriz"
 	git checkout master
 	git merge autoriz
+	
+EMPECE A TRABAJAR EN AUTORIZ	
 
 
 

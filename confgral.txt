@@ -309,7 +309,40 @@ Con 2 instalaciones de YII
 3) git init
 4) git remote add origin https://github.com/ibergonzi/country.git
 5) git pull remote master (ahora uso git pull origin)
-6) 
+
+
+Ramas en Git
+Suponiendo que se debe hacer una modificación importante, el procedimiento es crear y trabajar en otra rama distinta a "master"
+   git checkout -b autoriz
+   
+   donde "autoriz" es el nombre de la nueva rama (lo anterior se puede hacer en 2 pasos: 
+   git branch autoriz;git checkout autoriz). Con checkout se pasa de una rama a otra
+   
+Una vez terminado el trabajo, se debe fusionar la rama "autoriz" en "master":
+	git checkout master
+	git merge autoriz
+	git branch -d autoriz (se borra la rama "autoriz" ya que quedó igual que master)
+	
+Suponiendo que mientras se está trabajando en "autoriz" surge un problema con la versión en producción, es decir, que hay que
+hacer correcciones en la "master", el procedimiento es pasarse a master y crear una nueva rama, para el ejemplo "hotfix"
+	git checkout master
+	git checkout -b hotfix
+
+Una vez realizados los cambios, se debe fusionar "hotfix" con "master":
+	git checkout master
+	git merge hotfix
+	git brand -d hotfix
+	
+En este punto hay que notar que en la rama "autoriz" no están los cambios hechos en "hotfix". Si se necesitan si o si en 
+"autoriz", el procedimiento es fusionar "master" en "autoriz":
+	git checkout autoriz
+	git merge master
+	
+Si los cambios en "hotfix" no son necesarios para que "autoriz" funcione bien, lo recomendable es, una vez terminado
+el trabajo en "autoriz", cambiarse a "master" y fusionar "autoriz"
+	git checkout master
+	git merge autoriz
+
 
 
 

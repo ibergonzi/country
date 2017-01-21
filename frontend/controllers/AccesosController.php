@@ -33,6 +33,8 @@ use frontend\models\AccesosConceptos;
 use frontend\models\Uf;
 use frontend\models\RangoFechas;
 use frontend\models\AccesosAutmanual;
+use frontend\models\Autorizados;
+use frontend\models\AutorizadosHorarios;
 
 
 use kartik\mpdf\Pdf;
@@ -935,7 +937,45 @@ class AccesosController extends Controller
 												});return false;',
 												]);			
 										},						
-						],		
+						],	
+						[
+							'header'=>'&nbsp;',					
+							'attribute'=>'autorizado',
+							//'visible'=>\Yii::$app->session->get('req_seguro'),
+							'format' => 'raw',
+							'value' => function ($model, $index, $widget) {
+											$autoriz_icon=$this->buscaAutorizaciones($model->id);
+											
+											if ($autoriz_icon==0) {
+												$ic=' ';
+												return $ic;
+											} else {
+												$ic='<span class="glyphicon glyphicon-thumbs-up fa-2x" 
+												style="color:#FF8000"
+												title="Posee autorizaciones"></span>';														
+												$url=Yii::$app->urlManager->createUrl(
+														['autorizados/list','idPersona'=>$model->id,]);							
+												return Html::a($ic, 
+													$url,
+													[//'title' => 'Modificar fecha de vencimiento',
+													 'onclick'=>'$.ajax({
+														type     :"POST",
+														cache    : false,
+														url  : $(this).attr("href"),
+														success  : function(response) {
+																console.log(response);
+																$("#divautorizaciones").html(response);
+																$("#modalautorizaciones").modal("show");
+
+																	}
+													});return false;',
+													]);			
+
+
+											}								
+										
+										},
+						],										
 						[
 							'header'=>'&nbsp;',					
 							'attribute'=>'venc_vto_seguro',
@@ -1337,6 +1377,15 @@ class AccesosController extends Controller
 		$vto = strtotime($fec);
 		return ($vto >= $hoy)?false:true;
 	}	
+	
+	public function buscaAutorizaciones($idPersona) 
+	{
+		if ($idPersona==44447) {
+		return 1;
+		} else {
+			return 0;
+		}
+	}
 
     public function actionEgreso($diferido=false)
     {

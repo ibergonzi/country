@@ -343,6 +343,8 @@ el trabajo en "autoriz", cambiarse a "master" y fusionar "autoriz"
 	git checkout master
 	git merge autoriz
 	
+IMPORTANTE!!! antes de cambiar de rama hay que hacer los commits!!!!	
+	
 
 
 

@@ -911,7 +911,7 @@ class AccesosController extends Controller
 												$c=Mensajes::getMensajesByModelId($model->className(),$model->id);
 
 												if (!empty($c)) {
-													$text='<span class="glyphicon glyphicon-alert" style="color:#FF8000"></span>';
+													$text='<span class="glyphicon glyphicon-alert fa-2x" style="color:#FF8000"></span>';
 													$titl='Ver mensaje';
 												} else {
 													$text='<span class="glyphicon glyphicon-envelope"></span>';
@@ -1051,7 +1051,7 @@ class AccesosController extends Controller
 												$c=Mensajes::getMensajesByModelId($model->className(),$model->id);
 
 												if (!empty($c)) {
-													$text='<span class="glyphicon glyphicon-alert" style="color:#FF8000"></span>';
+													$text='<span class="glyphicon glyphicon-alert fa-2x" style="color:#FF8000"></span>';
 													$titl='Ver mensaje';
 												} else {
 													$text='<span class="glyphicon glyphicon-envelope"></span>';
@@ -1142,7 +1142,7 @@ class AccesosController extends Controller
 												$c=Mensajes::getMensajesByModelId($model->className(),$model->id);
 
 												if (!empty($c)) {
-													$text='<span class="glyphicon glyphicon-alert" style="color:#FF8000"></span>';
+													$text='<span class="glyphicon glyphicon-alert fa-2x" style="color:#FF8000"></span>';
 													$titl='Ver mensaje';
 												} else {
 													$text='<span class="glyphicon glyphicon-envelope"></span>';
@@ -1212,7 +1212,7 @@ class AccesosController extends Controller
 												$c=Mensajes::getMensajesByModelId($model->className(),$model->id);
 
 												if (!empty($c)) {
-													$text='<span class="glyphicon glyphicon-alert" style="color:#FF8000"></span>';
+													$text='<span class="glyphicon glyphicon-alert fa-2x" style="color:#FF8000"></span>';
 													$titl='Ver mensaje';
 												} else {
 													$text='<span class="glyphicon glyphicon-envelope"></span>';

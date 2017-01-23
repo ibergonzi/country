@@ -1380,8 +1380,12 @@ class AccesosController extends Controller
 	
 	public function buscaAutorizaciones($idPersona) 
 	{
-		if ($idPersona==44447) {
-		return 1;
+		// si se modifica esta busqueda se debe modificar tambien en views\autorizados\list.php
+    	$models=Autorizados::find()->where(['id_persona'=>$idPersona,'estado'=>1])
+			->andWhere(['or',['fec_hasta'=>null],'fec_hasta>=now()'])
+			->orderBy(['id_autorizante'=>SORT_ASC,'fec_desde'=>SORT_DESC])->all();
+		if (count($models) > 0) {
+			return 1;
 		} else {
 			return 0;
 		}

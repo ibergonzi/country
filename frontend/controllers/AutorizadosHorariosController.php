@@ -3,6 +3,8 @@
 namespace frontend\controllers;
 
 use Yii;
+
+use frontend\models\Autorizados;
 use frontend\models\AutorizadosHorarios;
 use frontend\models\AutorizadosHorariosSearch;
 use yii\web\Controller;
@@ -57,14 +59,27 @@ class AutorizadosHorariosController extends Controller
      * Lists all AutorizadosHorarios models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($idParent)
     {
         $searchModel = new AutorizadosHorariosSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        //$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+       // agregado a mano, cuando se quiere filtrar por un valor por defecto 
+        // (en este caso traer los registros de AutorizadosHorarios relacionados con la
+        // autorizacion que se eligio en la pagina anterior) se debe hacer asi:
+        // crear un array (juntando lo que viene por request con un array vacio)
+        // y modificar el valor que nos interesa a mano
+        $q = array_merge([],Yii::$app->request->queryParams);
+        $q["AutorizadosHorariosSearch"]["id_autorizado"] = $idParent ;
+        $dataProvider = $searchModel->search($q);
+
+        // obtengo los datos de la cabecera    
+   		$parent= Autorizados::findOne($idParent);	        
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'parent'=>$parent,
         ]);
     }
 
@@ -75,9 +90,12 @@ class AutorizadosHorariosController extends Controller
      */
     public function actionView($id)
     {
+		$model=$this->findModel($id);
+		$parent= Autorizados::findOne($model->id_autorizado);			
         return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+            'model' => $model,
+            'parent'=> $parent
+        ]);        
     }
 
     /**
@@ -85,15 +103,19 @@ class AutorizadosHorariosController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($idParent)
     {
         $model = new AutorizadosHorarios();
+        $model->id_autorizado=$idParent;
+        
+        $parent=Autorizados::findOne($idParent);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
+                'parent'=> $parent,
             ]);
         }
     }
@@ -107,12 +129,14 @@ class AutorizadosHorariosController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $parent = Autorizados::findOne($model->id_autorizado);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
                 'model' => $model,
+                'parent'=> $parent,
             ]);
         }
     }
@@ -125,9 +149,20 @@ class AutorizadosHorariosController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
+        $model = $this->findModel($id);
+		$parent= Autorizados::findOne($model->id_autorizado);        
+        
+        if ($model->load(Yii::$app->request->post())) {
+			$model->estado=Autorizados::ESTADO_BAJA;
+			if ($model->save()) {
+				return $this->redirect(['view', 'id' => $model->id]);
+			}
+        } else {
+            return $this->render('delete', [
+                'model' => $model,
+                'parent'=> $parent,
+            ]);
+        }       
     }
 
     /**

@@ -27,6 +27,7 @@ use frontend\models\Autorizantes;
 use frontend\models\Llaves;
 use frontend\models\Mensajes;
 use frontend\models\UfTitularidadPersonas;
+use frontend\models\Autorizados;
 
 /**
  * PersonasController implements the CRUD actions for Personas model.
@@ -106,7 +107,15 @@ class PersonasController extends Controller
 				$c=Autorizantes::updateAll(['id_persona'=>$model->idPersonaHasta],['id_persona'=>$model->idPersonaDesde]);
 				if ($c > 0) {
 					$listaCambios.='<p><i>Autorizantes:</i> cantidad de cambios realizados -> '.$c.'</p>';
-				} 	
+				} 
+				$c=Autorizados::updateAll(['id_persona'=>$model->idPersonaHasta],['id_persona'=>$model->idPersonaDesde]);
+				if ($c > 0) {
+					$listaCambios.='<p><i>Autorizaciones (personas):</i> cantidad de cambios realizados -> '.$c.'</p>';
+				}
+				$c=Autorizados::updateAll(['id_autorizante'=>$model->idPersonaHasta],['id_autorizante'=>$model->idPersonaDesde]);
+				if ($c > 0) {
+					$listaCambios.='<p><i>Autorizaciones (autorizantes):</i> cantidad de cambios realizados -> '.$c.'</p>';
+				}									
 				$c=Llaves::updateAll(['id_persona'=>$model->idPersonaHasta],['id_persona'=>$model->idPersonaDesde]);
 				if ($c > 0) {
 					$listaCambios.='<p><i>Llaves (personas):</i> cantidad de cambios realizados -> '.$c.'</p>';

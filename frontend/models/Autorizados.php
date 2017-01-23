@@ -16,6 +16,7 @@ use yii\db\Expression;
  * @property integer $id
  * @property integer $id_persona
  * @property integer $id_autorizante
+ * @property integer $id_uf
  * @property string $fec_desde
  * @property string $fec_hasta
  * @property integer $created_by
@@ -27,6 +28,7 @@ use yii\db\Expression;
  *
  * @property Personas $idAutorizante
  * @property Personas $idPersona
+ * @property Uf $idUf
  * @property AutorizadosHorarios[] $autorizadosHorarios
  */
 class Autorizados extends \yii\db\ActiveRecord
@@ -38,6 +40,22 @@ class Autorizados extends \yii\db\ActiveRecord
     {
         return 'autorizados';
     }
+    
+    
+    const ESTADO_BAJA = 0;
+	const ESTADO_ACTIVO = 1;
+
+	// funcion agregada a mano
+	public static function getEstados($key=null)
+	{
+		$estados=[self::ESTADO_ACTIVO=>'Activo',self::ESTADO_BAJA=>'Baja'];
+	    if ($key !== null) {
+			return $estados[$key];
+		}
+		return $estados;
+	}	
+
+    
 
     // extiende los comportamientos de la clase para grabar datos de auditoría
     // agregado por mi
@@ -66,13 +84,14 @@ class Autorizados extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_persona', 'id_autorizante', 'created_by', 'created_at', 'updated_by', 'updated_at', 'estado'], 'required'],
-            [['id_persona', 'id_autorizante', 'created_by', 'updated_by', 'estado'], 'integer'],
+            [['id_persona', 'id_autorizante', 'id_uf', 'created_by', 'created_at', 'updated_by', 'updated_at', 'estado'], 'required'],
+            [['id_persona', 'id_autorizante', 'id_uf', 'created_by', 'updated_by', 'estado'], 'integer'],
             [['fec_desde', 'fec_hasta', 'created_at', 'updated_at'], 'safe'],
             [['motivo_baja'], 'string', 'max' => 50],
-            [['id_persona', 'id_autorizante', 'fec_desde', 'fec_hasta', 'estado'], 'unique', 'targetAttribute' => ['id_persona', 'id_autorizante', 'fec_desde', 'fec_hasta', 'estado'], 'message' => 'The combination of Id Persona, Id Autorizante, Fec Desde, Fec Hasta and Estado has already been taken.'],
+            [['id_persona', 'id_autorizante', 'id_uf', 'fec_desde', 'fec_hasta', 'estado'], 'unique', 'targetAttribute' => ['id_persona', 'id_autorizante', 'id_uf', 'fec_desde', 'fec_hasta', 'estado'], 'message' => 'The combination of Id Persona, Id Autorizante, Id Uf, Fec Desde, Fec Hasta and Estado has already been taken.'],
             [['id_autorizante'], 'exist', 'skipOnError' => true, 'targetClass' => Personas::className(), 'targetAttribute' => ['id_autorizante' => 'id']],
             [['id_persona'], 'exist', 'skipOnError' => true, 'targetClass' => Personas::className(), 'targetAttribute' => ['id_persona' => 'id']],
+            [['id_uf'], 'exist', 'skipOnError' => true, 'targetClass' => Uf::className(), 'targetAttribute' => ['id_uf' => 'id']],
         ];
     }
 
@@ -83,10 +102,11 @@ class Autorizados extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'id_persona' => 'Id Persona',
-            'id_autorizante' => 'Id Autorizante',
-            'fec_desde' => 'Fec.Desde',
-            'fec_hasta' => 'Fec.Hasta',
+            'id_persona' => 'Persona',
+            'id_autorizante' => 'Autorizante',
+            'id_uf' => 'U.F.',
+            'fec_desde' => 'Fec Desde',
+            'fec_hasta' => 'Fec Hasta',
             'created_by' => 'Created By',
             'created_at' => 'Created At',
             'updated_by' => 'Updated By',
@@ -95,6 +115,11 @@ class Autorizados extends \yii\db\ActiveRecord
             'motivo_baja' => 'Motivo Baja',
             'userCreatedBy.username'=>'Usuario alta',
             'userUpdatedBy.username'=>'Usuario modif.',
+            'persApellido'=>'Apellido',
+            'persNombre'=>'Nombre',
+            'persNroDoc'=>'Nro.Doc.',
+            'autApellido'=>'Apellido',
+            'autNombre'=>'Nombre',
         ];
     }
 
@@ -103,7 +128,8 @@ class Autorizados extends \yii\db\ActiveRecord
      */
     public function getAutorizante()
     {
-        return $this->hasOne(Personas::className(), ['id' => 'id_autorizante']);
+        return $this->hasOne(Personas::className(),
+			['id' => 'id_autorizante'])->from(Personas::tableName() . ' a_persona');
     }
 
     /**
@@ -111,7 +137,16 @@ class Autorizados extends \yii\db\ActiveRecord
      */
     public function getPersona()
     {
-        return $this->hasOne(Personas::className(), ['id' => 'id_persona']);
+        return $this->hasOne(Personas::className(),
+			['id' => 'id_persona'])->from(Personas::tableName() . ' p_persona');
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUf()
+    {
+        return $this->hasOne(Uf::className(), ['id' => 'id_uf']);
     }
 
     /**

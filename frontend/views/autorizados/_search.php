@@ -21,9 +21,11 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'id_autorizante') ?>
 
+    <?= $form->field($model, 'id_uf') ?>
+
     <?= $form->field($model, 'fec_desde') ?>
 
-    <?= $form->field($model, 'fec_hasta') ?>
+    <?php // echo $form->field($model, 'fec_hasta') ?>
 
     <?php // echo $form->field($model, 'created_by') ?>
 

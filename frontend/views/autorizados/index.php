@@ -3,6 +3,8 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 
+use frontend\models\Autorizados;
+
 // necesario para comentarios
 use yii\bootstrap\Modal;
 use frontend\models\Comentarios;
@@ -13,7 +15,7 @@ use kartik\popover\PopoverX;
 /* @var $searchModel frontend\models\AutorizadosSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Autorizados';
+$this->title = 'Autorizaciones (eventuales y permanentes)';
 $this->params['breadcrumbs'][] = $this->title;
 
 // scrollbar para el modal de comentarios
@@ -65,16 +67,41 @@ $this->registerCss('
 		]; 	
 	
 	$columns = [
-	            'id',
+	        //'id',
             'id_persona',
+            [
+				'attribute'=>'persApellido',
+				'value'=>'persona.apellido',
+            ],            
+            [
+				'attribute'=>'persNombre',
+				'value'=>'persona.nombre',
+            ],  
+            [
+				'attribute'=>'persNroDoc',
+				'value'=>'persona.nro_doc',
+            ],  
             'id_autorizante',
-            'fec_desde',
-            'fec_hasta',
+            [
+				'attribute'=>'autApellido',
+				'value'=>'autorizante.apellido',
+            ],            
+            [
+				'attribute'=>'autNombre',
+				'value'=>'autorizante.nombre',
+            ],
+            'id_uf',
+            'fec_desde:date',
+            'fec_hasta:date',
             // 'created_by',
             // 'created_at',
             // 'updated_by',
             // 'updated_at',
-            // 'estado',
+           [
+				'attribute'=>'estado',
+                'value'=>function($data) {return Autorizados::getEstados($data->estado);},
+                'filter'=>$searchModel->estados,
+            ],   
             // 'motivo_baja',
 	
            ['class' => 'kartik\grid\ActionColumn',
@@ -82,7 +109,7 @@ $this->registerCss('
                                     ['create'], 
                                 ['class' => 'btn-sm btn-primary',
                                  'title' => Yii::t('app', 'Nuevo'),]),
- 			 'template' => '{view} {comentario}',      
+ 			 'template' => '{view} {comentario} {horarios}',      
 			 'buttons' => [
 				'comentario' => function ($url, $model) {
 					$c=Comentarios::getComentariosByModelId($model->className(),$model->id);
@@ -109,6 +136,20 @@ $this->registerCss('
 						});return false;',
 						]);							
 					},
+				  'horarios' => function ($url, $model) {
+								//if (empty($model->hora_hasta)) {return null;};
+								//if ($model->estado==CortesEnergia::ESTADO_BAJA) {return null;};
+								
+								$c=$model->autorizadosHorarios;
+								if (!empty($c)) {
+									$text='<span class="glyphicon glyphicon-time" style="color:#FF8000"></span>';
+									$titl='Consultar horarios de autorización';
+								} else {
+									$text='<span class="glyphicon glyphicon-time"></span>';
+									$titl='Ingresar horarios de autorización';
+								}								
+								return Html::a($text, $url, ['title' => $titl,]);
+				  },	
 				],	 				
 				
 			'urlCreator' => function ($action, $model, $key, $index) {
@@ -121,6 +162,11 @@ $this->registerCss('
 									'modelID'=>$model->id]);
 					return $url;
 				 }
+				 if ($action === 'horarios') {
+						$url=Yii::$app->urlManager->createUrl(
+								['autorizados-horarios/index','idParent'=>$model->id]);	
+						return $url;								 
+				 }				 
 				 if ($action === 'view') {
 					$url=Yii::$app->urlManager->createUrl(
 							['autorizados/view', 

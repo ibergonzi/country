@@ -36,7 +36,8 @@ $this->registerCss('
 <div class="comentarios-form">
 
 
-    <?php 
+    <?php
+		// si se modifica esta busqueda se debe modificar tambien en AccesosController.buscaAutorizaciones()
     	$models=Autorizados::find()->where(['id_persona'=>$idPersona,'estado'=>1])
 			->andWhere(['or',['fec_hasta'=>null],'fec_hasta>=now()'])
 			->orderBy(['id_autorizante'=>SORT_ASC,'fec_desde'=>SORT_DESC])->all();
@@ -50,6 +51,7 @@ $this->registerCss('
 				$co=[
 					'autorizante.apellido',
 					'autorizante.nombre',
+					'id_uf',
 					[
 						'label'=>'Tipo autorización',
 						'value'=>'PERMANENTE'
@@ -59,6 +61,7 @@ $this->registerCss('
 				$co=[
 				'autorizante.apellido',
 				'autorizante.nombre',
+				'id_uf',
 				'fec_desde:date',
 				'fec_hasta:date',
 				];

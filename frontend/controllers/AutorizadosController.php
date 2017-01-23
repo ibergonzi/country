@@ -53,6 +53,7 @@ class AutorizadosController extends Controller
         ];
     }
 
+
 	public function actionList($idPersona) 
 	{
         return $this->renderAjax('list', [
@@ -67,6 +68,7 @@ class AutorizadosController extends Controller
     public function actionIndex()
     {
         $searchModel = new AutorizadosSearch();
+        $searchModel->estado=Autorizados::ESTADO_ACTIVO;
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [

@@ -19,6 +19,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'id_autorizante')->textInput() ?>
 
+    <?= $form->field($model, 'id_uf')->textInput() ?>
+
     <?= $form->field($model, 'fec_desde')->textInput() ?>
 
     <?= $form->field($model, 'fec_hasta')->textInput() ?>

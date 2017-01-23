@@ -5,6 +5,9 @@ namespace frontend\controllers;
 use Yii;
 use frontend\models\Autorizados;
 use frontend\models\AutorizadosSearch;
+
+use frontend\models\Autorizantes;
+
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -98,12 +101,20 @@ class AutorizadosController extends Controller
     {
         $model = new Autorizados();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+
+        if ($model->load(Yii::$app->request->post()) ) {
+			$aut=Autorizantes::findOne($model->id_autorizante);
+			$model->id_uf=$aut->id_uf;
+			$model->id_autorizante=$aut->id_persona;
+			
+			
+			if ($model->save()) {
+				return $this->redirect(['view', 'id' => $model->id]);
+			} else {
+				return $this->render('create', ['model' => $model,]);
+			}
         } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
+            return $this->render('create', ['model' => $model,]);
         }
     }
 

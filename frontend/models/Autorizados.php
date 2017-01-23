@@ -84,7 +84,7 @@ class Autorizados extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_persona', 'id_autorizante', 'id_uf', 'created_by', 'created_at', 'updated_by', 'updated_at', 'estado'], 'required'],
+            [['id_persona', 'id_autorizante', 'id_uf', ], 'required'],
             [['id_persona', 'id_autorizante', 'id_uf', 'created_by', 'updated_by', 'estado'], 'integer'],
             [['fec_desde', 'fec_hasta', 'created_at', 'updated_at'], 'safe'],
             [['motivo_baja'], 'string', 'max' => 50],

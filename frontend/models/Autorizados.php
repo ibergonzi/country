@@ -88,12 +88,41 @@ class Autorizados extends \yii\db\ActiveRecord
             [['id_persona', 'id_autorizante', 'id_uf', 'created_by', 'updated_by', 'estado'], 'integer'],
             [['fec_desde', 'fec_hasta', 'created_at', 'updated_at'], 'safe'],
             [['motivo_baja'], 'string', 'max' => 50],
-            [['id_persona', 'id_autorizante', 'id_uf', 'fec_desde', 'fec_hasta', 'estado'], 'unique', 'targetAttribute' => ['id_persona', 'id_autorizante', 'id_uf', 'fec_desde', 'fec_hasta', 'estado'], 'message' => 'The combination of Id Persona, Id Autorizante, Id Uf, Fec Desde, Fec Hasta and Estado has already been taken.'],
+           
+            // Para que funcione el unique (NO he creado indice en la BD) era necesario poner las fechas
+            // en 'default' es decir, cuando no se les carga valor se les asigna autom. NULL
+ 			[['fec_desde','fec_hasta',],'default'],  
+            [['id_persona', 'id_autorizante', 'id_uf', 'fec_desde', 'fec_hasta', 'estado'], 'unique', 
+				'targetAttribute' => ['id_persona', 'id_autorizante', 'id_uf', 'fec_desde', 'fec_hasta', 'estado'], 
+				'message' => 'Duplicado'],
+            //
             [['id_autorizante'], 'exist', 'skipOnError' => true, 'targetClass' => Personas::className(), 'targetAttribute' => ['id_autorizante' => 'id']],
             [['id_persona'], 'exist', 'skipOnError' => true, 'targetClass' => Personas::className(), 'targetAttribute' => ['id_persona' => 'id']],
+            [['fec_desde','fec_hasta',],'validaRangoFechas','skipOnEmpty' => false], 
             [['id_uf'], 'exist', 'skipOnError' => true, 'targetClass' => Uf::className(), 'targetAttribute' => ['id_uf' => 'id']],
         ];
     }
+    
+    public function validaRangoFechas($attribute, $params) 
+    {
+			if (empty($this->fec_desde) && empty($this->fec_hasta)) {
+				return;
+			}		
+			if (empty($this->fec_desde) || empty($this->fec_hasta)) {
+				if (empty($this->fec_desde)) {
+					$this->addError('fec_desde','Debe ingresar un rango de fechas');return;
+				}
+				if (empty($this->fec_hasta)) {
+					$this->addError('fec_hasta','Debe ingresar un rango de fechas');return;
+				}
+			}
+			if (strtotime($this->fec_desde) > strtotime($this->fec_hasta)) {
+				$this->addError('fec_hasta','Esta fecha no puede ser anterior a la otra fecha');return;
+			}
+			if (strtotime($this->fec_desde) < strtotime(date('Y-m-d'))) {
+				$this->addError('fec_desde','La fecha debe ser posterior al dia de hoy');return;
+			}			
+	}        
 
     /**
      * @inheritdoc
@@ -105,12 +134,12 @@ class Autorizados extends \yii\db\ActiveRecord
             'id_persona' => 'Persona',
             'id_autorizante' => 'Autorizante',
             'id_uf' => 'U.F.',
-            'fec_desde' => 'Fec Desde',
-            'fec_hasta' => 'Fec Hasta',
+            'fec_desde' => 'Fec.desde',
+            'fec_hasta' => 'Fec.hasta',
             'created_by' => 'Created By',
-            'created_at' => 'Created At',
+            'created_at' => 'Fecha alta',
             'updated_by' => 'Updated By',
-            'updated_at' => 'Updated At',
+            'updated_at' => 'Fecha modif.',
             'estado' => 'Estado',
             'motivo_baja' => 'Motivo Baja',
             'userCreatedBy.username'=>'Usuario alta',

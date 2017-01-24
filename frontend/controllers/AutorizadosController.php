@@ -25,12 +25,14 @@ class AutorizadosController extends Controller
     public function behaviors()
     {
         return [
+			/*
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
                 ],
             ],
+            */
             /*
             'access' => [
                 'class' => AccessControl::className(),
@@ -106,11 +108,15 @@ class AutorizadosController extends Controller
 			$aut=Autorizantes::findOne($model->id_autorizante);
 			$model->id_uf=$aut->id_uf;
 			$model->id_autorizante=$aut->id_persona;
-			
+			$model->estado=Autorizados::ESTADO_ACTIVO;
+
 			
 			if ($model->save()) {
 				return $this->redirect(['view', 'id' => $model->id]);
 			} else {
+				// si no pasa el validate, hay que setear el id_autorizante con un ID de autorizante
+				// ver más arriba que el id_autorizante se pisa con un ID de persona
+				$model->id_autorizante=$aut->id;
 				return $this->render('create', ['model' => $model,]);
 			}
         } else {
@@ -145,9 +151,18 @@ class AutorizadosController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
+        $model = $this->findModel($id);
+        
+        if ($model->load(Yii::$app->request->post())) {
+			$model->estado=Autorizados::ESTADO_BAJA;
+			if ($model->save(false)) {
+				return $this->redirect(['view', 'id' => $model->id]);
+			}
+        } 
+		return $this->render('delete', [
+			'model' => $model,
+		]);
+               
     }
 
     /**

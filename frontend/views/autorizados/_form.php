@@ -13,6 +13,8 @@ use frontend\models\Autorizantes;
 
 use kartik\icons\Icon;
 
+use kartik\datecontrol\DateControl;
+
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Autorizados */
 /* @var $form yii\widgets\ActiveForm */
@@ -105,7 +107,7 @@ $(document).ready(function() {
     //$form->field($model, 'id_autorizante')->textInput() 
 
 		// -------------------Selector de autorizantes----------------------------------------
-		$autorizanteDesc=empty($model->id_persona)?'':Personas::formateaPersonaSelect2($model->id_autorizante,false);
+		$autorizanteDesc=empty($model->id_autorizante)?'':Autorizantes::formateaAutorizanteSelect2($model->id_autorizante,false);
 		//$autorizanteDesc='';
 
 		$autorizantesAddon = [
@@ -143,9 +145,13 @@ $(document).ready(function() {
 
     <?php //= $form->field($model, 'id_uf')->textInput() ?>
 
-    <?= $form->field($model, 'fec_desde')->textInput() ?>
+    <?= $form->field($model, 'fec_desde')->widget(DateControl::classname(), [
+						'type'=>DateControl::FORMAT_DATE,
+					]) ?>
 
-    <?= $form->field($model, 'fec_hasta')->textInput() ?>
+    <?= $form->field($model, 'fec_hasta')->widget(DateControl::classname(), [
+						'type'=>DateControl::FORMAT_DATE,
+					]) ?>
 
 
     <div class="form-group">

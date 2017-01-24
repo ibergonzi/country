@@ -87,8 +87,7 @@ $this->registerCss('
 					[
 						'attribute'=>'dia',
 						'value' => function ($model, $index, $widget) {
-							$semana=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
-							return $semana[$model->dia];
+							return AutorizadosHorarios::getDias($model->dia);
 						}
 					],
 					'hora_desde:time',

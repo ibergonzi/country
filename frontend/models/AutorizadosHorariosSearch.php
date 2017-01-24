@@ -19,7 +19,7 @@ class AutorizadosHorariosSearch extends AutorizadosHorarios
     {
         return [
             [['id', 'id_autorizado', 'dia', 'created_by', 'updated_by', 'estado'], 'integer'],
-            [['hora_desde', 'hora_hasta', 'create_at', 'updated_at', 'motivo_baja'], 'safe'],
+            [['hora_desde', 'hora_hasta', 'created_at', 'updated_at', 'motivo_baja'], 'safe'],
         ];
     }
 
@@ -74,7 +74,7 @@ class AutorizadosHorariosSearch extends AutorizadosHorarios
             'hora_desde' => $this->hora_desde,
             'hora_hasta' => $this->hora_hasta,
             'created_by' => $this->created_by,
-            'create_at' => $this->create_at,
+            'created_at' => $this->created_at,
             'updated_by' => $this->updated_by,
             'updated_at' => $this->updated_at,
             'estado' => $this->estado,

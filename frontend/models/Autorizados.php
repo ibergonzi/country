@@ -91,10 +91,15 @@ class Autorizados extends \yii\db\ActiveRecord
            
             // Para que funcione el unique (NO he creado indice en la BD) era necesario poner las fechas
             // en 'default' es decir, cuando no se les carga valor se les asigna autom. NULL
- 			[['fec_desde','fec_hasta',],'default'],  
+ 			[['fec_desde','fec_hasta',],'default'], 
+ 			/* 
             [['id_persona', 'id_autorizante', 'id_uf', 'fec_desde', 'fec_hasta', 'estado'], 'unique', 
 				'targetAttribute' => ['id_persona', 'id_autorizante', 'id_uf', 'fec_desde', 'fec_hasta', 'estado'], 
 				'message' => 'Duplicado'],
+			*/
+            [['id_persona', 'id_autorizante', 'id_uf', 'estado'], 'unique', 
+				'targetAttribute' => ['id_persona', 'id_autorizante', 'id_uf', 'estado'], 
+				'message' => 'Ya existe una autorización para la combinación Persona/Autorizante/U.F.'],
             //
             [['id_autorizante'], 'exist', 'skipOnError' => true, 'targetClass' => Personas::className(), 'targetAttribute' => ['id_autorizante' => 'id']],
             [['id_persona'], 'exist', 'skipOnError' => true, 'targetClass' => Personas::className(), 'targetAttribute' => ['id_persona' => 'id']],
@@ -105,23 +110,24 @@ class Autorizados extends \yii\db\ActiveRecord
     
     public function validaRangoFechas($attribute, $params) 
     {
-			if (empty($this->fec_desde) && empty($this->fec_hasta)) {
-				return;
-			}		
-			if (empty($this->fec_desde) || empty($this->fec_hasta)) {
-				if (empty($this->fec_desde)) {
-					$this->addError('fec_desde','Debe ingresar un rango de fechas');return;
-				}
-				if (empty($this->fec_hasta)) {
-					$this->addError('fec_hasta','Debe ingresar un rango de fechas');return;
-				}
+		if (empty($this->fec_desde) && empty($this->fec_hasta)) {
+			return;
+		}		
+		if (empty($this->fec_desde) || empty($this->fec_hasta)) {
+			if (empty($this->fec_desde)) {
+				$this->addError('fec_desde','Debe ingresar un rango de fechas');return;
 			}
-			if (strtotime($this->fec_desde) > strtotime($this->fec_hasta)) {
-				$this->addError('fec_hasta','Esta fecha no puede ser anterior a la otra fecha');return;
+			if (empty($this->fec_hasta)) {
+				$this->addError('fec_hasta','Debe ingresar un rango de fechas');return;
 			}
-			if (strtotime($this->fec_desde) < strtotime(date('Y-m-d'))) {
-				$this->addError('fec_desde','La fecha debe ser posterior al dia de hoy');return;
-			}			
+		}
+		if (strtotime($this->fec_desde) > strtotime($this->fec_hasta)) {
+			$this->addError('fec_hasta','Esta fecha no puede ser anterior a la otra fecha');return;
+		}
+		if (strtotime($this->fec_desde) < strtotime(date('Y-m-d'))) {
+			$this->addError('fec_desde','La fecha debe ser posterior al dia de hoy');return;
+		}		
+			
 	}        
 
     /**

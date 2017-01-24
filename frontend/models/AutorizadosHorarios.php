@@ -19,7 +19,7 @@ use yii\db\Expression;
  * @property string $hora_desde
  * @property string $hora_hasta
  * @property integer $created_by
- * @property string $create_at
+ * @property string $created_at
  * @property integer $updated_by
  * @property string $updated_at
  * @property integer $estado
@@ -36,6 +36,31 @@ class AutorizadosHorarios extends \yii\db\ActiveRecord
     {
         return 'autorizados_horarios';
     }
+
+	// los codigos coinciden con los valores que devuelve el weekday() de mysql
+    const DIA_LUNES = 0;
+	const DIA_MARTES = 1;
+	const DIA_MIERCOLES = 2;
+	const DIA_JUEVES = 3;
+	const DIA_VIERNES = 4;
+	const DIA_SABADO = 5;
+	const DIA_DOMINGO = 6;
+
+	// funcion agregada a mano
+	public static function getDias($key=null)
+	{
+		$dias=[self::DIA_LUNES=>'Lunes',self::DIA_MARTES=>'Martes',
+			   self::DIA_MIERCOLES=>'Miércoles',self::DIA_JUEVES=>'Jueves',
+			   self::DIA_VIERNES=>'Viernes',self::DIA_SABADO=>'Sábado',
+			   self::DIA_DOMINGO=>'Domingo',
+		];
+	    if ($key !== null) {
+			return $dias[$key];
+		}
+		return $dias;
+	}	
+
+
 
     // extiende los comportamientos de la clase para grabar datos de auditoría
     // agregado por mi
@@ -64,9 +89,9 @@ class AutorizadosHorarios extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_autorizado', 'dia', 'hora_desde', 'hora_hasta', 'created_by', 'create_at', 'updated_by', 'updated_at', 'estado'], 'required'],
+            [['id_autorizado', 'dia', 'hora_desde', 'hora_hasta', ], 'required'],
             [['id_autorizado', 'dia', 'created_by', 'updated_by', 'estado'], 'integer'],
-            [['hora_desde', 'hora_hasta', 'create_at', 'updated_at'], 'safe'],
+            [['hora_desde', 'hora_hasta', 'created_at', 'updated_at'], 'safe'],
             [['motivo_baja'], 'string', 'max' => 50],
             [['id_autorizado', 'dia', 'estado'], 'unique', 'targetAttribute' => ['id_autorizado', 'dia', 'estado'], 'message' => 'The combination of Id Autorizado, Dia and Estado has already been taken.'],
             [['id_autorizado'], 'exist', 'skipOnError' => true, 'targetClass' => Autorizados::className(), 'targetAttribute' => ['id_autorizado' => 'id']],
@@ -85,7 +110,7 @@ class AutorizadosHorarios extends \yii\db\ActiveRecord
             'hora_desde' => 'Hora Desde',
             'hora_hasta' => 'Hora Hasta',
             'created_by' => 'Created By',
-            'create_at' => 'Create At',
+            'created_at' => 'Create At',
             'updated_by' => 'Updated By',
             'updated_at' => 'Updated At',
             'estado' => 'Estado',

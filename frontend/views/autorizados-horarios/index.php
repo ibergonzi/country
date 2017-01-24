@@ -3,6 +3,11 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 
+use frontend\models\AutorizadosHorarios;
+
+use yii\widgets\DetailView;
+use frontend\models\Autorizados;
+
 // necesario para comentarios
 use yii\bootstrap\Modal;
 use frontend\models\Comentarios;
@@ -13,7 +18,8 @@ use kartik\popover\PopoverX;
 /* @var $searchModel frontend\models\AutorizadosHorariosSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Autorizados Horarios';
+$this->title = 'Horarios de autorización';
+$this->params['breadcrumbs'][] = ['label' => 'Autorizaciones (eventuales y permanentes)', 'url' => ['autorizados/index']];
 $this->params['breadcrumbs'][] = $this->title;
 
 // scrollbar para el modal de comentarios
@@ -46,7 +52,27 @@ $this->registerCss('
     <h3><?= Html::encode($this->title) ?></h3>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
+    <?= DetailView::widget([
+        'model' => $parent,
+		'options'=>['class' => 'table table-striped table-bordered table-condensed detail-view'],        
+        'attributes' => [
+        	'id_persona',
+            'persona.apellido',
+			'persona.nombre',  
+			'id_autorizante',
+            'autorizante.apellido',
+			'autorizante.nombre',  
+            'id_uf',
+            'fec_desde:date',
+            'fec_hasta:date',
+        ],
+    ]) ?>
+
+
+
 	<?php 
+	
+	
 	$lbl2='';
 	$pdfHeader=[
 				'L'=>['content'=>\Yii::$app->params['lblName']],
@@ -65,9 +91,15 @@ $this->registerCss('
 		]; 	
 	
 	$columns = [
-	            'id',
-            'id_autorizado',
-            'dia',
+	         //   'id',
+            //'id_autorizado
+            [
+				'attribute'=>'dia',
+				'value' => function ($model, $index, $widget) {
+					return AutorizadosHorarios::getDias($model->dia);
+				},
+			    'filter'=>$searchModel->dias,				
+            ],
             'hora_desde',
             'hora_hasta',
             // 'created_by',
@@ -79,7 +111,7 @@ $this->registerCss('
 	
            ['class' => 'kartik\grid\ActionColumn',
              'header'=>Html::a('<span class="glyphicon glyphicon-plus-sign"></span>',
-                                    ['create'], 
+                                    ['create','idParent'=>$parent->id], 
                                 ['class' => 'btn-sm btn-primary',
                                  'title' => Yii::t('app', 'Nuevo'),]),
  			 'template' => '{view} {comentario}',      

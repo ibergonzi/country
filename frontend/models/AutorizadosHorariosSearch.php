@@ -43,8 +43,7 @@ class AutorizadosHorariosSearch extends AutorizadosHorarios
     {
         $query = AutorizadosHorarios::find();
 
-		//$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['REEMPLAZAR.defaultPageSize'];
-		$pageSize=isset($_GET['per-page'])?$_GET['per-page']:15;
+		$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['autorizadosHorarios.defaultPageSize'];
 
         // add conditions that should always apply here
 
@@ -53,8 +52,8 @@ class AutorizadosHorariosSearch extends AutorizadosHorarios
             'pagination'=>[
 				'pageSize' => $pageSize,
 			],            
-            'sort' => ['defaultOrder' => ['id' => SORT_DESC,],
-						'enableMultiSort'=>true,            
+            'sort' => ['defaultOrder' => ['dia' => SORT_ASC,],
+						'enableMultiSort'=>false,            
                       ],              
         ]);
 

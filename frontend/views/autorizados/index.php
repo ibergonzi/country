@@ -137,8 +137,6 @@ $this->registerCss('
 						]);							
 					},
 				  'horarios' => function ($url, $model) {
-								//if (empty($model->hora_hasta)) {return null;};
-								//if ($model->estado==CortesEnergia::ESTADO_BAJA) {return null;};
 								
 								$c=$model->autorizadosHorarios;
 								if (!empty($c)) {
@@ -180,7 +178,7 @@ $this->registerCss('
 
 	
 	// Armado de la selección de campos para exportar
-	//if (\Yii::$app->user->can('PERMISOPARAEXPORTAR')) {        
+	if (\Yii::$app->user->can('exportarAutorizados')) {        
 		// contiene la selección inicial de columnas, es decir, todas
 		// por ejemplo [0,1,2,3]
 		$poSel=[];
@@ -219,14 +217,13 @@ $this->registerCss('
 				])											
 		]);
 
-	//}			
+	}			
 	
 	// Definición de la cantidad de items a paginar
 	$contentToolbar=\nterms\pagesize\PageSize::widget([
-		//'defaultPageSize'=>\Yii::$app->params['REEMPLAZAR.defaultPageSize'],
-		//'sizes'=>\Yii::$app->params['REEMPLAZAR.sizes'],
-		'defaultPageSize'=>15,
-		'sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50],		
+		'defaultPageSize'=>\Yii::$app->params['autorizados.defaultPageSize'],
+		'sizes'=>\Yii::$app->params['autorizados.sizes'],
+
 		'label'=>'',
 		'options'=>[
 				'class'=>'btn btn-default',
@@ -234,11 +231,11 @@ $this->registerCss('
 			],
 		]);	
 	// Definición del toolbar		
-	//if (\Yii::$app->user->can('PERMISOPARAEXPORTAR')) {			
+	if (\Yii::$app->user->can('exportarAutorizados')) {			
 		$toolbar=['{export} ',['content'=>$contentToolbar],];
-	//} else {
-	//	$toolbar=[['content'=>$contentToolbar]];
-	//}	
+	} else {
+		$toolbar=[['content'=>$contentToolbar]];
+	}	
 	?>
 
     <?= GridView::widget([

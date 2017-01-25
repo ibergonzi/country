@@ -11,6 +11,9 @@ use frontend\models\Personas;
 use frontend\models\UfTitularidadSearch;
 use frontend\models\Autorizantes;
 
+use frontend\models\Autorizados;
+use frontend\models\AutorizadosHorarios;
+
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -132,8 +135,28 @@ class UfTitularidadController extends Controller
 						// elimina todos los autorizantes actuales de la unidad para reemplazarlos con los nuevos
 						Autorizantes::deleteAll(['id_uf'=>$model->id_uf]);	
 						$aut=new Autorizantes();
-						$aut->id_uf=$model->id_uf;								
+						$aut->id_uf=$model->id_uf;		
 						
+						
+						// toma a todos los autorizados (y los horarios de autorización) y se le cambia el estado 
+						// No se toma en cuenta el autorizante, se desactivan TODOS los autorizantes de la UF
+				
+						$aut_orizados=Autorizados::find()
+							->where(['id_uf' => $model->id_uf, 'estado'=>Autorizados::ESTADO_ACTIVO])->all();
+							
+						foreach ($aut_orizados as $aut_aut) {
+							$aut_aut->estado = Autorizados::ESTADO_BAJA;
+							$aut_aut->motivo_baja = 'Cambio titularidad en la U.F.';
+							$aut_aut->update(false);
+							
+							// Los voy a dejar como estaban, parent está dado de baja y ese es el que importa
+							/*
+							AutorizadosHorarios::updateAll(['estado'=>AutorizadosHorarios::ESTADO_BAJA,
+												'motivo_baja' => 'Cambio titularidad en la U.F.'], 
+								['id_autorizado' => $aut_aut->id, 'estado'=>AutorizadosHorarios::ESTADO_ACTIVO]);									
+							*/
+						}
+					
 						// grabación de personas 
 						$titPers->uf_titularidad_id=$model->id;
 						if ($model->tipoMovim->cesion) {
@@ -220,6 +243,23 @@ class UfTitularidadController extends Controller
 			Autorizantes::deleteAll(['id_uf'=>$model->id_uf]);	
 			$aut=new Autorizantes();
 			$aut->id_uf=$model->id_uf;	
+			
+			// toma a todos los autorizados (y los horarios de autorización) y se le cambia el estado 
+			// No se toma en cuenta el autorizante, se desactivan TODOS los autorizantes de la UF
+	
+			$aut_orizados=Autorizados::find()
+				->where(['id_uf' => $model->id_uf, 'estado'=>Autorizados::ESTADO_ACTIVO])->all();
+				
+			foreach ($aut_orizados as $aut_aut) {
+				$aut_aut->estado = Autorizados::ESTADO_BAJA;
+				$aut_aut->motivo_baja = 'Cambio titularidad en la U.F.';
+				$aut_aut->update(false);
+				/*
+				AutorizadosHorarios::updateAll(['estado'=>AutorizadosHorarios::ESTADO_BAJA,
+									'motivo_baja' => 'Cambio titularidad en la U.F.'], 
+					['id_autorizado' => $aut_aut->id, 'estado'=>AutorizadosHorarios::ESTADO_ACTIVO]);									
+				*/
+			}			
 			
 			// recorre todos los titulares y solo procesa los cedentes como nuevos titulares					
 			foreach ($titPers as $tp) {

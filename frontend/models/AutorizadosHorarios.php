@@ -36,6 +36,19 @@ class AutorizadosHorarios extends \yii\db\ActiveRecord
     {
         return 'autorizados_horarios';
     }
+    
+    const ESTADO_BAJA = 0;
+	const ESTADO_ACTIVO = 1;
+
+	// funcion agregada a mano
+	public static function getEstados($key=null)
+	{
+		$estados=[self::ESTADO_ACTIVO=>'Activo',self::ESTADO_BAJA=>'Baja'];
+	    if ($key !== null) {
+			return $estados[$key];
+		}
+		return $estados;
+	}	
 
 	// los codigos coinciden con los valores que devuelve el weekday() de mysql
     const DIA_LUNES = 0;
@@ -93,10 +106,23 @@ class AutorizadosHorarios extends \yii\db\ActiveRecord
             [['id_autorizado', 'dia', 'created_by', 'updated_by', 'estado'], 'integer'],
             [['hora_desde', 'hora_hasta', 'created_at', 'updated_at'], 'safe'],
             [['motivo_baja'], 'string', 'max' => 50],
-            [['id_autorizado', 'dia', 'estado'], 'unique', 'targetAttribute' => ['id_autorizado', 'dia', 'estado'], 'message' => 'The combination of Id Autorizado, Dia and Estado has already been taken.'],
+            [['id_autorizado', 'dia', 'estado'], 'unique', 
+				'targetAttribute' => ['id_autorizado', 'dia', 'estado'], 
+				'message' => 'Día repetido'],
+            [['hora_desde','hora_hasta',],'validaRangoHoras','skipOnEmpty' => false], 				
             [['id_autorizado'], 'exist', 'skipOnError' => true, 'targetClass' => Autorizados::className(), 'targetAttribute' => ['id_autorizado' => 'id']],
         ];
     }
+    
+    public function validaRangoHoras($attribute, $params) 
+    {
+
+		if (strtotime($this->hora_desde) > strtotime($this->hora_hasta)) {
+			$this->addError('hora_hasta','Esta hora no puede ser anterior a la otra hora');return;
+		}
+		
+			
+	}        
 
     /**
      * @inheritdoc
@@ -110,9 +136,9 @@ class AutorizadosHorarios extends \yii\db\ActiveRecord
             'hora_desde' => 'Hora Desde',
             'hora_hasta' => 'Hora Hasta',
             'created_by' => 'Created By',
-            'created_at' => 'Create At',
+            'created_at' => 'Fecha alta',
             'updated_by' => 'Updated By',
-            'updated_at' => 'Updated At',
+            'updated_at' => 'Fecha modif.',
             'estado' => 'Estado',
             'motivo_baja' => 'Motivo Baja',
             'userCreatedBy.username'=>'Usuario alta',

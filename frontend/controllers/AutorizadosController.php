@@ -33,28 +33,28 @@ class AutorizadosController extends Controller
                 ],
             ],
             */
-            /*
+            
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
                         'actions' => ['delete'],
                         'allow' => true,
-                        'roles' => ['borrar'], 
+                        'roles' => ['borrarAutorizados'], 
                     ],                
                     [
-                        'actions' => ['index','view'],
+                        'actions' => ['index','view','list'],
                         'allow' => true,
-                        'roles' => ['acceder'], 
+                        'roles' => ['accederAutorizados'], 
                     ],
                     [
-                        'actions' => ['create','update'],
+                        'actions' => ['create'],
                         'allow' => true,
-                        'roles' => ['altaModificar'], 
+                        'roles' => ['altaAutorizados'], 
                     ],
                  ], // fin rules
             ], // fin access   
-            */             
+                         
         ];
     }
 

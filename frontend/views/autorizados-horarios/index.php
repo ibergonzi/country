@@ -38,11 +38,21 @@ $(document).ready(function() {
 	});		
 });
 ');
-// Imagen personalizada cuando se procesa ajax
+// Achica los gridview
 $this->registerCss('
-.kv-grid-loading {
-    opacity: 0.5;
-    background: #ffffff url("../images/loading.gif") top center no-repeat !important;
+.panel-heading {
+  padding: 0px 5px;
+  border-bottom: 1px solid transparent;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+}
+.table-condensed > thead > tr > th,
+.table-condensed > tbody > tr > th,
+.table-condensed > tfoot > tr > th,
+.table-condensed > thead > tr > td,
+.table-condensed > tbody > tr > td,
+.table-condensed > tfoot > tr > td {
+  padding: 1px;
 }
 ');
 
@@ -52,21 +62,27 @@ $this->registerCss('
     <h3><?= Html::encode($this->title) ?></h3>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <?= DetailView::widget([
+    <?php
+    echo DetailView::widget([
         'model' => $parent,
 		'options'=>['class' => 'table table-striped table-bordered table-condensed detail-view'],        
         'attributes' => [
-        	'id_persona',
-            'persona.apellido',
-			'persona.nombre',  
-			'id_autorizante',
-            'autorizante.apellido',
-			'autorizante.nombre',  
-            'id_uf',
+			[
+				'attribute'=>'id_persona',
+				'value'=>'('.$parent->id_persona.') '.$parent->persona->apellido.' '.$parent->persona->nombre,
+            ],
+			[
+				'attribute'=>'id_autorizante',
+				'value'=>'('.$parent->id_autorizante.') '.$parent->autorizante->apellido.' '.
+					$parent->autorizante->nombre.' - U.F.:'.$parent->id_uf,  
+            ],
+            
             'fec_desde:date',
             'fec_hasta:date',
         ],
-    ]) ?>
+    ]);
+ 
+     ?>
 
 
 
@@ -106,7 +122,11 @@ $this->registerCss('
             // 'create_at',
             // 'updated_by',
             // 'updated_at',
-            // 'estado',
+            [
+				'attribute'=>'estado',
+                'value'=>function($data) {return AutorizadosHorarios::getEstados($data->estado);},
+                'filter'=>$searchModel->estados,
+            ], 
             // 'motivo_baja',
 	
            ['class' => 'kartik\grid\ActionColumn',
@@ -166,7 +186,7 @@ $this->registerCss('
 
 	
 	// Armado de la selección de campos para exportar
-	//if (\Yii::$app->user->can('PERMISOPARAEXPORTAR')) {        
+	if (\Yii::$app->user->can('exportarAutorizados')) {        
 		// contiene la selección inicial de columnas, es decir, todas
 		// por ejemplo [0,1,2,3]
 		$poSel=[];
@@ -205,14 +225,12 @@ $this->registerCss('
 				])											
 		]);
 
-	//}			
+	}			
 	
 	// Definición de la cantidad de items a paginar
 	$contentToolbar=\nterms\pagesize\PageSize::widget([
-		//'defaultPageSize'=>\Yii::$app->params['REEMPLAZAR.defaultPageSize'],
-		//'sizes'=>\Yii::$app->params['REEMPLAZAR.sizes'],
-		'defaultPageSize'=>15,
-		'sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50],		
+		'defaultPageSize'=>\Yii::$app->params['autorizadosHorarios.defaultPageSize'],
+		'sizes'=>\Yii::$app->params['autorizadosHorarios.sizes'],
 		'label'=>'',
 		'options'=>[
 				'class'=>'btn btn-default',
@@ -220,11 +238,11 @@ $this->registerCss('
 			],
 		]);	
 	// Definición del toolbar		
-	//if (\Yii::$app->user->can('PERMISOPARAEXPORTAR')) {			
+	if (\Yii::$app->user->can('exportarAutorizados')) {			
 		$toolbar=['{export} ',['content'=>$contentToolbar],];
-	//} else {
-	//	$toolbar=[['content'=>$contentToolbar]];
-	//}	
+	} else {
+		$toolbar=[['content'=>$contentToolbar]];
+	}	
 	?>
 
     <?= GridView::widget([
@@ -232,7 +250,7 @@ $this->registerCss('
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
 		'columns' => $columns,
-		'pjax'=>true,
+		'pjax'=>false, // no se puede usar ajax, hay problemas con el index del que viene que tiene ajax
 		'pjaxSettings'=>['neverTimeout'=>true,], 
 
 		'condensed'=>true, 

@@ -24,34 +24,34 @@ class AutorizadosHorariosController extends Controller
     public function behaviors()
     {
         return [
+			/*
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
                 ],
             ],
-            /*
+            */
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
                         'actions' => ['delete'],
                         'allow' => true,
-                        'roles' => ['borrar'], 
+                        'roles' => ['borrarAutorizados'], 
                     ],                
                     [
                         'actions' => ['index','view'],
                         'allow' => true,
-                        'roles' => ['acceder'], 
+                        'roles' => ['accederAutorizados'], 
                     ],
                     [
-                        'actions' => ['create','update'],
+                        'actions' => ['create'],
                         'allow' => true,
-                        'roles' => ['altaModificar'], 
+                        'roles' => ['altaAutorizados'], 
                     ],
                  ], // fin rules
-            ], // fin access   
-            */             
+            ], // fin access      
         ];
     }
 
@@ -71,6 +71,8 @@ class AutorizadosHorariosController extends Controller
         // y modificar el valor que nos interesa a mano
         $q = array_merge([],Yii::$app->request->queryParams);
         $q["AutorizadosHorariosSearch"]["id_autorizado"] = $idParent ;
+        
+        $searchModel->estado=AutorizadosHorarios::ESTADO_ACTIVO;
         $dataProvider = $searchModel->search($q);
 
         // obtengo los datos de la cabecera    
@@ -108,16 +110,20 @@ class AutorizadosHorariosController extends Controller
         $model = new AutorizadosHorarios();
         $model->id_autorizado=$idParent;
         
+       
         $parent=Autorizados::findOne($idParent);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
+        if ($model->load(Yii::$app->request->post()))  {
+			$model->estado=AutorizadosHorarios::ESTADO_ACTIVO;
+			if ($model->save()) {
+				return $this->redirect(['view', 'id' => $model->id]);
+			}
+        } 
+        return $this->render('create', [
                 'model' => $model,
                 'parent'=> $parent,
             ]);
-        }
+        
     }
 
     /**
@@ -154,15 +160,15 @@ class AutorizadosHorariosController extends Controller
         
         if ($model->load(Yii::$app->request->post())) {
 			$model->estado=Autorizados::ESTADO_BAJA;
-			if ($model->save()) {
+			if ($model->save(false)) {
 				return $this->redirect(['view', 'id' => $model->id]);
 			}
-        } else {
-            return $this->render('delete', [
+        } 
+        return $this->render('delete', [
                 'model' => $model,
                 'parent'=> $parent,
             ]);
-        }       
+             
     }
 
     /**

@@ -200,6 +200,8 @@ JS;
 						'items' => [
 							['label' => 'Autorizantes', 'url' => ['/autorizantes/index'], 
 									'visible'=>\Yii::$app->user->can('accederListaAutorizantes')],						
+							['label' => 'Autorizaciones', 'url' => ['/autorizados/index'], 
+									'visible'=>\Yii::$app->user->can('accederAutorizados')],	
 							['label' => 'Usuarios', 'url' => ['/user/index'], 'visible'=>\Yii::$app->user->can('accederUser')],
 							['label' => 'Carnets', 'url' => ['/carnets/index'], 'visible'=>\Yii::$app->user->can('accederCarnets')],
 							['label' => 'Cambio Personas', 'url' => ['/personas/change'], 'visible'=>\Yii::$app->user->can('cambiarPersona')],

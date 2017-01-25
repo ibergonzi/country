@@ -51,8 +51,8 @@ class AutorizadosSearch extends Autorizados
     {
         $query = Autorizados::find()->joinWith(['persona','autorizante']);
 
-		//$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['REEMPLAZAR.defaultPageSize'];
-		$pageSize=isset($_GET['per-page'])?$_GET['per-page']:15;
+		$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['autorizados.defaultPageSize'];
+
 
         // add conditions that should always apply here
 

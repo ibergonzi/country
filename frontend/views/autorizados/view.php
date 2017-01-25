@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?php
        	if ($model->estado==Autorizados::ESTADO_ACTIVO) {
-			if (\Yii::$app->user->can('borrarPersona')) {
+			if (\Yii::$app->user->can('borrarAutorizados')) {
 				echo  Html::a('Eliminar autorización', ['delete', 'id' => $model->id], ['class' => 'btn btn-danger',]) ;
 			}	
 		}

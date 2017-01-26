@@ -3,6 +3,9 @@
 namespace frontend\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
+
+use common\models\User;
 
 /**
  * This is the model class for table "auth_item".
@@ -29,6 +32,40 @@ class AuthItem extends \yii\db\ActiveRecord
     {
         return 'auth_item';
     }
+
+	public static function getListaRoles()
+	{
+		$query = self::find()->where(['type'=>1]);
+		// Aca se cocina lo que deberia ver el usuario segun su rol
+		$rol=User::getRol(Yii::$app->user->getId());
+		// el administrador no puede ver al usuario consejo, el consejo puede ver a todos, 
+		// el intendente no puede ver al consejo ni administrador
+		switch($rol->name) {
+			case (string)"administrador": 
+				$query->andFilterWhere(['not in','name',['consejo']]);
+				break;
+			case (string)"consejo": 
+				break;
+			case (string)"intendente": 
+				$query->andFilterWhere(['not in','name',['administrador','consejo']]);
+				break;				
+			default:
+				$query->andFilterWhere(['not in','name',['intendente','administrador','consejo']]);
+		}	
+		// el rol "sinRol" es especial, no se puede usar		
+		$query->andFilterWhere(['not in','name',['sinRol']]);		
+		
+		
+		$opciones=$query->asArray()->all();
+		return ArrayHelper::map($opciones, 'name', 'description');
+	} 
+	
+	public static function getListaPermisos()
+	{
+		$opciones = self::find()->where(['type'=>2])->asArray()->all();
+		return ArrayHelper::map($opciones, 'name', 'description');
+	} 	
+
 
     /**
      * @inheritdoc
@@ -78,7 +115,7 @@ class AuthItem extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAuthItemChildren()
+    public function getAuthItemRoles()
     {
         return $this->hasMany(AuthItemChild::className(), ['parent' => 'name']);
     }
@@ -86,7 +123,7 @@ class AuthItem extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAuthItemChildren0()
+    public function getAuthItemPermisos()
     {
         return $this->hasMany(AuthItemChild::className(), ['child' => 'name']);
     }

@@ -72,7 +72,7 @@ class TitularidadVista extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'id_titularidad' => 'Id Titularidad',
-            'id_uf' => 'U.F.',
+            'id_uf' => 'Un.Func.',
             'desc_movim_uf' => 'Movimiento',
             'fec_desde' => 'Desde',
             'fec_hasta' => 'Hasta',

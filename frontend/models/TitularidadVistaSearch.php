@@ -55,7 +55,7 @@ class TitularidadVistaSearch extends TitularidadVista
             'pagination'=>[
 				'pageSize' => $pageSize,
 			],            
-            'sort' => ['defaultOrder' => ['id' => SORT_ASC,],
+            'sort' => ['defaultOrder' => ['id_uf' => SORT_ASC,],
 						'enableMultiSort'=>true,            
                       ],             
         ]);

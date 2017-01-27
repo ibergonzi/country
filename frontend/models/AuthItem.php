@@ -76,6 +76,9 @@ class AuthItem extends \yii\db\ActiveRecord
             [['name', 'type'], 'required'],
             [['type', 'created_at', 'updated_at'], 'integer'],
             [['description', 'data'], 'string'],
+            [['name', 'type'], 'unique', 
+				'targetAttribute' => ['name', 'type'], 
+				'message' => 'Ya existe un rol con ese nombre'],            
             [['name', 'rule_name'], 'string', 'max' => 64]
         ];
     }
@@ -86,9 +89,9 @@ class AuthItem extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'name' => Yii::t('app', 'Name'),
+            'name' => Yii::t('app', 'ID'),
             'type' => Yii::t('app', 'Type'),
-            'description' => Yii::t('app', 'Rol'),
+            'description' => Yii::t('app', 'Descrip.Rol'),
             'rule_name' => Yii::t('app', 'Rule Name'),
             'data' => Yii::t('app', 'Data'),
             'created_at' => Yii::t('app', 'Created At'),
@@ -127,4 +130,9 @@ class AuthItem extends \yii\db\ActiveRecord
     {
         return $this->hasMany(AuthItemChild::className(), ['child' => 'name']);
     }
+    
+    public function getUsers() 
+    {
+		return $this->hasMany(AuthAssignment::className(),['item_name'=>'name']);
+	}
 }

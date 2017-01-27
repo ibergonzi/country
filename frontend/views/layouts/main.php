@@ -202,7 +202,6 @@ JS;
 									'visible'=>\Yii::$app->user->can('accederListaAutorizantes')],						
 							['label' => 'Autorizaciones', 'url' => ['/autorizados/index'], 
 									'visible'=>\Yii::$app->user->can('accederAutorizados')],	
-							['label' => 'Usuarios', 'url' => ['/user/index'], 'visible'=>\Yii::$app->user->can('accederUser')],
 							['label' => 'Carnets', 'url' => ['/carnets/index'], 'visible'=>\Yii::$app->user->can('accederCarnets')],
 							['label' => 'Cambio Personas', 'url' => ['/personas/change'], 'visible'=>\Yii::$app->user->can('cambiarPersona')],
 							['label' => 'Tipos de documento', 'url' => ['/tiposdoc/index'], 
@@ -220,9 +219,26 @@ JS;
 							['label' => 'Autoriz.accesos manuales', 'url' => ['/accesos-autmanual/index'], 
 										'visible'=>\Yii::$app->user->can('accederAutManualAccesos')],	
 							['label' => 'Conceptos de accesos', 'url' => ['/accesosconceptos/index'], 
-										'visible'=>\Yii::$app->user->can('accederParametros')],																
+										'visible'=>\Yii::$app->user->can('accederParametros')],	
+	
+																									
 			] // fin items;
-		]; // fin menuItems[]		
+		]; // fin menuItems[]	
+		
+		if (\Yii::$app->user->can('accederUser') || \Yii::$app->user->can('accederPermisos') ||
+		    \Yii::$app->user->can('accederRoles')) {
+		
+			$menuItems[] = ['label' => 'Seguridad', 
+							'items' => [
+							['label' => 'Usuarios', 'url' => ['/user/index'], 'visible'=>\Yii::$app->user->can('accederUser')],													
+							['label' => 'Permisos', 'url' => ['/auth-item-child/index'], 
+										'visible'=>\Yii::$app->user->can('accederPermisos')],
+							['label' => 'Roles', 'url' => ['/auth-item/index'], 
+										'visible'=>\Yii::$app->user->can('accederRoles')],							
+				] // fin items;
+			]; // fin menuItems[]		
+		
+		}							
 		if (\Yii::$app->session->get('porton')) {	
 			$menuItems[] = ['label' => 'Portón '.\Yii::$app->session->get('porton'), 
 														'url' => ['/portones/elegir'], 'visible'=>\Yii::$app->user->can('accederPorton')];					

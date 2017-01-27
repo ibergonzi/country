@@ -2,15 +2,14 @@
 
 use yii\helpers\Html;
 
-
 /* @var $this yii\web\View */
-/* @var $model frontend\models\AuthItemChild */
+/* @var $model frontend\models\AuthItem */
 
-$this->title = 'Nueva asignación de permiso a rol';
-$this->params['breadcrumbs'][] = ['label' => 'Permisos por rol', 'url' => ['index']];
+$this->title = 'Modificación de rol';
+$this->params['breadcrumbs'][] = ['label' => 'Roles en el sistema', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="auth-item-child-create">
+<div class="auth-item-update">
 
     <h3><?= Html::encode($this->title) ?></h3>
 

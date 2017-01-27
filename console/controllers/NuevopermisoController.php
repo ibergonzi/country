@@ -64,8 +64,18 @@ class NuevopermisoController extends Controller
 		$auth->addChild($opIntendencia, $altaAutorizados);	
 
 		
+		
+		$accederRoles=$auth->createPermission('accederRoles');
+		$accederRoles->description='Acceso: Roles en el sistema';
+		$auth->add($accederRoles);	
+		$auth->addChild($intendente, $accederRoles);
+		$auth->addChild($opIntendencia, $accederRoles);		
 								
-											
+		$accederPermisos=$auth->createPermission('accederPermisos');
+		$accederPermisos->description='Acceso: Permisos asignados a roles';
+		$auth->add($accederPermisos);	
+		$auth->addChild($intendente, $accederPermisos);
+		$auth->addChild($opIntendencia, $accederPermisos);											
        
      
 		

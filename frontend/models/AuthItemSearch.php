@@ -5,28 +5,25 @@ namespace frontend\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use frontend\models\AuthItemChild;
+use frontend\models\AuthItem;
 
 use common\models\User;
 
 /**
- * AuthItemChildSearch represents the model behind the search form about `frontend\models\AuthItemChild`.
+ * AuthItemSearch represents the model behind the search form about `frontend\models\AuthItem`.
  */
-class AuthItemChildSearch extends AuthItemChild
+class AuthItemSearch extends AuthItem
 {
-    public $descRol;
-    public $descPermiso;	
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['parent', 'child','descRol','descPermiso'], 'safe'],
+            [['name', 'description', 'rule_name', 'data'], 'safe'],
+            [['type', 'created_at', 'updated_at'], 'integer'],
         ];
     }
-    
-
 
     /**
      * @inheritdoc
@@ -46,29 +43,29 @@ class AuthItemChildSearch extends AuthItemChild
      */
     public function search($params)
     {
-        $query = AuthItemChild::find()->joinWith(['rol','permiso']);
-
-		//$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['REEMPLAZAR.defaultPageSize'];
-		$pageSize=isset($_GET['per-page'])?$_GET['per-page']:100;
-		
+        $query = AuthItem::find()->where(['type'=>1]);
+        
 		// Aca se cocina lo que deberia ver el usuario segun su rol
 		$rol=User::getRol(Yii::$app->user->getId());
 		// el administrador no puede ver al usuario consejo, el consejo puede ver a todos, 
 		// el intendente no puede ver al consejo ni administrador
 		switch($rol->name) {
 			case (string)"administrador": 
-				$query->andFilterWhere(['not in','parent',['consejo']]);
+				$query->andFilterWhere(['not in','name',['consejo']]);
 				break;
 			case (string)"consejo": 
 				break;
 			case (string)"intendente": 
-				$query->andFilterWhere(['not in','parent',['administrador','consejo']]);
+				$query->andFilterWhere(['not in','name',['administrador','consejo']]);
 				break;				
 			default:
-				$query->andFilterWhere(['not in','parent',['intendente','administrador','consejo']]);
-	
-		}		
-		
+				$query->andFilterWhere(['not in','name',['intendente','administrador','consejo']]);
+		}	        
+		// el rol "sinRol" es especial, no se puede usar		
+		$query->andFilterWhere(['not in','name',['sinRol']]);
+
+		//$pageSize=isset($_GET['per-page'])?$_GET['per-page']:\Yii::$app->params['REEMPLAZAR.defaultPageSize'];
+		$pageSize=isset($_GET['per-page'])?$_GET['per-page']:15;
 
         // add conditions that should always apply here
 
@@ -77,20 +74,11 @@ class AuthItemChildSearch extends AuthItemChild
             'pagination'=>[
 				'pageSize' => $pageSize,
 			],            
-            'sort' => ['defaultOrder' => ['descRol' => SORT_ASC,'descPermiso'=>SORT_ASC],
+            'sort' => ['defaultOrder' => ['name' => SORT_ASC,],
 						'enableMultiSort'=>true,            
                       ],              
         ]);
-        
-        $dataProvider->sort->attributes['descRol'] = [
-            'asc' => ['authitem_r.description' => SORT_ASC],
-            'desc' => ['authitem_r.description' => SORT_DESC],
-        ];   
-        $dataProvider->sort->attributes['descPermiso'] = [
-            'asc' => ['authitem_p.description' => SORT_ASC],
-            'desc' => ['authitem_p.description' => SORT_DESC],        
-		];
-		
+
         $this->load($params);
 
         if (!$this->validate()) {
@@ -99,13 +87,17 @@ class AuthItemChildSearch extends AuthItemChild
             return $dataProvider;
         }
 
-
         // grid filtering conditions
-        $query->andFilterWhere(['like', 'parent', $this->parent])
-            ->andFilterWhere(['like', 'child', $this->child])
-            ->andFilterWhere(['like','parent',$this->descRol])
-            ->andFilterWhere(['like','authitem_p.description',$this->descPermiso])            
-            ;
+        $query->andFilterWhere([
+            'type' => $this->type,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+        ]);
+
+        $query->andFilterWhere(['like', 'name', $this->name])
+            ->andFilterWhere(['like', 'description', $this->description])
+            ->andFilterWhere(['like', 'rule_name', $this->rule_name])
+            ->andFilterWhere(['like', 'data', $this->data]);
 
         return $dataProvider;
     }

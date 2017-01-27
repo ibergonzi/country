@@ -3,8 +3,10 @@
 namespace frontend\controllers;
 
 use Yii;
+use frontend\models\AuthItem;
 use frontend\models\AuthItemChild;
-use frontend\models\AuthItemChildSearch;
+use frontend\models\AuthItemSearch;
+
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -12,9 +14,9 @@ use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 
 /**
- * AuthItemChildController implements the CRUD actions for AuthItemChild model.
+ * AuthItemController implements the CRUD actions for AuthItem model.
  */
-class AuthItemChildController extends Controller
+class AuthItemController extends Controller
 {
     /**
      * @inheritdoc
@@ -26,31 +28,33 @@ class AuthItemChildController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                    'clon' => ['POST'],                    
                 ],
             ],
             
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
+         
                     [
-                        'actions' => ['index','create','delete'],
+                        'actions' => ['index','delete','update','create','clon'],
                         'allow' => true,
-                        'roles' => ['accederPermisos'], 
+                        'roles' => ['accederRoles'], 
                     ],
  
                  ], // fin rules
             ], // fin access   
-                        
+                       
         ];
     }
 
     /**
-     * Lists all AuthItemChild models.
+     * Lists all AuthItem models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new AuthItemChildSearch();
+        $searchModel = new AuthItemSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -60,26 +64,26 @@ class AuthItemChildController extends Controller
     }
 
     /**
-     * Displays a single AuthItemChild model.
-     * @param string $parent
-     * @param string $child
+     * Displays a single AuthItem model.
+     * @param string $id
      * @return mixed
      */
-    public function actionView($parent, $child)
+    public function actionView($name)
     {
         return $this->render('view', [
-            'model' => $this->findModel($parent, $child),
+            'model' => $this->findModel($name),
         ]);
     }
 
     /**
-     * Creates a new AuthItemChild model.
+     * Creates a new AuthItem model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new AuthItemChild();
+        $model = new AuthItem();
+        $model->type=1;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index']);
@@ -90,19 +94,50 @@ class AuthItemChildController extends Controller
         }
     }
 
+    public function actionClon($name)
+    {
+        $model = $this->findModel($name);
+        
+		// Comienza Transaccion
+		$transaction = Yii::$app->db->beginTransaction();				
+		try {        
+			$n = new AuthItem();
+			$n->type = 1;
+			$n->description = 'Reemplazar por la descripción del nuevo rol';
+			$n->name = $name.rand(0,99);
+			$n->save(false);
+			
+			foreach ($model->authItemRoles as $perm) {
+				$p = new AuthItemChild();
+				$p->parent = $n->name;
+				$p->child = $perm->child;
+				$p->save(false);
+			}
+			
+	
+			$transaction->commit();        
+		} catch(\Exception $e) {
+				$transaction->rollBack();
+				Yii::$app->session->addFlash('danger','Hubo un error en la grabación');
+				throw $e;
+		} // try..catch
+
+        return $this->redirect(['index']);
+    }
+
+
     /**
-     * Updates an existing AuthItemChild model.
+     * Updates an existing AuthItem model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param string $parent
-     * @param string $child
+     * @param string $id
      * @return mixed
      */
-    public function actionUpdate($parent, $child)
+    public function actionUpdate($name)
     {
-        $model = $this->findModel($parent, $child);
+        $model = $this->findModel($name);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'parent' => $model->parent, 'child' => $model->child]);
+            return $this->redirect(['index']);
         } else {
             return $this->render('update', [
                 'model' => $model,
@@ -111,30 +146,28 @@ class AuthItemChildController extends Controller
     }
 
     /**
-     * Deletes an existing AuthItemChild model.
+     * Deletes an existing AuthItem model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param string $parent
-     * @param string $child
+     * @param string $id
      * @return mixed
      */
-    public function actionDelete($parent, $child)
+    public function actionDelete($name)
     {
-        $this->findModel($parent, $child)->delete();
+        $this->findModel($name)->delete();
 
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the AuthItemChild model based on its primary key value.
+     * Finds the AuthItem model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param string $parent
-     * @param string $child
-     * @return AuthItemChild the loaded model
+     * @param string $id
+     * @return AuthItem the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($parent, $child)
+    protected function findModel($id)
     {
-        if (($model = AuthItemChild::findOne(['parent' => $parent, 'child' => $child])) !== null) {
+        if (($model = AuthItem::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

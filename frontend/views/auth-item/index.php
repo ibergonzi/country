@@ -3,8 +3,6 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 
-use frontend\models\AuthItem;
-
 // necesario para comentarios
 use yii\bootstrap\Modal;
 use frontend\models\Comentarios;
@@ -12,16 +10,28 @@ use frontend\models\Comentarios;
 use kartik\popover\PopoverX;
 
 /* @var $this yii\web\View */
-/* @var $searchModel frontend\models\AuthItemChildSearch */
+/* @var $searchModel frontend\models\AuthItemSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Permisos por rol';
+$this->title = 'Roles en el sistema';
 $this->params['breadcrumbs'][] = $this->title;
 
+// scrollbar para el modal de comentarios
+$this->registerCss('.modal-body { max-height: calc(100vh - 210px);overflow-y: auto;}');	
 // Asset con JS para el selector de campos para exportación
 use app\assets\ExportSelectorAsset;
 ExportSelectorAsset::register($this);
-
+// Apertura y cierre de comentarios: acciones posteriores (foco al abrir y refresco de grilla al salir)
+$this->registerJs('
+$(document).ready(function() {
+    $("#modalcomentarionuevo").on("shown.bs.modal", function (e) {
+		$("#comentarios-comentario").focus();
+	});	
+    $("#modalcomentarionuevo").on("hidden.bs.modal", function (e) {
+		$("#gridID").yiiGridView("applyFilter");
+	});		
+});
+');
 // Imagen personalizada cuando se procesa ajax
 $this->registerCss('
 .kv-grid-loading {
@@ -31,7 +41,7 @@ $this->registerCss('
 ');
 
 ?>
-<div class="auth-item-child-index">
+<div class="auth-item-index">
 
     <h3><?= Html::encode($this->title) ?></h3>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -55,33 +65,65 @@ $this->registerCss('
 		]; 	
 	
 	$columns = [
-	        //'parent',
-	        [
-				'attribute'=>'descRol',
-				'value'=>'rol.description',	 
-				'filter'=>AuthItem::getListaRoles(),       
-            ],
-            //'child',
-	        [
-				'attribute'=>'descPermiso',            
-				'value'=>'permiso.description',
-            ],
+	        'name',
+            //'type',
+            'description:ntext',
+               [
+                'label' => 'Permisos asignados',
+				'format' => 'raw',
+                'value' => function ($model) {
+						$cant=count($model->authItemRoles);
+						return ($cant==0)?'':kartik\helpers\Html::badge($cant);
+				 }
+               ],       
+               [
+                'label' => 'Usuarios asignados',
+				'format' => 'raw',
+                'value' => function ($model) {
+						$cant=count($model->users);
+						return ($cant==0)?'':kartik\helpers\Html::badge($cant);
+				 }
+               ],                     
+            //'rule_name',
+            //'data:ntext',
+            // 'created_at',
+            // 'updated_at',
 	
            ['class' => 'kartik\grid\ActionColumn',
              'header'=>Html::a('<span class="glyphicon glyphicon-plus-sign"></span>',
                                     ['create'], 
                                 ['class' => 'btn-sm btn-primary',
                                  'title' => Yii::t('app', 'Nuevo'),]),
-                               
- 			 'template' => '{delete}',      
-
+ 			 'template' => '{update} {clonar} {delete}', 
+				
+			 'visibleButtons' => [
+					'delete' => function ($model, $key, $index) {
+								return count($model->users) > 0 ? false : true;
+							},
+					'clonar' => function ($model, $key, $index) {
+								return count($model->authItemRoles) == 0 ? false : true;
+							}							
+				], 			      
 			 'buttons' => [
+
+				'clonar' => function ($url, $model) {
+					
+					return Html::a('<span class="glyphicon glyphicon-duplicate"></span>', 
+						$url,
+						[	'title' => 'Clonar rol con todos sus permisos',
+							'data' => [
+								'confirm' => 'Confirma la duplicación del rol?',
+								'method' => 'post',
+							],
+						]);							
+					},
 				'delete' => function ($url, $model) {
+					
 					return Html::a('<span class="glyphicon glyphicon-trash"></span>', 
 						$url,
 						[	'title' => 'Elimina el rol',
 							'data' => [
-								'confirm' => 'Desasigna el permiso?',
+								'confirm' => 'Elimina el rol?',
 								'method' => 'post',
 							],
 						]);							
@@ -89,18 +131,29 @@ $this->registerCss('
 				],	 				
 				
 			'urlCreator' => function ($action, $model, $key, $index) {
+				 if ($action === 'clonar') {
+					$url=Yii::$app->urlManager->createUrl(
+							['auth-item/clon', 
+							 'name' => $model->name
+							]);
+					return $url;
+				 }
 				 if ($action === 'delete') {
 					$url=Yii::$app->urlManager->createUrl(
-							['auth-item-child/delete', 
-							 'parent' => $model->parent,
-							 'child' => $model->child,
+							['auth-item/delete', 
+							 'name' => $model->name
 							]);
 					return $url;
 				 }	
+				 if ($action === 'update') {
+					$url=Yii::$app->urlManager->createUrl(
+							['auth-item/update', 
+							 'name' => $model->name
+							]);
+					return $url;
+				 }					 
 			  }
-
             ],
-            
 	];
 
 	
@@ -150,8 +203,8 @@ $this->registerCss('
 	$contentToolbar=\nterms\pagesize\PageSize::widget([
 		//'defaultPageSize'=>\Yii::$app->params['REEMPLAZAR.defaultPageSize'],
 		//'sizes'=>\Yii::$app->params['REEMPLAZAR.sizes'],
-		'defaultPageSize'=>100,
-		'sizes'=>[100=>100,200=>200,400=>400],		
+		'defaultPageSize'=>15,
+		'sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50],		
 		'label'=>'',
 		'options'=>[
 				'class'=>'btn btn-default',
@@ -211,7 +264,6 @@ $this->registerCss('
 					'config' => [
 							//'mode' => 'c',
 							//'format' => 'A4-L',
-							'format' => 'A4-P',
 							'destination' => 'D',
 							//'destination' => 'I',
 							//'marginTop' => 20,

@@ -647,6 +647,14 @@ $(document).ready(function() {
 		]);
 		echo '<div id="divporid"></div>';
 	Modal::end();  		
+	// modal que se abre cuando se buscan las autorizaciones eventuales o permanentes
+	Modal::begin(['id'=>'modalautorizaciones',
+		'header'=>'<span class="btn-warning">&nbsp;Autorizaciones eventuales o permanentes&nbsp;</span>',
+		'options'=>['class'=>'nofade'],
+		//'clientOptions'=>['backdrop'=>'static','keyboard'=>false],		
+		]);
+		echo '<div id="divautorizaciones"></div>';
+	Modal::end();  		
 	
 	  
 	?>

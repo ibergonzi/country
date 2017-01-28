@@ -83,6 +83,12 @@ return [
     'movimUf.sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50],
     
     'generadores.defaultPageSize'=>5,
-    'generadores.sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50],              
+    'generadores.sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50], 
+    
+    'autorizados.defaultPageSize'=>20,
+    'autorizados.sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50, 100=>100],   
+    
+    'autorizadosHorarios.defaultPageSize'=>7,
+    'autorizadosHorarios.sizes'=>[7=>7, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50],                 
 
 ];

@@ -119,13 +119,17 @@ DocumentRoot "/var/www/html/country/frontend/web"
       127.0.0.1 miraflores
 20) reiniciar apache:
    service apache2 reload
-20.1) Hay que modificar en los php.ini el max_execution_time de 30 a 120 segundos y memory_limit de 128M a 256M, esto es para que no se cuelque el mpdf
+20.1) Hay que modificar en los php.ini el max_execution_time de 30 a 120 segundos y memory_limit de 128M a 256M, 
+esto es para que no se cuelque el mpdf
 con exportaciones muy grandes:
    sudo vi /etc/php5/cli/php.ini
    sudo vi /etc/php5/apache2/php.ini
    sudo service apache2 reload
    
 Si es PHP7, las carpetas son /etc/php/7.0/cli y /etc/php/7.0/apache2
+
+20.2) Para que los uploads funcionen con archivos mas grandes, hay que cambiar en php.ini:
+	upload_max_filesize = 2M por 8M   
    
 21) ya se puede ingresar a miraflores, miraflores/gii o miraflores/site/* (o miraflores/vista hecha con GII)  
     OJO para usar el gii hay que tener cuidado con los namespaces, en la plantilla simple se usa "app", pero con la 

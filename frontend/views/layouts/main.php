@@ -139,6 +139,14 @@ JS;
 								'url' => ['/agenda/index'], 
 								'visible'=>\Yii::$app->user->can('accederAgenda')
 							],
+							['label' => 'Mensajes sobre Personas', 
+								'url' => ['/mens-personas/index'], 
+								'visible'=>\Yii::$app->user->can('accederMensPersonas')
+							],
+							['label' => 'Mensajes sobre Vehiculos', 
+								'url' => ['/mens-vehiculos/index'], 
+								'visible'=>\Yii::$app->user->can('accederMensVehiculos')
+							],								
 							'<li class="divider"></li>',
 							'<li class="dropdown-header">Diferido</li>',
 							['label' => '<span class="glyphicon glyphicon-arrow-right"></span>&nbsp;Ingresos', 

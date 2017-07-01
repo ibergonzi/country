@@ -21,6 +21,10 @@ $this->registerJs('$("#accesosconceptos-concepto").focus()', yii\web\View::POS_R
     <?= $form->field($model, 'req_tarjeta')->dropDownList(AccesosConceptos::getSiNo()) ?>
 
     <?= $form->field($model, 'req_seguro')->dropDownList(AccesosConceptos::getSiNo())?>
+    
+    <?= $form->field($model, 'req_seguro_vehic')->dropDownList(AccesosConceptos::getSiNo())?>   
+    
+    <?= $form->field($model, 'req_licencia')->dropDownList(AccesosConceptos::getSiNo())?>     
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

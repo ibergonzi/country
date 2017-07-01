@@ -139,7 +139,7 @@ class Vehiculos extends \yii\db\ActiveRecord
         return [
             [['marca','patente'], 'required'],
             [['created_by', 'updated_by', 'estado'], 'integer'],
-            [['created_at', 'updated_at','created_by','updated_by','modelo','color'], 'safe'],
+            [['created_at', 'updated_at','created_by','updated_by','modelo','color','vto_seguro'], 'safe'],
             [['modelo'], 'string', 'max' => 30],
             [['marca'], 'string', 'max' => 20],
             [['patente', 'color'], 'string', 'max' => 10],
@@ -161,6 +161,7 @@ class Vehiculos extends \yii\db\ActiveRecord
             'modelo' => Yii::t('app', 'Modelo'),
             'patente' => Yii::t('app', 'Patente'),
             'color' => Yii::t('app', 'Color'),
+            'vto_seguro'=>Yii::t('app','Vto.Seg.'),
             'created_by' => Yii::t('app', 'Usuario alta'),
             'created_at' => Yii::t('app', 'Fecha alta'),
             'updated_by' => Yii::t('app', 'Usuario modif.'),

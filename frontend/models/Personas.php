@@ -104,7 +104,7 @@ class Personas extends \yii\db\ActiveRecord
         return [
             [['apellido', 'nombre', 'id_tipo_doc', 'nro_doc'], 'required'],
             [['id_tipo_doc', 'created_by', 'updated_by','nro_doc'], 'integer'],
-            [['created_at', 'updated_at','estado','motivo_baja','id','vto_seguro'], 'safe'],
+            [['created_at', 'updated_at','estado','motivo_baja','id','vto_seguro','vto_licencia'], 'safe'],
             [['apellido', 'nombre', 'nombre2'], 'string', 'max' => 45],
 			[['apellido', 'nombre', 'nombre2'], 'trim'],             
  			[['foto'], 'file', 'extensions'=>'jpg, jpeg'],  
@@ -128,6 +128,7 @@ class Personas extends \yii\db\ActiveRecord
             'nro_doc' => Yii::t('app', 'Nro.Doc.'),
             'foto' => Yii::t('app', 'Foto'),
             'vto_seguro' => Yii::t('app', 'Vto.Seg.'),
+            'vto_licencia' => Yii::t('app', 'Vto.Lic.'),
             'created_by' => Yii::t('app', 'Usuario alta'),
             'created_at' => Yii::t('app', 'Fecha alta'),
             'updated_by' => Yii::t('app', 'Usuario modif.'),

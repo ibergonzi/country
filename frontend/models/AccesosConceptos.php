@@ -17,6 +17,8 @@ use yii\helpers\ArrayHelper;
  * @property string $concepto
  * @property integer $req_tarjeta
  * @property integer $req_seguro
+ * @property integer $req_seguro_vehic
+ * @property integer $req_licencia 
  *
  * @property Accesos[] $accesos
  */
@@ -105,8 +107,8 @@ class AccesosConceptos extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['concepto', 'req_tarjeta', 'req_seguro'], 'required'],
-            [['req_tarjeta', 'req_seguro'], 'integer'],
+            [['concepto', 'req_tarjeta', 'req_seguro','req_seguro_vehic','req_licencia'], 'required'],
+            [['req_tarjeta', 'req_seguro','req_seguro_vehic','req_licencia'], 'integer'],
             [['concepto'], 'string', 'max' => 50]
         ];
     }
@@ -121,6 +123,8 @@ class AccesosConceptos extends \yii\db\ActiveRecord
             'concepto' => Yii::t('app', 'Concepto'),
             'req_tarjeta' => Yii::t('app', 'Requiere Tarjeta'),
             'req_seguro' => Yii::t('app', 'Requiere Seguro'),
+            'req_seguro_vehic' => Yii::t('app', 'Requiere Seg.de Vehic.'),
+            'req_licencia'=>Yii::t('app', 'Requiere Lic.Conduc.'),            
             'created_by' => Yii::t('app', 'Usuario alta'),
             'created_at' => Yii::t('app', 'Fecha alta'),
             'updated_by' => Yii::t('app', 'Usuario modif.'),

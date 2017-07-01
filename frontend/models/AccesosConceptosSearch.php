@@ -18,7 +18,7 @@ class AccesosConceptosSearch extends AccesosConceptos
     public function rules()
     {
         return [
-            [['id', 'req_tarjeta', 'req_seguro'], 'integer'],
+            [['id', 'req_tarjeta', 'req_seguro','req_seguro_vehic','req_licencia'], 'integer'],
             [['concepto','estado'], 'safe'],
         ];
     }
@@ -59,6 +59,8 @@ class AccesosConceptosSearch extends AccesosConceptos
             'id' => $this->id,
             'req_tarjeta' => $this->req_tarjeta,
             'req_seguro' => $this->req_seguro,
+            'req_seguro_vehic' => $this->req_seguro_vehic,
+            'req_licencia' => $this->req_licencia,                        
         ]);
 
         $query->andFilterWhere(['like', 'concepto', $this->concepto]);

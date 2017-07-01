@@ -40,6 +40,14 @@ $this->params['breadcrumbs'][] = $this->title;
 				'attribute' => 'req_seguro',
 				'value' => AccesosConceptos::getSiNo($model->req_seguro)
 			],
+			[
+				'attribute' => 'req_seguro_vehic',
+				'value' => AccesosConceptos::getSiNo($model->req_seguro_vehic)
+			],
+			[
+				'attribute' => 'req_licencia',
+				'value' => AccesosConceptos::getSiNo($model->req_licencia)
+			],			
 			'userCreatedBy.username',
 			'created_at:datetime',
 			'userUpdatedBy.username',

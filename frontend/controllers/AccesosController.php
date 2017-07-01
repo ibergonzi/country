@@ -93,8 +93,11 @@ class AccesosController extends Controller
                     ],
                     [ 
                         'actions' => ['ingreso','add-lista','busca-personas','busca-vehiculos',
-									  'drop-lista','add-lista-array','busca-ult-ingreso','pide-seguro',
-									  'update-vto-seguro','busca-persona-por-id','busca-por-id',
+									  'drop-lista','add-lista-array','busca-ult-ingreso',
+									  'pide-seguro','update-vto-seguro',
+									  'pide-seguro-vehic','update-vto-seguro-vehic',
+									  'pide-licencia','update-vto-licencia',
+									  'busca-persona-por-id','busca-por-id',
 									  'refresh-concepto','refresca-listas','view',
 									 ],
 						'allow' => true,
@@ -597,6 +600,35 @@ class AccesosController extends Controller
 		]);
 	}
 	
+	public function actionPideSeguroVehic($idVehiculo)
+	{
+		// solo se usa para mostrar el formulario que pide el seguro
+		$p=Vehiculos::findOne($idVehiculo);
+		
+		if (empty($p->vto_seguro) || $this->fecVencida($p->vto_seguro)) {
+			$p->vto_seguro=date('Y-m-d');
+		}	
+		return $this->renderAjax('_vtosegurovehic', [
+			'idVehiculo' => $idVehiculo,
+			'fec'=>$p->vto_seguro,
+		]);
+	}	
+	
+	
+	public function actionPideLicencia($idPersona)
+	{
+		// solo se usa para mostrar el formulario que pide el seguro
+		$p=Personas::findOne($idPersona);
+		
+		if (empty($p->vto_licencia) || $this->fecVencida($p->vto_licencia)) {
+			$p->vto_licencia=date('Y-m-d');
+		}	
+		return $this->renderAjax('_vtolicencia', [
+			'idPersona' => $idPersona,
+			'fec'=>$p->vto_licencia,
+		]);
+	}	
+	
 	public function actionUpdateVtoSeguro($idPersona,$fecseguro) 
 	{
 		// actualiza el vto del seguro
@@ -607,6 +639,34 @@ class AccesosController extends Controller
 		\Yii::$app->response->format = 'json';				
 		return $this->refreshListas();		
 	}
+	
+	
+	public function actionUpdateVtoSeguroVehic($idVehiculo,$fecseguro) 
+	{
+		// actualiza el vto del seguro
+		$p=Vehiculos::findOne($idVehiculo);
+        $faux=\DateTime::createFromFormat('d/m/Y',$fecseguro);
+		$p->vto_seguro=$faux->format('Y-m-d');
+		$p->save();
+		\Yii::$app->response->format = 'json';				
+		return $this->refreshListas();		
+	}	
+	
+	public function actionUpdateVtoLicencia($idPersona,$feclicencia) 
+	{
+		// actualiza el vto del seguro
+		$p=Personas::findOne($idPersona);
+		if ($feclicencia=='NADA') {
+			$p->vto_licencia=null;
+			
+		} else {
+			$faux=\DateTime::createFromFormat('d/m/Y',$feclicencia);
+			$p->vto_licencia=$faux->format('Y-m-d');
+		}
+		$p->save();
+		\Yii::$app->response->format = 'json';				
+		return $this->refreshListas();		
+	}	
 	
 	public function actionBuscaPorId($selector='selectorPersonas')
 	{
@@ -813,9 +873,16 @@ class AccesosController extends Controller
 	
 	public function actionRefreshConcepto($id_concepto=null) 
 	{
-		if (empty($id_concepto) || $id_concepto=='null') {\Yii::$app->session->set('req_seguro',false);return;}
+		if (empty($id_concepto) || $id_concepto=='null') {
+				\Yii::$app->session->set('req_seguro',false);
+				\Yii::$app->session->set('req_seguro_vehic',false);
+				\Yii::$app->session->set('req_licencia',false);							
+				return;
+		}
 		$ac=AccesosConceptos::findOne($id_concepto);
 		\Yii::$app->session->set('req_seguro',$ac->req_seguro);
+		\Yii::$app->session->set('req_seguro_vehic',$ac->req_seguro_vehic);
+		\Yii::$app->session->set('req_licencia',$ac->req_licencia);				
 		// en la vista solo se usa el grupo personas pero se devuelve todo
 		\Yii::$app->response->format = 'json';		
 		$response=$this->refreshListas();
@@ -1048,6 +1115,78 @@ class AccesosController extends Controller
 											}
 									},							
 						],
+						[
+							'header'=>'&nbsp;',					
+							'attribute'=>'venc_vto_licencia',
+							'visible'=>\Yii::$app->session->get('req_licencia'),
+							'format' => 'raw',
+							'value' => function ($model, $index, $widget) {
+											if (empty($model->vto_licencia)) {
+												$ic=' ';
+											} else {
+												// se debe controlar si no está vencida la licencia
+												if ($this->fecVencida($model->vto_licencia)) {												
+													$ic='<span class="glyphicon glyphicon-hourglass" title="Lic.conducir VENCIDA"
+														style="color:#FF8000"></span>';
+												} else {
+													// no está vencido, controla si esta por vencer en 2 dias (ver el valor en params.php)
+													if ($this->fecPorVencer($model->vto_licencia,\Yii::$app->params['fecSeguroDias'])) {
+														$ic='<span class="glyphicon glyphicon-hourglass" title="Lic.conducir por vencer" 
+														></span>';														
+													} else {
+														$ic=' ';
+													}
+												}
+											}								
+											return $ic;
+										},
+						],											
+						[
+							'attribute'=>'vto_licencia',
+							'visible'=>\Yii::$app->session->get('req_licencia'),
+							'format' => 'raw',
+							'value' => function ($model, $index, $widget) {
+											// intendencia pidio que se pueda modificar siempre
+											$pide=true;
+											
+											/*
+											if (empty($model->vto_seguro)) {
+												$pide=true;
+											} else {
+												// se debe controlar si no está vencido el seguro
+												if ($this->fecVencida($model->vto_seguro)) {												
+													$pide=true;
+												} else {
+													// no está vencido, por lo tanto no se pide, solo se muestra
+													$pide=false;
+												}
+											}
+											*/
+								
+											if (!$pide) {
+												return Yii::$app->formatter->format($model->vto_licencia, 'date'); 
+											} else {
+												$url=Yii::$app->urlManager->createUrl(
+														['accesos/pide-licencia','idPersona'=>$model->id,]);							
+												return Html::a(empty($model->vto_licencia)?'No posee':
+														Yii::$app->formatter->format($model->vto_licencia,'date'), 
+													$url,
+													['title' => 'Modificar fecha de vencimiento',
+													 'onclick'=>'$.ajax({
+														type     :"POST",
+														cache    : false,
+														url  : $(this).attr("href"),
+														success  : function(response) {
+																console.log(response);
+																$("#divupdseguro").html(response);
+																$("#modalupdseguro").modal("show");
+
+																	}
+													});return false;',
+													]);			
+											}
+									},							
+						],						
 						'id',
 						'apellido',
 						'nombre',
@@ -1206,7 +1345,79 @@ class AccesosController extends Controller
 												});return false;',
 												]);			
 										},						
-						],					
+						],		
+						[
+							'header'=>'&nbsp;',					
+							'attribute'=>'venc_vto_seguro',
+							'visible'=>\Yii::$app->session->get('req_seguro_vehic'),
+							'format' => 'raw',
+							'value' => function ($model, $index, $widget) {
+											if (empty($model->vto_seguro)) {
+												$ic=' ';
+											} else {
+												// se debe controlar si no está vencido el seguro
+												if ($this->fecVencida($model->vto_seguro)) {												
+													$ic='<span class="glyphicon glyphicon-hourglass" title="Seguro VENCIDO"
+														style="color:#FF8000"></span>';
+												} else {
+													// no está vencido, controla si esta por vencer en 2 dias (ver el valor en params.php)
+													if ($this->fecPorVencer($model->vto_seguro,\Yii::$app->params['fecSeguroDias'])) {
+														$ic='<span class="glyphicon glyphicon-hourglass" title="Seguro por vencer" 
+														></span>';														
+													} else {
+														$ic=' ';
+													}
+												}
+											}								
+											return $ic;
+										},
+						],											
+						[
+							'attribute'=>'vto_seguro',
+							'visible'=>\Yii::$app->session->get('req_seguro_vehic'),
+							'format' => 'raw',
+							'value' => function ($model, $index, $widget) {
+											// intendencia pidio que se pueda modificar siempre
+											$pide=true;
+											
+											/*
+											if (empty($model->vto_seguro)) {
+												$pide=true;
+											} else {
+												// se debe controlar si no está vencido el seguro
+												if ($this->fecVencida($model->vto_seguro)) {												
+													$pide=true;
+												} else {
+													// no está vencido, por lo tanto no se pide, solo se muestra
+													$pide=false;
+												}
+											}
+											*/
+								
+											if (!$pide) {
+												return Yii::$app->formatter->format($model->vto_seguro, 'date'); 
+											} else {
+												$url=Yii::$app->urlManager->createUrl(
+														['accesos/pide-seguro-vehic','idVehiculo'=>$model->id,]);							
+												return Html::a(empty($model->vto_seguro)?'Sin seguro':
+														Yii::$app->formatter->format($model->vto_seguro,'date'), 
+													$url,
+													['title' => 'Modificar fecha de vencimiento',
+													 'onclick'=>'$.ajax({
+														type     :"POST",
+														cache    : false,
+														url  : $(this).attr("href"),
+														success  : function(response) {
+																console.log(response);
+																$("#divupdseguro").html(response);
+																$("#modalupdseguro").modal("show");
+
+																	}
+													});return false;',
+													]);			
+											}
+									},							
+						],									
 						'id',
 						'patente',
 						'marca',
@@ -1539,7 +1750,9 @@ class AccesosController extends Controller
 
 		// inicializa modelo
         $model = new Accesos();
-		\Yii::$app->session->set('req_seguro',0);    
+		\Yii::$app->session->set('req_seguro',0);  
+		\Yii::$app->session->set('req_seguro_vehic',0);
+		\Yii::$app->session->set('req_licencia',0);				  
 	    
  
 		// si viene por POST, es decir, si se intenta grabar
@@ -1547,6 +1760,12 @@ class AccesosController extends Controller
 			$model->attributes = $_POST['Accesos'];
 			// setea la variable req_seguro de la sesion de acuerdo al valor del concepto que viene en el POST
 			\Yii::$app->session->set('req_seguro',$model->accesosConcepto->req_seguro);			
+			// setea la variable req_seguro_vehic de la sesion de acuerdo al valor del concepto que viene en el POST
+			\Yii::$app->session->set('req_seguro_vehic',$model->accesosConcepto->req_seguro_vehic);			
+			// setea la variable req_licencia de la sesion de acuerdo al valor del concepto que viene en el POST
+			\Yii::$app->session->set('req_licencia',$model->accesosConcepto->req_licencia);			
+
+
 			// recupera de la sesion los 3 grupos
 			$sessPersonas=\Yii::$app->session->get('ingpersonas');	
 			$sessVehiculo=\Yii::$app->session->get('ingvehiculos');
@@ -1567,6 +1786,25 @@ class AccesosController extends Controller
 				$rechaza=true;
 			}
 			
+			
+			if ($sessVehiculo) {
+				// verifica los vencimientos de los seguros para los vehiculos (si corresponde segun concepto)
+				if ($model->accesosConcepto->req_seguro_vehic) {
+					foreach ($sessVehiculo as $segIDvehiculo) {
+						$vs=Vehiculos::findOne($segIDvehiculo);
+						if (empty($vs->vto_seguro)) { 
+							\Yii::$app->session->addFlash('danger','Vehículo sin seguro');
+							$rechaza=true;
+							break;
+						}
+						if ($this->fecVencida($vs->vto_seguro)) {
+							\Yii::$app->session->addFlash('danger','Vehículo con seguro vencido');
+							$rechaza=true;
+							break;
+						}
+					}
+				}
+			}			
 			
 			if ($sessPersonas) {
 				// verifica los vencimientos de los seguros

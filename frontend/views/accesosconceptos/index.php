@@ -39,7 +39,17 @@ $this->registerCss('
 				'attribute'=>'req_seguro',
 				'value'=>function ($model) { return AccesosConceptos::getSiNo($model->req_seguro);},
 				'filter'=>AccesosConceptos::getSiNo()
-            ],   
+            ],  
+            [
+				'attribute'=>'req_seguro_vehic',
+				'value'=>function ($model) { return AccesosConceptos::getSiNo($model->req_seguro_vehic);},
+				'filter'=>AccesosConceptos::getSiNo()
+            ],  
+            [
+				'attribute'=>'req_licencia',
+				'value'=>function ($model) { return AccesosConceptos::getSiNo($model->req_licencia);},
+				'filter'=>AccesosConceptos::getSiNo()
+            ],                         
             [
 				'attribute'=>'estado',  
 				'value'=>function ($model) { return AccesosConceptos::getEstados($model->estado);},

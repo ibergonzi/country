@@ -443,6 +443,7 @@ $(document).ready(function() {
 										url:"refresh-concepto?id_concepto=" + $(this).val(),
 										success: function(r) {
 													$("#divlistapersonas").html(r["ingpersonas"]);
+													$("#divlistavehiculos").html(r["ingvehiculos"]);													
 												}
 									});
 							',
@@ -633,7 +634,7 @@ $(document).ready(function() {
 	Modal::end();  	
 	// modal que se abre cuando se agrega un vehiculo a la lista de vehiculos (trae las personas que utilizaron el vehiculo)	
 	Modal::begin(['id'=>'modalupdseguro',
-		'header'=>'<span class="btn-warning">&nbsp;Vencimiento de seguro&nbsp;</span>',
+		'header'=>'<span class="btn-warning">&nbsp;Vencimiento&nbsp;</span>',
 		'options'=>['class'=>'nofade'],
 		'clientOptions'=>['backdrop'=>'static','keyboard'=>false],		
 		]);

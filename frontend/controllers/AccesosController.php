@@ -1126,7 +1126,7 @@ class AccesosController extends Controller
 											} else {
 												// se debe controlar si no está vencida la licencia
 												if ($this->fecVencida($model->vto_licencia)) {												
-													$ic='<span class="glyphicon glyphicon-hourglass" title="Lic.conducir VENCIDA"
+													$ic='<span class="glyphicon glyphicon-hourglass fa-2x" title="Lic.conducir VENCIDA"
 														style="color:#FF8000"></span>';
 												} else {
 													// no está vencido, controla si esta por vencer en 2 dias (ver el valor en params.php)
@@ -1355,17 +1355,21 @@ class AccesosController extends Controller
 											if (empty($model->vto_seguro)) {
 												$ic=' ';
 											} else {
-												// se debe controlar si no está vencido el seguro
-												if ($this->fecVencida($model->vto_seguro)) {												
-													$ic='<span class="glyphicon glyphicon-hourglass" title="Seguro VENCIDO"
-														style="color:#FF8000"></span>';
+												if ($model->id == \Yii::$app->params['bicicleta.id'] || $model->id == \Yii::$app->params['sinVehiculo.id']) {
+													$ic=' ';
 												} else {
-													// no está vencido, controla si esta por vencer en 2 dias (ver el valor en params.php)
-													if ($this->fecPorVencer($model->vto_seguro,\Yii::$app->params['fecSeguroDias'])) {
-														$ic='<span class="glyphicon glyphicon-hourglass" title="Seguro por vencer" 
-														></span>';														
+													// se debe controlar si no está vencido el seguro
+													if ($this->fecVencida($model->vto_seguro)) {												
+														$ic='<span class="glyphicon glyphicon-hourglass" title="Seguro VENCIDO"
+															style="color:#FF8000"></span>';
 													} else {
-														$ic=' ';
+														// no está vencido, controla si esta por vencer en 2 dias (ver el valor en params.php)
+														if ($this->fecPorVencer($model->vto_seguro,\Yii::$app->params['fecSeguroDias'])) {
+															$ic='<span class="glyphicon glyphicon-hourglass" title="Seguro por vencer" 
+															></span>';														
+														} else {
+															$ic=' ';
+														}
 													}
 												}
 											}								
@@ -1377,9 +1381,11 @@ class AccesosController extends Controller
 							'visible'=>\Yii::$app->session->get('req_seguro_vehic'),
 							'format' => 'raw',
 							'value' => function ($model, $index, $widget) {
+											if ($model->id == \Yii::$app->params['bicicleta.id'] || $model->id == \Yii::$app->params['sinVehiculo.id']) { 
+												return 'N/A';
+											} 
 											// intendencia pidio que se pueda modificar siempre
-											$pide=true;
-											
+									
 											/*
 											if (empty($model->vto_seguro)) {
 												$pide=true;
@@ -1393,7 +1399,8 @@ class AccesosController extends Controller
 												}
 											}
 											*/
-								
+
+											$pide=true;
 											if (!$pide) {
 												return Yii::$app->formatter->format($model->vto_seguro, 'date'); 
 											} else {
@@ -1792,6 +1799,11 @@ class AccesosController extends Controller
 				if ($model->accesosConcepto->req_seguro_vehic) {
 					foreach ($sessVehiculo as $segIDvehiculo) {
 						$vs=Vehiculos::findOne($segIDvehiculo);
+						
+						// si es bicicleta o sin vehiculo no se efectua ningun control
+						if ($vs->id == \Yii::$app->params['bicicleta.id'] || $vs->id == \Yii::$app->params['sinVehiculo.id']) {
+							break;
+						}
 						if (empty($vs->vto_seguro)) { 
 							\Yii::$app->session->addFlash('danger','Vehículo sin seguro');
 							$rechaza=true;

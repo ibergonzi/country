@@ -1054,7 +1054,7 @@ class AccesosController extends Controller
 											} else {
 												// se debe controlar si no está vencido el seguro
 												if ($this->fecVencida($model->vto_seguro)) {												
-													$ic='<span class="glyphicon glyphicon-hourglass" title="Seguro VENCIDO"
+													$ic='<span class="glyphicon glyphicon-hourglass fa-2x" title="Seguro VENCIDO"
 														style="color:#FF8000"></span>';
 												} else {
 													// no está vencido, controla si esta por vencer en 2 dias (ver el valor en params.php)
@@ -1360,7 +1360,7 @@ class AccesosController extends Controller
 												} else {
 													// se debe controlar si no está vencido el seguro
 													if ($this->fecVencida($model->vto_seguro)) {												
-														$ic='<span class="glyphicon glyphicon-hourglass" title="Seguro VENCIDO"
+														$ic='<span class="glyphicon glyphicon-hourglass fa-2x" title="Seguro VENCIDO"
 															style="color:#FF8000"></span>';
 													} else {
 														// no está vencido, controla si esta por vencer en 2 dias (ver el valor en params.php)

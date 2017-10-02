@@ -702,6 +702,13 @@ class AccesosController extends Controller
 		}
 		\Yii::$app->response->format = 'json';	
 		
+		if ($grupo == 'egrpersonas') {
+			// se coloca este control para que desde el egreso de personas no se retornen los datos 
+			// del ultimo ingreso (no corresponde y origina que se quede pegada la variable de sesion
+			// "autorizantes")
+			return $r;
+		}
+		
 		// si se elige a una sola persona de la lista, se deberia traer los datos del ultimo ingreso
 		//if (count($aux)==1) {
 		if (count($aux)>=1) {		

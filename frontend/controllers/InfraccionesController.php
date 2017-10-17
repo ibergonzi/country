@@ -92,9 +92,11 @@ class InfraccionesController extends Controller
 	// muestra las multas, permite seleccionarlas para su posterior rendicion llamando a Rendic (pasa las IDs de multas)
 	public function actionRendicSelec($fd,$fh)
 	{
-        $query = Infracciones::find()->where(['between','fecha',$fd,$fh])
-									 ->andWhere(['estado'=>Infracciones::ESTADO_ACTIVO])
-									 ->andWhere(['>','multa_total',0])
+        $query = Infracciones::find()->joinWith('concepto')
+       								 ->where(['between','fecha',$fd,$fh])
+									 ->andWhere(['infracciones.estado'=>Infracciones::ESTADO_ACTIVO])
+									 //->andWhere(['>','multa_total',0])
+									 ->andWhere(['es_multa'=>1])
 									 ->orderBy(['hora'=>SORT_ASC]);
         
         $dataProvider = new ActiveDataProvider([
@@ -128,11 +130,13 @@ class InfraccionesController extends Controller
 				
 				
 		// detalle		
-        $query = Infracciones::find()->where(['between','fecha',$fd,$fh])
-									 ->andWhere(['estado'=>Infracciones::ESTADO_ACTIVO])
-									 ->andWhere(['>','multa_total',0])									 
-									 ->andWhere(['in','id',$keys])
-									 ->orderBy(['id_uf'=>SORT_ASC,'hora'=>SORT_ASC]);
+        $query = Infracciones::find()//->joinWith('concepto')
+									 //->where(['between','fecha',$fd,$fh])
+									 //->andWhere(['infracciones.estado'=>Infracciones::ESTADO_ACTIVO])
+									 //->andWhere(['>','multa_total',0])
+									 //->andWhere(['es_multa'=>1])									 									 
+									 ->andWhere(['in','infracciones.id',$keys])
+									 ->orderBy(['id_uf'=>SORT_ASC,'infracciones.hora'=>SORT_ASC]);
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination'=>['pageSize' => 0,],            
@@ -140,6 +144,8 @@ class InfraccionesController extends Controller
         ]);		  
         
         // resumen de reincidencias
+
+		/*
         $queryR = Infracciones::find()->select(['id_concepto','id_uf','multa_fec_reinc','count(*) as cant','sum(multa_total) as tot'])
 									 ->andWhere(['estado'=>Infracciones::ESTADO_ACTIVO])
 									 ->andWhere(['>','multa_total',0])	
@@ -147,6 +153,15 @@ class InfraccionesController extends Controller
 									 ->andWhere(['in','id',$keys])
 									 ->groupBy(['id_concepto','id_uf','multa_fec_reinc']) 
 									 ->orderBy(['id_concepto'=>SORT_ASC,'id_uf'=>SORT_ASC]);	
+        */
+        $queryR = Infracciones::find()->select(['id_concepto','id_uf','count(*) as cant'])
+									 //->andWhere(['estado'=>Infracciones::ESTADO_ACTIVO])
+									 //->andWhere(['>','multa_total',0])	
+									 //->andWhere('multa_fec_reinc<fecha')								 
+									 ->andWhere(['in','id',$keys])
+									 ->groupBy(['id_concepto','id_uf']) 
+									 ->orderBy(['id_concepto'=>SORT_ASC,'id_uf'=>SORT_ASC]);	
+
         $dataProviderR = new ActiveDataProvider([
             'query' => $queryR,
             'pagination'=>['pageSize' => 0,],            

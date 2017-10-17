@@ -107,17 +107,22 @@ $this->registerCss('
             //'fecha_verif',
             //'verificado',
             //'foto',
-            'multaUnidad.unidad',
+            
+            //'multaUnidad.unidad',
+            
             // 'multa_monto',
             // 'multa_pers_cant',
             // 'multa_pers_monto',
             // 'multa_pers_total',
+            
+            /*
             [
 				'attribute'=>'multa_total',
 				'hAlign'=>'right',	
 				'format'=>['decimal', 2],							
 				'pageSummary'=>true
             ],
+            */
 
             [
 				'attribute'=>'foto',
@@ -226,26 +231,33 @@ $this->registerCss('
 			],
 			'id_uf',
 			'cant',
+			/*
 			[
 				'attribute'=>'tot',
 				'hAlign'=>'right',	
 				'format'=>['decimal', 2],					
 			],
+			*/
 			[
 				//'attribute'=>'multa_fec_reinc',
 				'label'=>'Cant.Reincidencias',
-				'value'=>function($m) use ($fd) {
+				'value'=>function($m) use ($fh) {
+					$dia_desde=date('d',strtotime($fh));
+					$anio_desde=date('Y',strtotime($fh));
+					$mes_desde=date('m',strtotime($fh))-6;
+					//if ($mes_desde < 1) {$anio_desde=$anio_desde-1;}
 					// cuenta todas las multas para la unidad funcional desde la fecha de reinc hasta el dia anterior al periodo informado
-					$fh=date('Y-m-d', mktime(0, 0, 0, date('m',strtotime($fd)), 0, date('Y',strtotime($fd))));
+					//$fh=date('Y-m-d', mktime(0, 0, 0, date('m',strtotime($fd)), 0, date('Y',strtotime($fd))));
+					$fd=date('Y-m-d', mktime(0, 0, 0, $mes_desde, $dia_desde, $anio_desde));
 					
 					$cantMultas=Infracciones::find()->where([
 							'id_uf'=>$m->id_uf,
 							'estado'=>Infracciones::ESTADO_ACTIVO,
 							'id_concepto'=>$m->id_concepto
 							])
-							->andWhere(['between','fecha',$m->multa_fec_reinc,$fh])->count();		
-					if ($cantMultas > 1) {$cantMultas=$cantMultas-1;}
-					$gfd=Yii::$app->formatter->asDate($m->multa_fec_reinc);
+							->andWhere(['between','fecha',$fd,$fh])->count();		
+					//if ($cantMultas > 1) {$cantMultas=$cantMultas-1;}
+					$gfd=Yii::$app->formatter->asDate($fd);
 					$gfh=Yii::$app->formatter->asDate($fh);
 										
 					return "desde $gfd hasta $gfh: $cantMultas";

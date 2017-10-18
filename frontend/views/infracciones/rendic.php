@@ -240,7 +240,7 @@ $this->registerCss('
 			*/
 			[
 				//'attribute'=>'multa_fec_reinc',
-				'label'=>'Cant.Reincidencias',
+				'label'=>'Cant.Reinc. (no se incluye multa base)',
 				'value'=>function($m) use ($fh) {
 					$dia_desde=date('d',strtotime($fh));
 					$anio_desde=date('Y',strtotime($fh));
@@ -256,7 +256,7 @@ $this->registerCss('
 							'id_concepto'=>$m->id_concepto
 							])
 							->andWhere(['between','fecha',$fd,$fh])->count();		
-					//if ($cantMultas > 1) {$cantMultas=$cantMultas-1;}
+					if ($cantMultas >= 1) {$cantMultas=$cantMultas-1;}
 					$gfd=Yii::$app->formatter->asDate($fd);
 					$gfh=Yii::$app->formatter->asDate($fh);
 										

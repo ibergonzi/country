@@ -201,4 +201,11 @@ class Personas extends \yii\db\ActiveRecord
         return $this->hasOne(\common\models\User::className(), ['id' => 'updated_by']);
     }          
     
+   /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPersonasLicencias()
+    {
+        return $this->hasMany(PersonasLicencias::className(), ['id_persona' => 'id']);
+    }    
 }

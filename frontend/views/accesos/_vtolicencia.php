@@ -4,6 +4,11 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use kartik\datecontrol\DateControl;
 
+use frontend\models\PersonasLicencias;
+use yii\data\ActiveDataProvider;
+
+use kartik\grid\GridView;
+
 ?>
 
 <div class="vtoseguro-form">
@@ -13,6 +18,18 @@ use kartik\datecontrol\DateControl;
 		//Yii::trace($vehiculos);
 		//echo Html::input('input','fecseguro',$fec,['id'=>'fecseguro']); 
 		//Yii::trace($fec);
+
+		$dataProvider = new ActiveDataProvider([
+			'query' => PersonasLicencias::find()->where(['id_persona' => $idPersona,'estado'=>1]),
+			'pagination' => [
+				'pageSize' => 20,
+			],
+		]);
+		echo GridView::widget([
+			'dataProvider' => $dataProvider,
+		]);		
+		echo '<p></p>';
+		
 		echo DateControl::widget([
 			'name'=>'feclicencia', 
 			//'value'=>date('Y-m-d'),

@@ -620,12 +620,15 @@ class AccesosController extends Controller
 		// solo se usa para mostrar el formulario que pide el seguro
 		$p=Personas::findOne($idPersona);
 		
-		if (empty($p->vto_licencia) || $this->fecVencida($p->vto_licencia)) {
-			$p->vto_licencia=date('Y-m-d');
-		}	
+		//if (empty($p->vto_licencia) || $this->fecVencida($p->vto_licencia)) {
+			$fec=date('Y-m-d');
+		//}	
+		
+    	
 		return $this->renderAjax('_vtolicencia', [
 			'idPersona' => $idPersona,
-			'fec'=>$p->vto_licencia,
+			//'lp'=>$p->personasLicencias;
+			'fec'=>$fec,
 		]);
 	}	
 	
@@ -1122,6 +1125,7 @@ class AccesosController extends Controller
 											}
 									},							
 						],
+						/*
 						[
 							'header'=>'&nbsp;',					
 							'attribute'=>'venc_vto_licencia',
@@ -1147,7 +1151,8 @@ class AccesosController extends Controller
 											}								
 											return $ic;
 										},
-						],											
+						],
+						*/											
 						[
 							'attribute'=>'vto_licencia',
 							'visible'=>\Yii::$app->session->get('req_licencia'),
@@ -1171,14 +1176,18 @@ class AccesosController extends Controller
 											*/
 								
 											if (!$pide) {
-												return Yii::$app->formatter->format($model->vto_licencia, 'date'); 
+												//return Yii::$app->formatter->format($model->vto_licencia, 'date'); 
+												
+												return '<span class="glyphicon glyphicon-credit-card"></span>';
 											} else {
 												$url=Yii::$app->urlManager->createUrl(
-														['accesos/pide-licencia','idPersona'=>$model->id,]);							
-												return Html::a(empty($model->vto_licencia)?'No posee':
-														Yii::$app->formatter->format($model->vto_licencia,'date'), 
+														['accesos/pide-licencia','idPersona'=>$model->id,]);
+												$cartelito=$this->armaCartelLicencia($model);
+																				
+												return 
+													Html::a($cartelito,				
 													$url,
-													['title' => 'Modificar fecha de vencimiento',
+													['title' => 'Ver/Modificar fecha de vencimiento',
 													 'onclick'=>'$.ajax({
 														type     :"POST",
 														cache    : false,
@@ -1588,6 +1597,40 @@ class AccesosController extends Controller
 		return $response;
 	
 	}	
+	
+	public function armaCartelLicencia($persona)
+	{
+		$str='';
+/*
+			if (empty($model->vto_seguro)) {
+				$pide=true;
+			} else {
+				// se debe controlar si no está vencido el seguro
+				if ($this->fecVencida($model->vto_seguro)) {												
+					$pide=true;
+				} else {
+					// no está vencido, por lo tanto no se pide, solo se muestra
+					$pide=false;
+				}
+			}
+
+
+			if (!$pide) {
+				//return Yii::$app->formatter->format($model->vto_licencia, 'date'); 
+				
+				return '<span class="glyphicon glyphicon-credit-card"></span>'	
+			*/	
+		$tiene=false;
+		foreach ($persona->personasLicencias as $pl) {
+			if ($pl->estado == 0) { continue; }
+			
+			$tiene=true;
+			
+		}
+		if (!$tiene) {$str='Sin seguro'; return $str;}
+		$str='Tiene seguro';
+		return $str;
+	}
 	
 	public function fecVencida($fec) 
 	{

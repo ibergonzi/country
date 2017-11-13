@@ -9,6 +9,8 @@ use yii\behaviors\TimestampBehavior;
 use yii\behaviors\BlameableBehavior;
 use yii\db\Expression;
 
+use yii\helpers\ArrayHelper;
+
 
 /**
  * This is the model class for table "tipos_licencia".
@@ -75,6 +77,12 @@ class TiposLicencia extends \yii\db\ActiveRecord
             'userUpdatedBy.username'=>'Usuario modif.',
         ];
     }
+    
+	public static function getTiposLicenciaActivos()
+	{
+		$opciones = self::find()->where(['activo'=>1])->asArray()->all();
+		return ArrayHelper::map($opciones, 'id', 'desc_licencia');
+	}      
 
     /**
      * @return \yii\db\ActiveQuery

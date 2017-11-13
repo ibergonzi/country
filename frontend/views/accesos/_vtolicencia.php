@@ -4,8 +4,8 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use kartik\datecontrol\DateControl;
 
-use frontend\models\PersonasLicencias;
-use yii\data\ActiveDataProvider;
+use frontend\models\TiposLicencia;
+
 
 use kartik\grid\GridView;
 
@@ -19,16 +19,16 @@ use kartik\grid\GridView;
 		//echo Html::input('input','fecseguro',$fec,['id'=>'fecseguro']); 
 		//Yii::trace($fec);
 
-		$dataProvider = new ActiveDataProvider([
-			'query' => PersonasLicencias::find()->where(['id_persona' => $idPersona,'estado'=>1]),
-			'pagination' => [
-				'pageSize' => 20,
-			],
-		]);
+
 		echo GridView::widget([
-			'dataProvider' => $dataProvider,
+			'dataProvider' => $dp,
+			'columns'=> ['vencimiento',
+			],
+			'layout'=>'{items}',			
 		]);		
 		echo '<p></p>';
+		
+		echo 'Tipo de licencia' . ' ' . Html::dropDownList('tipolic', null, TiposLicencia::getTiposLicenciaActivos(),['id'=>'tipolic']);		
 		
 		echo DateControl::widget([
 			'name'=>'feclicencia', 
@@ -54,6 +54,7 @@ use kartik\grid\GridView;
 										 'id'=>'btnUpdSeguro',
 										 'onclick'=>'
 												var fecs=$("#feclicencia").val();
+												var tl=$("#tipolic").val();
 												//console.log("que hay:" + fecs);												
 												if (fecs === "") {
 													fecs="NADA";
@@ -61,7 +62,7 @@ use kartik\grid\GridView;
 												$.ajax({
 														type     :"POST",
 														cache    : false,
-														url      : $(this).attr("href")+fecs,
+														url      : $(this).attr("href")+fecs+"&tipoLic="+tl,
 														success  : function(r) {
 																	$("#divlistapersonas").html(r["ingpersonas"]);
 																	$("#modalupdseguro").modal("hide");

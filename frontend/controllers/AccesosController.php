@@ -35,6 +35,9 @@ use frontend\models\RangoFechas;
 use frontend\models\AccesosAutmanual;
 use frontend\models\Autorizados;
 use frontend\models\AutorizadosHorarios;
+use frontend\models\PersonasLicencias;
+
+use yii\data\ActiveDataProvider;
 
 
 use kartik\mpdf\Pdf;
@@ -623,12 +626,19 @@ class AccesosController extends Controller
 		//if (empty($p->vto_licencia) || $this->fecVencida($p->vto_licencia)) {
 			$fec=date('Y-m-d');
 		//}	
-		
+
+		$dataProvider = new ActiveDataProvider([
+			'query' => PersonasLicencias::find()->where(['id_persona' => $idPersona,'estado'=>1]),
+			'pagination' => [
+				'pageSize' => 20,
+			],
+		]);		
     	
 		return $this->renderAjax('_vtolicencia', [
 			'idPersona' => $idPersona,
 			//'lp'=>$p->personasLicencias;
 			'fec'=>$fec,
+			'dp'=>$dataProvider
 		]);
 	}	
 	
@@ -655,8 +665,9 @@ class AccesosController extends Controller
 		return $this->refreshListas();		
 	}	
 	
-	public function actionUpdateVtoLicencia($idPersona,$feclicencia) 
+	public function actionUpdateVtoLicencia($idPersona,$feclicencia,$tipoLic) 
 	{
+		/*
 		// actualiza el vto del seguro
 		$p=Personas::findOne($idPersona);
 		if ($feclicencia=='NADA') {
@@ -667,6 +678,11 @@ class AccesosController extends Controller
 			$p->vto_licencia=$faux->format('Y-m-d');
 		}
 		$p->save();
+		*/
+		
+		Yii::trace($feclicencia);
+		Yii::trace($tipoLic);
+		
 		\Yii::$app->response->format = 'json';				
 		return $this->refreshListas();		
 	}	

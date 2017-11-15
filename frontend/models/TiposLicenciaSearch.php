@@ -53,7 +53,7 @@ class TiposLicenciaSearch extends TiposLicencia
             'pagination'=>[
 				'pageSize' => $pageSize,
 			],            
-            'sort' => ['defaultOrder' => ['id' => SORT_DESC,],
+            'sort' => ['defaultOrder' => ['id' => SORT_ASC,],
 						'enableMultiSort'=>true,            
                       ],              
         ]);

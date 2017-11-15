@@ -1,5 +1,13 @@
 <?php
 
+
+/*
+INSERT INTO `personas_licencias`(`id_persona`, `id_tipos_licencia`, `vencimiento`, `created_by`, `created_at`, `updated_by`, `updated_at`, `estado`, `motivo_baja`) select id,1,vto_licencia,47,'2017-11-01',47,'2017-11-01',1,null from personas where vto_licencia is not null 
+
+*/ 
+
+
+
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use kartik\datecontrol\DateControl;
@@ -18,11 +26,33 @@ use kartik\grid\GridView;
 		//Yii::trace($vehiculos);
 		//echo Html::input('input','fecseguro',$fec,['id'=>'fecseguro']); 
 		//Yii::trace($fec);
+$this->registerCss('
 
+.panel-heading {
+  padding: 0px 5px;
+  border-bottom: 1px solid transparent;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+}
+.table-condensed > thead > tr > th,
+.table-condensed > tbody > tr > th,
+.table-condensed > tfoot > tr > th,
+.table-condensed > thead > tr > td,
+.table-condensed > tbody > tr > td,
+.table-condensed > tfoot > tr > td {
+  padding: 1px;
+}
+');
 
 		echo GridView::widget([
 			'dataProvider' => $dp,
-			'columns'=> ['vencimiento',
+			'condensed'=>true,
+			'columns'=> [
+				'tiposLicencia.desc_licencia',
+				[
+					'attribute'=>'vencimiento',
+					'format'=>'date'
+				],
 			],
 			'layout'=>'{items}',			
 		]);		

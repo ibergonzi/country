@@ -4,11 +4,6 @@ namespace frontend\models;
 
 use Yii;
 
-// agregados por mi, auditoria
-use yii\behaviors\TimestampBehavior;
-use yii\behaviors\BlameableBehavior;
-use yii\db\Expression;
-
 use yii\helpers\ArrayHelper;
 
 
@@ -31,26 +26,6 @@ class TiposLicencia extends \yii\db\ActiveRecord
         return 'tipos_licencia';
     }
 
-    // extiende los comportamientos de la clase para grabar datos de auditoría
-    // agregado por mi
-    public function behaviors()
-    {
-	  return [
-		  [
-			  'class' => BlameableBehavior::className(),
-			  'createdByAttribute' => 'created_by',
-			  'updatedByAttribute' => 'updated_by',
-		  ],
-		  [
-			  'class' => TimestampBehavior::className(),
-			  'createdAtAttribute' => 'created_at',
-			  'updatedAtAttribute' => 'updated_at',                 
-			  'value' => new Expression('CURRENT_TIMESTAMP')
-		  ],
-
-	  ];
-    }
-
 
     /**
      * @inheritdoc
@@ -71,12 +46,26 @@ class TiposLicencia extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'desc_licencia' => 'Desc Licencia',
+            'desc_licencia' => 'Tipo de Licencia',
             'activo' => 'Activo',
             'userCreatedBy.username'=>'Usuario alta',
             'userUpdatedBy.username'=>'Usuario modif.',
         ];
     }
+
+
+	const SI = 1;
+	const NO = 0;
+	
+	public static function getSiNo($key=null)
+	{
+		$estados=[self::NO=>'No',self::SI=>'Si'];
+	    if ($key !== null) {
+			return $estados[$key];
+		}
+		return $estados;
+	}
+
     
 	public static function getTiposLicenciaActivos()
 	{

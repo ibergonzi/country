@@ -28,28 +28,24 @@ class TiposLicenciaController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
-            /*
+            
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['delete'],
-                        'allow' => true,
-                        'roles' => ['borrar'], 
-                    ],                
-                    [
                         'actions' => ['index','view'],
                         'allow' => true,
-                        'roles' => ['acceder'], 
+                        'roles' => ['accederParametros'], 
                     ],
                     [
-                        'actions' => ['create','update'],
+                        'actions' => ['create','update','delete'],
                         'allow' => true,
-                        'roles' => ['altaModificar'], 
+                        'roles' => ['modificarParametros'], 
                     ],
+ 		
                  ], // fin rules
-            ], // fin access   
-            */             
+             ], // fin access   
+                         
         ];
     }
 
@@ -125,9 +121,11 @@ class TiposLicenciaController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+        $model = $this->findModel($id);
+        $model->activo=0;
+        $model->save(false);
         return $this->redirect(['index']);
+       
     }
 
     /**

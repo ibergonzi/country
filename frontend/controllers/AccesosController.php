@@ -623,12 +623,11 @@ class AccesosController extends Controller
 		// solo se usa para mostrar el formulario que pide el seguro
 		$p=Personas::findOne($idPersona);
 		
-		//if (empty($p->vto_licencia) || $this->fecVencida($p->vto_licencia)) {
-			$fec=date('Y-m-d');
-		//}	
+		$fec=date('Y-m-d');
 
 		$dataProvider = new ActiveDataProvider([
 			'query' => PersonasLicencias::find()->where(['id_persona' => $idPersona,'estado'=>1]),
+			'sort'=>false,
 			'pagination' => [
 				'pageSize' => 20,
 			],
@@ -667,21 +666,27 @@ class AccesosController extends Controller
 	
 	public function actionUpdateVtoLicencia($idPersona,$feclicencia,$tipoLic) 
 	{
-		/*
-		// actualiza el vto del seguro
-		$p=Personas::findOne($idPersona);
-		if ($feclicencia=='NADA') {
-			$p->vto_licencia=null;
-			
-		} else {
-			$faux=\DateTime::createFromFormat('d/m/Y',$feclicencia);
-			$p->vto_licencia=$faux->format('Y-m-d');
-		}
-		$p->save();
-		*/
 		
-		Yii::trace($feclicencia);
-		Yii::trace($tipoLic);
+		if ($feclicencia=='NADA') {
+			// borra todas las licencias que  tuviera la persona
+			PersonasLicencias::deleteAll(['id_persona'=>$idPersona]);
+		} else {	
+			// Si la persona ya tiene el tipo de licencia se actualiza con la nueva fecha,
+			// caso contrario se crea el nuevo tipo de licencia
+			$pl=PersonasLicencias::findOne(['id_persona'=>$idPersona,'id_tipos_licencia'=>$tipoLic]);
+			if ($pl) {
+				$faux=\DateTime::createFromFormat('d/m/Y',$feclicencia);
+				$pl->vencimiento=$faux->format('Y-m-d');
+				$pl->save(false);
+			} else {
+				$pl=new PersonasLicencias();
+				$pl->id_persona=$idPersona;
+				$pl->id_tipos_licencia=$tipoLic;
+				$faux=\DateTime::createFromFormat('d/m/Y',$feclicencia);
+				$pl->vencimiento=$faux->format('Y-m-d');
+				$pl->save(false);			
+			}
+		}
 		
 		\Yii::$app->response->format = 'json';				
 		return $this->refreshListas();		
@@ -1141,34 +1146,6 @@ class AccesosController extends Controller
 											}
 									},							
 						],
-						/*
-						[
-							'header'=>'&nbsp;',					
-							'attribute'=>'venc_vto_licencia',
-							'visible'=>\Yii::$app->session->get('req_licencia'),
-							'format' => 'raw',
-							'value' => function ($model, $index, $widget) {
-											if (empty($model->vto_licencia)) {
-												$ic=' ';
-											} else {
-												// se debe controlar si no está vencida la licencia
-												if ($this->fecVencida($model->vto_licencia)) {												
-													$ic='<span class="glyphicon glyphicon-hourglass fa-2x" title="Lic.conducir VENCIDA"
-														style="color:#FF8000"></span>';
-												} else {
-													// no está vencido, controla si esta por vencer en 2 dias (ver el valor en params.php)
-													if ($this->fecPorVencer($model->vto_licencia,\Yii::$app->params['fecSeguroDias'])) {
-														$ic='<span class="glyphicon glyphicon-hourglass" title="Lic.conducir por vencer" 
-														></span>';														
-													} else {
-														$ic=' ';
-													}
-												}
-											}								
-											return $ic;
-										},
-						],
-						*/											
 						[
 							'attribute'=>'vto_licencia',
 							'visible'=>\Yii::$app->session->get('req_licencia'),
@@ -1176,24 +1153,7 @@ class AccesosController extends Controller
 							'value' => function ($model, $index, $widget) {
 											// intendencia pidio que se pueda modificar siempre
 											$pide=true;
-											
-											/*
-											if (empty($model->vto_seguro)) {
-												$pide=true;
-											} else {
-												// se debe controlar si no está vencido el seguro
-												if ($this->fecVencida($model->vto_seguro)) {												
-													$pide=true;
-												} else {
-													// no está vencido, por lo tanto no se pide, solo se muestra
-													$pide=false;
-												}
-											}
-											*/
-								
 											if (!$pide) {
-												//return Yii::$app->formatter->format($model->vto_licencia, 'date'); 
-												
 												return '<span class="glyphicon glyphicon-credit-card"></span>';
 											} else {
 												$url=Yii::$app->urlManager->createUrl(
@@ -1617,34 +1577,23 @@ class AccesosController extends Controller
 	public function armaCartelLicencia($persona)
 	{
 		$str='';
-/*
-			if (empty($model->vto_seguro)) {
-				$pide=true;
-			} else {
-				// se debe controlar si no está vencido el seguro
-				if ($this->fecVencida($model->vto_seguro)) {												
-					$pide=true;
-				} else {
-					// no está vencido, por lo tanto no se pide, solo se muestra
-					$pide=false;
-				}
-			}
-
-
-			if (!$pide) {
-				//return Yii::$app->formatter->format($model->vto_licencia, 'date'); 
-				
-				return '<span class="glyphicon glyphicon-credit-card"></span>'	
-			*/	
-		$tiene=false;
+		$cant=0;
+		$cantVenc=0;
 		foreach ($persona->personasLicencias as $pl) {
 			if ($pl->estado == 0) { continue; }
-			
-			$tiene=true;
-			
+			$cant=$cant + 1;
+			if ($this->fecVencida($pl->vencimiento)) {
+				$cantVenc=$cantVenc + 1;
+			}
 		}
-		if (!$tiene) {$str='Sin seguro'; return $str;}
-		$str='Tiene seguro';
+		if ($cant == 0) {$str='Sin lic.'; return $str;}
+		
+		if ($cant == $cantVenc) {
+			$str='<span class="glyphicon glyphicon-credit-card fa-2x" title="Licencias vencidas" style="color:#FF8000"></span>';			
+			
+		} else {
+			$str='<span class="glyphicon glyphicon-credit-card fa-2x" title="Mostrar Licencias"></span>';
+		}
 		return $str;
 	}
 	

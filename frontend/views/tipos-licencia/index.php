@@ -9,11 +9,13 @@ use frontend\models\Comentarios;
 // necesario para selector de campos para exportación
 use kartik\popover\PopoverX;
 
+use frontend\models\TiposLicencia;
+
 /* @var $this yii\web\View */
 /* @var $searchModel frontend\models\TiposLicenciaSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Tipos Licencias';
+$this->title = 'Tipos de Licencia de conducir';
 $this->params['breadcrumbs'][] = $this->title;
 
 // scrollbar para el modal de comentarios
@@ -65,9 +67,13 @@ $this->registerCss('
 		]; 	
 	
 	$columns = [
-	            'id',
+	        'id',
             'desc_licencia',
-            'activo',
+            [
+				'attribute'=>'activo',  
+				'value'=>function ($model) { return TiposLicencia::getSiNo($model->activo);},
+				'filter'=>TiposLicencia::getSiNo()				         
+            ],
 	
            ['class' => 'kartik\grid\ActionColumn',
              'header'=>Html::a('<span class="glyphicon glyphicon-plus-sign"></span>',
@@ -126,7 +132,7 @@ $this->registerCss('
 
 	
 	// Armado de la selección de campos para exportar
-	//if (\Yii::$app->user->can('PERMISOPARAEXPORTAR')) {        
+	if (\Yii::$app->user->can('accederParametros')) {        
 		// contiene la selección inicial de columnas, es decir, todas
 		// por ejemplo [0,1,2,3]
 		$poSel=[];
@@ -165,14 +171,12 @@ $this->registerCss('
 				])											
 		]);
 
-	//}			
+	}			
 	
 	// Definición de la cantidad de items a paginar
 	$contentToolbar=\nterms\pagesize\PageSize::widget([
-		//'defaultPageSize'=>\Yii::$app->params['REEMPLAZAR.defaultPageSize'],
-		//'sizes'=>\Yii::$app->params['REEMPLAZAR.sizes'],
-		'defaultPageSize'=>15,
-		'sizes'=>[2=>2, 5=>5, 10=>10, 15=>15, 20=>20, 25=>25, 50=>50],		
+		'defaultPageSize'=>\Yii::$app->params['infracConceptos.defaultPageSize'],
+		'sizes'=>\Yii::$app->params['infracConceptos.sizes'],		
 		'label'=>'',
 		'options'=>[
 				'class'=>'btn btn-default',
@@ -180,11 +184,11 @@ $this->registerCss('
 			],
 		]);	
 	// Definición del toolbar		
-	//if (\Yii::$app->user->can('PERMISOPARAEXPORTAR')) {			
+	if (\Yii::$app->user->can('accederParametros')) {			
 		$toolbar=['{export} ',['content'=>$contentToolbar],];
-	//} else {
-	//	$toolbar=[['content'=>$contentToolbar]];
-	//}	
+	} else {
+		$toolbar=[['content'=>$contentToolbar]];
+	}	
 	?>
 
     <?= GridView::widget([

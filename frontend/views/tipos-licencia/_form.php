@@ -7,7 +7,7 @@ use yii\widgets\ActiveForm;
 /* @var $model frontend\models\TiposLicencia */
 /* @var $form yii\widgets\ActiveForm */
 
-//$this->registerJs('$("#REEMPLAZARPORIDPRIMERCAMPO").focus()', yii\web\View::POS_READY);
+$this->registerJs('$("#tiposlicencia-desc_licencia").focus()', yii\web\View::POS_READY);
 
 ?>
 
@@ -17,10 +17,10 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'desc_licencia')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'activo')->textInput() ?>
+
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? 'Crear' : 'Modificar', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

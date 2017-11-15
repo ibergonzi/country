@@ -5,10 +5,10 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\TiposLicencia */
 
-$this->title = 'Update Tipos Licencia: ' . $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Tipos Licencias', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = 'Modificar Tipo de Licencia de conducir';
+$this->params['breadcrumbs'][] = ['label' => 'Tipos de Licencia de conducir', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Detalle', 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = 'Modificar';
 ?>
 <div class="tipos-licencia-update">
 

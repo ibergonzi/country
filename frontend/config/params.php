@@ -30,6 +30,12 @@ return [
     // esto se utiliza en el ingreso (function refreshListas)
     'fecSeguroDias'=>2,
     
+    // Bandera para exigir la obligatoriedad de que el vehiculo tenga seguro vigente
+    // actualmente, pedido por Intendencia, no se exige por lo tanto se permite grabar el movimiento
+    // controlaSegVehiculos == 'S' --> controla vencimientos y no continua grabando 
+    // controlaSegVehiculos == 'N' --> no hace ningun control y permite grabar igual
+    'controlaSegVehiculos'=>'N',
+    
     // Cantidad de dias que se utiliza para calcular la "fecha desde" del filtro de la consulta de accesos (accesos/index)
     'filtroConsAccesosDias'=>6,
     

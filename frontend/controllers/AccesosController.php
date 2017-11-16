@@ -1812,22 +1812,24 @@ class AccesosController extends Controller
 			if ($sessVehiculo) {
 				// verifica los vencimientos de los seguros para los vehiculos (si corresponde segun concepto)
 				if ($model->accesosConcepto->req_seguro_vehic) {
-					foreach ($sessVehiculo as $segIDvehiculo) {
-						$vs=Vehiculos::findOne($segIDvehiculo);
-						
-						// si es bicicleta o sin vehiculo no se efectua ningun control
-						if ($vs->id == \Yii::$app->params['bicicleta.id'] || $vs->id == \Yii::$app->params['sinVehiculo.id']) {
-							break;
-						}
-						if (empty($vs->vto_seguro)) { 
-							\Yii::$app->session->addFlash('danger','Vehículo sin seguro');
-							$rechaza=true;
-							break;
-						}
-						if ($this->fecVencida($vs->vto_seguro)) {
-							\Yii::$app->session->addFlash('danger','Vehículo con seguro vencido');
-							$rechaza=true;
-							break;
+					if (\Yii::$app->params['controlaSegVehiculos'] == 'S') {
+						foreach ($sessVehiculo as $segIDvehiculo) {
+							$vs=Vehiculos::findOne($segIDvehiculo);
+							
+							// si es bicicleta o sin vehiculo no se efectua ningun control
+							if ($vs->id == \Yii::$app->params['bicicleta.id'] || $vs->id == \Yii::$app->params['sinVehiculo.id']) {
+								break;
+							}
+							if (empty($vs->vto_seguro)) { 
+								\Yii::$app->session->addFlash('danger','Vehículo sin seguro');
+								$rechaza=true;
+								break;
+							}
+							if ($this->fecVencida($vs->vto_seguro)) {
+								\Yii::$app->session->addFlash('danger','Vehículo con seguro vencido');
+								$rechaza=true;
+								break;
+							}
 						}
 					}
 				}
